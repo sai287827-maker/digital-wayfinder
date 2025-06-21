@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Wayfinder - Select Functional Area</title>
+    <style>
+        :root {
+            --primary-color: #9c27b0;
+            --primary-light: #bf5dc9;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --border-color: #e0e0e0;
+            --active-tab-color: #9c27b0;
+            --card-border: #f0f0f0;
+            --button-gray: #f0f0f0;
+            --button-text: #666666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #fafafa;
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header */
+        header {
+            background-color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo svg {
+            height: 30px;
+            width: 30px;
+            margin-right: 10px;
+            fill: var(--primary-color);
+        }
+        
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 10px;
+            padding: 10px 15px;
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        .active-tab {
+            color: var(--primary-color);
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .active-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--active-tab-color);
+        }
+        
+        /* User menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 15px;
+            color: var(--text-dark);
+            font-size: 1.2rem;
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 15px 0;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #fff;
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb span {
+            margin: 0 8px;
+            color: var(--text-light);
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            margin-top: 20px;
+        }
+        
+        .selection-container {
+            flex: 1;
+            padding-right: 20px;
+        }
+        
+        .preview-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #6a11cb 0%, #E53935 100%);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .tab-navigation {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+        }
+        
+        .tab-button {
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .tab-button.active {
+            color: var(--primary-color);
+        }
+        
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .content-section h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .content-section p {
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+        
+        .option-card {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            background-color: #fff;
+        }
+        
+        .option-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-light);
+        }
+        
+        .option-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            margin-right: 20px;
+            background-color: #f5f5f5;
+            overflow: hidden;
+        }
+        
+        .option-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .option-content {
+            flex: 1;
+        }
+        
+        .option-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .option-content p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        
+        .option-info {
+            margin-left: 10px;
+        }
+        
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+        
+        /* Dashboard Preview */
+        .dashboard-preview {
+            width: 85%;
+            height: auto;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: perspective(1000px) rotateY(-10deg);
+        }
+        
+        /* Progress and Action Bar */
+        .progress-bar {
+            margin-top: 40px;
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .progress-text {
+            color: var(--text-light);
+        }
+        
+        .action-button {
+            padding: 10px 30px;
+            background-color: var(--button-gray);
+            border: none;
+            border-radius: 30px;
+            color: var(--button-text);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .action-button:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .action-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .action-button.primary:hover {
+            background-color: var(--primary-light);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .selection-container {
+                padding-right: 0;
+                margin-bottom: 30px;
+            }
+            
+            .preview-container {
+                height: 400px;
+            }
+            
+            .dashboard-preview {
+                transform: none;
+                width: 90%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .tab-navigation {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .option-img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L5,8.09V15.91L12,19.85L19,15.91V8.09L12,4.15Z" />
+                </svg>
+                <span class="logo-text">Digital Wayfinder</span>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#" class="active-tab">Digital Wayfinder</a></li>
+                    <li><a href="#">Decision Tree</a></li>
+                    <li><a href="#">Report</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-menu">
+                <button class="icon-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.63 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="icon-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 18H13V16H11V18ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 12 11 11.75 11 15H13C13 12.75 16 12.5 16 10C16 7.79 14.21 6 12 6Z" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="icon-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM12 19.2C9.5 19.2 7.29 17.92 6 15.98C6.03 13.99 10 12.9 12 12.9C13.99 12.9 17.97 13.99 18 15.98C16.71 17.92 14.5 19.2 12 19.2Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="#">Home</a>
+            <span>></span>
+            <span>Digital Wayfinder</span>
+        </div>
+    </div>
+    
+    <div class="container main-content">
+        <div class="selection-container">
+            <div class="tab-navigation">
+                <button class="tab-button active">FUNCTIONAL AREA</button>
+                <button class="tab-button">INDUSTRY TYPE</button>
+                <button class="tab-button">WMS SYSTEM</button>
+            </div>
+            
+            <div class="content-section">
+                <h1>Select a Functional Area</h1>
+                <p>Begin by choosing a key area</p>
+                
+                <div class="option-card">
+                    <div class="option-img">
+                        <img src="./images/Picture1.png" alt="Supply Chain Planning">
+                    </div>
+                    <div class="option-content">
+                        <h3>Supply Chain Planning</h3>
+                        <p>The process of optimizing the flow of goods and resources to meet demand efficiently.</p>
+                    </div>
+                    <div class="option-info">
+                        <div class="info-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 17H13V11H11V17ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM11 9H13V7H11V9Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="option-card">
+                    <div class="option-img">
+                        <img src="./images/Picture1.png" alt="Supply Chain Fulfillment">
+                    </div>  
+                    <div class="option-content">
+                        <h3>Supply Chain Fulfillment</h3>
+                        <p>The process of delivering orders to customers accurately and on time.</p>
+                    </div>
+                    <div class="option-info">
+                        <div class="info-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11 17H13V11H11V17ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM11 9H13V7H11V9Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-text">Completed step 0 of 3</div>
+                <button class="action-button primary">Finish</button>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <img src="./images/Picture1.png" alt="Dashboard Preview" class="dashboard-preview">
+        </div>
+    </div>
+</body>
+</html>
