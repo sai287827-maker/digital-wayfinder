@@ -12,6 +12,7 @@ import com.example.DigitalWayfinder.entity.FunctionalArea;
 import com.example.DigitalWayfinder.repository.FunctionalAreaRepository;
 
 import java.util.List;
+import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,13 +25,13 @@ public FunctionalAreaResponse saveFunctionalArea(FunctionalAreaRequest request,
                                                  String userId, String sessionId) {
     try {
         // Check if a record for the userId and sessionId already exists
-        List<FunctionalArea> existingList = repository.findByUserIdAndSessionId(userId, sessionId);
+        Optional<FunctionalArea> existingList = repository.findByUserIdAndSessionId(userId, sessionId);
 
         FunctionalArea saved;
 
         if (!existingList.isEmpty()) {
             // Update existing record: only functionalArea
-            FunctionalArea existing = existingList.get(0);
+            FunctionalArea existing = existingList.get();
             existing.setFunctionalArea(request.getFunctionalArea());
 
             // Do not update industryType and functionalSubArea
@@ -61,7 +62,7 @@ public FunctionalAreaResponse saveFunctionalArea(FunctionalAreaRequest request,
     }
 }
     
-    public List<FunctionalArea> getUserFunctionalAreas(String userId, String sessionId) {
+    public Optional<FunctionalArea> getUserFunctionalAreas(String userId, String sessionId) {
         return repository.findByUserIdAndSessionId(userId, sessionId);
     }
     

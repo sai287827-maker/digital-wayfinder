@@ -1,4 +1,4 @@
-package com.example.DigitalWayfinder.controller;
+package com.example.digitalwayfinder.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

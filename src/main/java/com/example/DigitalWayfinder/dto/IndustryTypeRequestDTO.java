@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class IndustryTypeRequest {
+public class IndustryTypeRequestDTO {
 
     @NotBlank(message = "IndustryType is required")
     private String industryType;

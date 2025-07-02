@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.DigitalWayfinder.dto.ProjectInfoRequest;
 import com.example.DigitalWayfinder.dto.ProjectInfoResponse;
-import com.example.DigitalWayfinder.entity.FunctionalArea;
 import com.example.DigitalWayfinder.entity.ProjectType;
 import com.example.DigitalWayfinder.repository.ProjectTypeRepository;
 
