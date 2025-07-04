@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.DigitalWayfinder.dto.IndustryTypeRequestDTO;
 import com.example.DigitalWayfinder.dto.IndustryTypeResponseDTO;
+import com.example.DigitalWayfinder.dto.SubFunctionalAreaRequestDTO;
+import com.example.DigitalWayfinder.dto.SubFunctionalAreaResponseDTO;
 import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.service.IndustryTypeService;
+import com.example.DigitalWayfinder.service.SubFunctionalAreaService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/digital-wayfinder/functional-area/industry-type")
+@RequestMapping("/api/digital-wayfinder/industry-type")
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,8 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 public class IndustryTypeController {
     
     private final IndustryTypeService industryTypeService;
+    private final SubFunctionalAreaService subFunctionalAreaService;
+
     
-    @PostMapping("/save")
+    @PostMapping("/supply-chain-planning/save")
     @Operation(summary = "Save or update industry type", 
                description = "Saves or updates industry type for the user session. Creates new record if doesn't exist, updates if exists.")
     @ApiResponses(value = {
@@ -62,7 +67,7 @@ public class IndustryTypeController {
         }
     }
     
-    @GetMapping("/get")
+    @GetMapping("/supply-chain-planning/get")
     @Operation(summary = "Get industry type", 
                description = "Retrieves the industry type for the current user session")
     @ApiResponses(value = {
@@ -84,6 +89,59 @@ public class IndustryTypeController {
             
         } catch (Exception e) {
             log.error("Error processing get industry type request", e);
+            throw e;
+        }
+    }
+
+    @PostMapping("/supply-chain-fulfillment/save")
+    @Operation(summary = "Save or update industry type", 
+               description = "Saves or updates sub functional area for the user session. Creates new record if doesn't exist, updates if exists.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sub Functional Area saved/updated successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<SubFunctionalAreaResponseDTO> saveSubFunctionalArea(
+            @Valid @RequestBody SubFunctionalAreaRequestDTO request,
+            @ModelAttribute UserSession userSession) {
+        
+        try {
+            log.info("Received request to save sun functional area: {} for user: {} in session: {}",
+                    request.getFunctionalSubArea(), userSession.getUserId(), userSession.getSessionId());
+            
+            SubFunctionalAreaResponseDTO response = subFunctionalAreaService.saveOrUpdatefunctionalSubArea(
+                    request, userSession.getUserId(), userSession.getSessionId());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error processing save industry type request", e);
+            throw e;
+        }
+    }
+    
+    @GetMapping("/supply-chain-fulfillment/get")
+    @Operation(summary = "Get Sub functional area", 
+               description = "Retrieves the sub functional area for the current user session")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sub functional area retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Sub functional area not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<SubFunctionalAreaResponseDTO> getSubFunctionalArea(
+            @ModelAttribute UserSession userSession) {
+        
+        try {
+            log.info("Received request to get sub functional area for user: {} in session: {}",
+                    userSession.getUserId(), userSession.getSessionId());
+            
+            SubFunctionalAreaResponseDTO response = subFunctionalAreaService.getFunctionalSubArea(
+                    userSession.getUserId(), userSession.getSessionId());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error processing get sub functional area request", e);
             throw e;
         }
     }
