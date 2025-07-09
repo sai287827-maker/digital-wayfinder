@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.example.DigitalWayfinder.dto.FunctionalScopeDto;
+import com.example.DigitalWayfinder.dto.NonFunctionalScopeDto;
 import com.example.DigitalWayfinder.repository.CgsFunctionalRepository;
 import com.example.DigitalWayfinder.repository.IndAgnousticFunctionalRepository;
 import com.example.DigitalWayfinder.repository.OmsFunctionalRepository;
 import com.example.DigitalWayfinder.repository.RetailFunctionalRepository;
 import com.example.DigitalWayfinder.repository.TmsFunctionalRepository;
-import com.example.DigitalWayfinder.repository.WmsFunctionalRepository;
+import com.example.DigitalWayfinder.repository.WmsNonFunctionalRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,31 +18,31 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FunctionalScopeService {
+public class NonFunctionalScopeService {
     
-    private final WmsFunctionalRepository wmsFunctionalRepository;
+    private final WmsNonFunctionalRepository wmsNonFunctionalRepository;
     private final TmsFunctionalRepository tmsFunctionalRepository;
     private final OmsFunctionalRepository omsFunctionalRepository;
     private final IndAgnousticFunctionalRepository indagnousticFunctionalRepository;
     private final RetailFunctionalRepository retailFunctionalRepository;
     private final CgsFunctionalRepository cgsFunctionalRepository;
     
-    public List<FunctionalScopeDto> getAllFunctionalScopesWMS() {
-        log.info("Fetching all functional scope levels");
+    public List<NonFunctionalScopeDto> getAllFunctionalScopesWMS() {
+        log.info("Fetching all non-functional scope levels");
         try {
-            List<Object[]> functionalScopes = wmsFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+            List<Object[]> nonfunctionalScopes = wmsNonFunctionalRepository.findAllLevelsAsArray();
+            log.info("Successfully fetched {} non-functional scope records", nonfunctionalScopes.size());
             
-            return functionalScopes.stream()
+            return nonfunctionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+            log.error("Error fetching non-functional scopes: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch non-functional scopes", e);
         }
     }
 
-        public List<FunctionalScopeDto> getAllFunctionalScopesOMS() {
+        public List<NonFunctionalScopeDto> getAllFunctionalScopesOMS() {
         log.info("Fetching all functional scope levels");
         try {
             List<Object[]> functionalScopes = omsFunctionalRepository.findAllLevelsAsArray();
@@ -57,7 +57,7 @@ public class FunctionalScopeService {
         }
     }
 
-        public List<FunctionalScopeDto> getAllFunctionalScopesTMS() {
+        public List<NonFunctionalScopeDto> getAllFunctionalScopesTMS() {
         log.info("Fetching all functional scope levels");
         try {
             List<Object[]> functionalScopes = tmsFunctionalRepository.findAllLevelsAsArray();
@@ -72,7 +72,7 @@ public class FunctionalScopeService {
         }
     }
 
-        public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
+        public List<NonFunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
         log.info("Fetching all functional scope levels");
         try {
             List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
@@ -87,7 +87,7 @@ public class FunctionalScopeService {
         }
     }
 
-        public List<FunctionalScopeDto> getAllFunctionalScopesRetail() {
+        public List<NonFunctionalScopeDto> getAllFunctionalScopesRetail() {
         log.info("Fetching all functional scope levels");
         try {
             List<Object[]> functionalScopes = retailFunctionalRepository.findAllLevelsAsArray();
@@ -102,7 +102,7 @@ public class FunctionalScopeService {
         }
     }
 
-        public List<FunctionalScopeDto> getAllFunctionalScopesCGS() {
+        public List<NonFunctionalScopeDto> getAllFunctionalScopesCGS() {
         log.info("Fetching all functional scope levels");
         try {
             List<Object[]> functionalScopes = cgsFunctionalRepository.findAllLevelsAsArray();
@@ -117,14 +117,13 @@ public class FunctionalScopeService {
         }
     }
     
-    private FunctionalScopeDto convertToDto(Object[] row) {
-        return new FunctionalScopeDto(
+    private NonFunctionalScopeDto convertToDto(Object[] row) {
+        return new NonFunctionalScopeDto(
                 (String) row[0],  // l1
                 (String) row[1],  // l2
-                (String) row[2],  // l3
-                (String) row[3] // l4
+                (String) row[2] // l3
+                // (String) row[3]   // l4
                 // (String) row[4]   // l5
-
         );
     }
 
