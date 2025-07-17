@@ -14,8 +14,8 @@ import com.example.DigitalWayfinder.dto.IndustryTypeResponseDTO;
 import com.example.DigitalWayfinder.dto.SubFunctionalAreaRequestDTO;
 import com.example.DigitalWayfinder.dto.SubFunctionalAreaResponseDTO;
 import com.example.DigitalWayfinder.dto.UserSession;
-import com.example.DigitalWayfinder.service.IndustryTypeService;
-import com.example.DigitalWayfinder.service.SubFunctionalAreaService;
+import com.example.DigitalWayfinder.service.IndustryTypeDWService;
+import com.example.DigitalWayfinder.service.SubFunctionalAreaDWService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,10 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Tag(name = "Digital Wayfinder", description = "APIs for managing digital wayfinder industry type selection")
-public class IndustryTypeController {
+public class IndustryTypeDWController {
     
-    private final IndustryTypeService industryTypeService;
-    private final SubFunctionalAreaService subFunctionalAreaService;
+    private final IndustryTypeDWService industryTypeService;
+    private final SubFunctionalAreaDWService subFunctionalAreaService;
 
     
     @PostMapping("/supply-chain-planning/save")

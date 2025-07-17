@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.example.DigitalWayfinder.dto.IndustryTypeRequestDTO;
-import com.example.DigitalWayfinder.dto.IndustryTypeResponseDTO;
+import com.example.DigitalWayfinder.dto.SubFunctionalAreaRequestDTO;
+import com.example.DigitalWayfinder.dto.SubFunctionalAreaResponseDTO;
 import com.example.DigitalWayfinder.entity.FunctionalAreaDW;
 import com.example.DigitalWayfinder.repository.FunctionalAreaDWRepository;
 
@@ -14,14 +14,14 @@ import jakarta.transaction.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class IndustryTypeService {
+public class SubFunctionalAreaDWService {
 
      private final FunctionalAreaDWRepository functionalAreaRepository;
     
     @Transactional
-    public IndustryTypeResponseDTO saveOrUpdateIndustryType(IndustryTypeRequestDTO request, String userId, String sessionId) {
-        log.info("Processing industry type: {} for user: {} in session: {}", 
-                request.getIndustryType(), userId, sessionId);
+    public SubFunctionalAreaResponseDTO saveOrUpdatefunctionalSubArea(SubFunctionalAreaRequestDTO request, String userId, String sessionId) {
+        log.info("Processing sub functional area: {} for user: {} in session: {}", 
+                request.getFunctionalSubArea(), userId, sessionId);
         
         try {
             // Check if record already exists for this user and session
@@ -34,13 +34,13 @@ public class IndustryTypeService {
                 if (functionalArea.getFunctionalArea() == null || functionalArea.getFunctionalArea().trim().isEmpty()) {
                     log.error("Functional area not found for user: {} in session: {}. User must complete functional area selection first.", 
                             userId, sessionId);
-                    throw new IllegalStateException("Functional area must be selected before choosing industry type. Please complete the functional area selection first.");
+                    throw new IllegalStateException("Functional area must be selected before choosing sub functional area. Please complete the functional area selection first.");
                 }
                 
-                // Update industry type for existing record (handles both cases: with or without existing industry type)
-                log.info("Updating industry type for existing functional area: {} for user: {} in session: {}", 
+                // Update sub functional area for existing record (handles both cases: with or without existing sub functional area)
+                log.info("Updating sub functional area for existing functional area: {} for user: {} in session: {}", 
                         functionalArea.getFunctionalArea(), userId, sessionId);
-                return updateExistingRecord(functionalArea, request.getIndustryType());
+                return updateExistingRecord(functionalArea, request.getFunctionalSubArea());
                 
             } else {
                 // No record exists for this user and session - throw error
@@ -51,45 +51,45 @@ public class IndustryTypeService {
                 }
             
         } catch (Exception e) {
-            log.error("Error processing industry type: {} for user: {} in session: {}", 
-                    request.getIndustryType(), userId, sessionId, e);
+            log.error("Error processing sub functional area: {} for user: {} in session: {}", 
+                    request.getFunctionalSubArea(), userId, sessionId, e);
             throw e;
         }
     }
     
-    private IndustryTypeResponseDTO updateExistingRecord(FunctionalAreaDW functionalArea, String industryType) {
-        log.info("Updating existing functional area ID: {} with industry type: {}", 
-                functionalArea.getId(), industryType);
+    private SubFunctionalAreaResponseDTO updateExistingRecord(FunctionalAreaDW functionalArea, String functionalSubArea) {
+        log.info("Updating existing functional area ID: {} with sub functional area: {}", 
+                functionalArea.getId(), functionalSubArea);
         
-        // Check if industry type is being updated or set for the first time
-        if (functionalArea.getIndustryType() != null && !functionalArea.getIndustryType().trim().isEmpty()) {
-            log.info("Updating existing industry type from '{}' to '{}' for functional area ID: {}", 
-                    functionalArea.getIndustryType(), industryType, functionalArea.getId());
+        // Check if sub functional area is being updated or set for the first time
+        if (functionalArea.getFunctionalSubArea() != null && !functionalArea.getFunctionalSubArea().trim().isEmpty()) {
+            log.info("Updating existing sub functional area from '{}' to '{}' for functional area ID: {}", 
+                    functionalArea.getFunctionalSubArea(), functionalSubArea, functionalArea.getId());
         } else {
-            log.info("Setting industry type for the first time for functional area ID: {}", 
+            log.info("Setting sub functional area for the first time for functional area ID: {}", 
                     functionalArea.getId());
         }
         
-        // Update with new industry type (don't change functional area as it was set in previous step)
-        functionalArea.setIndustryType(industryType);
+        // Update with new sub functional area (don't change functional area as it was set in previous step)
+        functionalArea.setFunctionalSubArea(functionalSubArea);
         
         FunctionalAreaDW savedFunctionalArea = functionalAreaRepository.save(functionalArea);
         
-        log.info("Successfully updated functional area ID: {} with industry type: {}", 
-                savedFunctionalArea.getId(), industryType);
+        log.info("Successfully updated functional area ID: {} with sub functional area: {}", 
+                savedFunctionalArea.getId(), functionalSubArea);
         
-        return IndustryTypeResponseDTO.builder()
+        return SubFunctionalAreaResponseDTO.builder()
                 .id(savedFunctionalArea.getId())
                 .userId(savedFunctionalArea.getUserId())
                 .sessionId(savedFunctionalArea.getSessionId())
                 .functionalArea(savedFunctionalArea.getFunctionalArea())
-                .industryType(savedFunctionalArea.getIndustryType())
-                .message("Industry type updated successfully")
+                .functionalSubArea(savedFunctionalArea.getFunctionalSubArea())
+                .message("sub functional area updated successfully")
                 .build();
     }
 
-        public IndustryTypeResponseDTO getIndustryType(String userId, String sessionId) {
-        log.info("Retrieving industry type for user: {} in session: {}", userId, sessionId);
+        public SubFunctionalAreaResponseDTO getFunctionalSubArea(String userId, String sessionId) {
+        log.info("Retrieving sub functional area for user: {} in session: {}", userId, sessionId);
         
         try {
             FunctionalAreaDW functionalArea = functionalAreaRepository
@@ -99,18 +99,18 @@ public class IndustryTypeService {
 
             return mapToResponseDTO(functionalArea);
         } catch (Exception e) {
-            log.error("Error retrieving industry type for user: {} in session: {}", userId, sessionId, e);
+            log.error("Error retrieving sub functional area for user: {} in session: {}", userId, sessionId, e);
             throw e;
         }
     }
 
-        private IndustryTypeResponseDTO mapToResponseDTO(FunctionalAreaDW functionalArea) {
-        return IndustryTypeResponseDTO.builder()
+        private SubFunctionalAreaResponseDTO mapToResponseDTO(FunctionalAreaDW functionalArea) {
+        return SubFunctionalAreaResponseDTO.builder()
                 .id(functionalArea.getId())
                 .userId(functionalArea.getUserId())
                 .sessionId(functionalArea.getSessionId())
                 .functionalArea(functionalArea.getFunctionalArea())
-                .industryType(functionalArea.getIndustryType())
+                .functionalSubArea(functionalArea.getFunctionalSubArea())
                 .build();
     }
 
