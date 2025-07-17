@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FunctionalArea {
+public class FunctionalAreaDW {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

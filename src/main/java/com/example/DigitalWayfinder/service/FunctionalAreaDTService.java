@@ -8,30 +8,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.DigitalWayfinder.dto.FunctionalAreaRequest;
 import com.example.DigitalWayfinder.dto.FunctionalAreaResponse;
-import com.example.DigitalWayfinder.entity.FunctionalArea;
-import com.example.DigitalWayfinder.repository.FunctionalAreaRepository;
+import com.example.DigitalWayfinder.entity.FunctionalAreaDT;
+import com.example.DigitalWayfinder.repository.FunctionalAreaDTRepository;
 
 import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FunctionalAreaService {
+public class FunctionalAreaDTService {
     
-    private final FunctionalAreaRepository repository;
+    private final FunctionalAreaDTRepository repository;
     
 @Transactional
 public FunctionalAreaResponse saveFunctionalArea(FunctionalAreaRequest request, 
                                                  String userId, String sessionId) {
     try {
         // Check if a record for the userId and sessionId already exists
-        Optional<FunctionalArea> existingList = repository.findByUserIdAndSessionId(userId, sessionId);
+        Optional<FunctionalAreaDT> existingList = repository.findByUserIdAndSessionId(userId, sessionId);
 
-        FunctionalArea saved;
+        FunctionalAreaDT saved;
 
         if (!existingList.isEmpty()) {
             // Update existing record: only functionalArea
-            FunctionalArea existing = existingList.get();
+            FunctionalAreaDT existing = existingList.get();
             existing.setFunctionalArea(request.getFunctionalArea());
 
             // Do not update industryType and functionalSubArea
@@ -41,7 +41,7 @@ public FunctionalAreaResponse saveFunctionalArea(FunctionalAreaRequest request,
             return buildResponse(saved, "Functional area updated successfully", true);
         } else {
             // Insert new record: only userId, sessionId, and functionalArea
-            FunctionalArea newEntry = FunctionalArea.builder()
+            FunctionalAreaDT newEntry = FunctionalAreaDT.builder()
                     .userId(userId)
                     .sessionId(sessionId)
                     .functionalArea(request.getFunctionalArea())
@@ -62,17 +62,17 @@ public FunctionalAreaResponse saveFunctionalArea(FunctionalAreaRequest request,
     }
 }
     
-    public Optional<FunctionalArea> getUserFunctionalAreas(String userId, String sessionId) {
+    public Optional<FunctionalAreaDT> getUserFunctionalAreas(String userId, String sessionId) {
         return repository.findByUserIdAndSessionId(userId, sessionId);
     }
     
     // New comprehensive GET methods
-    public List<FunctionalArea> getAllFunctionalAreas() {
+    public List<FunctionalAreaDT> getAllFunctionalAreas() {
         log.info("Fetching all functional areas");
         return repository.findAll();
     }
     
-    private FunctionalAreaResponse buildResponse(FunctionalArea saved, String message, boolean success) {
+    private FunctionalAreaResponse buildResponse(FunctionalAreaDT saved, String message, boolean success) {
         return FunctionalAreaResponse.builder()
                 .id(saved.getId())
                 .userId(saved.getUserId())

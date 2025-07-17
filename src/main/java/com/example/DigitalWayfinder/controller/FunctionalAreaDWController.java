@@ -3,8 +3,8 @@ package com.example.DigitalWayfinder.controller;
 import com.example.DigitalWayfinder.dto.FunctionalAreaRequest;
 import com.example.DigitalWayfinder.dto.FunctionalAreaResponse;
 import com.example.DigitalWayfinder.dto.UserSession;
-import com.example.DigitalWayfinder.entity.FunctionalArea;
-import com.example.DigitalWayfinder.service.FunctionalAreaService;
+import com.example.DigitalWayfinder.entity.FunctionalAreaDW;
+import com.example.DigitalWayfinder.service.FunctionalAreaDWService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class FunctionalAreaController {
+public class FunctionalAreaDWController {
     
-    private final FunctionalAreaService functionalAreaService;
+    private final FunctionalAreaDWService functionalAreaService;
     
 @PostMapping("/save")
 public ResponseEntity<FunctionalAreaResponse> saveFunctionalArea(
@@ -50,10 +50,10 @@ public ResponseEntity<FunctionalAreaResponse> saveFunctionalArea(
 }
     
     @GetMapping("/all")
-    public ResponseEntity<List<FunctionalArea>> getAllFunctionalAreas() {
+    public ResponseEntity<List<FunctionalAreaDW>> getAllFunctionalAreas() {
         try {
             log.info("Fetching all functional areas");
-            List<FunctionalArea> functionalAreas = functionalAreaService.getAllFunctionalAreas();
+            List<FunctionalAreaDW> functionalAreas = functionalAreaService.getAllFunctionalAreas();
             return ResponseEntity.ok(functionalAreas);
         } catch (Exception e) {
             log.error("Error fetching all functional areas", e);

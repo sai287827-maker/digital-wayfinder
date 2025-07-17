@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.DigitalWayfinder.dto.IndustryTypeRequestDTO;
 import com.example.DigitalWayfinder.dto.IndustryTypeResponseDTO;
-import com.example.DigitalWayfinder.entity.FunctionalArea;
-import com.example.DigitalWayfinder.repository.FunctionalAreaRepository;
+import com.example.DigitalWayfinder.entity.FunctionalAreaDW;
+import com.example.DigitalWayfinder.repository.FunctionalAreaDWRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 @Slf4j
 public class IndustryTypeService {
 
-     private final FunctionalAreaRepository functionalAreaRepository;
+     private final FunctionalAreaDWRepository functionalAreaRepository;
     
     @Transactional
     public IndustryTypeResponseDTO saveOrUpdateIndustryType(IndustryTypeRequestDTO request, String userId, String sessionId) {
@@ -28,7 +28,7 @@ public class IndustryTypeService {
             var existingRecord = functionalAreaRepository.findByUserIdAndSessionId(userId, sessionId);
             
             if (existingRecord.isPresent()) {
-                FunctionalArea functionalArea = existingRecord.get();
+                FunctionalAreaDW functionalArea = existingRecord.get();
                 
                 // Check if functional area exists (must exist from previous save functional area page)
                 if (functionalArea.getFunctionalArea() == null || functionalArea.getFunctionalArea().trim().isEmpty()) {
@@ -57,7 +57,7 @@ public class IndustryTypeService {
         }
     }
     
-    private IndustryTypeResponseDTO updateExistingRecord(FunctionalArea functionalArea, String industryType) {
+    private IndustryTypeResponseDTO updateExistingRecord(FunctionalAreaDW functionalArea, String industryType) {
         log.info("Updating existing functional area ID: {} with industry type: {}", 
                 functionalArea.getId(), industryType);
         
@@ -73,7 +73,7 @@ public class IndustryTypeService {
         // Update with new industry type (don't change functional area as it was set in previous step)
         functionalArea.setIndustryType(industryType);
         
-        FunctionalArea savedFunctionalArea = functionalAreaRepository.save(functionalArea);
+        FunctionalAreaDW savedFunctionalArea = functionalAreaRepository.save(functionalArea);
         
         log.info("Successfully updated functional area ID: {} with industry type: {}", 
                 savedFunctionalArea.getId(), industryType);
@@ -92,7 +92,7 @@ public class IndustryTypeService {
         log.info("Retrieving industry type for user: {} in session: {}", userId, sessionId);
         
         try {
-            FunctionalArea functionalArea = functionalAreaRepository
+            FunctionalAreaDW functionalArea = functionalAreaRepository
                  .findByUserIdAndSessionId(userId, sessionId)
                  .orElseThrow(() -> new IllegalStateException(
                          "Functional area not found for user: " + userId + " in session: " + sessionId));
@@ -104,7 +104,7 @@ public class IndustryTypeService {
         }
     }
 
-        private IndustryTypeResponseDTO mapToResponseDTO(FunctionalArea functionalArea) {
+        private IndustryTypeResponseDTO mapToResponseDTO(FunctionalAreaDW functionalArea) {
         return IndustryTypeResponseDTO.builder()
                 .id(functionalArea.getId())
                 .userId(functionalArea.getUserId())

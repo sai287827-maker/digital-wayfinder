@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.DigitalWayfinder.dto.SubFunctionalAreaRequestDTO;
 import com.example.DigitalWayfinder.dto.SubFunctionalAreaResponseDTO;
-import com.example.DigitalWayfinder.entity.FunctionalArea;
-import com.example.DigitalWayfinder.repository.FunctionalAreaRepository;
+import com.example.DigitalWayfinder.entity.FunctionalAreaDW;
+import com.example.DigitalWayfinder.repository.FunctionalAreaDWRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 @Slf4j
 public class SubFunctionalAreaService {
 
-     private final FunctionalAreaRepository functionalAreaRepository;
+     private final FunctionalAreaDWRepository functionalAreaRepository;
     
     @Transactional
     public SubFunctionalAreaResponseDTO saveOrUpdatefunctionalSubArea(SubFunctionalAreaRequestDTO request, String userId, String sessionId) {
@@ -28,7 +28,7 @@ public class SubFunctionalAreaService {
             var existingRecord = functionalAreaRepository.findByUserIdAndSessionId(userId, sessionId);
             
             if (existingRecord.isPresent()) {
-                FunctionalArea functionalArea = existingRecord.get();
+                FunctionalAreaDW functionalArea = existingRecord.get();
                 
                 // Check if functional area exists (must exist from previous save functional area page)
                 if (functionalArea.getFunctionalArea() == null || functionalArea.getFunctionalArea().trim().isEmpty()) {
@@ -57,7 +57,7 @@ public class SubFunctionalAreaService {
         }
     }
     
-    private SubFunctionalAreaResponseDTO updateExistingRecord(FunctionalArea functionalArea, String functionalSubArea) {
+    private SubFunctionalAreaResponseDTO updateExistingRecord(FunctionalAreaDW functionalArea, String functionalSubArea) {
         log.info("Updating existing functional area ID: {} with sub functional area: {}", 
                 functionalArea.getId(), functionalSubArea);
         
@@ -73,7 +73,7 @@ public class SubFunctionalAreaService {
         // Update with new sub functional area (don't change functional area as it was set in previous step)
         functionalArea.setFunctionalSubArea(functionalSubArea);
         
-        FunctionalArea savedFunctionalArea = functionalAreaRepository.save(functionalArea);
+        FunctionalAreaDW savedFunctionalArea = functionalAreaRepository.save(functionalArea);
         
         log.info("Successfully updated functional area ID: {} with sub functional area: {}", 
                 savedFunctionalArea.getId(), functionalSubArea);
@@ -92,7 +92,7 @@ public class SubFunctionalAreaService {
         log.info("Retrieving sub functional area for user: {} in session: {}", userId, sessionId);
         
         try {
-            FunctionalArea functionalArea = functionalAreaRepository
+            FunctionalAreaDW functionalArea = functionalAreaRepository
                  .findByUserIdAndSessionId(userId, sessionId)
                  .orElseThrow(() -> new IllegalStateException(
                          "Functional area not found for user: " + userId + " in session: " + sessionId));
@@ -104,7 +104,7 @@ public class SubFunctionalAreaService {
         }
     }
 
-        private SubFunctionalAreaResponseDTO mapToResponseDTO(FunctionalArea functionalArea) {
+        private SubFunctionalAreaResponseDTO mapToResponseDTO(FunctionalAreaDW functionalArea) {
         return SubFunctionalAreaResponseDTO.builder()
                 .id(functionalArea.getId())
                 .userId(functionalArea.getUserId())
