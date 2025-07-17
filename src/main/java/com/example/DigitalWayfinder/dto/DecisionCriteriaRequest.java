@@ -14,6 +14,9 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DecisionCriteriaRequest {
+    private String functionalArea;
+    private String industryType;
+    private String functionalSubArea;
     private FunctionalData functional;
     private NonFunctionalData nonFunctional;
     
@@ -22,9 +25,9 @@ public class DecisionCriteriaRequest {
     @AllArgsConstructor
     @Builder
     public static class FunctionalData {
-        private String functionalArea;
-        private String industryType;
-        private String functionalSubArea;
+        // private String functionalArea;
+        // private String industryType;
+        // private String functionalSubArea;
         private LevelSelections levelSelections;
     }
     
@@ -33,9 +36,9 @@ public class DecisionCriteriaRequest {
     @AllArgsConstructor
     @Builder
     public static class NonFunctionalData {
-        private String functionalArea;
-        private String industryType;
-        private String functionalSubArea;
+        // private String functionalArea;
+        // private String industryType;
+        // private String functionalSubArea;
         private LevelSelections levelSelections;
     }
     

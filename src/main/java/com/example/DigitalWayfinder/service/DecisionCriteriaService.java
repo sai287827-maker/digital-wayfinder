@@ -6,8 +6,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.DigitalWayfinder.dto.DecisionCriteriaResponse;
+import com.example.DigitalWayfinder.entity.FunctionalAreaDT;
 import com.example.DigitalWayfinder.entity.UserFunctionalProcess;
 import com.example.DigitalWayfinder.entity.UserNonFuncProcess;
+import com.example.DigitalWayfinder.repository.FunctionalAreaDTRepository;
 import com.example.DigitalWayfinder.repository.UserFunctionalProcessRepository;
 import com.example.DigitalWayfinder.repository.UserNonFuncProcessRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +30,7 @@ public class DecisionCriteriaService {
     private final UserFunctionalProcessRepository functionalProcessRepository;
     private final UserNonFuncProcessRepository nonFuncProcessRepository;
     private final ObjectMapper objectMapper;
+    private final FunctionalAreaDTRepository functionalAreaDTRepository;
 
     @Transactional
     public DecisionCriteriaResponse getDecisionCriteria(String userId, String sessionId) {
@@ -39,6 +42,9 @@ public class DecisionCriteriaService {
             
             Optional<UserNonFuncProcess> nonFuncProcess = nonFuncProcessRepository
                     .findByUserIdAndSessionId(userId, sessionId);
+
+            Optional<FunctionalAreaDT> functionalAreaDT = functionalAreaDTRepository
+                    .findByUserIdAndSessionId(userId, sessionId);
             
             if (functionalProcess.isEmpty() && nonFuncProcess.isEmpty()) {
                 log.warn("No data found for user: {} and session: {}", userId, sessionId);
@@ -48,6 +54,9 @@ public class DecisionCriteriaService {
             DecisionCriteriaResponse response = DecisionCriteriaResponse.builder()
                     .userId(userId)
                     .sessionId(sessionId)
+                    .functionalArea(functionalAreaDT.map(FunctionalAreaDT::getFunctionalArea).orElse(null))
+                    .industryType(functionalAreaDT.map(FunctionalAreaDT::getIndustryType).orElse(null))
+                    .functionalSubArea(functionalAreaDT.map(FunctionalAreaDT::getFunctionalSubArea).orElse(null))
                     .build();
             
             if (functionalProcess.isPresent()) {
@@ -73,9 +82,9 @@ public class DecisionCriteriaService {
 
     private DecisionCriteriaResponse.FunctionalData mapToFunctionalData(UserFunctionalProcess functionalProcess) {
         return DecisionCriteriaResponse.FunctionalData.builder()
-                .functionalArea(functionalProcess.getFunctionalArea())
-                .industryType(functionalProcess.getIndustryType())
-                .functionalSubArea(functionalProcess.getFunctionalSubArea())
+                // .functionalArea(functionalProcess.getFunctionalArea())
+                // .industryType(functionalProcess.getIndustryType())
+                // .functionalSubArea(functionalProcess.getFunctionalSubArea())
                 .levelSelections(DecisionCriteriaResponse.LevelSelections.builder()
                         .l1(jsonStringToList(functionalProcess.getL1()))
                         .l2(jsonStringToList(functionalProcess.getL2()))
@@ -88,9 +97,9 @@ public class DecisionCriteriaService {
     
     private DecisionCriteriaResponse.NonFunctionalData mapToNonFunctionalData(UserNonFuncProcess nonFuncProcess) {
         return DecisionCriteriaResponse.NonFunctionalData.builder()
-                .functionalArea(nonFuncProcess.getFunctionalArea())
-                .industryType(nonFuncProcess.getIndustryType())
-                .functionalSubArea(nonFuncProcess.getFunctionalSubArea())
+                // .functionalArea(nonFuncProcess.getFunctionalArea())
+                // .industryType(nonFuncProcess.getIndustryType())
+                // .functionalSubArea(nonFuncProcess.getFunctionalSubArea())
                 .levelSelections(DecisionCriteriaResponse.LevelSelections.builder()
                         .l1(jsonStringToList(nonFuncProcess.getL1()))
                         .l2(jsonStringToList(nonFuncProcess.getL2()))

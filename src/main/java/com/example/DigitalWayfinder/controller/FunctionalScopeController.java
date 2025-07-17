@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import com.example.DigitalWayfinder.dto.FunctionalScopeDto;
 import com.example.DigitalWayfinder.service.FunctionalScopeService;
 
-// import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
-// import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
-// import com.example.DigitalWayfinder.dto.UserSession;
-// import jakarta.validation.Valid;
+import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
+import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
+import com.example.DigitalWayfinder.dto.UserSession;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -103,18 +103,18 @@ public class FunctionalScopeController {
         }
     }
 
-    // @PostMapping("/save")
-    // public ResponseEntity<FunctionalScopeResponse> saveFunctionalScope(
-    //         @Valid @RequestBody FunctionalScopeRequest request,
-    //         @ModelAttribute UserSession userSession) {
+    @PostMapping("/save")
+    public ResponseEntity<FunctionalScopeResponse> saveFunctionalScope(
+            @Valid @RequestBody FunctionalScopeRequest request,
+            @ModelAttribute UserSession userSession) {
         
-    //     log.info("Received functional scope save request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+        log.info("Received functional scope save request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
         
-    //     FunctionalScopeResponse response = functionalScopeService.saveFunctionalScope(request, userSession.getUserId(), userSession.getSessionId());
+        FunctionalScopeResponse response = functionalScopeService.saveFunctionalScope(request, userSession.getUserId(), userSession.getSessionId());
         
-    //     log.info("Successfully saved functional scope for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
-    //     return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    // }
+        log.info("Successfully saved functional scope for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
 //     @GetMapping("/all/{industryType}")
 //     public ResponseEntity<List<FunctionalScopeDto>> getAllFunctionalScopesByIndustryType(

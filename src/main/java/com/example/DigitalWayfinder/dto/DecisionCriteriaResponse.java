@@ -15,6 +15,9 @@ import java.util.List;
 public class DecisionCriteriaResponse {
     private String userId;
     private String sessionId;
+    private String functionalArea;
+    private String industryType;
+    private String functionalSubArea;
     private FunctionalData functional;
     private NonFunctionalData nonFunctional;
     
@@ -23,9 +26,9 @@ public class DecisionCriteriaResponse {
     @AllArgsConstructor
     @Builder
     public static class FunctionalData {
-        private String functionalArea;
-        private String industryType;
-        private String functionalSubArea;
+        // private String functionalArea;
+        // private String industryType;
+        // private String functionalSubArea;
         private LevelSelections levelSelections;
     }
     
@@ -34,9 +37,9 @@ public class DecisionCriteriaResponse {
     @AllArgsConstructor
     @Builder
     public static class NonFunctionalData {
-        private String functionalArea;
-        private String industryType;
-        private String functionalSubArea;
+        // private String functionalArea;
+        // private String industryType;
+        // private String functionalSubArea;
         private LevelSelections levelSelections;
     }
     

@@ -6,8 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
+import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
 import com.example.DigitalWayfinder.dto.NonFunctionalScopeDto;
+import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.service.NonFunctionalScopeService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -96,6 +101,19 @@ public class NonFunctionalScopeController {
             log.error("Error in getAllFunctionalScopes: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<FunctionalScopeResponse> saveFunctionalScope(
+            @Valid @RequestBody FunctionalScopeRequest request,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received functional scope save request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+        
+        FunctionalScopeResponse response = nonfunctionalScopeService.saveFunctionalScope(request, userSession.getUserId(), userSession.getSessionId());
+        
+        log.info("Successfully saved functional scope for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 //     @GetMapping("/all/{industryType}")
