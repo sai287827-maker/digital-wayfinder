@@ -2,16 +2,27 @@ package com.example.DigitalWayfinder.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+// import java.util.Optional;
+
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.DigitalWayfinder.dto.FunctionalScopeDto;
+// import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
+// import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
+// import com.example.DigitalWayfinder.entity.UserFunctionalProcess;
 import com.example.DigitalWayfinder.repository.CgsFunctionalRepository;
 import com.example.DigitalWayfinder.repository.IndAgnousticFunctionalRepository;
 import com.example.DigitalWayfinder.repository.OmsFunctionalRepository;
 import com.example.DigitalWayfinder.repository.RetailFunctionalRepository;
 import com.example.DigitalWayfinder.repository.TmsFunctionalRepository;
+// import com.example.DigitalWayfinder.repository.UserFunctionalProcessRepository;
 import com.example.DigitalWayfinder.repository.WmsFunctionalRepository;
+// import com.fasterxml.jackson.core.JsonProcessingException;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
+// import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +37,11 @@ public class FunctionalScopeService {
     private final IndAgnousticFunctionalRepository indagnousticFunctionalRepository;
     private final RetailFunctionalRepository retailFunctionalRepository;
     private final CgsFunctionalRepository cgsFunctionalRepository;
+
+    // private final UserFunctionalProcessRepository functionalProcessRepository;
+    // private final ObjectMapper objectMapper;
+    // @Autowired
+    // public final UserFunctionalProcess userFunctionalProcess;
     
     public List<FunctionalScopeDto> getAllFunctionalScopesWMS() {
         log.info("Fetching all functional scope levels");
@@ -127,6 +143,102 @@ public class FunctionalScopeService {
 
         );
     }
+
+    //     public FunctionalScopeResponse saveFunctionalScope(FunctionalScopeRequest request, String userId, String sessionId) {
+    //     log.info("Saving functional scope for user: {} and session: {}", userId, sessionId);
+        
+    //     try {
+    //         Optional<UserFunctionalProcess> existingRecord = functionalProcessRepository
+    //                 .findByUserIdAndSessionId(userId, sessionId);
+            
+    //         UserFunctionalProcess functionalProcess;
+            
+    //         if (existingRecord.isPresent()) {
+    //             log.info("Updating existing functional scope record for user: {} and session: {}", userId, sessionId);
+    //             functionalProcess = existingRecord.get();
+    //             updateFunctionalProcess(functionalProcess, request);
+    //         } else {
+    //             log.info("Creating new functional scope record for user: {} and session: {}", userId, sessionId);
+    //             functionalProcess = createFunctionalProcess(request, userId, sessionId);
+    //         }
+            
+    //         UserFunctionalProcess savedProcess = functionalProcessRepository.save(functionalProcess);
+    //         log.info("Successfully saved functional scope for user: {} and session: {}", userId, sessionId);
+            
+    //         return mapToFunctionalScopeResponse(savedProcess);
+            
+    //     } catch (Exception e) {
+    //         log.error("Error saving functional scope for user: {} and session: {}", userId, sessionId, e);
+    //         throw new RuntimeException("Failed to save functional scope: " + e.getMessage());
+    //     }}
+
+    //     private UserFunctionalProcess createFunctionalProcess(FunctionalScopeRequest request, String userId, String sessionId) {
+    //     return UserFunctionalProcess.builder()
+    //             .userId(userId)
+    //             .sessionId(sessionId)
+    //             .functionalArea(userFunctionalProcess.getFunctionalArea())
+    //             .industryType(userFunctionalProcess.getIndustryType())
+    //             .functionalSubArea(userFunctionalProcess.getFunctionalSubArea())
+    //             .l1(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL1() : null))
+    //             .l2(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL2() : null))
+    //             .l3(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL3() : null))
+    //             .l4(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL4() : null))
+    //             .l5(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL5() : null))
+    //             .build();
+    // }
+    
+    // private void updateFunctionalProcess(UserFunctionalProcess functionalProcess, FunctionalScopeRequest request) {
+    //     functionalProcess.setFunctionalArea(request.getFunctionalArea());
+    //     functionalProcess.setIndustryType(request.getIndustryType());
+    //     functionalProcess.setFunctionalSubArea(request.getFunctionalSubArea());
+    //     functionalProcess.setL1(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL1() : null));
+    //     functionalProcess.setL2(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL2() : null));
+    //     functionalProcess.setL3(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL3() : null));
+    //     functionalProcess.setL4(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL4() : null));
+    //     functionalProcess.setL5(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL5() : null));
+    // }
+
+    // private String listToJsonString(List<String> list) {
+    //     if (list == null || list.isEmpty()) {
+    //         return null;
+    //     }
+    //     try {
+    //         return objectMapper.writeValueAsString(list);
+    //     } catch (JsonProcessingException e) {
+    //         log.error("Error converting list to JSON string", e);
+    //         return null;
+    //     }
+    // }
+    
+    // private List<String> jsonStringToList(String jsonString) {
+    //     if (jsonString == null || jsonString.trim().isEmpty()) {
+    //         return Collections.emptyList();
+    //     }
+    //     try {
+    //         return objectMapper.readValue(jsonString, 
+    //                 objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
+    //     } catch (JsonProcessingException e) {
+    //         log.error("Error converting JSON string to list", e);
+    //         return Collections.emptyList();
+    //     }
+    // }
+    
+    // private FunctionalScopeResponse mapToFunctionalScopeResponse(UserFunctionalProcess functionalProcess) {
+    //     return FunctionalScopeResponse.builder()
+    //             .userId(functionalProcess.getUserId())
+    //             .sessionId(functionalProcess.getSessionId())
+    //             .functionalArea(functionalProcess.getFunctionalArea())
+    //             .industryType(functionalProcess.getIndustryType())
+    //             .functionalSubArea(functionalProcess.getFunctionalSubArea())
+    //             .levelSelections(FunctionalScopeResponse.LevelSelections.builder()
+    //                     .l1(jsonStringToList(functionalProcess.getL1()))
+    //                     .l2(jsonStringToList(functionalProcess.getL2()))
+    //                     .l3(jsonStringToList(functionalProcess.getL3()))
+    //                     .l4(jsonStringToList(functionalProcess.getL4()))
+    //                     .l5(jsonStringToList(functionalProcess.getL5()))
+    //                     .build())
+    //             .build();
+    // }
 
     // public List<String> getLevel1Options() {
     //     log.info("Fetching Level 1 options");
