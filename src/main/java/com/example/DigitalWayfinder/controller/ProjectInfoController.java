@@ -57,4 +57,24 @@ public class ProjectInfoController {
         
         return ResponseEntity.ok(projects);
     }
+
+    // @GetMapping("/user-session/{sessionId}")
+    // public ResponseEntity<ProjectInfoResponse> getAllProjectInfoBySession(
+    //         @PathVariable String sessionId) {
+    //     try {
+    //         log.info("Received request to get project info for session: {}", sessionId);
+            
+    //         ProjectInfoResponse response = projectInfoService.getProjectInfoBySession(sessionId);
+            
+    //         if (response.isSuccess()) {
+    //             return ResponseEntity.ok(response);
+    //         } else {
+    //             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    //         }
+    //     } catch (Exception e) {
+    //         log.error("Error in getUserSessionProjectInfo endpoint: {}", e.getMessage(), e);
+    //         ProjectInfoResponse errorResponse = ProjectInfoResponse.error("Internal server error: " + e.getMessage());
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    //     }
+    // }
 }

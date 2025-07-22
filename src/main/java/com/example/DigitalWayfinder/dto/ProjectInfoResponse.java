@@ -31,12 +31,22 @@ public class ProjectInfoResponse {
         this.message = message;
     }
     
-    // Static factory methods
-    public static ProjectInfoResponse success(String message) {
-        return new ProjectInfoResponse(true, message);
-    }
-    
     public static ProjectInfoResponse error(String message) {
         return new ProjectInfoResponse(false, message);
+    }
+
+    public static ProjectInfoResponse builder() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'builder'");
+    }
+
+    public Object requestID(String requestID2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'requestID'");
+    }
+
+    public static ProjectInfoResponse success(String message2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'success'");
     }
 }

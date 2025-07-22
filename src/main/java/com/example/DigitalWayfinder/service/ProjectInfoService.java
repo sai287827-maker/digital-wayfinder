@@ -94,6 +94,53 @@ public class ProjectInfoService {
         log.info("Fetching all functional areas");
         return projectTypeRepository.findAll();
     }
+
+    // public ProjectInfoResponse getProjectInfoBySession(String sessionId) {
+    //     try {
+    //         log.info("Fetching project info for session: {}", sessionId);
+            
+    //         // Get the latest project info for the session (assuming you want the most recent one)
+    //         Optional<ProjectType> projectInfoOpt = projectTypeRepository.findBySessionID(sessionId);
+            
+    //         if (projectInfoOpt.isPresent()) {
+    //             ProjectType projectInfo = projectInfoOpt.get();
+    //             log.info("Found project info with ID: {} for session: {}", 
+    //                     projectInfo.getId(), sessionId);
+                
+    //             return ProjectInfoResponse.builder()
+    //                     // .success(true)
+    //                     // .message("Project info retrieved successfully")
+    //                     .requestID(projectInfo.getRequestID())
+    //                     .projectName(projectInfo.getClientName())
+    //                     .projectDescription(projectInfo.getClientDescription())
+    //                     .projectType(projectInfo.getProjectType())
+    //                     .estimatedBudget(projectInfo.getProjectScope())
+    //                     .build();
+    //         } else {
+    //             log.warn("No project info found for session: {}", sessionId);
+    //             return ProjectInfoResponse.builder()
+    //                     .success(false)
+    //                     .message("No project information found for session: " + sessionId)
+    //                     .build();
+    //         }
+            
+    //     } catch (Exception e) {
+    //         log.error("Error retrieving project info for session: {}", sessionId, e);
+    //         return ProjectInfoResponse.builder()
+    //                 .success(false)
+    //                 .message("Error retrieving project information: " + e.getMessage())
+    //                 .build();
+    //     }
+    // }
+    /**
+     * Retrieve all project information for a particular session ID.
+    //  */
+    // public List<ProjectType> getAllProjectInfoBySession(String sessionId) {
+    //     log.info("Fetching all project info for session: {}", sessionId);
+    //     return projectTypeRepository.findAll().stream()
+    //             .filter(p -> sessionId.equals(p.getSessionID()))
+    //             .toList();
+    // }
 }
     
     
