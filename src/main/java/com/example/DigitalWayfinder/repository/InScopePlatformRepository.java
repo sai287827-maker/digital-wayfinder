@@ -9,9 +9,7 @@ import java.util.List;
 
 @Repository
 public interface InScopePlatformRepository extends JpaRepository<InScopePlatform, Integer> {
-    
-    List<InScopePlatform> findByFunctionalArea(String functionalArea);
-    
+        
     List<InScopePlatform> findByIndustryType(String industryType);
     
     List<InScopePlatform> findByFunctionalAreaAndIndustryType(String functionalArea, String industryType);

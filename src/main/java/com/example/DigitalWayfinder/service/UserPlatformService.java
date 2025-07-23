@@ -51,6 +51,9 @@ public class UserPlatformService {
                             // .key(request.getKey())
                             .build())
                     .collect(Collectors.toList());
+
+            log.info("Created {} platform records", platforms.size());
+            platforms.forEach(p -> log.info("Platform: {}", p.getPlatform()));
             
             // Save all platforms
             List<UserPlatform> savedPlatforms = userPlatformRepository.saveAll(platforms);

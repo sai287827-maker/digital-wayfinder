@@ -17,14 +17,14 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 public class InScopePlatform {
     
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @Column(name = "Key")
-    // private Integer key;
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "[Key]")
+    private Integer key;
+    
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // private Long id;
 
     @Column(name = "FunctionalArea")
     private String functionalArea;

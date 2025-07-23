@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface CgsFunctionalRepository extends JpaRepository<WmsFunctional, Long> {
     
-    @Query(value = "SELECT L1, L2, L3, L4 FROM CG&S", nativeQuery = true)
+    @Query(value = "SELECT L1, L2, L3, L4 FROM [CG&S]", nativeQuery = true)
     List<Object[]> findAllLevelsAsArray();
 
     @Query("SELECT DISTINCT w.l1 FROM CgsFunctional w WHERE w.l1 IS NOT NULL AND w.l1 != ''")

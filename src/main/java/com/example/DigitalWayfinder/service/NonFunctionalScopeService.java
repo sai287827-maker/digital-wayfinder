@@ -9,12 +9,12 @@ import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
 import com.example.DigitalWayfinder.dto.NonFunctionalScopeDto;
 import com.example.DigitalWayfinder.entity.FunctionalAreaDT;
 import com.example.DigitalWayfinder.entity.UserNonFuncProcess;
-import com.example.DigitalWayfinder.repository.CgsFunctionalRepository;
+import com.example.DigitalWayfinder.repository.CgsNonFunctionalRepository;
 import com.example.DigitalWayfinder.repository.FunctionalAreaDTRepository;
-import com.example.DigitalWayfinder.repository.IndAgnousticFunctionalRepository;
-import com.example.DigitalWayfinder.repository.OmsFunctionalRepository;
-import com.example.DigitalWayfinder.repository.RetailFunctionalRepository;
-import com.example.DigitalWayfinder.repository.TmsFunctionalRepository;
+import com.example.DigitalWayfinder.repository.IndAgnousticNonFunctionalRepository;
+// import com.example.DigitalWayfinder.repository.OmsNonFunctionalRepository;
+import com.example.DigitalWayfinder.repository.RetailNonFunctionalRepository;
+import com.example.DigitalWayfinder.repository.TmsNonFunctionalRepository;
 import com.example.DigitalWayfinder.repository.UserNonFuncProcessRepository;
 import com.example.DigitalWayfinder.repository.WmsNonFunctionalRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 public class NonFunctionalScopeService {
     
     private final WmsNonFunctionalRepository wmsNonFunctionalRepository;
-    private final TmsFunctionalRepository tmsFunctionalRepository;
-    private final OmsFunctionalRepository omsFunctionalRepository;
-    private final IndAgnousticFunctionalRepository indagnousticFunctionalRepository;
-    private final RetailFunctionalRepository retailFunctionalRepository;
-    private final CgsFunctionalRepository cgsFunctionalRepository;
+    private final TmsNonFunctionalRepository tmsNonFunctionalRepository;
+    // private final OmsNonFunctionalRepository omsNonFunctionalRepository;
+    private final IndAgnousticNonFunctionalRepository indagnousticNonFunctionalRepository;
+    private final RetailNonFunctionalRepository retailNonFunctionalRepository;
+    private final CgsNonFunctionalRepository cgsNonFunctionalRepository;
 
-    private final UserNonFuncProcessRepository functionalProcessRepository;
+    private final UserNonFuncProcessRepository nonfunctionalProcessRepository;
     private final ObjectMapper objectMapper;
     private final FunctionalAreaDTRepository functionalAreaDTRepository;
     
@@ -56,78 +56,78 @@ public class NonFunctionalScopeService {
         }
     }
 
-        public List<NonFunctionalScopeDto> getAllFunctionalScopesOMS() {
-        log.info("Fetching all functional scope levels");
-        try {
-            List<Object[]> functionalScopes = omsFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+    //     public List<NonFunctionalScopeDto> getAllFunctionalScopesOMS() {
+    //     log.info("Fetching all functional scope levels");
+    //     try {
+    //         List<Object[]> functionalScopes = omsFunctionalRepository.findAllLevelsAsArray();
+    //         log.info("Successfully fetched {} functional scope records", functionalScopes.size());
             
-            return functionalScopes.stream()
-                    .map(this::convertToDto)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
-        }
-    }
+    //         return functionalScopes.stream()
+    //                 .map(this::convertToDto)
+    //                 .collect(Collectors.toList());
+    //     } catch (Exception e) {
+    //         log.error("Error fetching functional scopes: {}", e.getMessage(), e);
+    //         throw new RuntimeException("Failed to fetch functional scopes", e);
+    //     }
+    // }
 
         public List<NonFunctionalScopeDto> getAllFunctionalScopesTMS() {
-        log.info("Fetching all functional scope levels");
+        log.info("Fetching all non-functional scope levels");
         try {
-            List<Object[]> functionalScopes = tmsFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+            List<Object[]> nonfunctionalScopes = tmsNonFunctionalRepository.findAllLevelsAsArray();
+            log.info("Successfully fetched {} non-functional scope records", nonfunctionalScopes.size());
             
-            return functionalScopes.stream()
+            return nonfunctionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+            log.error("Error fetching non-functional scopes: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch non-functional scopes", e);
         }
     }
 
         public List<NonFunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
-        log.info("Fetching all functional scope levels");
+        log.info("Fetching all non-functional scope levels");
         try {
-            List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+            List<Object[]> nonfunctionalScopes = indagnousticNonFunctionalRepository.findAllLevelsAsArray();
+            log.info("Successfully non-fetched {} functional scope records", nonfunctionalScopes.size());
             
-            return functionalScopes.stream()
+            return nonfunctionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+            log.error("Error fetching non-functional scopes: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch non-functional scopes", e);
         }
     }
 
         public List<NonFunctionalScopeDto> getAllFunctionalScopesRetail() {
-        log.info("Fetching all functional scope levels");
+        log.info("Fetching all non-functional scope levels");
         try {
-            List<Object[]> functionalScopes = retailFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+            List<Object[]> nonfunctionalScopes = retailNonFunctionalRepository.findAllLevelsAsArray();
+            log.info("Successfully fetched {} non-functional scope records", nonfunctionalScopes.size());
             
-            return functionalScopes.stream()
+            return nonfunctionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+            log.error("Error fetching non-functional scopes: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch non-functional scopes", e);
         }
     }
 
         public List<NonFunctionalScopeDto> getAllFunctionalScopesCGS() {
-        log.info("Fetching all functional scope levels");
+        log.info("Fetching all non-functional scope levels");
         try {
-            List<Object[]> functionalScopes = cgsFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+            List<Object[]> nonfunctionalScopes = cgsNonFunctionalRepository.findAllLevelsAsArray();
+            log.info("Successfully fetched {} non-functional scope records", nonfunctionalScopes.size());
             
-            return functionalScopes.stream()
+            return nonfunctionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+            log.error("Error fetching non-functional scopes: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch non-functional scopes", e);
         }
     }
     
@@ -142,37 +142,37 @@ public class NonFunctionalScopeService {
     }
 
     public FunctionalScopeResponse saveFunctionalScope(FunctionalScopeRequest request, String userId, String sessionId) {
-        log.info("Saving functional scope for user: {} and session: {}", userId, sessionId);
+        log.info("Saving non-functional scope for user: {} and session: {}", userId, sessionId);
         
         try {
-            Optional<UserNonFuncProcess> existingRecord = functionalProcessRepository
+            Optional<UserNonFuncProcess> existingRecord = nonfunctionalProcessRepository
                     .findByUserIdAndSessionId(userId, sessionId);
             
-            UserNonFuncProcess functionalProcess;
+            UserNonFuncProcess nonfunctionalProcess;
             
             if (existingRecord.isPresent()) {
-                log.info("Updating existing functional scope record for user: {} and session: {}", userId, sessionId);
-                functionalProcess = existingRecord.get();
-                updateFunctionalProcess(functionalProcess, request);
+                log.info("Updating existing non-functional scope record for user: {} and session: {}", userId, sessionId);
+                nonfunctionalProcess = existingRecord.get();
+                updateNonFunctionalProcess(nonfunctionalProcess, request);
             } else {
-                log.info("Creating new functional scope record for user: {} and session: {}", userId, sessionId);
-                functionalProcess = createFunctionalProcess(request, userId, sessionId);
+                log.info("Creating new non-functional scope record for user: {} and session: {}", userId, sessionId);
+                nonfunctionalProcess = createNonFunctionalProcess(request, userId, sessionId);
             }
             
-            UserNonFuncProcess savedProcess = functionalProcessRepository.save(functionalProcess);
-            log.info("Successfully saved functional scope for user: {} and session: {}", userId, sessionId);
+            UserNonFuncProcess savedProcess = nonfunctionalProcessRepository.save(nonfunctionalProcess);
+            log.info("Successfully saved non-functional scope for user: {} and session: {}", userId, sessionId);
             
-            return mapToFunctionalScopeResponse(savedProcess);
+            return mapToNonFunctionalScopeResponse(savedProcess);
             
         } catch (Exception e) {
-            log.error("Error saving functional scope for user: {} and session: {}", userId, sessionId, e);
-            throw new RuntimeException("Failed to save functional scope: " + e.getMessage());
+            log.error("Error saving non-functional scope for user: {} and session: {}", userId, sessionId, e);
+            throw new RuntimeException("Failed to save non-functional scope: " + e.getMessage());
         }}
 
-        private UserNonFuncProcess createFunctionalProcess(FunctionalScopeRequest request, String userId, String sessionId) {
+        private UserNonFuncProcess createNonFunctionalProcess(FunctionalScopeRequest request, String userId, String sessionId) {
             FunctionalAreaDT previousProcess = functionalAreaDTRepository
             .findByUserIdAndSessionId(userId, sessionId)
-            .orElseThrow(() -> new RuntimeException("Previous functional process not found"));
+            .orElseThrow(() -> new RuntimeException("Previous non-functional process not found"));
         
             return UserNonFuncProcess.builder()
                 .userId(userId)
@@ -188,15 +188,15 @@ public class NonFunctionalScopeService {
                 .build();
     }
     
-    private void updateFunctionalProcess(UserNonFuncProcess functionalProcess, FunctionalScopeRequest request) {
-        functionalProcess.setFunctionalArea(request.getFunctionalArea());
-        functionalProcess.setIndustryType(request.getIndustryType());
-        functionalProcess.setFunctionalSubArea(request.getFunctionalSubArea());
-        functionalProcess.setL1(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL1() : null));
-        functionalProcess.setL2(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL2() : null));
-        functionalProcess.setL3(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL3() : null));
-        functionalProcess.setL4(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL4() : null));
-        functionalProcess.setL5(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL5() : null));
+    private void updateNonFunctionalProcess(UserNonFuncProcess nonfunctionalProcess, FunctionalScopeRequest request) {
+        nonfunctionalProcess.setFunctionalArea(request.getFunctionalArea());
+        nonfunctionalProcess.setIndustryType(request.getIndustryType());
+        nonfunctionalProcess.setFunctionalSubArea(request.getFunctionalSubArea());
+        nonfunctionalProcess.setL1(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL1() : null));
+        nonfunctionalProcess.setL2(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL2() : null));
+        nonfunctionalProcess.setL3(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL3() : null));
+        nonfunctionalProcess.setL4(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL4() : null));
+        nonfunctionalProcess.setL5(listToJsonString(request.getLevelSelections() != null ? request.getLevelSelections().getL5() : null));
     }
 
     private String listToJsonString(List<String> list) {
@@ -224,19 +224,19 @@ public class NonFunctionalScopeService {
         }
     }
     
-    private FunctionalScopeResponse mapToFunctionalScopeResponse(UserNonFuncProcess functionalProcess) {
+    private FunctionalScopeResponse mapToNonFunctionalScopeResponse(UserNonFuncProcess nonfunctionalProcess) {
         return FunctionalScopeResponse.builder()
-                .userId(functionalProcess.getUserId())
-                .sessionId(functionalProcess.getSessionId())
-                .functionalArea(functionalProcess.getFunctionalArea())
-                .industryType(functionalProcess.getIndustryType())
-                .functionalSubArea(functionalProcess.getFunctionalSubArea())
+                .userId(nonfunctionalProcess.getUserId())
+                .sessionId(nonfunctionalProcess.getSessionId())
+                .functionalArea(nonfunctionalProcess.getFunctionalArea())
+                .industryType(nonfunctionalProcess.getIndustryType())
+                .functionalSubArea(nonfunctionalProcess.getFunctionalSubArea())
                 .levelSelections(FunctionalScopeResponse.LevelSelections.builder()
-                        .l1(jsonStringToList(functionalProcess.getL1()))
-                        .l2(jsonStringToList(functionalProcess.getL2()))
-                        .l3(jsonStringToList(functionalProcess.getL3()))
-                        .l4(jsonStringToList(functionalProcess.getL4()))
-                        .l5(jsonStringToList(functionalProcess.getL5()))
+                        .l1(jsonStringToList(nonfunctionalProcess.getL1()))
+                        .l2(jsonStringToList(nonfunctionalProcess.getL2()))
+                        .l3(jsonStringToList(nonfunctionalProcess.getL3()))
+                        .l4(jsonStringToList(nonfunctionalProcess.getL4()))
+                        .l5(jsonStringToList(nonfunctionalProcess.getL5()))
                         .build())
                 .build();
     }

@@ -51,18 +51,18 @@ public class NonFunctionalScopeController {
         }
     }
 
-    @GetMapping("/oms/all")
-    public ResponseEntity<List<NonFunctionalScopeDto>> getAllFunctionalScopesOMS() {
-        log.info("Received request to fetch all functional scopes");
-        try {
-            List<NonFunctionalScopeDto> nonfunctionalScopes = nonfunctionalScopeService.getAllFunctionalScopesOMS();
-            log.info("Successfully returning {} functional scope records", nonfunctionalScopes.size());
-            return ResponseEntity.ok(nonfunctionalScopes);
-        } catch (Exception e) {
-            log.error("Error in getAllFunctionalScopes: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+    // @GetMapping("/oms/all")
+    // public ResponseEntity<List<NonFunctionalScopeDto>> getAllFunctionalScopesOMS() {
+    //     log.info("Received request to fetch all functional scopes");
+    //     try {
+    //         List<NonFunctionalScopeDto> nonfunctionalScopes = nonfunctionalScopeService.getAllFunctionalScopesOMS();
+    //         log.info("Successfully returning {} functional scope records", nonfunctionalScopes.size());
+    //         return ResponseEntity.ok(nonfunctionalScopes);
+    //     } catch (Exception e) {
+    //         log.error("Error in getAllFunctionalScopes: {}", e.getMessage(), e);
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    //     }
+    // }
 
     @GetMapping("/ind-agnoustic/all")
     public ResponseEntity<List<NonFunctionalScopeDto>> getAllFunctionalScopesIndAgnoustic() {

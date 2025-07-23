@@ -49,7 +49,7 @@ public class SolutionController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get-all")
     public ResponseEntity<List<UserPlatform>> getAllSolutions() {
         log.info("GET /api/v1/solutions/all - Retrieving all solutions");
         

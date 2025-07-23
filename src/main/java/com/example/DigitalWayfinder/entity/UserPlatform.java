@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+// import jakarta.persistence.GeneratedValue;
+// import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
 // import java.time.LocalDateTime;
@@ -19,15 +20,17 @@ import jakarta.persistence.Table;
 @AllArgsConstructor
 @Builder
 @Slf4j
+@IdClass(UserPlatformId.class)
 public class UserPlatform {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // private Long id;
     
     @Column(name = "UserID", nullable = false)
     private String userId;
     
+    @Id
     @Column(name = "SessionID", nullable = false)
     private String sessionId;
     
@@ -40,6 +43,7 @@ public class UserPlatform {
     @Column(name = "FunctionalSubArea")
     private String functionalSubArea;
     
+    @Id
     @Column(name = "Platform", nullable = false)
     private String platform;
     
