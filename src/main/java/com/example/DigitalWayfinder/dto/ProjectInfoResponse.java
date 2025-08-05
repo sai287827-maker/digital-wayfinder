@@ -45,8 +45,7 @@ public class ProjectInfoResponse {
         throw new UnsupportedOperationException("Unimplemented method 'requestID'");
     }
 
-    public static ProjectInfoResponse success(String message2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'success'");
+    public static ProjectInfoResponse success(String message) {
+        return new ProjectInfoResponse(true, message);
     }
 }

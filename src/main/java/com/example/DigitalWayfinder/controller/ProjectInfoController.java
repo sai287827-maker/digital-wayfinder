@@ -16,7 +16,7 @@ import com.example.DigitalWayfinder.service.ProjectInfoService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/decision-tree/wms-system")
+@RequestMapping("api/decision-tree/project-info")
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Slf4j
