@@ -1,0 +1,29 @@
+.helpdoc-popover {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 20px;
+  min-width: 420px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.helpdoc-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+.helpdoc-fallback {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #888;
+  text-align: center;
+}
+.helpdoc-fallback a {
+  color: #a259ff;
+  text-decoration: underline;
+} 

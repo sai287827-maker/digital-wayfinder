@@ -1,0 +1,495 @@
+/* Navbar.css - Fully Responsive */
+
+/* Base Navbar Styles */
+.navbar {
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  position: relative;
+}
+
+/* Logo Styles */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-size: 18px;
+  z-index: 1001;
+}
+
+.navbar-logo img {
+  margin-right: 12px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.navbar-logo span {
+  margin-left: 12px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.navbar-logo span::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 24px;
+  background-color: #ccc;
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.navbar-logo:hover {
+  color: #8B5CF6;
+}
+
+/* Navigation Menu - Desktop */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 0;
+  position: relative;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  color: #8B5CF6;
+}
+
+.nav-item.active {
+  color: #8B5CF6;
+}
+
+.nav-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #8B5CF6;
+}
+
+/* Icon Buttons */
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1001;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+}
+
+.icon-button:hover {
+  background-color: #f1f5f9;
+  color: #8B5CF6;
+}
+
+.icon-button:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001;
+  position: relative;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #64748b;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Menu Overlay for Mobile */
+.menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Responsive Breakpoints */
+
+/* Large Tablets and Small Desktops */
+@media (max-width: 1200px) {
+  .navbar-container {
+    padding: 0 20px;
+  }
+  
+  .nav-menu {
+    gap: 24px;
+  }
+}
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 16px;
+    height: 65px;
+  }
+  
+  .nav-menu {
+    gap: 20px;
+  }
+  
+  .nav-item {
+    font-size: 13px;
+  }
+  
+  .navbar-logo {
+    font-size: 17px;
+  }
+  
+  .navbar-logo img {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nav-icons {
+    gap: 8px;
+  }
+  
+  .icon-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Mobile and Small Tablets */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 16px;
+    height: 60px;
+  }
+  
+  /* Show mobile menu toggle */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  /* Hide desktop navigation */
+  .nav-menu {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .nav-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .nav-item {
+    padding: 16px 24px;
+    font-size: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    display: block;
+    margin: 0;
+  }
+  
+  .nav-item:last-child {
+    border-bottom: none;
+  }
+  
+  .nav-item.active::after {
+    display: none;
+  }
+  
+  .nav-item.active {
+    background-color: #f8fafc;
+  }
+  
+  /* Show overlay when menu is open */
+  .menu-overlay {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-menu.active + .menu-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Adjust logo for mobile */
+  .navbar-logo {
+    font-size: 16px;
+  }
+  
+  .navbar-logo img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .navbar-logo span {
+    margin-left: 10px;
+  }
+  
+  .navbar-logo span::before {
+    height: 20px;
+    left: -10px;
+  }
+  
+  /* Hide some icons on mobile if needed */
+  .nav-icons {
+    gap: 4px;
+  }
+  
+  .icon-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Small Mobile Phones */
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 12px;
+    height: 56px;
+  }
+  
+  .navbar-logo {
+    font-size: 15px;
+  }
+  
+  .navbar-logo img {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+  }
+  
+  .navbar-logo span {
+    margin-left: 8px;
+  }
+  
+  .navbar-logo span::before {
+    height: 18px;
+    left: -8px;
+  }
+  
+  .nav-menu {
+    top: 56px;
+    padding: 16px 0;
+  }
+  
+  .nav-item {
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  
+  .icon-button {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .icon-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .mobile-menu-toggle {
+    width: 26px;
+    height: 20px;
+  }
+}
+
+/* Very Small Phones */
+@media (max-width: 360px) {
+  .navbar-container {
+    padding: 0 8px;
+  }
+  
+  .navbar-logo span {
+    display: none; /* Hide text on very small screens */
+  }
+  
+  .navbar-logo span::before {
+    display: none;
+  }
+  
+  .nav-icons {
+    gap: 2px;
+  }
+  
+  /* Hide less important icons on very small screens */
+  .nav-icons .icon-button:first-child {
+    display: none;
+  }
+}
+
+/* Landscape Phone Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .navbar-container {
+    height: 50px;
+  }
+  
+  .nav-menu {
+    top: 50px;
+    padding: 12px 0;
+  }
+  
+  .nav-item {
+    padding: 12px 24px;
+  }
+  
+  .navbar-logo {
+    font-size: 14px;
+  }
+  
+  .navbar-logo img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* High DPI Display Optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .navbar-logo img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .nav-item,
+  .icon-button,
+  .mobile-menu-toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .nav-item:hover {
+    color: inherit;
+  }
+  
+  .nav-item:active {
+    background-color: #f1f5f9;
+    color: #8B5CF6;
+  }
+  
+  .icon-button:hover {
+    background-color: transparent;
+    color: inherit;
+  }
+  
+  .icon-button:active {
+    background-color: #f1f5f9;
+    color: #8B5CF6;
+    transform: scale(0.95);
+  }
+}
+
+/* Focus States for Accessibility */
+.nav-item:focus,
+.icon-button:focus,
+.mobile-menu-toggle:focus,
+.navbar-logo:focus {
+  outline: 2px solid #8B5CF6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth Scrolling for Anchor Links */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Reduced Motion for Users Who Prefer It */
+@media (prefers-reduced-motion: reduce) {
+  .nav-menu,
+  .mobile-menu-toggle span,
+  .menu-overlay,
+  .nav-item,
+  .icon-button {
+    transition: none;
+  }
+}
