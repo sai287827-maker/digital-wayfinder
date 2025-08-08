@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
-import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
+import com.example.DigitalWayfinder.dto.NonFunctionalRequest;
+import com.example.DigitalWayfinder.dto.NonFunctionalResponse;
 import com.example.DigitalWayfinder.dto.NonFunctionalScopeDto;
 import com.example.DigitalWayfinder.entity.FunctionalAreaDT;
 import com.example.DigitalWayfinder.entity.UserNonFuncProcess;
@@ -141,7 +141,7 @@ public class NonFunctionalScopeService {
         );
     }
 
-    public FunctionalScopeResponse saveFunctionalScope(FunctionalScopeRequest request, String userId, String sessionId) {
+    public NonFunctionalResponse saveNonFunctionalScope(NonFunctionalRequest request, String userId, String sessionId) {
         log.info("Saving non-functional scope for user: {} and session: {}", userId, sessionId);
         
         try {
@@ -156,6 +156,7 @@ public class NonFunctionalScopeService {
                 updateNonFunctionalProcess(nonfunctionalProcess, request);
             } else {
                 log.info("Creating new non-functional scope record for user: {} and session: {}", userId, sessionId);
+                log.info("request: ", request);
                 nonfunctionalProcess = createNonFunctionalProcess(request, userId, sessionId);
             }
             
@@ -169,7 +170,7 @@ public class NonFunctionalScopeService {
             throw new RuntimeException("Failed to save non-functional scope: " + e.getMessage());
         }}
 
-        private UserNonFuncProcess createNonFunctionalProcess(FunctionalScopeRequest request, String userId, String sessionId) {
+        private UserNonFuncProcess createNonFunctionalProcess(NonFunctionalRequest request, String userId, String sessionId) {
             FunctionalAreaDT previousProcess = functionalAreaDTRepository
             .findByUserIdAndSessionId(userId, sessionId)
             .orElseThrow(() -> new RuntimeException("Previous non-functional process not found"));
@@ -188,7 +189,7 @@ public class NonFunctionalScopeService {
                 .build();
     }
     
-    private void updateNonFunctionalProcess(UserNonFuncProcess nonfunctionalProcess, FunctionalScopeRequest request) {
+    private void updateNonFunctionalProcess(UserNonFuncProcess nonfunctionalProcess, NonFunctionalRequest request) {
         nonfunctionalProcess.setFunctionalArea(request.getFunctionalArea());
         nonfunctionalProcess.setIndustryType(request.getIndustryType());
         nonfunctionalProcess.setFunctionalSubArea(request.getFunctionalSubArea());
@@ -224,14 +225,14 @@ public class NonFunctionalScopeService {
         }
     }
     
-    private FunctionalScopeResponse mapToNonFunctionalScopeResponse(UserNonFuncProcess nonfunctionalProcess) {
-        return FunctionalScopeResponse.builder()
+    private NonFunctionalResponse mapToNonFunctionalScopeResponse(UserNonFuncProcess nonfunctionalProcess) {
+        return NonFunctionalResponse.builder()
                 .userId(nonfunctionalProcess.getUserId())
                 .sessionId(nonfunctionalProcess.getSessionId())
                 .functionalArea(nonfunctionalProcess.getFunctionalArea())
                 .industryType(nonfunctionalProcess.getIndustryType())
                 .functionalSubArea(nonfunctionalProcess.getFunctionalSubArea())
-                .levelSelections(FunctionalScopeResponse.LevelSelections.builder()
+                .levelSelections(NonFunctionalResponse.LevelSelections.builder()
                         .l1(jsonStringToList(nonfunctionalProcess.getL1()))
                         .l2(jsonStringToList(nonfunctionalProcess.getL2()))
                         .l3(jsonStringToList(nonfunctionalProcess.getL3()))

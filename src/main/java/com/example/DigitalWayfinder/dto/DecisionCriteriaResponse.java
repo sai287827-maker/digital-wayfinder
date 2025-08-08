@@ -20,6 +20,7 @@ public class DecisionCriteriaResponse {
     private String functionalSubArea;
     private FunctionalData functional;
     private NonFunctionalData nonFunctional;
+    private List<Criteria> criteria;
     
     @Data
     @NoArgsConstructor
@@ -53,6 +54,16 @@ public class DecisionCriteriaResponse {
         private List<String> l3;
         private List<String> l4;
         private List<String> l5;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class Criteria {
+        private String id;
+        private String label;
+        private boolean inScope;
     }
 }
 

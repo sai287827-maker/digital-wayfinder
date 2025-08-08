@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.DigitalWayfinder.dto.FunctionalScopeDto;
 import com.example.DigitalWayfinder.service.FunctionalScopeService;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
 import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
 import com.example.DigitalWayfinder.dto.UserSession;
 import jakarta.validation.Valid;
 
 import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @RestController
 @RequestMapping("api/decision-tree/functional-scope")
@@ -24,6 +27,7 @@ import java.util.List;
 public class FunctionalScopeController {
     
     private final FunctionalScopeService functionalScopeService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
     @GetMapping("/wms/all")
     public ResponseEntity<List<FunctionalScopeDto>> getAllFunctionalScopesWMS() {
@@ -109,6 +113,11 @@ public class FunctionalScopeController {
             @ModelAttribute UserSession userSession) {
         
         log.info("Received functional scope save request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+            try {
+        log.info("Request body received: {}", objectMapper.writeValueAsString(request));
+    } catch (JsonProcessingException e) {
+        log.error("Error processing request body to JSON: {}", e.getMessage(), e);
+    }
         
         FunctionalScopeResponse response = functionalScopeService.saveFunctionalScope(request, userSession.getUserId(), userSession.getSessionId());
         

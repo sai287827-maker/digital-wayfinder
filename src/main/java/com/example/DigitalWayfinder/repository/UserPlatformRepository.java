@@ -6,11 +6,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.DigitalWayfinder.entity.UserPlatform;
+import com.example.DigitalWayfinder.entity.UserPlatformId;
 
 import java.util.List;
 
 @Repository
-public interface UserPlatformRepository extends JpaRepository<UserPlatform, Long> {
+public interface UserPlatformRepository extends JpaRepository<UserPlatform, UserPlatformId> {
     
     List<UserPlatform> findByUserIdAndSessionId(String userId, String sessionId);
     

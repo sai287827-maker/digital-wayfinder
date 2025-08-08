@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.DigitalWayfinder.dto.FunctionalScopeRequest;
-import com.example.DigitalWayfinder.dto.FunctionalScopeResponse;
+import com.example.DigitalWayfinder.dto.NonFunctionalRequest;
+import com.example.DigitalWayfinder.dto.NonFunctionalResponse;
 import com.example.DigitalWayfinder.dto.NonFunctionalScopeDto;
 import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.service.NonFunctionalScopeService;
@@ -15,6 +15,9 @@ import com.example.DigitalWayfinder.service.NonFunctionalScopeService;
 import jakarta.validation.Valid;
 
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("api/decision-tree/non-functional-scope")
@@ -24,6 +27,7 @@ import java.util.List;
 public class NonFunctionalScopeController {
     
     private final NonFunctionalScopeService nonfunctionalScopeService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
     @GetMapping("/wms/all")
     public ResponseEntity<List<NonFunctionalScopeDto>> getAllFunctionalScopesWMS() {
@@ -103,18 +107,27 @@ public class NonFunctionalScopeController {
         }
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<FunctionalScopeResponse> saveFunctionalScope(
-            @Valid @RequestBody FunctionalScopeRequest request,
-            @ModelAttribute UserSession userSession) {
-        
-        log.info("Received functional scope save request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
-        
-        FunctionalScopeResponse response = nonfunctionalScopeService.saveFunctionalScope(request, userSession.getUserId(), userSession.getSessionId());
-        
-        log.info("Successfully saved functional scope for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+@PostMapping("/save")
+public ResponseEntity<NonFunctionalResponse> saveNonFunctionalScope(
+        @Valid @RequestBody NonFunctionalRequest request,
+        @ModelAttribute UserSession userSession) {
+
+    log.info("Received non-functional scope save request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+
+    try {
+        log.info("Request body received: {}", objectMapper.writeValueAsString(request));
+    } catch (JsonProcessingException e) {
+        log.error("Error processing request body to JSON: {}", e.getMessage(), e);
     }
+
+    NonFunctionalResponse response = nonfunctionalScopeService.saveNonFunctionalScope(
+        request, userSession.getUserId(), userSession.getSessionId());
+
+    log.info("Successfully saved non-functional scope for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+}
+
 
 //     @GetMapping("/all/{industryType}")
 //     public ResponseEntity<List<FunctionalScopeDto>> getAllFunctionalScopesByIndustryType(

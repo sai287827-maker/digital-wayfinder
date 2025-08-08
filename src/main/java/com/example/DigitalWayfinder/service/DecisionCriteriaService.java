@@ -1,5 +1,6 @@
 package com.example.DigitalWayfinder.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -14,7 +15,9 @@ import com.example.DigitalWayfinder.repository.UserFunctionalProcessRepository;
 import com.example.DigitalWayfinder.repository.UserNonFuncProcessRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.List;
+import java.util.stream.Stream;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +70,24 @@ public class DecisionCriteriaService {
                 response.setNonFunctional(mapToNonFunctionalData(nonFuncProcess.get()));
             }
             
+            List<DecisionCriteriaResponse.Criteria> criteriaList = new ArrayList<>();
+
+            if (functionalProcess.isPresent() && hasSelectedLevels(functionalProcess.get())) {
+                criteriaList.add(DecisionCriteriaResponse.Criteria.builder()
+                    .id("functional")
+                    .label("Functional Scope")
+                    .inScope(true)
+                    .build());
+                }
+
+            if (nonFuncProcess.isPresent() && hasSelectedLevels(nonFuncProcess.get())) {
+                criteriaList.add(DecisionCriteriaResponse.Criteria.builder()
+                    .id("nonFunctional")
+                    .label("Non-Functional Scope")
+                    .inScope(true)
+                    .build());
+                }
+            response.setCriteria(criteriaList);
             log.info("Successfully retrieved decision criteria for user: {} and session: {}", userId, sessionId);
             return response;
             
@@ -78,6 +99,33 @@ public class DecisionCriteriaService {
             throw new RuntimeException("Failed to retrieve decision criteria: " + e.getMessage());
         }
     }
+
+    private boolean hasSelectedLevels(UserFunctionalProcess process) {
+        return Stream.of(
+            process.getL1(), process.getL2(), process.getL3(),
+            process.getL4(), process.getL5()
+        ).anyMatch(lv -> !isEmpty(lv));
+    }
+
+    private boolean hasSelectedLevels(UserNonFuncProcess process) {
+        return Stream.of(
+            process.getL1(), process.getL2(), process.getL3(),
+            process.getL4(), process.getL5()
+        ).anyMatch(lv -> !isEmpty(lv));
+    }
+
+    private boolean isEmpty(String json) {
+        if (json == null || json.trim().isEmpty()) return true;
+        try {
+            List<String> list = objectMapper.readValue(
+                json, objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
+            );
+            return list == null || list.stream().allMatch(String::isBlank);
+        } catch (JsonProcessingException e) {
+            return true; // Malformed = treat as empty
+        }
+    }
+
 
 
     private DecisionCriteriaResponse.FunctionalData mapToFunctionalData(UserFunctionalProcess functionalProcess) {
