@@ -335,47 +335,109 @@ const NonFunctionalScope = () => {
             </div>
           ) : (
             <div className="items-container">
-              {levelItems.map((item, index) => {
-                const isSelected = selectedItems.includes(item.id);
-                const itemNumber = getItemNumber(level, item);
-                return (
-                  <div
-                    key={item.id}
-                    className="item"
-                    onClick={() => handleItemSelect(item, level)}
-                  >
-                    <div className="item-content">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handleCheckboxChange(item, level, e)}
-                        className="item-checkbox"
-                      />
-                      <div className="item-text-container">
-                        <div className="item-text">
-                          {itemNumber} {item.name}
+              {/* Custom rendering for each level, without More Information button */}
+              {level === 1 ? (
+                <>
+                  {getLevelItems(1).map((item, idx) => {
+                    const isSelected = selectedItems.includes(item.id);
+                    const itemNumber = getItemNumber(1, item);
+                    return (
+                      <div
+                        key={item.id}
+                        className="item"
+                        style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                        onClick={() => handleItemSelect(item, 1)}
+                      >
+                        <div className="item-content">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => handleCheckboxChange(item, 1, e)}
+                            className="item-checkbox"
+                          />
+                          <div className="item-text-container">
+                            <div className="item-text">
+                              {itemNumber} {item.name}
+                            </div>
+                          </div>
+                        </div>
+                        {/* Removed More Information Button */}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : level === 2 ? (
+                <>
+                  {getLevelItems(1).map((parentItem, idx) => {
+                    const children = getLevelItems(2).filter(
+                      child => child.fullItem.l1 === parentItem.name
+                    );
+                    return (
+                      <div key={parentItem.id + '-group'}>
+                        {children.length === 0 ? (
+                          <div style={{ minHeight: '48px' }}></div>
+                        ) : (
+                          children.map((item, cidx) => {
+                            const isSelected = selectedItems.includes(item.id);
+                            const itemNumber = getItemNumber(2, item);
+                            return (
+                              <div
+                                key={item.id}
+                                className="item"
+                                style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                                onClick={() => handleItemSelect(item, 2)}
+                              >
+                                <div className="item-content">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={(e) => handleCheckboxChange(item, 2, e)}
+                                    className="item-checkbox"
+                                  />
+                                  <div className="item-text-container">
+                                    <div className="item-text">
+                                      {itemNumber} {item.name}
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* Removed More Information Button */}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                // Default rendering for other levels
+                levelItems.map((item, index) => {
+                  const isSelected = selectedItems.includes(item.id);
+                  const itemNumber = getItemNumber(level, item);
+                  return (
+                    <div
+                      key={item.id}
+                      className="item"
+                      onClick={() => handleItemSelect(item, level)}
+                    >
+                      <div className="item-content">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => handleCheckboxChange(item, level, e)}
+                          className="item-checkbox"
+                        />
+                        <div className="item-text-container">
+                          <div className="item-text">
+                            {itemNumber} {item.name}
+                          </div>
                         </div>
                       </div>
+                      {/* Removed More Information Button */}
                     </div>
-                    <button
-                      onClick={(e) => handleInfoClick(item, e)}
-                      className="item-info-button"
-                      title="More information"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="item-info-icon"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2.25M12 15h.01m-.01-10.5a9 9 0 100 18 9 9 0 000-18z" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </div>

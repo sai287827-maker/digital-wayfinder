@@ -118,7 +118,7 @@ const DecisionCriteria = () => {
            
             <div className="dc-step-item">
               <div className="dc-step-circle dc-active">3</div>
-              <span className="dc-step-text dc-active">Reviews</span>
+              <span className="dc-step-text dc-active">Review</span>
             </div>
            
             <div className="dc-step-item">
@@ -132,7 +132,7 @@ const DecisionCriteria = () => {
         <div className="dc-main-content">
           {/* Decision Criteria Header */}
           <div className="dc-title-section">
-            <h1 className="dc-page-title"> Reviews </h1>
+            <h1 className="dc-page-title"> Review </h1>
           </div>
  
           {/* Table Container */}

@@ -537,7 +537,7 @@ const FunctionalScope = () => {
           onClick={handleSaveAndProceed}
           disabled={loading || !hasAllLevelsSelected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
+          backgroundColor: hasAllLevelsSelected() ? '#8bcf6' : '#e5e7eb',
           color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
           cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
           opacity: hasAllLevelsSelected() ? 1 : 0.6
