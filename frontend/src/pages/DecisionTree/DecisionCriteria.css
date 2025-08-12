@@ -345,6 +345,52 @@
   overflow-x: auto;
 }
 
+/* Styles for bullet point display of selections */
+.dc-level-selections {
+  margin: 10px 0;
+  padding: 8px 0;
+}
+
+.dc-level-selections strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #374151;
+  font-size: 14px;
+}
+
+.dc-no-selections {
+  color: #9ca3af;
+  font-style: italic;
+  margin-left: 10px;
+}
+
+.dc-selections-list {
+  list-style-type: disc;
+  margin: 5px 0 5px 20px;
+  padding: 0;
+}
+
+.dc-selection-item {
+  margin: 3px 0;
+  color: #374151;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.dc-data-display {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.dc-data-display p {
+  margin: 0 0 10px 0;
+  color: #111827;
+  font-weight: 600;
+}
+
 /* Footer Styles */
 .dc-footer-buttons-container {
   background-color: white;
