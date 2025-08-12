@@ -58,7 +58,26 @@ const DataAndCloud = () => {
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          setFunctionalArea(response.functionalArea || '');
+          
+          // Set functional area - if not provided, determine from functionalSubArea
+          let area = response.functionalArea || '';
+          if (!area && response.functionalSubArea) {
+            // Map functional sub-areas to functional areas
+            const areaMapping = {
+              'Warehouse Management System': 'Supply Chain Fulfillment',
+              'Inventory Management': 'Supply Chain Fulfillment',
+              'Order Management': 'Supply Chain Fulfillment',
+              'Transportation Management': 'Supply Chain Fulfillment',
+              'Customer Relationship Management': 'Customer Experience',
+              'Sales Management': 'Customer Experience',
+              'Marketing Automation': 'Customer Experience',
+              'Financial Management': 'Financial Operations',
+              'Accounting': 'Financial Operations',
+              'Procurement': 'Financial Operations'
+            };
+            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          }
+          setFunctionalArea(area);
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for old response structure
@@ -85,14 +104,18 @@ const DataAndCloud = () => {
       setSaving(true);
       
       // Call API to save answers
-      const response = await apiPost('api/digital-wayfinder/questionaire/data-cloud/save-answers', {
+      const payload = {
         functionalArea: functionalArea,
         functionalSubArea: functionalSubArea,
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
         }))
-      });
+      };
+      
+      console.log('Sending payload:', payload);
+      
+      const response = await apiPost('api/digital-wayfinder/questionaire/data-cloud/save-answers', payload);
 
       console.log('Answers saved successfully:', response);
       
@@ -161,11 +184,7 @@ const DataAndCloud = () => {
                     {['High', 'Medium', 'Low'].map(opt => (
                       <label
                         key={opt}
-                        className={
-                          styles.optionLabel + ' ' +
-                          (opt === 'High' ? styles.optionHigh : opt === 'Medium' ? styles.optionMedium : styles.optionLow) +
-                          (answers[idx] === opt ? ' ' + styles.selected : '')
-                        }
+                        className={styles.optionLabel}
                       >
                         <input
                           type="radio"
