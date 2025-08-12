@@ -21,6 +21,15 @@ import Solution from './pages/DecisionTree/Solution';
 import Dashboard from './pages/DecisionTree/Dashboard';
 import DecisionCriteria from './pages/DecisionTree/DecisionCriteria';
 import TransportationFunctionalScope from './pages/DecisionTree/TransportationFunctionalScope';
+import AgnosticFunctionalScope from './pages/DecisionTree/AgnosticFunctionalScope';
+import AgnosticNonFunctionalScope from './pages/DecisionTree/AgnosticNonFunctionalScope';
+import AgnosticDecisionCriteria from './pages/DecisionTree/AgnosticDecisionCriteria';
+import AgnosticSolution from './pages/DecisionTree/AgnosticSolution';
+import RetailFunctionalScope from './pages/DecisionTree/RetailFunctionalScope';
+import RetailNonFunctionalScope from './pages/DecisionTree/RetailNonFunctionalScope';
+import RetailDecisionCriteria from './pages/DecisionTree/RetailDecisionCriteria';
+import RetailSolution from './pages/DecisionTree/RetailSolution';
+
 
 
 // import FinalPage from './pages/DigitalWayFinderr/FinalPage';
@@ -55,6 +64,14 @@ function App() {
           <Route path="/decision-tree/dashboard" element={<Dashboard/>} />
           <Route path="/decision-tree/decision-criteria" element={<DecisionCriteria/>} />
           <Route path="/decision-tree/transportation-functional-scope" element={<TransportationFunctionalScope />} />
+          <Route path="/decision-tree/agnostic-functional-scope" element={<AgnosticFunctionalScope />} />
+          <Route path="/decision-tree/agnostic-non-functional-scope" element={<AgnosticNonFunctionalScope />} />
+          <Route path="/decision-tree/agnostic-decision-criteria" element={<AgnosticDecisionCriteria/>} />
+          <Route path="/decision-tree/agnostic-solution" element={<AgnosticSolution />} />
+          <Route path="/decision-tree/retail-functional-scope" element={<RetailFunctionalScope />} />
+          <Route path="/decision-tree/retail-non-functional-scope" element={<RetailNonFunctionalScope />} />
+          <Route path="/decision-tree/retail-decision-criteria" element={<RetailDecisionCriteria/>} />
+          <Route path="/decision-tree/retail-solution" element={<RetailSolution />} />
 
           {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
         </Routes>

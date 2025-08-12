@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
-import './DecisionCriteria.css';
+import './AgnosticDecisionCriteria.css';
 import { apiGet } from '../../api';
  
-const DecisionCriteria = () => {
+const AgnosticDecisionCriteria = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [criteria, setCriteria] = useState([]);
@@ -58,11 +58,11 @@ const DecisionCriteria = () => {
   };
  
   const handlePrevious = () => {
-    navigate('/decision-tree/non-functional-scope');
+    navigate('/decision-tree/agnostic-non-functional-scope');
   };
  
   const handleProceed = () => {
-    navigate('/decision-tree/solution', {
+    navigate('/decision-tree/agnostic-solution', {
       state: {
         fromDecisionCriteria: true,
         criteriaData: criteria,
@@ -72,109 +72,109 @@ const DecisionCriteria = () => {
   };
  
   return (
-    <div className="decision-criteria-container">
+    <div className="agnostic-decision-criteria-container">
       {/* Breadcrumb */}
-      <div className="dc-breadcrumb">
-        <div className="dc-breadcrumb-content">
-          <span className="dc-breadcrumb-link" style={{ color: '#0036C9' }}>Home</span>
+      <div className="adc-breadcrumb">
+        <div className="adc-breadcrumb-content">
+          <span className="adc-breadcrumb-link" style={{ color: '#0036C9' }}>Home</span>
           <span>›</span>
-          <span className="dc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
+          <span className="adc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="dc-breadcrumb-current">Decision Criteria</span>
+          <span className="adc-breadcrumb-current">Decision Criteria</span>
         </div>
       </div>
  
-      <div className="dc-main-layout">
+      <div className="adc-main-layout">
         {/* Left Sidebar Box */}
-        <div className="dc-left-sidebar">
-          <h2 className="dc-sidebar-title">Decision Criteria</h2>
-          <p className="dc-sidebar-description">
+        <div className="adc-left-sidebar">
+          <h2 className="adc-sidebar-title">Decision Criteria</h2>
+          <p className="adc-sidebar-description">
             Structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
  
           {/* Vertical line connecting all steps */}
-          <div className="dc-step-line"></div>
+          <div className="adc-step-line"></div>
  
           {/* Step indicators */}
-          <div className="dc-steps-container">
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-completed">
+          <div className="adc-steps-container">
+            <div className="adc-step-item">
+              <div className="adc-step-circle adc-completed">
                 <svg className="step-check" viewBox="0 0 24 24" fill="none">
                   <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span className="dc-step-text dc-completed">Functional Scope</span>
+              <span className="adc-step-text adc-completed">Functional Scope</span>
             </div>
            
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-completed">
+            <div className="adc-step-item">
+              <div className="adc-step-circle adc-completed">
                 <svg className="step-check" viewBox="0 0 24 24" fill="none">
                   <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <span className="dc-step-text dc-completed">Non Functional</span>
+              <span className="adc-step-text adc-completed">Non Functional</span>
             </div>
            
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-active">3</div>
-              <span className="dc-step-text dc-active">Review</span>
+            <div className="adc-step-item">
+              <div className="adc-step-circle adc-active">3</div>
+              <span className="adc-step-text adc-active">Reviews</span>
             </div>
            
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-inactive">4</div>
-              <span className="dc-step-text dc-inactive">Solution</span>
+            <div className="adc-step-item">
+              <div className="adc-step-circle adc-inactive">4</div>
+              <span className="adc-step-text adc-inactive">Solution</span>
             </div>
           </div>
         </div>
  
         {/* Main Content Box */}
-        <div className="dc-main-content">
+        <div className="adc-main-content">
           {/* Decision Criteria Header */}
-          <div className="dc-title-section">
-            <h1 className="dc-page-title"> Review </h1>
+          <div className="adc-title-section">
+            <h1 className="adc-page-title"> Review </h1>
           </div>
  
           {/* Table Container */}
-          <div className="dc-table-container">
-            <div className="dc-table-header">
-              <div className="dc-header-criteria">Scope Reviews</div>
-              <div className="dc-header-scope">In-Scope</div>
+          <div className="adc-table-container">
+            <div className="adc-table-header">
+              <div className="adc-header-criteria">Scope Reviews</div>
+              <div className="adc-header-scope">In-Scope</div>
             </div>
-            <div className="dc-table-content">
+            <div className="adc-table-content">
               {loading ? (
                 <div className="loading-text">Loading...</div>
               ) : error ? (
                 <div className="error-message">{error}</div>
               ) : criteria.map((c) => (
                 <React.Fragment key={c.id}>
-                  <div className="dc-table-row">
-                    <div className="dc-criteria-cell">
+                  <div className="adc-table-row">
+                    <div className="adc-criteria-cell">
                       <button
                         onClick={() => toggleExpand(c.id)}
-                        className="dc-expand-button"
+                        className="adc-expand-button"
                         aria-label={expanded[c.id] ? "Collapse" : "Expand"}
                         type="button"
                       >
                         {expanded[c.id] ? "−" : "+"}
                       </button>
-                      <span className="dc-criteria-label">{c.label}</span>
+                      <span className="adc-criteria-label">{c.label}</span>
                     </div>
-                    <div className="dc-scope-cell">
+                    <div className="adc-scope-cell">
                       <input
                         type="checkbox"
                         checked={c.inScope}
                         onChange={e => handleInScopeChange(c.id, e.target.checked)}
-                        className="dc-scope-checkbox"
+                        className="adc-scope-checkbox"
                       />
                     </div>
                   </div>
                   {expanded[c.id] && (
-                    <div className="dc-expanded-content">
+                    <div className="adc-expanded-content">
                       Additional details for <b>{c.label}</b> criteria.
                       {/* Show mapped data for Functional Scope */}
                       {c.id === 'functional' && mappingData?.functional?.levelSelections && (
-                        <div className="dc-data-display">
+                        <div className="adc-data-display">
                           <p><strong>Functional Level Selections:</strong></p>
                           <ul>
                             {Object.entries(mappingData.functional.levelSelections).map(([level, selections]) => (
@@ -187,7 +187,7 @@ const DecisionCriteria = () => {
                       )}
                       {/* Show mapped data for Non-Functional Scope */}
                       {c.id === 'nonFunctional' && mappingData?.nonFunctional?.levelSelections && (
-                        <div className="dc-data-display">
+                        <div className="adc-data-display">
                           <p><strong>Non-Functional Level Selections:</strong></p>
                           <ul>
                             {Object.entries(mappingData.nonFunctional.levelSelections).map(([level, selections]) => (
@@ -200,9 +200,9 @@ const DecisionCriteria = () => {
                       )}
                       {/* Show mapped data from previous Non-Functional page if available */}
                       {c.id === 'nonFunctional' && fromNonFunctionalScope && levelSelections && (
-                        <div className="dc-data-display">
+                        <div className="adc-data-display">
                           <p><strong>Selections from Non-Functional Scope (Previous Page):</strong></p>
-                          <pre className="dc-data-pre">
+                          <pre className="adc-data-pre">
                             {JSON.stringify(levelSelections, null, 2)}
                           </pre>
                         </div>
@@ -215,16 +215,16 @@ const DecisionCriteria = () => {
           </div>
  
           {/* Footer buttons inside main content */}
-          <div className="dc-footer-buttons-container">
-            <div className="dc-footer-content">
+          <div className="adc-footer-buttons-container">
+            <div className="adc-footer-content">
               <button
-                className="dc-footer-button dc-previous"
+                className="adc-footer-button adc-previous"
                 onClick={handlePrevious}
               >
                 Previous
               </button>
               <button
-                className="dc-footer-button dc-proceed"
+                className="adc-footer-button adc-proceed"
                 onClick={handleProceed}
               >
                 Proceed
@@ -237,5 +237,4 @@ const DecisionCriteria = () => {
   );
 };
  
-export default DecisionCriteria;
- 
+export default AgnosticDecisionCriteria;

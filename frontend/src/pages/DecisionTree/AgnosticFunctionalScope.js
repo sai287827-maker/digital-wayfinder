@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './FunctionalScope.css';
+import './AgnosticNonFunctionalScope';
 import { apiGet, apiPost } from '../../api';
+
  
-const FunctionalScope = () => {
+const AgnosticFunctionalScope = () => {
   const navigate = useNavigate();
   const [functionalScopeData, setFunctionalScopeData] = useState([]);
   const [levelSelections, setSelectedPath] = useState({});
@@ -20,8 +21,8 @@ const FunctionalScope = () => {
       setLoading(true);
       setError(null);
       try {
-        // TODO: Use the correct endpoint based on the system/context
-        const data = await apiGet('api/decision-tree/functional-scope/wms/all');
+        // Updated API endpoint to industry agnostic
+        const data = await apiGet('api/decision-tree/functional-scope/ind-agnostic/all');
         setFunctionalScopeData(data);
       } catch (err) {
         setError('Failed to fetch functional scope data.');
@@ -64,9 +65,9 @@ const FunctionalScope = () => {
   const isLevelVisible = (level) => {
     return level <= getMaxVisibleLevel();
   };
- 
+
   // Add this new function for handling Save & Proceed
-   const handleSaveAndProceed = async () => {
+  const handleSaveAndProceed = async () => {
     try {
       // Validate that user has made selections
       if (!hasAllLevelsSelected()) {
@@ -95,12 +96,12 @@ const FunctionalScope = () => {
       });
  
       // Save functional scope
-      await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
+        await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
  
-      // Navigate to Non Functional Scope page and pass data
-      navigate('/decision-tree/non-functional-scope', { 
+      // Navigate to Retail Non Functional Scope page and pass data
+      navigate('/decision-tree/agnostic-non-functional-scope', { 
         state: { 
-          fromFunctionalScope: true,
+          fromAgnosticFunctionalScope: true,
           selectedData: functionalScopeData
         }
       });
@@ -399,16 +400,16 @@ const FunctionalScope = () => {
           <span>›</span>
           <span className="breadcrumb-link " style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="breadcrumb-current">Functional Scope</span>
+          <span className="breadcrumb-current">Agnostic Functional Scope</span>
         </div>
       </div>
  
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
-          <h2 className="sidebar-title">Functional Scope</h2>
+          <h2 className="sidebar-title">Agnostic Functional Scope</h2>
           <p className="sidebar-description">
-            Structured framework for selecting functional requirements,
+            Industry-agnostic structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
  
@@ -476,7 +477,7 @@ const FunctionalScope = () => {
  
           {/* Functional Scope Header and Select Level View */}
           <div className="title-section">
-            <h1 className="page-title">Functional Scope</h1>
+            <h1 className="page-title">Agnostic Functional Scope</h1>
  
             <div className="level-controls">
               <div className="level-control-row">
@@ -537,7 +538,7 @@ const FunctionalScope = () => {
           onClick={handleSaveAndProceed}
           disabled={loading || !hasAllLevelsSelected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8bcf6' : '#e5e7eb',
+          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
           color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
           cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
           opacity: hasAllLevelsSelected() ? 1 : 0.6
@@ -609,4 +610,4 @@ const FunctionalScope = () => {
   );
 };
  
-export default FunctionalScope;
+export default AgnosticFunctionalScope;
