@@ -1,40 +1,238 @@
-/*package com.example.DigitalWayfinder.controller;
+package com.example.DigitalWayfinder.controller;
 
-import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.DigitalWayfinder.dto.DataCloudRequest;
+import com.example.DigitalWayfinder.dto.QuestionnaireResponse;
+import com.example.DigitalWayfinder.dto.SaveAnswersRequest;
+import com.example.DigitalWayfinder.dto.SaveAnswersResponse;
+import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.service.QuestionnaireService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+
 @RestController
-@RequestMapping("/api/questionnaire")
+@RequestMapping("api/digital-wayfinder/questionnaire")
+@RequiredArgsConstructor
+@Slf4j
+@CrossOrigin(origins = "*")
 public class QuestionnaireController {
-
-    @Autowired QuestionnaireService dataCloudService;
-    @PostMapping("/data-cloud")
-    public Map<String, String> submitResponses(@RequestBody DataCloudRequest request) {
-        return dataCloudService.saveResponses(request);
+    
+    private final QuestionnaireService questionnaireService;
+    
+    @GetMapping("/data-cloud/get-questions")
+    public ResponseEntity<QuestionnaireResponse> getDataCloudQuestions(
+            @RequestParam @NotBlank(message = "functionalSubArea is required") String functionalSubArea,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Data & Cloud questions - functionalSubArea: {}, user: {}, session: {}", 
+                functionalSubArea, userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            QuestionnaireResponse response = questionnaireService.getDataCloudQuestions(
+                    functionalSubArea, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning questions for functionalSubArea: {}", functionalSubArea);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid functionalSubArea provided: {}", functionalSubArea);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error fetching Data & Cloud questions for functionalSubArea: {}", functionalSubArea, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GetMapping("/operational-innovations/get-questions")
+    public ResponseEntity<QuestionnaireResponse> getOperationalInnovationsQuestions(
+            @RequestParam @NotBlank(message = "functionalSubArea is required") String functionalSubArea,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Operational Innovations questions - functionalSubArea: {}, user: {}, session: {}", 
+                functionalSubArea, userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            QuestionnaireResponse response = questionnaireService.getOperationalInnovationsQuestions(
+                    functionalSubArea, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning questions for functionalSubArea: {}", functionalSubArea);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid functionalSubArea provided: {}", functionalSubArea);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error fetching Operational Innovations questions for functionalSubArea: {}", functionalSubArea, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GetMapping("/visibility-proactive/get-questions")
+    public ResponseEntity<QuestionnaireResponse> getVisibilityProactiveQuestions(
+            @RequestParam @NotBlank(message = "functionalSubArea is required") String functionalSubArea,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Visibility & Proactive Planning questions - functionalSubArea: {}, user: {}, session: {}", 
+                functionalSubArea, userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            QuestionnaireResponse response = questionnaireService.getVisibilityProactiveQuestions(
+                    functionalSubArea, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning questions for functionalSubArea: {}", functionalSubArea);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid functionalSubArea provided: {}", functionalSubArea);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error fetching Visibility & Proactive Planning questions for functionalSubArea: {}", functionalSubArea, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GetMapping("/genai/get-questions")
+    public ResponseEntity<QuestionnaireResponse> getGenAIQuestions(
+            @RequestParam @NotBlank(message = "functionalSubArea is required") String functionalSubArea,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Agentic AI questions - functionalSubArea: {}, user: {}, session: {}", 
+                functionalSubArea, userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            QuestionnaireResponse response = questionnaireService.getAgenticAIQuestions(
+                    functionalSubArea, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning questions for functionalSubArea: {}", functionalSubArea);
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid functionalSubArea provided: {}", functionalSubArea);
+            return ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            log.error("Error fetching Agentic AI questions for functionalSubArea: {}", functionalSubArea, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @PostMapping("/operational-innovations")
-    public Map<String, String> submitResponses(@RequestBody OpInnovatn request) {
-        return dataCloudService.saveResponses(request);
+       @PostMapping("/data-cloud/save-answers")
+    public ResponseEntity<SaveAnswersResponse> saveDataCloudAnswers(
+            @Valid @RequestBody SaveAnswersRequest request,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request to save Data & Cloud answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            SaveAnswersResponse response = questionnaireService.saveDataCloudAnswers(
+                    request, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully saved {} Data & Cloud answers", response.getSavedCount());
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (Exception e) {
+            log.error("Error saving Data & Cloud answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
-    @PostMapping("/visibility-proactive")
-    public Map<String, String> submitResponses(@RequestBody VisbProact request) {
-        return dataCloudService.saveResponses(request);
+    
+    @PostMapping("/operational-innovations/save-answers")
+    public ResponseEntity<SaveAnswersResponse> saveOperationalInnovationsAnswers(
+            @Valid @RequestBody SaveAnswersRequest request,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request to save Operational Innovations answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            SaveAnswersResponse response = questionnaireService.saveOperationalInnovationsAnswers(
+                    request, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully saved {} Operational Innovations answers", response.getSavedCount());
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (Exception e) {
+            log.error("Error saving Operational Innovations answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
-    @PostMapping("/generative-ai")
-    public Map<String, String> submitResponses(@RequestBody GebAI request) {
-        return dataCloudService.saveResponses(request);
+    
+    @PostMapping("/visibility-proactive/save-answers")
+    public ResponseEntity<SaveAnswersResponse> saveVisibilityProactiveAnswers(
+            @Valid @RequestBody SaveAnswersRequest request,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request to save Visibility & Proactive Planning answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            SaveAnswersResponse response = questionnaireService.saveVisibilityProactiveAnswers(
+                    request, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully saved {} Visibility & Proactive Planning answers", response.getSavedCount());
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (Exception e) {
+            log.error("Error saving Visibility & Proactive Planning answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
-
+    
+    @PostMapping("/genai/save-answers")
+    public ResponseEntity<SaveAnswersResponse> saveGenAIAnswers(
+            @Valid @RequestBody SaveAnswersRequest request,
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request to save Agentic AI answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            SaveAnswersResponse response = questionnaireService.saveAgenticAIAnswers(
+                    request, 
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully saved {} Agentic AI answers", response.getSavedCount());
+            
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            
+        } catch (Exception e) {
+            log.error("Error saving Agentic AI answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
-*/

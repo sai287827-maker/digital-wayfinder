@@ -16,7 +16,7 @@ const Solution = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await apiGet('api/decision-tree/functional-scope/solution/all');
+        const data = await apiGet(`api/decision-tree/functional-scope/solution/all?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
         setSolutionData(data);
       } catch (err) {
         setError('Failed to fetch solutions.');
