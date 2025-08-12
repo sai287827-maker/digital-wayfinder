@@ -12,5 +12,5 @@ public class FunctionalScopeDto {
     private String l2;
     private String l3;
     private String l4;
-    // private String l5;
+    private String l5;
 }

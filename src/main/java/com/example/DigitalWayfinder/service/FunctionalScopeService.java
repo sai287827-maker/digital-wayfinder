@@ -138,8 +138,8 @@ public class FunctionalScopeService {
                 (String) row[0],  // l1
                 (String) row[1],  // l2
                 (String) row[2],  // l3
-                (String) row[3] // l4
-                // (String) row[4]   // l5
+                (String) row[3],  // l4
+                (String) row[4]   // l5
 
         );
     }

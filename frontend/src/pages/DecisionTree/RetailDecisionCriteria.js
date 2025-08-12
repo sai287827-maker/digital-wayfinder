@@ -21,7 +21,7 @@ const RetailDecisionCriteria = () => {
       setError(null);
       try {
         // Fetch decision criteria and mapping data (single API)
-        const response = await apiGet('api/decision-tree/retail/decision-criteria/get-details');
+        const response = await apiGet('api/decision-tree/functional-scope/decision-criteria/get-details');
         // Map criteria and mapping data from response
         setCriteria(response.criteria || []);
         setMappingData({
