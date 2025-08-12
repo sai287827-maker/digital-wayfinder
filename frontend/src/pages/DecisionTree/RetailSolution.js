@@ -16,7 +16,7 @@ const RetailSolution = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await apiGet('api/decision-tree/retail-solution/all');
+        const data = await apiGet(`api/decision-tree/functional-scope/solution/all?industryType=${encodeURIComponent('Retail Industry Specific')}`);
         setSolutionData(data);
       } catch (err) {
         setError('Failed to fetch retail solutions.');

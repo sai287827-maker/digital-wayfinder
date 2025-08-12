@@ -93,7 +93,7 @@ function FuncAreaPage() {
       }
  
       if (selectedArea === 'supply-chain-planning') {
-        navigate('/decision-tree/industry-type-planning', {
+        navigate('/decision-tree/industry-type-plannD', {
           state: {
             functionalArea: selectedArea,
           }
