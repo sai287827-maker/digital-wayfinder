@@ -10,6 +10,7 @@ import IndustryTypePlanning from './pages/DigitalWayFinderr/IndustryTypePlanning
 import IndustryTypePlanParts from './pages/DigitalWayFinderr/IndustryTypePlanParts';
 import WmsSystem from './pages/DigitalWayFinderr/WmsSystem';
 
+
 //Decision Tree imports
 import ProjectInfo from './pages/DecisionTree/ProjectInfo';
 import FuncAreaPage from './pages/DecisionTree/FuncAreaPage';
