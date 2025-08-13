@@ -12,15 +12,12 @@ const FunctionalScope = () => {
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  // const [showParameterModal, setShowParameterModal] = useState(false);
-  // const [parameterLevel, setParameterLevel] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setError(null);
       try {
-        // TODO: Use the correct endpoint based on the system/context
         const data = await apiGet('api/decision-tree/functional-scope/wms/all');
         setFunctionalScopeData(data);
       } catch (err) {
@@ -43,17 +40,15 @@ const FunctionalScope = () => {
     for (let level = 1; level <= 4; level++) {
       const levelKey = `l${level}`;
       if (!levelSelections[levelKey] || levelSelections[levelKey].length === 0) {
-        return level; // Return the first level without selections
+        return level;
       }
     }
-    return 4; // All levels have selections
+    return 4;
   };
 
   // Check if a level should be enabled (visible and clickable)
   const isLevelEnabled = (level) => {
-    if (level === 1) return true; // Level 1 is always enabled
-   
-    // Check if previous level has selections
+    if (level === 1) return true;
     const prevLevelKey = `l${level - 1}`;
     return levelSelections[prevLevelKey] && levelSelections[prevLevelKey].length > 0;
   };
@@ -66,7 +61,6 @@ const FunctionalScope = () => {
   // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
-      // Validate that user has made selections from Level 4
       if (!hasLevel4Selected()) {
         setError('Please select at least one option from Level 4 before proceeding.');
         setTimeout(() => setError(null), 3000);
@@ -75,7 +69,6 @@ const FunctionalScope = () => {
 
       setLoading(true);
 
-      // Prepare data for API
       const functionalScopeData = {
         selectedItems,
         levelSelections,
@@ -92,10 +85,8 @@ const FunctionalScope = () => {
         timestamp: new Date().toISOString()
       });
 
-      // Save functional scope
       await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
 
-      // Navigate to Non Functional Scope page and pass data
       navigate('/decision-tree/non-functional-scope', { 
         state: { 
           fromFunctionalScope: true,
@@ -112,20 +103,7 @@ const FunctionalScope = () => {
     }
   };
 
-  // Fixed filter data function - now searches across all fields properly
-  const getFilteredData = () => {
-    if (!searchQuery.trim()) return functionalScopeData;
-   
-    const query = searchQuery.toLowerCase().trim();
-    return functionalScopeData.filter(item =>
-      (item.l1 && item.l1.toLowerCase().includes(query)) ||
-      (item.l2 && item.l2.toLowerCase().includes(query)) ||
-      (item.l3 && item.l3.toLowerCase().includes(query)) ||
-      (item.l4 && item.l4.toLowerCase().includes(query))
-    );
-  };
-
-  // Fixed getLevelItems function to handle search properly
+  // FIXED: More precise search that only searches the current level items
   const getLevelItems = (level) => {
     // Start with original data for level hierarchy
     let levelData = functionalScopeData;
@@ -160,16 +138,12 @@ const FunctionalScope = () => {
       }
     });
 
-    // Now apply search filter to the unique items if search query exists
+    // FIXED: Apply search filter only to the current level items, not across all levels
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       return uniqueItems.filter(item => 
-        item.name.toLowerCase().includes(query) ||
-        // Also check if any related data in the full item matches
-        item.fullItem.l1.toLowerCase().includes(query) ||
-        item.fullItem.l2.toLowerCase().includes(query) ||
-        item.fullItem.l3.toLowerCase().includes(query) ||
-        item.fullItem.l4.toLowerCase().includes(query)
+        // Only search in the current level's name, not across all hierarchy levels
+        item.name.toLowerCase().includes(query)
       );
     }
    
@@ -184,7 +158,7 @@ const FunctionalScope = () => {
         return level;
       }
     }
-    return 1; // Default to level 1 if no selections
+    return 1;
   };
 
   const handleItemSelect = (item, level) => {
@@ -213,11 +187,10 @@ const FunctionalScope = () => {
    
     setSelectedPath(newSelectedPath);
    
-    // Auto-advance logic - move to next level when selecting (if not last level)
+    // Auto-advance logic
     if (currentSelections.length > 0 && level < 4) {
       setSelectedLevel(level + 1);
     } else if (currentSelections.length === 0 && level > 1) {
-      // Move backward when deselecting - go to previous level
       setSelectedLevel(level - 1);
     }
    
@@ -247,7 +220,6 @@ const FunctionalScope = () => {
   };
 
   const getItemNumber = (level, item) => {
-    // Always use original data for numbering, not filtered data
     const fullItem = functionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
@@ -257,7 +229,6 @@ const FunctionalScope = () => {
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
      
-      // Get Level 1 items from original data
       const l1Items = [];
       const l1Seen = new Set();
       functionalScopeData.forEach(dataItem => {
@@ -478,15 +449,6 @@ const FunctionalScope = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
             </div>
-
-            {/* <div className="header-buttons">
-              <button
-                className="parameter-button"
-                onClick={() => setShowParameterModal(true)}
-              >
-                Select Parameters
-              </button>
-            </div> */}
           </div>
 
           {/* Functional Scope Header and Select Level View */}
@@ -506,7 +468,6 @@ const FunctionalScope = () => {
 
                 <div className="level-buttons">
                   {[1, 2, 3, 4].map((level) => {
-                    // Check if this level should be enabled
                     const isLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
                     const hasSelections = levelSelections[`l${level}`] && levelSelections[`l${level}`].length > 0;
                    
@@ -539,8 +500,7 @@ const FunctionalScope = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      {/* Save & Proceed Button - Moved to right side */}
+      {/* Save & Proceed Button */}
       <div className="save-proceed-container" style={{
         display: 'flex',
         justifyContent: 'flex-end',
@@ -561,65 +521,6 @@ const FunctionalScope = () => {
           {loading ? 'Saving...' : 'Save & Proceed'}
         </button>
       </div>
-
-      {/* Parameter Modal */}
-      {/* {showParameterModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-header">
-              Select Parameters
-              <button
-                onClick={() => setShowParameterModal(false)}
-                className="modal-close"
-              >
-                &times;
-              </button>
-            </h2>
-
-            <div>
-              <div className="modal-section-title">Process Granularity</div>
-              {[1, 2, 3, 4].map((level) => {
-                // For parameter modal: Level 1 is always enabled, others need previous level selections
-                const isParameterLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
-               
-                return (
-                  <label
-                    key={level}
-                    className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
-                    style={{
-                      opacity: isParameterLevelEnabled ? 1 : 0.4,
-                      cursor: isParameterLevelEnabled ? 'pointer' : 'not-allowed'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="parameterLevel"
-                      value={level}
-                      checked={parameterLevel === level}
-                      onChange={() => isParameterLevelEnabled ? setParameterLevel(level) : null}
-                      disabled={!isParameterLevelEnabled}
-                      className="modal-radio"
-                    />
-                    Level {level}
-                  </label>
-                );
-              })}
-            </div>
-
-            <div className="modal-footer">
-              <button
-                onClick={() => {
-                  setSelectedLevel(parameterLevel);
-                  setShowParameterModal(false);
-                }}
-                className="modal-save-button"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };
