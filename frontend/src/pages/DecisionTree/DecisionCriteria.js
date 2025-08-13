@@ -176,26 +176,40 @@ const DecisionCriteria = () => {
                       {c.id === 'functional' && mappingData?.functional?.levelSelections && (
                         <div className="dc-data-display">
                           <p><strong>Functional Level Selections:</strong></p>
-                          <ul>
-                            {Object.entries(mappingData.functional.levelSelections).map(([level, selections]) => (
-                              <li key={level}>
-                                <strong>{level.toUpperCase()}:</strong> {selections.length === 0 ? 'None' : selections.join(', ')}
-                              </li>
-                            ))}
-                          </ul>
+                          {Object.entries(mappingData.functional.levelSelections).map(([level, selections]) => (
+                            <div key={level} className="dc-level-selections">
+                              <strong>{level.toUpperCase()}:</strong>
+                              {selections.length === 0 ? (
+                                <span className="dc-no-selections">None</span>
+                              ) : (
+                                <ul className="dc-selections-list">
+                                  {selections.map((selection, index) => (
+                                    <li key={index} className="dc-selection-item">{selection}</li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       )}
                       {/* Show mapped data for Non-Functional Scope */}
                       {c.id === 'nonFunctional' && mappingData?.nonFunctional?.levelSelections && (
                         <div className="dc-data-display">
                           <p><strong>Non-Functional Level Selections:</strong></p>
-                          <ul>
-                            {Object.entries(mappingData.nonFunctional.levelSelections).map(([level, selections]) => (
-                              <li key={level}>
-                                <strong>{level.toUpperCase()}:</strong> {selections.length === 0 ? 'None' : selections.join(', ')}
-                              </li>
-                            ))}
-                          </ul>
+                          {Object.entries(mappingData.nonFunctional.levelSelections).map(([level, selections]) => (
+                            <div key={level} className="dc-level-selections">
+                              <strong>{level.toUpperCase()}:</strong>
+                              {selections.length === 0 ? (
+                                <span className="dc-no-selections">None</span>
+                              ) : (
+                                <ul className="dc-selections-list">
+                                  {selections.map((selection, index) => (
+                                    <li key={index} className="dc-selection-item">{selection}</li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       )}
                       {/* Show mapped data from previous Non-Functional page if available */}

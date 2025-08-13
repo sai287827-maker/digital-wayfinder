@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FunctionalScope.css';
 import { apiGet, apiPost } from '../../api';
- 
+
 const FunctionalScope = () => {
   const navigate = useNavigate();
   const [functionalScopeData, setFunctionalScopeData] = useState([]);
@@ -14,7 +14,7 @@ const FunctionalScope = () => {
   const [selectedLevel, setSelectedLevel] = useState(1);
   const [showParameterModal, setShowParameterModal] = useState(false);
   const [parameterLevel, setParameterLevel] = useState(1);
- 
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -31,15 +31,13 @@ const FunctionalScope = () => {
     }
     fetchData();
   }, []);
- 
-  // Check if user has selected from all 4 levels
-  const hasAllLevelsSelected = () => {
-    return [1, 2, 3, 4].every(level => {
-      const levelKey = `l${level}`;
-      return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
-    });
+
+  // Check if user has selected from Level 4 (enable save button after Level 4)
+  const hasLevel4Selected = () => {
+    const level4Key = 'l4';
+    return levelSelections[level4Key] && levelSelections[level4Key].length > 0;
   };
- 
+
   // Get the maximum level that should be visible based on selections
   const getMaxVisibleLevel = () => {
     for (let level = 1; level <= 4; level++) {
@@ -50,7 +48,7 @@ const FunctionalScope = () => {
     }
     return 4; // All levels have selections
   };
- 
+
   // Check if a level should be enabled (visible and clickable)
   const isLevelEnabled = (level) => {
     if (level === 1) return true; // Level 1 is always enabled
@@ -59,24 +57,24 @@ const FunctionalScope = () => {
     const prevLevelKey = `l${level - 1}`;
     return levelSelections[prevLevelKey] && levelSelections[prevLevelKey].length > 0;
   };
- 
+
   // Check if a level should be visible
   const isLevelVisible = (level) => {
     return level <= getMaxVisibleLevel();
   };
- 
+
   // Add this new function for handling Save & Proceed
-   const handleSaveAndProceed = async () => {
+  const handleSaveAndProceed = async () => {
     try {
-      // Validate that user has made selections
-      if (!hasAllLevelsSelected()) {
-        setError('Please select at least one option from each level before proceeding.');
+      // Validate that user has made selections from Level 4
+      if (!hasLevel4Selected()) {
+        setError('Please select at least one option from Level 4 before proceeding.');
         setTimeout(() => setError(null), 3000);
         return;
       }
- 
+
       setLoading(true);
- 
+
       // Prepare data for API
       const functionalScopeData = {
         selectedItems,
@@ -85,7 +83,7 @@ const FunctionalScope = () => {
         selectedLevel,
         timestamp: new Date().toISOString()
       };
- 
+
       console.log('Payload:', {
         selectedItems,
         levelSelections,
@@ -93,10 +91,10 @@ const FunctionalScope = () => {
         selectedLevel,
         timestamp: new Date().toISOString()
       });
- 
+
       // Save functional scope
       await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
- 
+
       // Navigate to Non Functional Scope page and pass data
       navigate('/decision-tree/non-functional-scope', { 
         state: { 
@@ -104,7 +102,7 @@ const FunctionalScope = () => {
           selectedData: functionalScopeData
         }
       });
- 
+
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save data. Please try again.');
@@ -113,24 +111,24 @@ const FunctionalScope = () => {
       setLoading(false);
     }
   };
- 
-  // Filter data based on search query
+
+  // Fixed filter data function - now searches across all fields properly
   const getFilteredData = () => {
-    if (!searchQuery) return functionalScopeData;
+    if (!searchQuery.trim()) return functionalScopeData;
    
+    const query = searchQuery.toLowerCase().trim();
     return functionalScopeData.filter(item =>
-      Object.values(item).some(value =>
-        value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      (item.l1 && item.l1.toLowerCase().includes(query)) ||
+      (item.l2 && item.l2.toLowerCase().includes(query)) ||
+      (item.l3 && item.l3.toLowerCase().includes(query)) ||
+      (item.l4 && item.l4.toLowerCase().includes(query))
     );
   };
- 
-  // Get unique items for a specific level based on selected path
+
+  // Fixed getLevelItems function to handle search properly
   const getLevelItems = (level) => {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) return [];
-   
-    let levelData = filteredData;
+    // Start with original data for level hierarchy
+    let levelData = functionalScopeData;
    
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
@@ -143,8 +141,8 @@ const FunctionalScope = () => {
         );
       }
     }
-   
-    // Get unique items for current level
+
+    // Get unique items for current level from hierarchy-filtered data
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
@@ -161,10 +159,23 @@ const FunctionalScope = () => {
         });
       }
     });
+
+    // Now apply search filter to the unique items if search query exists
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      return uniqueItems.filter(item => 
+        item.name.toLowerCase().includes(query) ||
+        // Also check if any related data in the full item matches
+        item.fullItem.l1.toLowerCase().includes(query) ||
+        item.fullItem.l2.toLowerCase().includes(query) ||
+        item.fullItem.l3.toLowerCase().includes(query) ||
+        item.fullItem.l4.toLowerCase().includes(query)
+      );
+    }
    
     return uniqueItems;
   };
- 
+
   // Helper function to get the highest level with selections
   const getHighestSelectedLevel = () => {
     for (let level = 4; level >= 1; level--) {
@@ -175,7 +186,7 @@ const FunctionalScope = () => {
     }
     return 1; // Default to level 1 if no selections
   };
- 
+
   const handleItemSelect = (item, level) => {
     const levelKey = `l${level}`;
     const newSelectedPath = { ...levelSelections };
@@ -224,36 +235,40 @@ const FunctionalScope = () => {
       }
     });
   };
- 
+
   const handleCheckboxChange = (item, level, e) => {
     e.stopPropagation();
     handleItemSelect(item, level);
   };
- 
+
   const handleInfoClick = (item, e) => {
     e.stopPropagation();
     console.log('Info clicked for:', item);
   };
- 
+
   const getItemNumber = (level, item) => {
-    const levelItems = getLevelItems(level);
-    const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-   
-    if (level === 1) {
-      return `${currentIndex + 1}.0`;
-    }
-   
+    // Always use original data for numbering, not filtered data
     const fullItem = functionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
    
-    if (!fullItem) return `${currentIndex + 1}`;
+    if (!fullItem) return `1.0`;
    
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
      
-      const l1Items = getLevelItems(1);
-      const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
+      // Get Level 1 items from original data
+      const l1Items = [];
+      const l1Seen = new Set();
+      functionalScopeData.forEach(dataItem => {
+        const value = dataItem.l1;
+        if (value && !l1Seen.has(value)) {
+          l1Seen.add(value);
+          l1Items.push(value);
+        }
+      });
+      
+      const l1Index = l1Items.findIndex(l1Item => l1Item === targetItem.l1);
       parts.push(l1Index + 1);
      
       for (let i = 2; i <= targetLevel; i++) {
@@ -299,12 +314,12 @@ const FunctionalScope = () => {
    
     return numberParts.join('.');
   };
- 
+
   const renderLevelColumn = (level, idx, totalColumns = 4) => {
     const levelItems = getLevelItems(level);
     const levelKey = `l${level}`;
     const isLevelActive = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
- 
+
     return (
       <div
         key={level}
@@ -320,7 +335,7 @@ const FunctionalScope = () => {
             </div>
           )}
         </div>
- 
+
         <div className="column-content">
           {!isLevelActive ? (
             <div className="column-placeholder">
@@ -338,7 +353,7 @@ const FunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              No items available
+              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
             </div>
           ) : (
             <div className="items-container">
@@ -389,7 +404,7 @@ const FunctionalScope = () => {
       </div>
     );
   };
- 
+
   return (
     <div className="functional-scope-container">
       {/* Breadcrumb */}
@@ -402,7 +417,7 @@ const FunctionalScope = () => {
           <span className="breadcrumb-current">Functional Scope</span>
         </div>
       </div>
- 
+
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
@@ -411,10 +426,10 @@ const FunctionalScope = () => {
             Structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
- 
+
           {/* Vertical line connecting all steps */}
           <div className="step-line"></div>
- 
+
           {/* Step indicators */}
           <div className="steps-container">
             <div className="step-item">
@@ -438,7 +453,7 @@ const FunctionalScope = () => {
             </div>
           </div>
         </div>
- 
+
         {/* Main Content Box */}
         <div className="main-content">
           {/* Header with search and parameters */}
@@ -463,7 +478,7 @@ const FunctionalScope = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
             </div>
- 
+
             <div className="header-buttons">
               <button
                 className="parameter-button"
@@ -473,22 +488,22 @@ const FunctionalScope = () => {
               </button>
             </div>
           </div>
- 
+
           {/* Functional Scope Header and Select Level View */}
           <div className="title-section">
             <h1 className="page-title">Functional Scope</h1>
- 
+
             <div className="level-controls">
               <div className="level-control-row">
                 <span className="level-label">Select Level View</span>
- 
+
                 <div className="level-progress">
                   <div
                     className="level-progress-fill"
                     style={{ width: `${(getHighestSelectedLevel()) / 4 * 100}%` }}
                   />
                 </div>
- 
+
                 <div className="level-buttons">
                   {[1, 2, 3, 4].map((level) => {
                     // Check if this level should be enabled
@@ -516,14 +531,14 @@ const FunctionalScope = () => {
               </div>
             </div>
           </div>
- 
+
           {/* Multi-column layout */}
           <div className="columns-container">
             {[1, 2, 3, 4].map((level, idx) => renderLevelColumn(level, idx, 4))}
           </div>
         </div>
       </div>
- 
+
       {/* Footer */}
       {/* Save & Proceed Button - Moved to right side */}
       <div className="save-proceed-container" style={{
@@ -533,20 +548,20 @@ const FunctionalScope = () => {
         paddingRight: '20px'
        }}>
         <button
-          className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
+          className={`proceed-button ${hasLevel4Selected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
-          disabled={loading || !hasAllLevelsSelected()}
+          disabled={loading || !hasLevel4Selected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8bcf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+          backgroundColor: hasLevel4Selected() ? '#8b5cf6' : '#e5e7eb',
+          color: hasLevel4Selected() ? 'white' : '#9ca3af',
+          cursor: hasLevel4Selected() ? 'pointer' : 'not-allowed',
+          opacity: hasLevel4Selected() ? 1 : 0.6
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
         </button>
       </div>
- 
+
       {/* Parameter Modal */}
       {showParameterModal && (
         <div className="modal-overlay">
@@ -560,7 +575,7 @@ const FunctionalScope = () => {
                 &times;
               </button>
             </h2>
- 
+
             <div>
               <div className="modal-section-title">Process Granularity</div>
               {[1, 2, 3, 4].map((level) => {
@@ -590,7 +605,7 @@ const FunctionalScope = () => {
                 );
               })}
             </div>
- 
+
             <div className="modal-footer">
               <button
                 onClick={() => {
@@ -608,5 +623,5 @@ const FunctionalScope = () => {
     </div>
   );
 };
- 
+
 export default FunctionalScope;
