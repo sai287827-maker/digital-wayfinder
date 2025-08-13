@@ -115,23 +115,10 @@ const RetailFunctionalScope = () => {
     }
   };
  
-  // Filter data based on search query
-  const getFilteredData = () => {
-    if (!searchQuery) return functionalScopeData;
-   
-    return functionalScopeData.filter(item =>
-      Object.values(item).some(value =>
-        value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
-  };
- 
-  // Get unique items for a specific level based on selected path
+  // FIXED: More precise search that only searches the current level items
   const getLevelItems = (level) => {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) return [];
-   
-    let levelData = filteredData;
+    // Start with original data for level hierarchy
+    let levelData = functionalScopeData;
    
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
@@ -144,8 +131,8 @@ const RetailFunctionalScope = () => {
         );
       }
     }
-   
-    // Get unique items for current level
+
+    // Get unique items for current level from hierarchy-filtered data
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
@@ -162,6 +149,15 @@ const RetailFunctionalScope = () => {
         });
       }
     });
+
+    // FIXED: Apply search filter only to the current level items, not across all levels
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      return uniqueItems.filter(item => 
+        // Only search in the current level's name, not across all hierarchy levels
+        item.name.toLowerCase().includes(query)
+      );
+    }
    
     return uniqueItems;
   };
@@ -341,7 +337,7 @@ const RetailFunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              No items available
+              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
             </div>
           ) : (
             <div className="items-container">
@@ -465,6 +461,25 @@ const RetailFunctionalScope = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
+              {/* Clear button - only show when there's text */}
+              {searchQuery.trim() && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="search-clear-button"
+                  title="Clear search"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="#6b7280"
+                    className="search-clear-icon"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
  
             {/* <div className="header-buttons">

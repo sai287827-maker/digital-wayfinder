@@ -1068,3 +1068,66 @@
     display: none;
   }
 }
+/* Search container styling updates */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 350px; /* Adjust as needed */
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 45px 12px 16px; /* Extra padding on right for icons */
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 35px; /* Position to left of clear button */
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* Clear button styling */
+.search-clear-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  z-index: 1;
+}
+
+.search-clear-button:hover {
+  background-color: #f3f4f6;
+}
+
+.search-clear-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Update columns container for 5 columns */
+.columns-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
