@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './AgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
+import WmsReport from './WmsReport';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -15,6 +16,7 @@ const AgenticAI = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [showWmsReport, setShowWmsReport] = useState(false);
   
   // State for API response data
   const [userId, setUserId] = useState('');
@@ -29,7 +31,7 @@ const AgenticAI = () => {
       try {
         console.log('Fetching Agentic AI questions...');
         const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-        
+
         console.log('Agentic AI API Response:', response);
 
         // Map the response structure
@@ -167,6 +169,12 @@ const AgenticAI = () => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
+
+  // Early return for navigation to WmsReport
+  if (showWmsReport) {
+    console.log('Navigating to WmsReport component, showWmsReport:', showWmsReport);
+    return <WmsReport />;
+  }
 
   if (loading) {
     return (

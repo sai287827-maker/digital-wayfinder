@@ -10,7 +10,7 @@
 
 }
  
-/* Sidebar styling */
+/* Sidebar styling - fixed width on the left */
 
 .sidebar {
 
@@ -26,15 +26,23 @@
 
   flex-shrink: 0; /* Prevents sidebar from shrinking */
 
+  position: fixed;
+
+  height: 100vh;
+
+  overflow-y: auto;
+
 }
  
-/* Main content area */
+/* Main content area - takes remaining space */
 
 .mainContent {
 
   flex: 1;
 
   padding: 24px;
+
+  margin-left: 300px; /* Same as sidebar width */
 
   overflow-y: auto;
 
@@ -469,6 +477,34 @@
   font-size: 16px;
 
   margin-bottom: 16px;
+
+}
+ 
+/* Responsive design */
+
+@media (max-width: 768px) {
+
+  .container {
+
+    flex-direction: column;
+
+  }
+
+  .sidebar {
+
+    position: relative;
+
+    width: 100%;
+
+    height: auto;
+
+  }
+
+  .mainContent {
+
+    margin-left: 0;
+
+  }
 
 }
  
