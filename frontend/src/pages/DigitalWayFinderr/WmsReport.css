@@ -1,0 +1,366 @@
+/* WMS Report Styles */
+
+.assessment-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb-wrapper {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.breadcrumb-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+}
+
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-link {
+  color: #2563eb;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumb-link:hover {
+  color: #1d4ed8;
+}
+
+.breadcrumb-separator {
+  color: #9ca3af;
+}
+
+.breadcrumb-current {
+  color: #111827;
+}
+
+/* Main Content */
+.main-content {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Header */
+.header-section {
+  margin-bottom: 2rem;
+}
+
+.main-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.main-description {
+  color: #4b5563;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+/* Report Cards */
+.report-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.report-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.report-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.report-card-content {
+  display: flex;
+}
+
+/* Image Section */
+.image-section {
+  flex-shrink: 0;
+  width: 20rem;
+  height: 12rem;
+  background: linear-gradient(to bottom right, #1e3a8a, #1e40af);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+}
+
+/* Visual Icons */
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-wrapper {
+  position: relative;
+}
+
+/* Operations Icon */
+.operations-icon {
+  width: 5rem;
+  height: 5rem;
+  border: 4px solid #22d3ee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.operations-icon-inner {
+  width: 3rem;
+  height: 3rem;
+  background-color: #22d3ee;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.operations-line {
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4rem;
+  height: 0.25rem;
+  background-color: #22d3ee;
+}
+
+/* Operational Innovations Icon */
+.innovations-icon {
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid #22d3ee;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.innovations-icon-center {
+  width: 2rem;
+  height: 2rem;
+  background-color: #22d3ee;
+  border-radius: 50%;
+}
+
+.innovations-dot-1 {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #a855f7;
+  border-radius: 50%;
+}
+
+.innovations-dot-2 {
+  position: absolute;
+  bottom: -0.25rem;
+  left: -0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: #22c55e;
+  border-radius: 50%;
+}
+
+/* Agentic AI Icon */
+.ai-icon {
+  width: 5rem;
+  height: 5rem;
+  background: linear-gradient(to bottom right, #8b5cf6, #ec4899);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-icon-inner {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-icon-center {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.ai-dot-1 {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: #fbbf24;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.ai-dot-2 {
+  position: absolute;
+  bottom: -0.25rem;
+  left: -0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: #60a5fa;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+/* Content Section */
+.content-section {
+  flex: 1;
+  padding: 2rem;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Category */
+.category-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.category-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Gaps and Solutions */
+.section-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.tag-gap {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.tag-solution {
+  background-color: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+/* Download Button */
+.download-section {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.download-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: 500;
+  background: linear-gradient(to right, #9333ea, #7c3aed);
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  transform: scale(1);
+}
+
+.download-button:hover {
+  background: linear-gradient(to right, #7c3aed, #6d28d9);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.download-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .report-card-content {
+    flex-direction: column;
+  }
+  
+  .image-section {
+    width: 100%;
+    height: 8rem;
+  }
+  
+  .content-section {
+    padding: 1.5rem;
+  }
+  
+  .main-content {
+    padding: 1rem;
+  }
+  
+  .breadcrumb-container {
+    padding: 1rem;
+  }
+}
