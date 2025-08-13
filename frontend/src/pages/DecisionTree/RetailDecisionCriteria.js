@@ -70,6 +70,51 @@ const RetailDecisionCriteria = () => {
       }
     });
   };
+
+  // Render hierarchical tree items based on mapping data (supports 5 levels for retail)
+  const renderTreeItems = (levelSelections, type) => {
+    if (!levelSelections || Object.keys(levelSelections).length === 0) {
+      return <div className="rdc-no-data">No selections available</div>;
+    }
+
+    const renderLevel = (level, selections, parentNumber = '') => {
+      return selections.map((selection, index) => {
+        const itemNumber = parentNumber ? `${parentNumber}.${index + 1}` : `${index + 1}.0`;
+        const itemId = `${type}-${level}-${index}`;
+        
+        return (
+          <div key={itemId} className={`rdc-tree-item level-${level}`}>
+            <div className="rdc-tree-item-content">
+              <div className="rdc-tree-indicator">
+                <div className={`rdc-tree-dot level-${level}`}></div>
+              </div>
+              <div className="rdc-tree-text">
+                <span className="rdc-item-number">{itemNumber}</span>
+                <span className="rdc-item-label">{selection}</span>
+              </div>
+              <div className="rdc-tree-checkbox">
+                <input
+                  type="checkbox"
+                  checked={true}
+                  onChange={() => {}}
+                  className="rdc-scope-checkbox"
+                />
+              </div>
+            </div>
+          </div>
+        );
+      });
+    };
+
+    return (
+      <div className="rdc-tree-items">
+        {Object.entries(levelSelections).map(([level, selections]) => {
+          const levelNum = parseInt(level.replace('l', ''));
+          return renderLevel(levelNum, selections);
+        })}
+      </div>
+    );
+  };
  
   return (
     <div className="retail-decision-criteria-container">
@@ -80,141 +125,128 @@ const RetailDecisionCriteria = () => {
           <span>›</span>
           <span className="rdc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="rdc-breadcrumb-current">Decision Criteria</span>
+          <span className="rdc-breadcrumb-current">Retail Functional Scope</span>
         </div>
       </div>
  
       <div className="rdc-main-layout">
         {/* Left Sidebar Box */}
         <div className="rdc-left-sidebar">
-          <h2 className="rdc-sidebar-title">Decision Criteria</h2>
+          <h2 className="rdc-sidebar-title">Retail Functional Scope</h2>
           <p className="rdc-sidebar-description">
-            Structured framework for selecting functional requirements,
+            Retail-specific structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
- 
-          {/* Vertical line connecting all steps */}
-          <div className="rdc-step-line"></div>
  
           {/* Step indicators */}
           <div className="rdc-steps-container">
             <div className="rdc-step-item">
-              <div className="rdc-step-circle rdc-completed">
-                <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <span className="rdc-step-text rdc-completed">Functional Scope</span>
+              <div className="rdc-step-number completed">1</div>
+              <span className="rdc-step-text completed">Functional Scope</span>
             </div>
            
             <div className="rdc-step-item">
-              <div className="rdc-step-circle rdc-completed">
-                <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <span className="rdc-step-text rdc-completed">Non Functional</span>
+              <div className="rdc-step-number active">2</div>
+              <span className="rdc-step-text active">Decision Criteria</span>
             </div>
            
             <div className="rdc-step-item">
-              <div className="rdc-step-circle rdc-active">3</div>
-              <span className="rdc-step-text rdc-active">Reviews</span>
-            </div>
-           
-            <div className="rdc-step-item">
-              <div className="rdc-step-circle rdc-inactive">4</div>
-              <span className="rdc-step-text rdc-inactive">Solution</span>
+              <div className="rdc-step-number inactive">3</div>
+              <span className="rdc-step-text inactive">Solution</span>
             </div>
           </div>
         </div>
  
         {/* Main Content Box */}
         <div className="rdc-main-content">
-          {/* Decision Criteria Header */}
-          <div className="rdc-title-section">
-            <h1 className="rdc-page-title"> Review </h1>
+          {/* Header */}
+          <div className="rdc-header">
+            <h1 className="rdc-page-title">Decision Criteria</h1>
+            <div className="rdc-header-buttons">
+              <button className="rdc-header-button outline">Define Weightage</button>
+              <button className="rdc-header-button outline">Custom Criteria</button>
+              <button className="rdc-header-button filled">Select Parameters</button>
+            </div>
+          </div>
+
+          {/* Content Header */}
+          <div className="rdc-content-header">
+            <div className="rdc-content-title">Decision Criteria</div>
+            <div className="rdc-content-scope">In-Scope</div>
           </div>
  
-          {/* Table Container */}
-          <div className="rdc-table-container">
-            <div className="rdc-table-header">
-              <div className="rdc-header-criteria">Scope Reviews</div>
-              <div className="rdc-header-scope">In-Scope</div>
-            </div>
-            <div className="rdc-table-content">
-              {loading ? (
-                <div className="loading-text">Loading...</div>
-              ) : error ? (
-                <div className="error-message">{error}</div>
-              ) : criteria.map((c) => (
-                <React.Fragment key={c.id}>
-                  <div className="rdc-table-row">
-                    <div className="rdc-criteria-cell">
+          {/* Tree Container */}
+          <div className="rdc-tree-container">
+            {loading ? (
+              <div className="loading-text">Loading...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <>
+                {/* Functional Section */}
+                <div className="rdc-main-category">
+                  <div className="rdc-category-header">
+                    <div className="rdc-category-content">
                       <button
-                        onClick={() => toggleExpand(c.id)}
+                        onClick={() => toggleExpand('functional')}
                         className="rdc-expand-button"
-                        aria-label={expanded[c.id] ? "Collapse" : "Expand"}
-                        type="button"
+                        aria-label={expanded.functional ? "Collapse" : "Expand"}
                       >
-                        {expanded[c.id] ? "−" : "+"}
+                        {expanded.functional ? "−" : "+"}
                       </button>
-                      <span className="rdc-criteria-label">{c.label}</span>
+                      <span className="rdc-category-label">Functional</span>
                     </div>
-                    <div className="rdc-scope-cell">
+                    <div className="rdc-category-checkbox">
                       <input
                         type="checkbox"
-                        checked={c.inScope}
-                        onChange={e => handleInScopeChange(c.id, e.target.checked)}
-                        className="rdc-scope-checkbox"
+                        checked={criteria.find(c => c.id === 'functional')?.inScope || true}
+                        onChange={e => handleInScopeChange('functional', e.target.checked)}
+                        className="rdc-scope-checkbox main"
                       />
                     </div>
                   </div>
-                  {expanded[c.id] && (
-                    <div className="rdc-expanded-content">
-                      Additional details for <b>{c.label}</b> criteria.
-                      {/* Show mapped data for Functional Scope */}
-                      {c.id === 'functional' && mappingData?.functional?.levelSelections && (
-                        <div className="rdc-data-display">
-                          <p><strong>Functional Level Selections:</strong></p>
-                          <ul>
-                            {Object.entries(mappingData.functional.levelSelections).map(([level, selections]) => (
-                              <li key={level}>
-                                <strong>{level.toUpperCase()}:</strong> {selections.length === 0 ? 'None' : selections.join(', ')}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {/* Show mapped data for Non-Functional Scope */}
-                      {c.id === 'nonFunctional' && mappingData?.nonFunctional?.levelSelections && (
-                        <div className="rdc-data-display">
-                          <p><strong>Non-Functional Level Selections:</strong></p>
-                          <ul>
-                            {Object.entries(mappingData.nonFunctional.levelSelections).map(([level, selections]) => (
-                              <li key={level}>
-                                <strong>{level.toUpperCase()}:</strong> {selections.length === 0 ? 'None' : selections.join(', ')}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {/* Show mapped data from previous Non-Functional page if available */}
-                      {c.id === 'nonFunctional' && fromNonFunctionalScope && levelSelections && (
-                        <div className="rdc-data-display">
-                          <p><strong>Selections from Non-Functional Scope (Previous Page):</strong></p>
-                          <pre className="rdc-data-pre">
-                            {JSON.stringify(levelSelections, null, 2)}
-                          </pre>
-                        </div>
-                      )}
+                  
+                  {expanded.functional && mappingData?.functional?.levelSelections && (
+                    <div className="rdc-category-content-expanded">
+                      {renderTreeItems(mappingData.functional.levelSelections, 'functional')}
                     </div>
                   )}
-                </React.Fragment>
-              ))}
-            </div>
+                </div>
+
+                {/* Non-Functional Section */}
+                <div className="rdc-main-category">
+                  <div className="rdc-category-header">
+                    <div className="rdc-category-content">
+                      <button
+                        onClick={() => toggleExpand('nonFunctional')}
+                        className="rdc-expand-button"
+                        aria-label={expanded.nonFunctional ? "Collapse" : "Expand"}
+                      >
+                        {expanded.nonFunctional ? "−" : "+"}
+                      </button>
+                      <span className="rdc-category-label">Non Functional</span>
+                    </div>
+                    <div className="rdc-category-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={criteria.find(c => c.id === 'nonFunctional')?.inScope || true}
+                        onChange={e => handleInScopeChange('nonFunctional', e.target.checked)}
+                        className="rdc-scope-checkbox main"
+                      />
+                    </div>
+                  </div>
+                  
+                  {expanded.nonFunctional && mappingData?.nonFunctional?.levelSelections && (
+                    <div className="rdc-category-content-expanded">
+                      {renderTreeItems(mappingData.nonFunctional.levelSelections, 'nonFunctional')}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
  
-          {/* Footer buttons inside main content */}
+          {/* Footer buttons */}
           <div className="rdc-footer-buttons-container">
             <div className="rdc-footer-content">
               <button
