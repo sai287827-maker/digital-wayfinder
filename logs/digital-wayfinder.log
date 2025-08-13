@@ -21994,3 +21994,108 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2025-08-13 12:20:40 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 2025-08-13 12:20:40 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 2025-08-13 12:20:40 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/decision-criteria/get-details", parameters={}
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.DecisionCriteriaController#getDecisionCriteria(DecisionCriteriaRequest, UserSession)
+2025-08-13 12:20:43 [http-nio-8080-exec-10] INFO  c.e.D.c.DecisionCriteriaController - Received decision criteria request for user: USER-E8B20088 and session: AC20ACACF8764C63A78010FFF78F6510
+2025-08-13 12:20:43 [http-nio-8080-exec-10] INFO  c.e.D.s.DecisionCriteriaService - Fetching decision criteria for user: USER-E8B20088 and session: AC20ACACF8764C63A78010FFF78F6510
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        ufp1_0.id,
+        ufp1_0.FunctionalArea,
+        ufp1_0.FunctionalSubArea,
+        ufp1_0.IndustryType,
+        ufp1_0.L1,
+        ufp1_0.L2,
+        ufp1_0.L3,
+        ufp1_0.L4,
+        ufp1_0.L5,
+        ufp1_0.SessionID,
+        ufp1_0.UserID 
+    from
+        UserFunctionalProcess ufp1_0 
+    where
+        ufp1_0.UserID=? 
+        and ufp1_0.SessionID=?
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        unfp1_0.id,
+        unfp1_0.FunctionalArea,
+        unfp1_0.FunctionalSubArea,
+        unfp1_0.IndustryType,
+        unfp1_0.L1,
+        unfp1_0.L2,
+        unfp1_0.L3,
+        unfp1_0.L4,
+        unfp1_0.L5,
+        unfp1_0.SessionID,
+        unfp1_0.UserID 
+    from
+        UserNonFuncProcess unfp1_0 
+    where
+        unfp1_0.UserID=? 
+        and unfp1_0.SessionID=?
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-13 12:20:43 [http-nio-8080-exec-10] INFO  c.e.D.s.DecisionCriteriaService - Successfully retrieved decision criteria for user: USER-E8B20088 and session: AC20ACACF8764C63A78010FFF78F6510
+2025-08-13 12:20:43 [http-nio-8080-exec-10] INFO  c.e.D.c.DecisionCriteriaController - Successfully retrieved decision criteria for user: USER-E8B20088 and session: AC20ACACF8764C63A78010FFF78F6510
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [DecisionCriteriaResponse(userId=USER-E8B20088, sessionId=AC20ACACF8764C63A78010FFF78F6510, functiona (truncated)...]
+2025-08-13 12:20:43 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:21:03 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/solution/all?functionalSubArea=Warehouse%20Management%20System", parameters={masked}
+2025-08-13 12:21:03 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.PlatformSolutionController#getAllPlatformSolutions(String, String, String)
+2025-08-13 12:21:03 [http-nio-8080-exec-3] INFO  c.e.D.c.PlatformSolutionController - GET request received for platform solutions with filters
+2025-08-13 12:21:03 [http-nio-8080-exec-3] INFO  c.e.D.s.PlatformSolutionService - Fetching platforms with filters - functionalArea: null, industryType: null, functionalSubArea: Warehouse Management System
+2025-08-13 12:21:03 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        isp1_0.[Key],
+        isp1_0.FunctionalArea,
+        isp1_0.FunctionalSubArea,
+        isp1_0.IndustryType,
+        isp1_0.PlatformImage,
+        isp1_0.PlatformName 
+    from
+        InScopePlatforms isp1_0 
+    where
+        (
+            ? is null 
+            or isp1_0.FunctionalArea=?
+        ) 
+        and (
+            ? is null 
+            or isp1_0.IndustryType=?
+        ) 
+        and (
+            ? is null 
+            or isp1_0.FunctionalSubArea=?
+        )
+2025-08-13 12:21:03 [http-nio-8080-exec-3] INFO  c.e.D.s.PlatformSolutionService - Retrieved 5 platforms with applied filters
+2025-08-13 12:21:03 [http-nio-8080-exec-3] INFO  c.e.D.c.PlatformSolutionController - Returning 5 platform solutions
+2025-08-13 12:21:03 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-13 12:21:03 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[PlatformSolutionDTO(functionalArea=Supply Chain Fulfillment, industryType=null, functionalSubArea=W (truncated)...]
+2025-08-13 12:21:03 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:21:03 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Manhattan.png", parameters={}
+2025-08-13 12:21:03 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-13 12:21:03 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Blueyonder.png", parameters={}
+2025-08-13 12:21:03 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-13 12:21:03 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/SAP.jpg", parameters={}
+2025-08-13 12:21:03 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-13 12:21:03 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:21:03 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Korber.png", parameters={}
+2025-08-13 12:21:03 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-13 12:21:03 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:21:03 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Oracle.png", parameters={}
+2025-08-13 12:21:03 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:21:03 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-13 12:21:03 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-13 12:21:03 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
