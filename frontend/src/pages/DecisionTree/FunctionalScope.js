@@ -12,8 +12,8 @@ const FunctionalScope = () => {
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  const [showParameterModal, setShowParameterModal] = useState(false);
-  const [parameterLevel, setParameterLevel] = useState(1);
+  // const [showParameterModal, setShowParameterModal] = useState(false);
+  // const [parameterLevel, setParameterLevel] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
@@ -479,14 +479,14 @@ const FunctionalScope = () => {
               </svg>
             </div>
 
-            <div className="header-buttons">
+            {/* <div className="header-buttons">
               <button
                 className="parameter-button"
                 onClick={() => setShowParameterModal(true)}
               >
                 Select Parameters
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Functional Scope Header and Select Level View */}
@@ -563,7 +563,7 @@ const FunctionalScope = () => {
       </div>
 
       {/* Parameter Modal */}
-      {showParameterModal && (
+      {/* {showParameterModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-header">
@@ -619,7 +619,7 @@ const FunctionalScope = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
