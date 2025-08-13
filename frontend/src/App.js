@@ -10,6 +10,10 @@ import IndustryTypePlanning from './pages/DigitalWayFinderr/IndustryTypePlanning
 import IndustryTypePlanParts from './pages/DigitalWayFinderr/IndustryTypePlanParts';
 import WmsSystem from './pages/DigitalWayFinderr/WmsSystem';
 import DataAndCloud from './pages/DigitalWayFinderr/DataAndCloud';
+import Operational from './pages/DigitalWayFinderr/Operational';
+import VisibilityProactive from './pages/DigitalWayFinderr/VisibilityProactive';
+import AgenticAI from './pages/DigitalWayFinderr/AgenticAI';
+
 
 //Decision Tree imports
 import ProjectInfo from './pages/DecisionTree/ProjectInfo';
@@ -53,9 +57,12 @@ function App() {
           <Route path="/digital-wayfinder/industry-type-planning" element={<IndustryTypePlanning />} />
           <Route path="/digital-wayfinder/industry-type-plan-parts" element={<IndustryTypePlanParts />} />
           <Route path="/digital-wayfinder/wms-system" element={<WmsSystem />} />
-          <Route path="/digital-wayfinder/DataAndCloud" element={<DataAndCloud />} />
- 
- 
+          <Route path="/digital-wayfinder/data-and-cloud" element={<DataAndCloud />} />
+          <Route path="/digital-wayfinder/operational" element={<Operational />} />
+          <Route path="/digital-wayfinder/visibility-proactive" element={<VisibilityProactive />} />
+          <Route path="/digital-wayfinder/agentic-ai" element={<AgenticAI />} />
+
+
           <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
           <Route path="/decision-tree/industry-type-func" element={<IndustryTypeFunc />} />

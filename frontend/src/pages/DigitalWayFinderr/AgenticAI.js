@@ -1,26 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './AgenticAI.module.css';
-
-const defaultQuestions = [
-  'Does the WMS systems provides a dedicated real-time visibility capability across all operations within the warehouse ?',
-  'Do you leverage any cloud based solution to have an eye over all warehouse operations ?',
-  'Please rate the existing warehousing visibility capability (Strictly from a visibility perspective)',
-  'Does the WMS systems provide customised reporting capability ?',
-  'Do you leverage any cloud based solution such as power BI/Tableau for custom reporting?',
-  'Does the reporting capability support NLP/Custom Visuals based on user requirement dynamically?',
-  'Does the WMS systems provide customised reporting capability ?',
-  'Do you leverage any cloud based solution such as power BI/Tableau for custom reporting?',
-  'Does the WMS systems provide real-time alerting capability?'
-];
-
-const aiQuestions = [
-  'Does the WMS systems provides Gen AI based capabilities ?',
-  'Do you use cloud based Gen AI capabilities for various use cases ?',
-  'Do you leverage Gen AI to generate based dynamic Loading/unloading plan based on internal & external data inputs ?',
-  'Does the warehousing Visibility capability supports predictive alerts (based on internal & external data) and recommend actions ?',
-  'Do you have a chat platform to quickly query the WMS systems and generate human like output to different queries ?',
-  'Do you have ability to run what if scenarios for use cases such as checking stock levels, replenishment rate in case of various situations etc. ?'
-];
 
 const defaultSteps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -37,18 +16,77 @@ const aiSteps = [
 ];
 
 const AgenticAI = ({ ai }) => {
-  const questions = ai ? aiQuestions : defaultQuestions;
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const steps = ai ? aiSteps : defaultSteps;
   const title = ai ? 'Agentic AI' : 'Visibility and Proactive';
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
 
-  const handleAnswer = (idx, value) => {
-    const updated = [...answers];
-    updated[idx] = value;
-    setAnswers(updated);
+  // Fetch questions from API
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/digital-wayfinder/questionaire/genai/get-questions');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        setQuestions(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching questions:', err);
+        setError('Failed to load questions. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  const handleAnswer = (questionId, value) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
   };
 
-  const completedCount = answers.filter(Boolean).length;
+  const completedCount = Object.keys(answers).filter(key => answers[key]).length;
+  const totalQuestions = questions.length;
+  const progressPercentage = totalQuestions > 0 ? (completedCount / totalQuestions) * 100 : 0;
+  const allQuestionsAnswered = completedCount === totalQuestions;
+
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Loading questions...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.errorContainer}>
+          <p className={styles.errorMessage}>{error}</p>
+          <button 
+            className={styles.saveBtn} 
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -88,24 +126,24 @@ const AgenticAI = ({ ai }) => {
         <div className={styles.mainContent}>
           <div className={styles.title}>{title}</div>
           <div className={styles.progressRow}>
-            <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
+            <span className={styles.progressLabel}>Completed question {completedCount}/{totalQuestions}</span>
             <div className={styles.progressBarBg}>
-              <div className={styles.progressBarFill} style={{ width: `${(completedCount / questions.length) * 100}%` }} />
+              <div className={styles.progressBarFill} style={{ width: `${progressPercentage}%` }} />
             </div>
           </div>
           <div className={styles.questionsList}>
-            {questions.map((q, idx) => (
-              <div key={idx} className={styles.questionBlock}>
-                <div className={styles.questionText}>{idx + 1}. {q}</div>
+            {questions.map((question) => (
+              <div key={question.id} className={styles.questionBlock}>
+                <div className={styles.questionText}>{question.id}. {question.text}</div>
                 <div className={styles.optionsRow}>
                   {['High', 'Medium', 'Low'].map(opt => (
                     <label key={opt} className={styles.optionLabel}>
                       <input
                         type="radio"
-                        name={`q${idx}`}
+                        name={`question-${question.id}`}
                         value={opt}
-                        checked={answers[idx] === opt}
-                        onChange={() => handleAnswer(idx, opt)}
+                        checked={answers[question.id] === opt}
+                        onChange={() => handleAnswer(question.id, opt)}
                         className={styles.radio}
                       />
                       {opt}
@@ -117,7 +155,10 @@ const AgenticAI = ({ ai }) => {
           </div>
           <div className={styles.buttonRow}>
             <button className={styles.prevBtn}>Previous</button>
-            <button className={styles.saveBtn} disabled={completedCount !== questions.length}>
+            <button 
+              className={styles.saveBtn} 
+              disabled={!allQuestionsAnswered}
+            >
               {ai ? 'Finish' : 'Save & Proceed'}
             </button>
           </div>

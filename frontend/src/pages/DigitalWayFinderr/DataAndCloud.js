@@ -3,7 +3,7 @@ import styles from './DataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import Operational from './Operational';
 import { apiGet, apiPost } from '../../api';
- 
+
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
   { label: 'Operational Innovations', status: 'inactive' },
@@ -18,29 +18,29 @@ const DataAndCloud = () => {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
- 
+  
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
- 
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-       
+        const response = await apiGet('api/digital-wayfinder/questionaire/data-cloud/get-questions');
+        
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
           // Extract questions from the response
           const questionTexts = response.questions.map(q => q.question);
           setQuestions(questionTexts);
-         
+          
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
-         
+          
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             response.answers.forEach(answerObj => {
@@ -52,13 +52,32 @@ const DataAndCloud = () => {
               }
             });
           }
-         
+          
           setAnswers(initialAnswers);
-         
+          
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          setFunctionalArea(response.functionalArea || '');
+          
+          // Set functional area - if not provided, determine from functionalSubArea
+          let area = response.functionalArea || '';
+          if (!area && response.functionalSubArea) {
+            // Map functional sub-areas to functional areas
+            const areaMapping = {
+              'Warehouse Management System': 'Supply Chain Fulfillment',
+              'Inventory Management': 'Supply Chain Fulfillment',
+              'Order Management': 'Supply Chain Fulfillment',
+              'Transportation Management': 'Supply Chain Fulfillment',
+              'Customer Relationship Management': 'Customer Experience',
+              'Sales Management': 'Customer Experience',
+              'Marketing Automation': 'Customer Experience',
+              'Financial Management': 'Financial Operations',
+              'Accounting': 'Financial Operations',
+              'Procurement': 'Financial Operations'
+            };
+            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          }
+          setFunctionalArea(area);
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for old response structure
@@ -73,32 +92,36 @@ const DataAndCloud = () => {
     }
     fetchQuestions();
   }, []);
- 
+
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
     updated[idx] = value;
     setAnswers(updated);
   };
- 
+
   const handleSaveAndProceed = async () => {
     try {
       setSaving(true);
-     
+      
       // Call API to save answers
-      const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', {
+      const payload = {
         functionalArea: functionalArea,
         functionalSubArea: functionalSubArea,
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
         }))
-      });
- 
+      };
+      
+      console.log('Sending payload:', payload);
+      
+      const response = await apiPost('api/digital-wayfinder/questionaire/data-cloud/save-answers', payload);
+
       console.log('Answers saved successfully:', response);
-     
+      
       // Navigate to next component
       setShowVisibilityProactive(true);
-     
+      
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -106,10 +129,10 @@ const DataAndCloud = () => {
       setSaving(false);
     }
   };
- 
+
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
- 
+
   if (showVisibilityProactive) {
     return <Operational />;
   }
@@ -161,11 +184,7 @@ const DataAndCloud = () => {
                     {['High', 'Medium', 'Low'].map(opt => (
                       <label
                         key={opt}
-                        className={
-                          styles.optionLabel + ' ' +
-                          (opt === 'High' ? styles.optionHigh : opt === 'Medium' ? styles.optionMedium : styles.optionLow) +
-                          (answers[idx] === opt ? ' ' + styles.selected : '')
-                        }
+                        className={styles.optionLabel}
                       >
                         <input
                           type="radio"

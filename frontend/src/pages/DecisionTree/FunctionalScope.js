@@ -234,24 +234,28 @@ const FunctionalScope = () => {
   };
  
   const getItemNumber = (level, item) => {
-    const levelItems = getLevelItems(level);
-    const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-   
-    if (level === 1) {
-      return `${currentIndex + 1}.0`;
-    }
-   
+    // Always use original data for numbering, not filtered data
     const fullItem = functionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
    
-    if (!fullItem) return `${currentIndex + 1}`;
+    if (!fullItem) return `1.0`;
    
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
      
-      const l1Items = getLevelItems(1);
-      const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
+      // Get Level 1 items from original data
+      const l1Items = [];
+      const l1Seen = new Set();
+      functionalScopeData.forEach(dataItem => {
+        const value = dataItem.l1;
+        if (value && !l1Seen.has(value)) {
+          l1Seen.add(value);
+          l1Items.push(value);
+        }
+      });
+      
+      const l1Index = l1Items.findIndex(l1Item => l1Item === targetItem.l1);
       parts.push(l1Index + 1);
      
       for (let i = 2; i <= targetLevel; i++) {
