@@ -1,198 +1,474 @@
+/* Container for side-by-side layout */
+
 .container {
-  width: 100%;
+
+  display: flex;
+
   min-height: 100vh;
-  background: #f8fafc;
+
+  background-color: #f8f9fa;
+
 }
-.breadcrumb {
-  font-size: 13px;
-  color: #6b6b6b;
-  margin: 0 0 16px 0;
-  padding: 24px 0 0 40px;
-}
-.breadcrumbLink {
-  color: #6b6b6b;
-  text-decoration: none;
-  margin-right: 4px;
-}
-.breadcrumbCurrent {
-  color: #a020f0;
-  font-weight: 500;
-}
-.layout {
-  display: flex;
-  align-items: flex-start;
-  padding: 0 40px 40px 40px;
-}
+ 
+/* Sidebar styling */
+
 .sidebar {
-  width: 220px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
+
+  width: 300px;
+
+  background-color: #ffffff;
+
   padding: 24px;
-  margin-right: 32px;
+
+  border-right: 1px solid #e9ecef;
+
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+
+  flex-shrink: 0; /* Prevents sidebar from shrinking */
+
 }
-.sidebarTitle {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.sidebarDesc {
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 24px;
-}
-.steps {
-  margin-top: 16px;
-}
-.stepItem {
-  display: flex;
-  align-items: center;
-  margin-bottom: 18px;
-}
-.stepCircleCompleted {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #22c55e;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  margin-right: 10px;
-}
-.stepCircleActive {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #a020f0;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  margin-right: 10px;
-}
-.stepCircleInactive {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #e5e7eb;
-  color: #888;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  margin-right: 10px;
-}
-.stepTextActive {
-  color: #a020f0;
-  font-weight: 600;
-}
-.stepTextCompleted {
-  color: #22c55e;
-  font-weight: 600;
-}
-.stepTextInactive {
-  color: #888;
-  font-weight: 400;
-}
+ 
+/* Main content area */
+
 .mainContent {
+
   flex: 1;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
-  padding: 32px 40px;
-  min-width: 0;
+
+  padding: 24px;
+
+  overflow-y: auto;
+
 }
-.title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 18px;
-}
-.progressRow {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-}
-.progressLabel {
-  font-size: 13px;
-  color: #888;
-  margin-right: 16px;
-}
-.progressBarBg {
-  width: 160px;
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 3px;
-  overflow: hidden;
-}
-.progressBarFill {
-  height: 100%;
-  background: #a020f0;
-  border-radius: 3px;
-  transition: width 0.3s;
-}
-.questionsList {
-  margin-bottom: 32px;
-}
-.questionBlock {
-  margin-bottom: 22px;
-  position: relative;
-}
-.questionText {
-  font-size: 15px;
-  font-weight: 500;
-  margin-bottom: 10px;
-  padding-left: 28px; /* Reserve space for the number */
-  position: relative;
-}
-.optionsRow {
-  display: flex;
-  gap: 32px;
-  margin-left: 42px; /* Align with the start of the question text */
-}
-.optionLabel {
-  font-size: 14px;
-  color: #444;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.radio {
-  accent-color: #a020f0;
-  margin-right: 4px;
-}
+ 
+/* Button row with proper alignment */
+
 .buttonRow {
+
   display: flex;
+
   justify-content: space-between;
-  gap: 18px;
+
+  align-items: center;
+
+  margin-top: 32px;
+
+  padding-top: 24px;
+
+  border-top: 1px solid #e9ecef;
+
 }
+ 
+/* Previous button (left side) */
+
 .prevBtn {
-  background: #f3f4f6;
-  color: #888;
+
+  padding: 12px 24px;
+
+  background-color: #6c757d;
+
+  color: white;
+
   border: none;
+
   border-radius: 6px;
-  padding: 10px 22px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
   font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
+
+  transition: background-color 0.2s;
+
 }
-.prevBtn:hover {
-  background: #e5e7eb;
+ 
+.prevBtn:hover:not(:disabled) {
+
+  background-color: #5a6268;
+
 }
-.saveBtn {
-  background: #a020f0;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 28px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.saveBtn:disabled {
-  background: #e5e7eb;
-  color: #aaa;
+ 
+.prevBtn:disabled {
+
+  background-color: #adb5bd;
+
   cursor: not-allowed;
-} 
+
+}
+ 
+/* Save button (right side) */
+
+.saveBtn {
+
+  padding: 12px 24px;
+
+  background-color: #007bff;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  transition: background-color 0.2s;
+
+}
+ 
+.saveBtn:hover:not(:disabled) {
+
+  background-color: #0056b3;
+
+}
+ 
+.saveBtn:disabled {
+
+  background-color: #adb5bd;
+
+  cursor: not-allowed;
+
+}
+ 
+/* Progress row styling */
+
+.progressRow {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+
+}
+ 
+.progressLabel {
+
+  font-size: 14px;
+
+  color: #6c757d;
+
+  min-width: 180px;
+
+}
+ 
+.progressBarBg {
+
+  flex: 1;
+
+  height: 8px;
+
+  background-color: #e9ecef;
+
+  border-radius: 4px;
+
+  overflow: hidden;
+
+}
+ 
+.progressBarFill {
+
+  height: 100%;
+
+  background-color: #007bff;
+
+  border-radius: 4px;
+
+  transition: width 0.3s ease;
+
+}
+ 
+/* Questions list styling */
+
+.questionsList {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+}
+ 
+.questionBlock {
+
+  background-color: white;
+
+  padding: 20px;
+
+  border-radius: 8px;
+
+  border: 1px solid #e9ecef;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+}
+ 
+.questionText {
+
+  font-size: 16px;
+
+  font-weight: 500;
+
+  color: #212529;
+
+  margin-bottom: 16px;
+
+  line-height: 1.5;
+
+}
+ 
+.optionsRow {
+
+  display: flex;
+
+  gap: 24px;
+
+}
+ 
+.optionLabel {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  color: #495057;
+
+}
+ 
+.radio {
+
+  width: 16px;
+
+  height: 16px;
+
+  cursor: pointer;
+
+}
+ 
+/* Title styling */
+
+.title {
+
+  font-size: 24px;
+
+  font-weight: 600;
+
+  color: #212529;
+
+  margin-bottom: 24px;
+
+}
+ 
+/* Breadcrumb styling */
+
+.breadcrumb {
+
+  font-size: 14px;
+
+  color: #6c757d;
+
+  margin-bottom: 16px;
+
+}
+ 
+.breadcrumbLink {
+
+  color: #007bff;
+
+  cursor: pointer;
+
+}
+ 
+.breadcrumbCurrent {
+
+  color: #6c757d;
+
+}
+ 
+/* Sidebar specific styles */
+
+.sidebarTitle {
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  color: #212529;
+
+  margin-bottom: 16px;
+
+}
+ 
+.sidebarDesc {
+
+  font-size: 14px;
+
+  color: #6c757d;
+
+  line-height: 1.5;
+
+  margin-bottom: 32px;
+
+}
+ 
+.steps {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+}
+ 
+.stepItem {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+}
+ 
+.stepCircleActive,
+
+.stepCircleCompleted,
+
+.stepCircleInactive {
+
+  width: 32px;
+
+  height: 32px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  flex-shrink: 0;
+
+}
+ 
+.stepCircleActive {
+
+  background-color: #007bff;
+
+  color: white;
+
+}
+ 
+.stepCircleCompleted {
+
+  background-color: #28a745;
+
+  color: white;
+
+}
+ 
+.stepCircleInactive {
+
+  background-color: #e9ecef;
+
+  color: #6c757d;
+
+}
+ 
+.stepTextActive {
+
+  font-weight: 500;
+
+  color: #007bff;
+
+}
+ 
+.stepTextCompleted {
+
+  font-weight: 500;
+
+  color: #28a745;
+
+}
+ 
+.stepTextInactive {
+
+  color: #6c757d;
+
+}
+ 
+/* Loading and error states */
+
+.loadingContainer,
+
+.errorContainer {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 200px;
+
+  text-align: center;
+
+}
+ 
+.loadingSpinner {
+
+  width: 40px;
+
+  height: 40px;
+
+  border: 4px solid #e9ecef;
+
+  border-left: 4px solid #007bff;
+
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+
+  margin-bottom: 16px;
+
+}
+ 
+@keyframes spin {
+
+  0% { transform: rotate(0deg); }
+
+  100% { transform: rotate(360deg); }
+
+}
+ 
+.errorMessage {
+
+  color: #dc3545;
+
+  font-size: 16px;
+
+  margin-bottom: 16px;
+
+}
+ 
