@@ -188,7 +188,7 @@ const Solution = () => {
               <div className="solution-controls">
                 <span className="solution-subtitle">Select Solution(s)</span>
                 <button
-                  className="select-all-button"
+                  className="select-all--button"
                   onClick={handleSelectAll}
                 >
                   Select all

@@ -192,7 +192,7 @@ const RetailSolution = () => {
               <h1 className="retail-solutions-title">Retail Solutions</h1>
               <div className="retail-solutions-controls">
                 <span className="retail-solutions-counter">
-                  Selected Solutions ({selectedSolutions.length})
+                  Selected Solutions(s) ({selectedSolutions.length})
                 </span>
                 <button
                   className="retail-select-all-btn"

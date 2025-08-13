@@ -203,7 +203,7 @@ const AgnosticSolution = () => {
                   Select Solution(s) ({selectedSolutions.length})
                 </span>
                 <button
-                  className="select-all-button"
+                  className="select-all---button"
                   onClick={handleSelectAll}
                 >
                   {allFilteredSelected ? 'Deselect all' : 'Select all'}
