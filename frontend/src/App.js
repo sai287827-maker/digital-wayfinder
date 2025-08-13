@@ -9,6 +9,7 @@ import IndustryTypeFullfillment from './pages/DigitalWayFinderr/IndustryTypeFull
 import IndustryTypePlanning from './pages/DigitalWayFinderr/IndustryTypePlanning';
 import IndustryTypePlanParts from './pages/DigitalWayFinderr/IndustryTypePlanParts';
 import WmsSystem from './pages/DigitalWayFinderr/WmsSystem';
+import DataAndCloud from './pages/DigitalWayFinderr/DataAndCloud';
 
 //Decision Tree imports
 import ProjectInfo from './pages/DecisionTree/ProjectInfo';
@@ -29,14 +30,14 @@ import RetailFunctionalScope from './pages/DecisionTree/RetailFunctionalScope';
 import RetailNonFunctionalScope from './pages/DecisionTree/RetailNonFunctionalScope';
 import RetailDecisionCriteria from './pages/DecisionTree/RetailDecisionCriteria';
 import RetailSolution from './pages/DecisionTree/RetailSolution';
-
-
-
+ 
+ 
+ 
 // import FinalPage from './pages/DigitalWayFinderr/FinalPage';
-
+ 
 import './App.css';
-
-
+ 
+ 
 function App() {
   return (
     <Router>
@@ -52,8 +53,9 @@ function App() {
           <Route path="/digital-wayfinder/industry-type-planning" element={<IndustryTypePlanning />} />
           <Route path="/digital-wayfinder/industry-type-plan-parts" element={<IndustryTypePlanParts />} />
           <Route path="/digital-wayfinder/wms-system" element={<WmsSystem />} />
-
-
+          <Route path="/digital-wayfinder/DataAndCloud" element={<DataAndCloud />} />
+ 
+ 
           <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
           <Route path="/decision-tree/industry-type-func" element={<IndustryTypeFunc />} />
@@ -72,12 +74,12 @@ function App() {
           <Route path="/decision-tree/retail-non-functional-scope" element={<RetailNonFunctionalScope />} />
           <Route path="/decision-tree/retail-decision-criteria" element={<RetailDecisionCriteria/>} />
           <Route path="/decision-tree/retail-solution" element={<RetailSolution />} />
-
+ 
           {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
         </Routes>
       </div>
     </Router>
   );
 }
-
+ 
 export default App;

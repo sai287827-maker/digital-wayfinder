@@ -1,37 +1,119 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './DataAndCloud.module.css';
-import VisibilityProactive from './VisibilityProactive';
-
-const questions = [
-  'Do you use cloud services (Any cloud service provider) to augment WMS capabilities?',
-  'How would you rate existing capability in integrating real-time data to cloud for various use cases?',
-  'Do you have a unified data model as a single source of truth for analytics/AI-ML use cases?',
-  'Does the WMS systems allow seamless integration to all relevant external data such as traffic, weather, shipment tracking etc.?'
-];
-
+// import VisibilityProactive from './VisibilityProactive';
+import Operational from './Operational';
+import { apiGet, apiPost } from '../../api';
+ 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
   { label: 'Operational Innovations', status: 'inactive' },
   { label: 'Visibility and Proactive', status: 'inactive' },
   { label: 'Agentic  AI', status: 'inactive' }
 ];
-
+ 
 const DataAndCloud = () => {
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-
+ 
+  // New state for API response data
+  const [userId, setUserId] = useState('');
+  const [sessionId, setSessionId] = useState('');
+  const [functionalArea, setFunctionalArea] = useState('');
+  const [functionalSubArea, setFunctionalSubArea] = useState('');
+ 
+  useEffect(() => {
+    async function fetchQuestions() {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+       
+        // Map the new response structure
+        if (response.questions && Array.isArray(response.questions)) {
+          // Extract questions from the response
+          const questionTexts = response.questions.map(q => q.question);
+          setQuestions(questionTexts);
+         
+          // Initialize answers array
+          const initialAnswers = Array(questionTexts.length).fill(null);
+         
+          // If there are existing answers in the response, load them
+          if (response.answers && Array.isArray(response.answers)) {
+            response.answers.forEach(answerObj => {
+              const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+              if (questionIndex !== -1) {
+                // Convert lowercase answer to proper case for display
+                const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                initialAnswers[questionIndex] = answerValue;
+              }
+            });
+          }
+         
+          setAnswers(initialAnswers);
+         
+          // Set other response data
+          setUserId(response.userId || '');
+          setSessionId(response.sessionId || '');
+          setFunctionalArea(response.functionalArea || '');
+          setFunctionalSubArea(response.functionalSubArea || '');
+        } else {
+          // Fallback for old response structure
+          setQuestions(response.questions || []);
+          setAnswers(Array((response.questions || []).length).fill(null));
+        }
+      } catch (err) {
+        setError('Failed to load questions.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchQuestions();
+  }, []);
+ 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
     updated[idx] = value;
     setAnswers(updated);
   };
-
+ 
+  const handleSaveAndProceed = async () => {
+    try {
+      setSaving(true);
+     
+      // Call API to save answers
+      const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', {
+        functionalArea: functionalArea,
+        functionalSubArea: functionalSubArea,
+        answers: questions.map((question, index) => ({
+          question: question,
+          answer: answers[index]?.toLowerCase() || ''
+        }))
+      });
+ 
+      console.log('Answers saved successfully:', response);
+     
+      // Navigate to next component
+      setShowVisibilityProactive(true);
+     
+    } catch (err) {
+      console.error('Error saving answers:', err);
+      setError('Failed to save answers. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+ 
   const completedCount = answers.filter(Boolean).length;
-
+  const allQuestionsAnswered = completedCount === questions.length;
+ 
   if (showVisibilityProactive) {
-    return <VisibilityProactive />;
+    return <Operational />;
   }
-
+ 
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -59,54 +141,62 @@ const DataAndCloud = () => {
           <span className={styles.breadcrumbCurrent}>Questionnaire</span>
         </div>
         <div className={styles.title}>Data and Cloud</div>
-        <div className={styles.progressRow}>
-          <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-          <div className={styles.progressBarBg}>
-            <div className={styles.progressBarFill} style={{ width: `${(completedCount / questions.length) * 100}%` }} />
-          </div>
-        </div>
-        <div className={styles.questionsList}>
-          {questions.map((q, idx) => (
-            <div key={idx} className={styles.questionBlock}>
-              <div className={styles.questionText}>{idx + 1}. {q}</div>
-              <div className={styles.optionsRow}>
-                {['High', 'Medium', 'Low'].map(opt => (
-                  <label
-                    key={opt}
-                    className={
-                      styles.optionLabel + ' ' +
-                      (opt === 'High' ? styles.optionHigh : opt === 'Medium' ? styles.optionMedium : styles.optionLow) +
-                      (answers[idx] === opt ? ' ' + styles.selected : '')
-                    }
-                  >
-                    <input
-                      type="radio"
-                      name={`q${idx}`}
-                      value={opt}
-                      checked={answers[idx] === opt}
-                      onChange={() => handleAnswer(idx, opt)}
-                      className={styles.radio}
-                    />
-                    <span>{opt}</span>
-                  </label>
-                ))}
+        {loading ? (
+          <div className={styles.loading}>Loading questions...</div>
+        ) : error ? (
+          <div className={styles.error}>{error}</div>
+        ) : (
+          <>
+            <div className={styles.progressRow}>
+              <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
+              <div className={styles.progressBarBg}>
+                <div className={styles.progressBarFill} style={{ width: `${(completedCount / questions.length) * 100}%` }} />
               </div>
             </div>
-          ))}
-        </div>
-        <div className={styles.buttonRow}>
-          <button className={styles.prevBtn}>Previous</button>
-          <button
-            className={styles.saveBtn}
-            disabled={completedCount !== questions.length}
-            onClick={() => setShowVisibilityProactive(true)}
-          >
-            Save & Proceed
-          </button>
-        </div>
+            <div className={styles.questionsList}>
+              {questions.map((q, idx) => (
+                <div key={idx} className={styles.questionBlock}>
+                  <div className={styles.questionText}>{idx + 1}. {q}</div>
+                  <div className={styles.optionsRow}>
+                    {['High', 'Medium', 'Low'].map(opt => (
+                      <label
+                        key={opt}
+                        className={
+                          styles.optionLabel + ' ' +
+                          (opt === 'High' ? styles.optionHigh : opt === 'Medium' ? styles.optionMedium : styles.optionLow) +
+                          (answers[idx] === opt ? ' ' + styles.selected : '')
+                        }
+                      >
+                        <input
+                          type="radio"
+                          name={`q${idx}`}
+                          value={opt}
+                          checked={answers[idx] === opt}
+                          onChange={() => handleAnswer(idx, opt)}
+                          className={styles.radio}
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.buttonRow}>
+              <button className={styles.prevBtn} disabled={saving}>Previous</button>
+              <button
+                className={styles.saveBtn}
+                disabled={!allQuestionsAnswered || saving}
+                onClick={handleSaveAndProceed}
+              >
+                {saving ? 'Saving...' : 'Save & Proceed'}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
-
+ 
 export default DataAndCloud;

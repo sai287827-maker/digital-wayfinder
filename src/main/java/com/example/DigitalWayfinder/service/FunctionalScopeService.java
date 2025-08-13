@@ -133,16 +133,19 @@ public class FunctionalScopeService {
         }
     }
     
-    private FunctionalScopeDto convertToDto(Object[] row) {
-        return new FunctionalScopeDto(
-                (String) row[0],  // l1
-                (String) row[1],  // l2
-                (String) row[2],  // l3
-                (String) row[3],  // l4
-                (String) row[4]   // l5
 
-        );
-    }
+
+// Overloaded method to handle Object[] input from repository
+private FunctionalScopeDto convertToDto(Object[] scopeArray) {
+    // Assuming the array contains levels in order: l1, l2, l3, l4, l5
+    return new FunctionalScopeDto(
+        scopeArray.length > 0 ? (String) scopeArray[0] : null,
+        scopeArray.length > 1 ? (String) scopeArray[1] : null,
+        scopeArray.length > 2 ? (String) scopeArray[2] : null,
+        scopeArray.length > 3 ? (String) scopeArray[3] : null,
+        scopeArray.length > 4 ? (String) scopeArray[4] : null
+    );
+}
 
         public FunctionalScopeResponse saveFunctionalScope(FunctionalScopeRequest request, String userId, String sessionId) {
         log.info("Saving functional scope for user: {} and session: {}", userId, sessionId);
