@@ -1,66 +1,145 @@
 import React, { useState, useEffect } from 'react';
 import styles from './AgenticAI.module.css';
-
+import { apiGet, apiPost } from '../../api';
+ 
 const defaultSteps = [
   { label: 'Data and Cloud', status: 'completed' },
   { label: 'Operational Innovations', status: 'completed' },
   { label: 'Visibility and Proactive', status: 'active' },
   { label: 'Agentic AI', status: 'inactive' }
 ];
-
+ 
 const aiSteps = [
   { label: 'Data and Cloud', status: 'completed' },
   { label: 'Operational Innovations', status: 'completed' },
   { label: 'Visibility and Proactive', status: 'completed' },
   { label: 'Agentic AI', status: 'active' }
 ];
-
+ 
 const AgenticAI = ({ ai }) => {
   const [questions, setQuestions] = useState([]);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const [saving, setSaving] = useState(false);
+ 
+  // New state for API response data
+  const [userId, setUserId] = useState('');
+  const [sessionId, setSessionId] = useState('');
+  const [functionalArea, setFunctionalArea] = useState('');
+  const [functionalSubArea, setFunctionalSubArea] = useState('');
+ 
   const steps = ai ? aiSteps : defaultSteps;
   const title = ai ? 'Agentic AI' : 'Visibility and Proactive';
-
-  // Fetch questions from API
+ 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    async function fetchQuestions() {
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        const response = await fetch('/api/digital-wayfinder/questionaire/genai/get-questions');
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+
+        // Map the new response structure
+        if (response.questions && Array.isArray(response.questions)) {
+          // Extract questions from the response
+          const questionTexts = response.questions.map(q => q.question);
+          setQuestions(questionTexts);
+         
+          // Initialize answers array
+          const initialAnswers = Array(questionTexts.length).fill(null);
+         
+          // If there are existing answers in the response, load them
+          if (response.answers && Array.isArray(response.answers)) {
+            response.answers.forEach(answerObj => {
+              const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+              if (questionIndex !== -1) {
+                // Convert lowercase answer to proper case for display
+                const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                initialAnswers[questionIndex] = answerValue;
+              }
+            });
+          }
+         
+          setAnswers(initialAnswers);
+         
+          // Set other response data
+          setUserId(response.userId || '');
+          setSessionId(response.sessionId || '');
+         
+          // Set functional area - if not provided, determine from functionalSubArea
+          let area = response.functionalArea || '';
+          if (!area && response.functionalSubArea) {
+            // Map functional sub-areas to functional areas
+            const areaMapping = {
+              'Warehouse Management System': 'Supply Chain Fulfillment',
+              'Inventory Management': 'Supply Chain Fulfillment',
+              'Order Management': 'Supply Chain Fulfillment',
+              'Transportation Management': 'Supply Chain Fulfillment',
+              'Customer Relationship Management': 'Customer Experience',
+              'Sales Management': 'Customer Experience',
+              'Marketing Automation': 'Customer Experience',
+              'Financial Management': 'Financial Operations',
+              'Accounting': 'Financial Operations',
+              'Procurement': 'Financial Operations'
+            };
+            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          }
+          setFunctionalArea(area);
+          setFunctionalSubArea(response.functionalSubArea || '');
+        } else {
+          // Fallback for old response structure
+          setQuestions(response.questions || []);
+          setAnswers(Array((response.questions || []).length).fill(null));
         }
-        
-        const data = await response.json();
-        setQuestions(data);
-        setError(null);
       } catch (err) {
-        console.error('Error fetching questions:', err);
-        setError('Failed to load questions. Please try again.');
+        setError('Failed to load questions.');
       } finally {
         setLoading(false);
       }
-    };
-
+    }
     fetchQuestions();
   }, []);
-
-  const handleAnswer = (questionId, value) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
+ 
+  const handleAnswer = (idx, value) => {
+    const updated = [...answers];
+    updated[idx] = value;
+    setAnswers(updated);
   };
-
-  const completedCount = Object.keys(answers).filter(key => answers[key]).length;
-  const totalQuestions = questions.length;
-  const progressPercentage = totalQuestions > 0 ? (completedCount / totalQuestions) * 100 : 0;
-  const allQuestionsAnswered = completedCount === totalQuestions;
-
+ 
+  const handleSaveAndProceed = async () => {
+    try {
+      setSaving(true);
+     
+      // Call API to save answers
+      const payload = {
+        functionalArea: functionalArea,
+        functionalSubArea: functionalSubArea,
+        answers: questions.map((question, index) => ({
+          question: question,
+          answer: answers[index]?.toLowerCase() || ''
+        }))
+      };
+     
+      console.log('Sending payload:', payload);
+     
+      const response = await apiPost('api/digital-wayfinder/questionnaire/genai/saveanswers', payload);
+ 
+      console.log('Answers saved successfully:', response);
+     
+      // Handle completion - could navigate to results page or show success message
+      alert('Questionnaire completed successfully!');
+     
+    } catch (err) {
+      console.error('Error saving answers:', err);
+      setError('Failed to save answers. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+ 
+  const completedCount = answers.filter(Boolean).length;
+  const allQuestionsAnswered = completedCount === questions.length;
+ 
   if (loading) {
     return (
       <div className={styles.container}>
@@ -71,14 +150,14 @@ const AgenticAI = ({ ai }) => {
       </div>
     );
   }
-
+ 
   if (error) {
     return (
       <div className={styles.container}>
         <div className={styles.errorContainer}>
           <p className={styles.errorMessage}>{error}</p>
-          <button 
-            className={styles.saveBtn} 
+          <button
+            className={styles.saveBtn}
             onClick={() => window.location.reload()}
           >
             Retry
@@ -87,7 +166,7 @@ const AgenticAI = ({ ai }) => {
       </div>
     );
   }
-
+ 
   return (
     <div className={styles.container}>
       {/* Breadcrumb */}
@@ -126,27 +205,27 @@ const AgenticAI = ({ ai }) => {
         <div className={styles.mainContent}>
           <div className={styles.title}>{title}</div>
           <div className={styles.progressRow}>
-            <span className={styles.progressLabel}>Completed question {completedCount}/{totalQuestions}</span>
+            <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
             <div className={styles.progressBarBg}>
-              <div className={styles.progressBarFill} style={{ width: `${progressPercentage}%` }} />
+              <div className={styles.progressBarFill} style={{ width: `${(completedCount / questions.length) * 100}%` }} />
             </div>
           </div>
           <div className={styles.questionsList}>
-            {questions.map((question) => (
-              <div key={question.id} className={styles.questionBlock}>
-                <div className={styles.questionText}>{question.id}. {question.text}</div>
+            {questions.map((q, idx) => (
+              <div key={idx} className={styles.questionBlock}>
+                <div className={styles.questionText}>{idx + 1}. {q}</div>
                 <div className={styles.optionsRow}>
                   {['High', 'Medium', 'Low'].map(opt => (
                     <label key={opt} className={styles.optionLabel}>
                       <input
                         type="radio"
-                        name={`question-${question.id}`}
+                        name={`q${idx}`}
                         value={opt}
-                        checked={answers[question.id] === opt}
-                        onChange={() => handleAnswer(question.id, opt)}
+                        checked={answers[idx] === opt}
+                        onChange={() => handleAnswer(idx, opt)}
                         className={styles.radio}
                       />
-                      {opt}
+                      <span>{opt}</span>
                     </label>
                   ))}
                 </div>
@@ -154,12 +233,13 @@ const AgenticAI = ({ ai }) => {
             ))}
           </div>
           <div className={styles.buttonRow}>
-            <button className={styles.prevBtn}>Previous</button>
-            <button 
-              className={styles.saveBtn} 
-              disabled={!allQuestionsAnswered}
+            <button className={styles.prevBtn} disabled={saving}>Previous</button>
+            <button
+              className={styles.saveBtn}
+              disabled={!allQuestionsAnswered || saving}
+              onClick={handleSaveAndProceed}
             >
-              {ai ? 'Finish' : 'Save & Proceed'}
+              {saving ? 'Saving...' : (ai ? 'Finish' : 'Save & Proceed')}
             </button>
           </div>
         </div>
@@ -167,5 +247,5 @@ const AgenticAI = ({ ai }) => {
     </div>
   );
 };
-
+ 
 export default AgenticAI;

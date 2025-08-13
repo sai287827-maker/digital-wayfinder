@@ -30,7 +30,7 @@ const DataAndCloud = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet('api/digital-wayfinder/questionaire/data-cloud/get-questions');
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -115,7 +115,7 @@ const DataAndCloud = () => {
       
       console.log('Sending payload:', payload);
       
-      const response = await apiPost('api/digital-wayfinder/questionaire/data-cloud/save-answers', payload);
+      const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
       console.log('Answers saved successfully:', response);
       

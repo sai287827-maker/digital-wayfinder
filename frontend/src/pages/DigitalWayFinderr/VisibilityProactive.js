@@ -22,7 +22,7 @@ const VisibilityProactive = () => {
     const fetchQuestions = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/digital-wayfinder/questionaire/visibility-proactive/get-questions');
+        const response = await fetch(`/api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,7 +54,7 @@ const VisibilityProactive = () => {
       setSaving(true);
       
       // Call API to save answers
-      const response = await fetch('/api/digital-wayfinder/questionaire/visibility-proactive/save-answers', {
+      const response = await fetch('/api/digital-wayfinder/questionnaire/visibility-proactive/save-answers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
