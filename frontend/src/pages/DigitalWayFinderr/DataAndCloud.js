@@ -15,6 +15,7 @@ const steps = [
 const DataAndCloud = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -28,6 +29,34 @@ const DataAndCloud = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
+  // Function to determine answer options from API response
+  const determineAnswerOptions = (apiResponse) => {
+    // Check if the API response has predefined answer options
+    if (apiResponse.answerOptions && Array.isArray(apiResponse.answerOptions)) {
+      return apiResponse.answerOptions;
+    }
+    
+    // Check existing answers to determine the pattern
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => 
+        ['yes', 'no'].includes(answer)
+      );
+      const hasHighMediumLow = existingAnswers.some(answer => 
+        ['high', 'medium', 'low'].includes(answer)
+      );
+      
+      if (hasYesNo) {
+        return ['Yes', 'No'];
+      } else if (hasHighMediumLow) {
+        return ['High', 'Medium', 'Low'];
+      }
+    }
+    
+    // Default to High/Medium/Low if no pattern is detected
+    return ['High', 'Medium', 'Low'];
+  };
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
@@ -40,6 +69,10 @@ const DataAndCloud = ({ onNavigateBack }) => {
           // Extract questions from the response
           const questionTexts = response.questions.map(q => q.question);
           setQuestions(questionTexts);
+          
+          // Determine answer options from API response
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
           
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
@@ -86,6 +119,7 @@ const DataAndCloud = ({ onNavigateBack }) => {
           // Fallback for old response structure
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setAnswerOptions(['High', 'Medium', 'Low']); // Default options
         }
       } catch (err) {
         setError('Failed to load questions.');
@@ -264,7 +298,7 @@ const DataAndCloud = ({ onNavigateBack }) => {
                 <div key={idx} className={styles.questionBlock}>
                   <div className={styles.questionText}>{idx + 1}. {q}</div>
                   <div className={styles.optionsRow}>
-                    {['High', 'Medium', 'Low'].map(opt => (
+                    {answerOptions.map(opt => (
                       <label
                         key={opt}
                         className={styles.optionLabel}

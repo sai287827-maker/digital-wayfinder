@@ -11,11 +11,13 @@ const WmsReport = () => {
         const response = await apiGet('api/digital-wayfinder/questionnaire/report');
         // Map the response to desired structure
         if (response && response.reportData) {
-          setReportData(response.reportData.map(item => ({
-            assetName: item.assetName,
-            category: item.category,
-            gaps: item.gaps
-          })));
+        setReportData(response.reportData.map(item => ({
+  assetName: item.assetName,
+  category: item.category,
+  gaps: item.gaps || [],
+  solutions: item.solutions || [] // ✅ include solutions
+})));
+
         }
       } catch (error) {
         console.error('Failed to fetch report:', error);
