@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './WmsReport.css';
+import { apiGet } from '../../api'; // Adjust the path if needed
 
 const WmsReport = () => {
   const [reportData, setReportData] = useState([]);

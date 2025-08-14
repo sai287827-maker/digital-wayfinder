@@ -393,36 +393,37 @@ const AgenticAI = ({ onNavigateBack }) => {
           ))}
         </div>
         <div className={styles.buttonRow}>
-          <button 
-            className={styles.prevBtn} 
-            disabled={saving || navigatingBack}
-            onClick={handlePrevious}
-            style={{
-              backgroundColor: '#f5f5f5',
-              border: '2px solid #9C27B0',
-              color: '#9C27B0',
-              padding: '12px 24px',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: disabled ? 'not-allowed' : 'pointer',
-              opacity: (saving || navigatingBack) ? 0.6 : 1,
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (!saving && !navigatingBack) {
-                e.target.style.backgroundColor = '#9C27B0';
-                e.target.style.color = 'white';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!saving && !navigatingBack) {
-                e.target.style.backgroundColor = '#f5f5f5';
-                e.target.style.color = '#9C27B0';
-              }
-            }}
-          >
-            {navigatingBack ? 'Saving...' : 'Previous'}
-          </button>
+         <button 
+  className={styles.prevBtn} 
+  disabled={saving || navigatingBack}
+  onClick={handlePrevious}
+  style={{
+    backgroundColor: '#f5f5f5',
+    border: '2px solid #9C27B0',
+    color: '#9C27B0',
+    padding: '12px 24px',
+    borderRadius: '6px',
+    fontWeight: '600',
+    cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
+    opacity: (saving || navigatingBack) ? 0.6 : 1,
+    transition: 'all 0.3s ease'
+  }}
+  onMouseEnter={(e) => {
+    if (!saving && !navigatingBack) {
+      e.target.style.backgroundColor = '#9C27B0';
+      e.target.style.color = 'white';
+    }
+  }}
+  onMouseLeave={(e) => {
+    if (!saving && !navigatingBack) {
+      e.target.style.backgroundColor = '#f5f5f5';
+      e.target.style.color = '#9C27B0';
+    }
+  }}
+>
+  {navigatingBack ? 'Saving...' : 'Previous'}
+</button>
+
           <button 
             className={styles.saveBtn} 
             disabled={!allQuestionsAnswered || saving || navigatingBack}
