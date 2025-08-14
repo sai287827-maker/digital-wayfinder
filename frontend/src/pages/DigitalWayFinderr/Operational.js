@@ -275,6 +275,17 @@ const Operational = ({ onNavigateBack }) => {
  
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
+  
+  // Calculate progress percentage
+  const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
+  
+  // Debug logging for progress bar
+  console.log('Progress Debug:', {
+    completedCount,
+    totalQuestions: questions.length,
+    progressPercentage,
+    answers
+  });
  
   // Early return for navigation to VisibilityProactive
   if (showVisibilityProactive) {
@@ -327,8 +338,17 @@ const Operational = ({ onNavigateBack }) => {
           <>
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-              <div className={styles.progressBarBg}>
-                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+              <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+                <div 
+                  className={styles.progressBarFill} 
+                  style={{ 
+                    width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
+                    height: '100%',
+                    backgroundColor: '#4CAF50',
+                    borderRadius: '4px',
+                    transition: 'width 0.3s ease'
+                  }} 
+                />
               </div>
             </div>
             <div className={styles.questionsList}>

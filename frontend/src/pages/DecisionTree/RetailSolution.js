@@ -31,9 +31,9 @@ const RetailSolution = () => {
   const getFilteredSolutions = () => {
     if (!searchQuery) return solutionData;
     return solutionData.filter(solution =>
-      solution.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      solution.platformName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      solution.category?.toLowerCase().includes(searchQuery.toLowerCase())
+      solution.name?.toLowerCase().includes(searchQuery.toLowerCase())
+      // solution.platformName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      // solution.category?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   };
 
