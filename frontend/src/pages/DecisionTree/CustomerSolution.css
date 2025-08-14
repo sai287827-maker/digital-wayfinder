@@ -208,7 +208,7 @@
 .customer-solution-title {
   font-size: 28px;
   font-weight: 700;
-  color: #1e293b;
+  color: #8b5cf6;
   margin: 0;
 }
  
@@ -226,11 +226,11 @@
  
 .customer-select-all-button {
   padding: 8px 16px;
-  background-color: transparent;
-  border: 1px solid #e2e8f0;
+  background-color: #8b5cf6;
+  border: 1px solid #8b5cf6;
   border-radius: 6px;
   font-size: 14px;
-  color: #64748b;
+  color: white;
   cursor: pointer;
   transition: all 0.2s ease;
 }
