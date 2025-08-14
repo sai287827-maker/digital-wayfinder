@@ -1,142 +1,133 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './RetailNonFunctionalScope';
+import './CustomerNonFunctionalScope.css';
 import { apiGet, apiPost } from '../../api';
-// import './RetailFunctionalScope.css';
- 
-const RetailFunctionalScope = () => {
+import DecisionCriteria from './DecisionCriteria.js';
+
+const CustomerNonFunctionalScope = () => {
   const navigate = useNavigate();
-  const [functionalScopeData, setFunctionalScopeData] = useState([]);
-  const [levelSelections, setSelectedPath] = useState({});
+  const [nonFunctionalScopeData, setNonFunctionalScopeData] = useState([]);
+  const [levelSelections, setlevelSelections] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
   // const [showParameterModal, setShowParameterModal] = useState(false);
-  //const [parameterLevel, setParameterLevel] = useState(1);
- 
+  // const [parameterLevel, setParameterLevel] = useState(1);
+  const [proceedToDecisionCriteria, setProceedToDecisionCriteria] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setError(null);
       try {
-        // Updated API endpoint to retail
-        const data = await apiGet('api/decision-tree/functional-scope/retail/all');
-        setFunctionalScopeData(data);
+        // Updated API endpoint to CGS (Customer)
+        const data = await apiGet('api/decision-tree/non-functional-scope/cgs/all');
+        setNonFunctionalScopeData(data);
       } catch (err) {
-        setError('Failed to fetch functional scope data.');
+        setError('Failed to fetch non-functional scope data.');
       } finally {
         setLoading(false);
       }
     }
     fetchData();
   }, []);
- 
-  // Check if user has selected from all 5 levels
+
+  if (proceedToDecisionCriteria) {
+    return <DecisionCriteria />;
+  }
+  
+  // Check if user has selected from all 3 levels
   const hasAllLevelsSelected = () => {
-    return [1, 2, 3, 4, 5].every(level => {
+    return [1, 2, 3].every(level => {
       const levelKey = `l${level}`;
       return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
     });
   };
- 
-  // Get the maximum level that should be visible based on selections
-  const getMaxVisibleLevel = () => {
-    for (let level = 1; level <= 5; level++) {
-      const levelKey = `l${level}`;
-      if (!levelSelections[levelKey] || levelSelections[levelKey].length === 0) {
-        return level; // Return the first level without selections
-      }
-    }
-    return 5; // All levels have selections
-  };
- 
-  // Check if a level should be enabled (visible and clickable)
-  const isLevelEnabled = (level) => {
-    if (level === 1) return true; // Level 1 is always enabled
-   
-    // Check if previous level has selections
-    const prevLevelKey = `l${level - 1}`;
-    return levelSelections[prevLevelKey] && levelSelections[prevLevelKey].length > 0;
-  };
- 
-  // Check if a level should be visible
-  const isLevelVisible = (level) => {
-    return level <= getMaxVisibleLevel();
-  };
 
-  // Add this new function for handling Save & Proceed
+  // Handle Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
       // Validate that user has made selections
       if (!hasAllLevelsSelected()) {
         setError('Please select at least one option from each level before proceeding.');
+        // Clear error after 3 seconds
         setTimeout(() => setError(null), 3000);
         return;
       }
  
+      // Set loading state
       setLoading(true);
- 
-      // Prepare data for API
-      const functionalScopeData = {
+      // Save non-functional scope
+      await apiPost('api/decision-tree/non-functional-scope/save', {
         selectedItems,
         levelSelections,
         searchQuery,
         selectedLevel,
-        timestamp: new Date().toISOString()
-      };
- 
-      console.log('Payload:', {
-        selectedItems,
-        levelSelections,
-        searchQuery,
-        selectedLevel,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        scope: 'cgs'
       });
- 
-      // Save functional scope
-      await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
- 
-      // Navigate to Retail Non Functional Scope page and pass data
-      navigate('/decision-tree/retail-non-functional-scope', { 
-        state: { 
-          fromRetailFunctionalScope: true,
-          selectedData: functionalScopeData
+      setProceedToDecisionCriteria(true);
+      navigate('/decision-tree/decision-criteria', {
+        state: {
+          fromNonFunctionalScope: true,
+          selectedData: {
+            selectedItems,
+            levelSelections,
+            searchQuery,
+            selectedLevel,
+            timestamp: new Date().toISOString(),
+            scope: 'cgs'
+          }
         }
       });
  
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save data. Please try again.');
+      // Clear error after 3 seconds
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
     }
   };
  
-  // FIXED: More precise search that only searches the current level items
+  // Filter data based on search query
+  const getFilteredData = () => {
+    if (!searchQuery) return nonFunctionalScopeData;
+    
+    return nonFunctionalScopeData.filter(item => 
+      Object.values(item).some(value => 
+        value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  };
+
+  // Get unique items for a specific level based on selected path
   const getLevelItems = (level) => {
-    // Start with original data for level hierarchy
-    let levelData = functionalScopeData;
-   
+    const filteredData = getFilteredData();
+    if (!filteredData || filteredData.length === 0) return [];
+    
+    let levelData = filteredData;
+    
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
       const levelKey = `l${i}`;
       const selectedForLevel = levelSelections[levelKey];
-     
+      
       if (selectedForLevel && selectedForLevel.length > 0) {
-        levelData = levelData.filter(item =>
+        levelData = levelData.filter(item => 
           selectedForLevel.includes(item[levelKey])
         );
       }
     }
-
-    // Get unique items for current level from hierarchy-filtered data
+    
+    // Get unique items for current level
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
-   
+    
     levelData.forEach((item) => {
       const value = item[levelKey];
       if (value && !seen.has(value)) {
@@ -149,22 +140,13 @@ const RetailFunctionalScope = () => {
         });
       }
     });
-
-    // FIXED: Apply search filter only to the current level items, not across all levels
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      return uniqueItems.filter(item => 
-        // Only search in the current level's name, not across all hierarchy levels
-        item.name.toLowerCase().includes(query)
-      );
-    }
-   
+    
     return uniqueItems;
   };
- 
+
   // Helper function to get the highest level with selections
   const getHighestSelectedLevel = () => {
-    for (let level = 5; level >= 1; level--) {
+    for (let level = 3; level >= 1; level--) {
       const levelKey = `l${level}`;
       if (levelSelections[levelKey] && levelSelections[levelKey].length > 0) {
         return level;
@@ -172,48 +154,65 @@ const RetailFunctionalScope = () => {
     }
     return 1; // Default to level 1 if no selections
   };
- 
+
   const handleItemSelect = (item, level) => {
     const levelKey = `l${level}`;
-    const newSelectedPath = { ...levelSelections };
-   
-    if (!newSelectedPath[levelKey]) {
-      newSelectedPath[levelKey] = [];
+    const newlevelSelections = { ...levelSelections };
+    
+    if (!newlevelSelections[levelKey]) {
+      newlevelSelections[levelKey] = [];
     }
-   
-    const currentSelections = [...newSelectedPath[levelKey]];
+    
+    const currentSelections = [...newlevelSelections[levelKey]];
     const itemIndex = currentSelections.indexOf(item.name);
-   
+    
     if (itemIndex > -1) {
       currentSelections.splice(itemIndex, 1);
     } else {
       currentSelections.push(item.name);
     }
-   
-    newSelectedPath[levelKey] = currentSelections;
-   
+    
+    newlevelSelections[levelKey] = currentSelections;
+    
     // Clear deeper levels when selections change
-    for (let i = level + 1; i <= 5; i++) {
-      delete newSelectedPath[`l${i}`];
+    for (let i = level + 1; i <= 3; i++) {
+      delete newlevelSelections[`l${i}`];
     }
-   
-    setSelectedPath(newSelectedPath);
-   
-    // Auto-advance logic - move to next level when selecting (if not last level)
-    if (currentSelections.length > 0 && level < 5) {
+    
+    setlevelSelections(newlevelSelections);
+    
+    // Auto-advance logic with reverse support
+    if (currentSelections.length > 0 && level < 3) {
+      // Move forward to next level when selecting
       setSelectedLevel(level + 1);
-    } else if (currentSelections.length === 0 && level > 1) {
-      // Move backward when deselecting - go to previous level
-      setSelectedLevel(level - 1);
+    } else if (currentSelections.length === 0) {
+      // Move backward when deselecting - find the highest level with selections
+      const updatedPath = { ...newlevelSelections };
+      updatedPath[levelKey] = currentSelections;
+      
+      let highestLevel = 1;
+      for (let i = 3; i >= 1; i--) {
+        const checkLevelKey = `l${i}`;
+        if (updatedPath[checkLevelKey] && updatedPath[checkLevelKey].length > 0) {
+          highestLevel = i;
+          break;
+        }
+      }
+      
+      // If we deselected from current level and there are no selections left,
+      // move to the highest level with selections, or stay at current level if it's level 1
+      if (level > 1 && currentSelections.length === 0) {
+        setSelectedLevel(highestLevel === level ? Math.max(1, level - 1) : highestLevel);
+      }
     }
-   
+    
     const itemId = item.id;
     setSelectedItems(prev => {
       const filteredItems = prev.filter(id => {
         const levelFromId = parseInt(id.split('-')[0].replace('l', ''));
         return levelFromId <= level;
       });
-     
+      
       if (itemIndex > -1) {
         return filteredItems.filter(id => id !== itemId);
       } else {
@@ -221,40 +220,40 @@ const RetailFunctionalScope = () => {
       }
     });
   };
- 
+
   const handleCheckboxChange = (item, level, e) => {
     e.stopPropagation();
     handleItemSelect(item, level);
   };
- 
+
   const handleInfoClick = (item, e) => {
     e.stopPropagation();
     console.log('Info clicked for:', item);
   };
- 
+
   const getItemNumber = (level, item) => {
     const levelItems = getLevelItems(level);
     const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-   
+    
     if (level === 1) {
       return `${currentIndex + 1}.0`;
     }
-   
-    const fullItem = functionalScopeData.find(dataItem =>
+    
+    const fullItem = nonFunctionalScopeData.find(dataItem => 
       dataItem[`l${level}`] === item.name
     );
-   
+    
     if (!fullItem) return `${currentIndex + 1}`;
-   
+    
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
-     
+      
       const l1Items = getLevelItems(1);
       const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
       parts.push(l1Index + 1);
-     
+      
       for (let i = 2; i <= targetLevel; i++) {
-        let contextData = functionalScopeData.filter(dataItem => {
+        let contextData = nonFunctionalScopeData.filter(dataItem => {
           for (let j = 1; j < i; j++) {
             if (dataItem[`l${j}`] !== targetItem[`l${j}`]) {
               return false;
@@ -262,11 +261,11 @@ const RetailFunctionalScope = () => {
           }
           return true;
         });
-       
+        
         const levelKey = `l${i}`;
         const uniqueItems = [];
         const seen = new Set();
-       
+        
         contextData.forEach(dataItem => {
           const value = dataItem[levelKey];
           if (value && !seen.has(value)) {
@@ -274,36 +273,32 @@ const RetailFunctionalScope = () => {
             uniqueItems.push(value);
           }
         });
-       
+        
         const itemIndex = uniqueItems.findIndex(uniqueItem => uniqueItem === targetItem[levelKey]);
         parts.push(itemIndex + 1);
       }
-     
+      
       return parts;
     };
-   
+    
     const numberParts = buildNumber(level, fullItem);
-   
+    
     if (level === 1) {
       return `${numberParts[0]}.0`;
     } else if (level === 2) {
       return `${numberParts[0]}.${numberParts[1]}`;
     } else if (level === 3) {
       return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}`;
-    } else if (level === 4) {
-      return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}.${numberParts[3]}`;
-    } else if (level === 5) {
-      return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}.${numberParts[3]}.${numberParts[4]}`;
     }
-   
+    
     return numberParts.join('.');
   };
- 
-  const renderLevelColumn = (level, idx, totalColumns = 5) => {
+
+  const renderLevelColumn = (level, idx, totalColumns = 3) => {
     const levelItems = getLevelItems(level);
     const levelKey = `l${level}`;
     const isLevelActive = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
- 
+
     return (
       <div
         key={level}
@@ -311,7 +306,7 @@ const RetailFunctionalScope = () => {
       >
         <div className="column-header">
           <h3 className="column-title">
-            LEVEL {level} PROCESS
+            LEVEL {level} REQUIREMENT
           </h3>
           {levelSelections[levelKey] && levelSelections[levelKey].length > 0 && (
             <div className="column-selected">
@@ -319,7 +314,7 @@ const RetailFunctionalScope = () => {
             </div>
           )}
         </div>
- 
+
         <div className="column-content">
           {!isLevelActive ? (
             <div className="column-placeholder">
@@ -337,7 +332,7 @@ const RetailFunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
+              No items available
             </div>
           ) : (
             <div className="items-container">
@@ -388,56 +383,60 @@ const RetailFunctionalScope = () => {
       </div>
     );
   };
- 
+
   return (
-    <div className="functional-scope-container">
+    <div className="customer-non-functional-scope-container">
       {/* Breadcrumb */}
       <div className="breadcrumb">
         <div className="breadcrumb-content">
           <span className="breadcrumb-link" style={{ color: '#0036C9' }}>Home</span>
           <span>›</span>
-          <span className="breadcrumb-link " style={{ color: '#0036C9' }}>Decision Tree</span>
+          <span className="breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="breadcrumb-current">Retail Functional Scope</span>
+          <span className="breadcrumb-current">Non Functional Scope</span>
         </div>
       </div>
- 
+
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
-          <h2 className="sidebar-title">Retail Functional Scope</h2>
+          <h2 className="sidebar-title">Non Functional Scope</h2>
           <p className="sidebar-description">
-            Retail-specific structured framework for selecting functional requirements,
+            Customer-specific framework for selecting non-functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
- 
+
           {/* Vertical line connecting all steps */}
           <div className="step-line"></div>
- 
+
           {/* Step indicators */}
           <div className="steps-container">
             <div className="step-item">
-              <div className="step-circle active">1</div>
-              <span className="step-text active">Functional Scope</span>
+              <div className="step-circle completed">
+                <svg className="step-check" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span className="step-text completed">Functional Scope</span>
             </div>
-           
+            
             <div className="step-item">
-              <div className="step-circle inactive">2</div>
-              <span className="step-text inactive">Non Functional</span>
+              <div className="step-circle active">2</div>
+              <span className="step-text active">Non Functional</span>
             </div>
-           
+            
             <div className="step-item">
               <div className="step-circle inactive">3</div>
-              <span className="step-text inactive">Decision Criteria</span>
+              <span className="step-text inactive">Review</span>
             </div>
-           
+            
             <div className="step-item">
               <div className="step-circle inactive">4</div>
               <span className="step-text inactive">Solution</span>
             </div>
           </div>
         </div>
- 
+
         {/* Main Content Box */}
         <div className="main-content">
           {/* Header with search and parameters */}
@@ -461,27 +460,8 @@ const RetailFunctionalScope = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
-              {/* Clear button - only show when there's text */}
-              {searchQuery.trim() && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="search-clear-button"
-                  title="Clear search"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="#6b7280"
-                    className="search-clear-icon"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
             </div>
- 
+
             {/* <div className="header-buttons">
               <button
                 className="parameter-button"
@@ -491,28 +471,28 @@ const RetailFunctionalScope = () => {
               </button>
             </div> */}
           </div>
- 
-          {/* Functional Scope Header and Select Level View */}
+
+          {/* Non Functional Scope Header and Select Level View */}
           <div className="title-section">
-            <h1 className="page-title">Retail Functional Scope</h1>
- 
+            <h1 className="page-title">Non Functional Scope</h1>
+
             <div className="level-controls">
               <div className="level-control-row">
                 <span className="level-label">Select Level View</span>
- 
+
                 <div className="level-progress">
-                  <div
+                  <div 
                     className="level-progress-fill"
-                    style={{ width: `${(getHighestSelectedLevel()) / 5 * 100}%` }}
+                    style={{ width: `${(getHighestSelectedLevel()) / 3 * 100}%` }}
                   />
                 </div>
- 
+
                 <div className="level-buttons">
-                  {[1, 2, 3, 4, 5].map((level) => {
+                  {[1, 2, 3].map((level) => {
                     // Check if this level should be enabled
                     const isLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
                     const hasSelections = levelSelections[`l${level}`] && levelSelections[`l${level}`].length > 0;
-                   
+                    
                     return (
                       <button
                         key={level}
@@ -534,19 +514,18 @@ const RetailFunctionalScope = () => {
               </div>
             </div>
           </div>
- 
-          {/* Multi-column layout - Updated for 5 columns */}
+
+          {/* Multi-column layout - Limited to 3 levels */}
           <div className="columns-container">
-            {[1, 2, 3, 4, 5].map((level, idx) => renderLevelColumn(level, idx, 5))}
+            {[1, 2, 3].map((level, idx) => renderLevelColumn(level, idx, 3))}
           </div>
         </div>
       </div>
- 
-      {/* Footer */}
+
       {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
+      <div className="save-proceed-container" style={{ 
+        display: 'flex', 
+        justifyContent: 'flex-end', 
         marginTop: '20px',
         paddingRight: '20px'
        }}>
@@ -564,30 +543,30 @@ const RetailFunctionalScope = () => {
           {loading ? 'Saving...' : 'Save & Proceed'}
         </button>
       </div>
- 
-      {/* Parameter Modal */}
+
+      {/* Parameter Modal - Limited to 3 levels */}
       {/* {showParameterModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-header">
               Select Parameters
-              <button
-                onClick={() => setShowParameterModal(false)}
+              <button 
+                onClick={() => setShowParameterModal(false)} 
                 className="modal-close"
               >
                 &times;
               </button>
             </h2>
- 
+
             <div>
-              <div className="modal-section-title">Process Granularity</div>
-              {[1, 2, 3, 4, 5].map((level) => {
+              <div className="modal-section-title">Requirement Granularity</div>
+              {[1, 2, 3].map((level) => {
                 // For parameter modal: Level 1 is always enabled, others need previous level selections
                 const isParameterLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
-               
+                
                 return (
-                  <label
-                    key={level}
+                  <label 
+                    key={level} 
                     className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
                     style={{
                       opacity: isParameterLevelEnabled ? 1 : 0.4,
@@ -608,7 +587,7 @@ const RetailFunctionalScope = () => {
                 );
               })}
             </div>
- 
+
             <div className="modal-footer">
               <button
                 onClick={() => {
@@ -626,5 +605,5 @@ const RetailFunctionalScope = () => {
     </div>
   );
 };
- 
-export default RetailFunctionalScope;
+
+export default CustomerNonFunctionalScope;

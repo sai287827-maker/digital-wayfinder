@@ -90,19 +90,19 @@ function IndustryTypePlannD() {
   const systemData = [
     {
       id: 'Industry Agnostic',
-      title: 'Industry Agnostic System',
+      title: 'Industry Agnostic',
       description: 'The process of aligning supply and demand across various industries.',
       image: warehouseManagementImg
     },
     {
       id: 'Retail Industry Specific',  
-      title: 'Retail Industry Specific System',
+      title: 'Retail Industry Specific',
       description: 'The process of forecasting demand, managing inventory, and ensuring timely product availability to meet customer needs in retail.',
       image: orderManagementImg
     },
     {
       id: 'Consumer Goods Industry Specific',
-      title: 'Consumer Goods Industry Specific System',
+      title: 'Consumer Goods Industry Specific',
       description: 'The process of forecasting demand, optimizing inventory and distribution for timely delivery of consumer goods.',
       image: transportationManagementImg
     }

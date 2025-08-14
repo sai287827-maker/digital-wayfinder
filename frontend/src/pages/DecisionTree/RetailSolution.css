@@ -226,11 +226,11 @@
  
 .retail-select-all-btn {
   padding: 10px 18px;
-  background-color: transparent;
-  border: 1px solid #e2e8f0;
+  background-color: #8b5cf6;
+  border: 1px solid #0d6fee;
   border-radius: 8px;
   font-size: 15px;
-  color: #64748b;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
 }

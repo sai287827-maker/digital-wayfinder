@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './VisibilityProactive.module.css';
 import AgenticAI from './AgenticAI';
+import Operational from './Operational';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -17,6 +18,7 @@ const VisibilityProactive = () => {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showAgenticAI, setShowAgenticAI] = useState(false);
+  const [showOperational, setShowOperational] = useState(false);
   
   // State for API response data
   const [userId, setUserId] = useState('');
@@ -62,7 +64,30 @@ const VisibilityProactive = () => {
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          setFunctionalArea(response.functionalArea || '');
+          
+          // Set functional area - if not provided, determine from functionalSubArea
+          let area = response.functionalArea || '';
+          if (!area && response.functionalSubArea) {
+            // Map functional sub-areas to functional areas
+            const areaMapping = {
+              'Warehouse Management System': 'Supply Chain Fulfillment',
+              'Inventory Management': 'Supply Chain Fulfillment',
+              'Order Management': 'Supply Chain Fulfillment',
+              'Transportation Management': 'Supply Chain Fulfillment',
+              'Customer Relationship Management': 'Customer Experience',
+              'Sales Management': 'Customer Experience',
+              'Marketing Automation': 'Customer Experience',
+              'Financial Management': 'Financial Operations',
+              'Accounting': 'Financial Operations',
+              'Procurement': 'Financial Operations'
+            };
+            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          }
+          // Default fallback if still empty
+          if (!area) {
+            area = 'Supply Chain Fulfillment';
+          }
+          setFunctionalArea(area);
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for different response structure
@@ -85,6 +110,11 @@ const VisibilityProactive = () => {
     const updated = [...answers];
     updated[idx] = value;
     setAnswers(updated);
+  };
+
+  const handlePrevious = () => {
+    console.log('Navigating back to Operational component');
+    setShowOperational(true);
   };
 
   const handleSaveAndProceed = async () => {
@@ -138,7 +168,7 @@ const VisibilityProactive = () => {
       console.log('Answers saved successfully:', response);
       console.log('Setting showAgenticAI to true');
       
-      // Navigate to Agentic AI component immediately
+      // Navigate to Agentic AI component
       setShowAgenticAI(true);
       
     } catch (err) {
@@ -150,43 +180,18 @@ const VisibilityProactive = () => {
   };
 
   const completedCount = answers.filter(Boolean).length;
-  const totalQuestions = questions.length;
-  const progressPercentage = totalQuestions > 0 ? (completedCount / totalQuestions) * 100 : 0;
-  const allQuestionsAnswered = completedCount === totalQuestions && totalQuestions > 0;
+  const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
 
-  // Early return for navigation - this should be at the very top of the render
+  // Early return for navigation to AgenticAI
   if (showAgenticAI) {
     console.log('Navigating to AgenticAI component, showAgenticAI:', showAgenticAI);
     return <AgenticAI />;
   }
 
-  console.log('Current state - showAgenticAI:', showAgenticAI, 'loading:', loading, 'error:', error);
-
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingSpinner}></div>
-          <p>Loading questions...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.errorContainer}>
-          <p className={styles.errorMessage}>{error}</p>
-          <button 
-            className={styles.saveBtn} 
-            onClick={() => window.location.reload()}
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
+  // Early return for navigation to Operational (Previous button)
+  if (showOperational) {
+    console.log('Navigating back to Operational component, showOperational:', showOperational);
+    return <Operational />;
   }
 
   return (
@@ -199,18 +204,14 @@ const VisibilityProactive = () => {
         <div className={styles.steps}>
           {steps.map((step, idx) => (
             <div key={step.label} className={styles.stepItem}>
-              <div className={
-                step.status === 'completed' ? styles.stepCircleCompleted :
-                step.status === 'active' ? styles.stepCircleActive :
-                styles.stepCircleInactive
-              }>
-                {step.status === 'completed' ? <span>&#10003;</span> : idx + 1}
+              <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
+                              step.status === 'active' ? styles.stepCircleActive : 
+                              styles.stepCircleInactive}>
+                {step.status === 'completed' ? '✓' : idx + 1}
               </div>
-              <span className={
-                step.status === 'active' ? styles.stepTextActive :
-                step.status === 'completed' ? styles.stepTextCompleted :
-                styles.stepTextInactive
-              }>
+              <span className={step.status === 'completed' ? styles.stepTextCompleted :
+                              step.status === 'active' ? styles.stepTextActive : 
+                              styles.stepTextInactive}>
                 {step.label}
               </span>
             </div>
@@ -224,44 +225,61 @@ const VisibilityProactive = () => {
           <span className={styles.breadcrumbCurrent}>Questionnaire</span>
         </div>
         <div className={styles.title}>Visibility and Proactive</div>
-        <div className={styles.progressRow}>
-          <span className={styles.progressLabel}>Completed question {completedCount}/{totalQuestions}</span>
-          <div className={styles.progressBarBg}>
-            <div className={styles.progressBarFill} style={{ width: `${progressPercentage}%` }} />
-          </div>
-        </div>
-        <div className={styles.questionsList}>
-          {questions.map((q, idx) => (
-            <div key={idx} className={styles.questionBlock}>
-              <div className={styles.questionText}>{idx + 1}. {q}</div>
-              <div className={styles.optionsRow}>
-                {['High', 'Medium', 'Low'].map(opt => (
-                  <label key={opt} className={styles.optionLabel}>
-                    <input
-                      type="radio"
-                      name={`q${idx}`}
-                      value={opt}
-                      checked={answers[idx] === opt}
-                      onChange={() => handleAnswer(idx, opt)}
-                      className={styles.radio}
-                    />
-                    <span>{opt}</span>
-                  </label>
-                ))}
+        {loading ? (
+          <div className={styles.loading}>Loading questions...</div>
+        ) : error ? (
+          <div className={styles.error}>{error}</div>
+        ) : (
+          <>
+            <div className={styles.progressRow}>
+              <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
+              <div className={styles.progressBarBg}>
+                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
               </div>
             </div>
-          ))}
-        </div>
-        <div className={styles.buttonRow}>
-          <button className={styles.prevBtn} disabled={saving}>Previous</button>
-          <button
-            className={styles.saveBtn}
-            disabled={!allQuestionsAnswered || saving}
-            onClick={handleSaveAndProceed}
-          >
-            {saving ? 'Saving...' : 'Save & Proceed'}
-          </button>
-        </div>
+            <div className={styles.questionsList}>
+              {questions.map((q, idx) => (
+                <div key={idx} className={styles.questionBlock}>
+                  <div className={styles.questionText}>{idx + 1}. {q}</div>
+                  <div className={styles.optionsRow}>
+                    {['High', 'Medium', 'Low'].map(opt => (
+                      <label
+                        key={opt}
+                        className={styles.optionLabel}
+                      >
+                        <input
+                          type="radio"
+                          name={`q${idx}`}
+                          value={opt}
+                          checked={answers[idx] === opt}
+                          onChange={() => handleAnswer(idx, opt)}
+                          className={styles.radio}
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.buttonRow}>
+              <button 
+                className={styles.prevBtn} 
+                disabled={saving}
+                onClick={handlePrevious}
+              >
+                Previous
+              </button>
+              <button
+                className={styles.saveBtn}
+                disabled={!allQuestionsAnswered || saving}
+                onClick={handleSaveAndProceed}
+              >
+                {saving ? 'Saving...' : 'Save & Proceed'}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

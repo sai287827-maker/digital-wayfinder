@@ -10,13 +10,14 @@ const steps = [
   { label: 'Agentic AI', status: 'active' }
 ];
 
-const AgenticAI = () => {
+const AgenticAI = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showWmsReport, setShowWmsReport] = useState(false);
+  const [navigatingBack, setNavigatingBack] = useState(false);
   
   // State for API response data
   const [userId, setUserId] = useState('');
@@ -104,6 +105,97 @@ const AgenticAI = () => {
     const updated = [...answers];
     updated[idx] = value;
     setAnswers(updated);
+  };
+
+  const handlePrevious = async () => {
+    // Check if there are any answers to save before going back
+    const hasAnswers = answers.some(answer => answer !== null);
+    
+    if (hasAnswers) {
+      try {
+        setNavigatingBack(true);
+        setError(null);
+        
+        // Save current progress before navigating back
+        let area = functionalArea;
+        if (!area && functionalSubArea) {
+          const areaMapping = {
+            'Warehouse Management System': 'Supply Chain Fulfillment',
+            'Inventory Management': 'Supply Chain Fulfillment',
+            'Order Management': 'Supply Chain Fulfillment',
+            'Transportation Management': 'Supply Chain Fulfillment',
+            'Customer Relationship Management': 'Customer Experience',
+            'Sales Management': 'Customer Experience',
+            'Marketing Automation': 'Customer Experience',
+            'Financial Management': 'Financial Operations',
+            'Accounting': 'Financial Operations',
+            'Procurement': 'Financial Operations'
+          };
+          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
+        }
+        if (!area) {
+          area = 'Supply Chain Fulfillment';
+        }
+        
+        // Create payload with only answered questions
+        const answeredQuestions = questions
+          .map((question, index) => ({
+            question: question,
+            answer: answers[index]?.toLowerCase() || ''
+          }))
+          .filter(item => item.answer !== ''); // Only include answered questions
+        
+        if (answeredQuestions.length > 0) {
+          const payload = {
+            functionalArea: area,
+            functionalSubArea: functionalSubArea || '',
+            answers: answeredQuestions,
+            isPartialSave: true // Flag to indicate this is a partial save before navigation
+          };
+          
+          console.log('Saving partial Agentic AI progress before navigation:', payload);
+          
+          // Save the partial progress
+          await apiPost('api/digital-wayfinder/questionnaire/genai/save-answers', payload);
+          console.log('Partial progress saved successfully');
+        }
+        
+      } catch (err) {
+        console.error('Error saving progress before navigation:', err);
+        // Continue with navigation even if save fails
+        console.log('Continuing with navigation despite save error');
+      }
+    }
+    
+    // Navigate back to previous step
+    if (onNavigateBack && typeof onNavigateBack === 'function') {
+      console.log('Navigating back using onNavigateBack callback');
+      onNavigateBack();
+    } else {
+      // Fallback navigation methods
+      console.log('Using fallback navigation method');
+      
+      // Option 1: If using React Router, you might have history available
+      if (window.history && window.history.length > 1) {
+        window.history.back();
+      } else {
+        // Option 2: Navigate to a specific route (adjust based on your routing structure)
+        // This assumes you have a router setup
+        console.log('Attempting to navigate to previous step...');
+        
+        // You might need to replace this with your specific routing logic
+        // For example, if using React Router:
+        // navigate('/digital-wayfinder/visibility-and-proactive');
+        
+        // Or if you have a parent component handling navigation:
+        // window.parent.postMessage({ action: 'navigateToPreviousStep' }, '*');
+        
+        // For now, we'll show an alert as a placeholder
+        alert('Previous step navigation would be implemented here based on your routing setup.');
+      }
+    }
+    
+    setNavigatingBack(false);
   };
 
   const handleSaveAndProceed = async () => {
@@ -267,10 +359,16 @@ const AgenticAI = () => {
           ))}
         </div>
         <div className={styles.buttonRow}>
-          <button className={styles.prevBtn} disabled={saving}>Previous</button>
+          <button 
+            className={styles.prevBtn} 
+            disabled={saving || navigatingBack}
+            onClick={handlePrevious}
+          >
+            {navigatingBack ? 'Saving...' : 'Previous'}
+          </button>
           <button 
             className={styles.saveBtn} 
-            disabled={!allQuestionsAnswered || saving}
+            disabled={!allQuestionsAnswered || saving || navigatingBack}
             onClick={handleSaveAndProceed}
           >
             {saving ? 'Saving...' : 'Finish'}

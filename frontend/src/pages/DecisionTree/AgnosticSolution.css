@@ -228,13 +228,16 @@
   font-weight: 500;
 }
 
-.select-all-button {
+.select-all---button {
   padding: 8px 16px;
-  background-color: transparent;
-  border: 1px solid #e2e8f0;
+  /* background-color: transparent;
+  border: 1px solid #e2e8f0; */
+  background-color: #8b5cf6;
+  border: 1px solid #0d6fee;
   border-radius: 6px;
   font-size: 14px;
-  color: #64748b;
+  /* color: #64748b; */
+  color: white;
   cursor: pointer;
   transition: all 0.2s ease;
 }

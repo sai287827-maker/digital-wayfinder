@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './DataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import Operational from './Operational';
+import WmsSystem from './WmsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -11,13 +12,15 @@ const steps = [
   { label: 'Agentic  AI', status: 'inactive' }
 ];
  
-const DataAndCloud = () => {
+const DataAndCloud = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
+  const [showWmsSystem, setShowWmsSystem] = useState(false);
+  const [navigatingBack, setNavigatingBack] = useState(false);
   
   // New state for API response data
   const [userId, setUserId] = useState('');
@@ -99,6 +102,80 @@ const DataAndCloud = () => {
     setAnswers(updated);
   };
 
+  const handlePrevious = async () => {
+    // Check if there are any answers to save before going back
+    const hasAnswers = answers.some(answer => answer !== null);
+    
+    if (hasAnswers) {
+      try {
+        setNavigatingBack(true);
+        setError(null);
+        
+        // Save current progress before navigating back
+        let area = functionalArea;
+        if (!area && functionalSubArea) {
+          const areaMapping = {
+            'Warehouse Management System': 'Supply Chain Fulfillment',
+            'Inventory Management': 'Supply Chain Fulfillment',
+            'Order Management': 'Supply Chain Fulfillment',
+            'Transportation Management': 'Supply Chain Fulfillment',
+            'Customer Relationship Management': 'Customer Experience',
+            'Sales Management': 'Customer Experience',
+            'Marketing Automation': 'Customer Experience',
+            'Financial Management': 'Financial Operations',
+            'Accounting': 'Financial Operations',
+            'Procurement': 'Financial Operations'
+          };
+          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
+        }
+        // Default fallback if still empty
+        if (!area) {
+          area = 'Supply Chain Fulfillment';
+        }
+        
+        // Create payload with only answered questions
+        const answeredQuestions = questions
+          .map((question, index) => ({
+            question: question,
+            answer: answers[index]?.toLowerCase() || ''
+          }))
+          .filter(item => item.answer !== ''); // Only include answered questions
+        
+        if (answeredQuestions.length > 0) {
+          const payload = {
+            functionalArea: area,
+            functionalSubArea: functionalSubArea || '',
+            answers: answeredQuestions,
+            isPartialSave: true // Flag to indicate this is a partial save before navigation
+          };
+          
+          console.log('Saving partial Data and Cloud progress before navigation:', payload);
+          
+          // Save the partial progress
+          await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
+          console.log('Partial progress saved successfully');
+        }
+        
+      } catch (err) {
+        console.error('Error saving progress before navigation:', err);
+        // Continue with navigation even if save fails
+        console.log('Continuing with navigation despite save error');
+      }
+    }
+    
+    // Navigate back to WmsSystem
+    if (onNavigateBack && typeof onNavigateBack === 'function') {
+      console.log('Navigating back to WmsSystem using onNavigateBack callback');
+      onNavigateBack();
+    } else {
+      // Fallback: Navigate directly to WmsSystem component
+      console.log('Using fallback navigation to WmsSystem');
+      setShowWmsSystem(true);
+    }
+    
+    setNavigatingBack(false);
+  };
+
   const handleSaveAndProceed = async () => {
     try {
       setSaving(true);
@@ -132,6 +209,12 @@ const DataAndCloud = () => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
+
+  // Early return for navigation to WmsSystem
+  if (showWmsSystem) {
+    console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
+    return <WmsSystem />;
+  }
 
   if (showVisibilityProactive) {
     return <Operational />;
@@ -173,7 +256,7 @@ const DataAndCloud = () => {
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
               <div className={styles.progressBarBg}>
-                <div className={styles.progressBarFill} style={{ width: `${(completedCount / questions.length) * 100}%` }} />
+                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
               </div>
             </div>
             <div className={styles.questionsList}>
@@ -202,10 +285,16 @@ const DataAndCloud = () => {
               ))}
             </div>
             <div className={styles.buttonRow}>
-              <button className={styles.prevBtn} disabled={saving}>Previous</button>
+              <button 
+                className={styles.prevBtn} 
+                disabled={saving || navigatingBack}
+                onClick={handlePrevious}
+              >
+                {navigatingBack ? 'Saving...' : 'Previous'}
+              </button>
               <button
                 className={styles.saveBtn}
-                disabled={!allQuestionsAnswered || saving}
+                disabled={!allQuestionsAnswered || saving || navigatingBack}
                 onClick={handleSaveAndProceed}
               >
                 {saving ? 'Saving...' : 'Save & Proceed'}

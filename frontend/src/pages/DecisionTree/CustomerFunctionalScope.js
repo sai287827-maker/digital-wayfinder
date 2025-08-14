@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './RetailNonFunctionalScope';
+import './CustomerNonFunctionalScope';
 import { apiGet, apiPost } from '../../api';
-// import './RetailFunctionalScope.css';
+// import './CustomerFunctionalScope.css';
  
-const RetailFunctionalScope = () => {
+const CustomerFunctionalScope = () => {
   const navigate = useNavigate();
   const [functionalScopeData, setFunctionalScopeData] = useState([]);
   const [levelSelections, setSelectedPath] = useState({});
@@ -14,15 +14,15 @@ const RetailFunctionalScope = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
   // const [showParameterModal, setShowParameterModal] = useState(false);
-  //const [parameterLevel, setParameterLevel] = useState(1);
+  // const [parameterLevel, setParameterLevel] = useState(1);
  
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
       setError(null);
       try {
-        // Updated API endpoint to retail
-        const data = await apiGet('api/decision-tree/functional-scope/retail/all');
+        // Updated API endpoint to CGS (Customer)
+        const data = await apiGet('api/decision-tree/functional-scope/cgs/all');
         setFunctionalScopeData(data);
       } catch (err) {
         setError('Failed to fetch functional scope data.');
@@ -98,10 +98,10 @@ const RetailFunctionalScope = () => {
       // Save functional scope
       await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
  
-      // Navigate to Retail Non Functional Scope page and pass data
-      navigate('/decision-tree/retail-non-functional-scope', { 
+      // Navigate to Customer Non Functional Scope page and pass data
+      navigate('/decision-tree/customer-non-functional-scope', { 
         state: { 
-          fromRetailFunctionalScope: true,
+          fromCustomerFunctionalScope: true,
           selectedData: functionalScopeData
         }
       });
@@ -115,10 +115,23 @@ const RetailFunctionalScope = () => {
     }
   };
  
-  // FIXED: More precise search that only searches the current level items
+  // Filter data based on search query
+  const getFilteredData = () => {
+    if (!searchQuery) return functionalScopeData;
+   
+    return functionalScopeData.filter(item =>
+      Object.values(item).some(value =>
+        value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  };
+ 
+  // Get unique items for a specific level based on selected path
   const getLevelItems = (level) => {
-    // Start with original data for level hierarchy
-    let levelData = functionalScopeData;
+    const filteredData = getFilteredData();
+    if (!filteredData || filteredData.length === 0) return [];
+   
+    let levelData = filteredData;
    
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
@@ -131,8 +144,8 @@ const RetailFunctionalScope = () => {
         );
       }
     }
-
-    // Get unique items for current level from hierarchy-filtered data
+   
+    // Get unique items for current level
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
@@ -149,15 +162,6 @@ const RetailFunctionalScope = () => {
         });
       }
     });
-
-    // FIXED: Apply search filter only to the current level items, not across all levels
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      return uniqueItems.filter(item => 
-        // Only search in the current level's name, not across all hierarchy levels
-        item.name.toLowerCase().includes(query)
-      );
-    }
    
     return uniqueItems;
   };
@@ -337,7 +341,7 @@ const RetailFunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
+              No items available
             </div>
           ) : (
             <div className="items-container">
@@ -398,16 +402,16 @@ const RetailFunctionalScope = () => {
           <span>›</span>
           <span className="breadcrumb-link " style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="breadcrumb-current">Retail Functional Scope</span>
+          <span className="breadcrumb-current">Functional Scope</span>
         </div>
       </div>
  
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
-          <h2 className="sidebar-title">Retail Functional Scope</h2>
+          <h2 className="sidebar-title">Functional Scope</h2>
           <p className="sidebar-description">
-            Retail-specific structured framework for selecting functional requirements,
+            Customer-specific structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
  
@@ -428,7 +432,7 @@ const RetailFunctionalScope = () => {
            
             <div className="step-item">
               <div className="step-circle inactive">3</div>
-              <span className="step-text inactive">Decision Criteria</span>
+              <span className="step-text inactive">Review</span>
             </div>
            
             <div className="step-item">
@@ -461,25 +465,6 @@ const RetailFunctionalScope = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
-              {/* Clear button - only show when there's text */}
-              {searchQuery.trim() && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="search-clear-button"
-                  title="Clear search"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="#6b7280"
-                    className="search-clear-icon"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
             </div>
  
             {/* <div className="header-buttons">
@@ -494,7 +479,7 @@ const RetailFunctionalScope = () => {
  
           {/* Functional Scope Header and Select Level View */}
           <div className="title-section">
-            <h1 className="page-title">Retail Functional Scope</h1>
+            <h1 className="page-title">Functional Scope</h1>
  
             <div className="level-controls">
               <div className="level-control-row">
@@ -627,4 +612,4 @@ const RetailFunctionalScope = () => {
   );
 };
  
-export default RetailFunctionalScope;
+export default CustomerFunctionalScope;
