@@ -248,8 +248,8 @@ const AgenticAI = ({ onNavigateBack }) => {
 
       console.log('Agentic AI answers saved successfully:', response);
       
-      // Handle completion - could navigate to results page or show success message
-      alert('Questionnaire completed successfully!');
+      // Navigate to WmsReport or next step without popup
+      setShowWmsReport(true);
       
     } catch (err) {
       console.error('Error saving Agentic AI answers:', err);
@@ -320,14 +320,22 @@ const AgenticAI = ({ onNavigateBack }) => {
                 step.status === 'completed' ? styles.stepCircleCompleted :
                 step.status === 'active' ? styles.stepCircleActive :
                 styles.stepCircleInactive
-              }>
+              } style={{
+                backgroundColor: step.status === 'completed' ? '#4CAF50' : 
+                               step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                color: step.status === 'inactive' ? '#666' : 'white'
+              }}>
                 {step.status === 'completed' ? <span>&#10003;</span> : idx + 1}
               </div>
               <span className={
                 step.status === 'active' ? styles.stepTextActive :
                 step.status === 'completed' ? styles.stepTextCompleted :
                 styles.stepTextInactive
-              }>
+              } style={{
+                color: step.status === 'completed' ? '#4CAF50' : 
+                       step.status === 'active' ? '#9C27B0' : '#666',
+                fontWeight: step.status === 'active' ? '600' : '400'
+              }}>
                 {step.label}
               </span>
             </div>
@@ -358,8 +366,8 @@ const AgenticAI = ({ onNavigateBack }) => {
         </div>
         <div className={styles.questionsList}>
           {questions.map((q, idx) => (
-            <div key={idx} className={styles.questionBlock}>
-              <div className={styles.questionText}>{idx + 1}. {q}</div>
+            <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
+              <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
               <div className={styles.optionsRow}>
                 {['High', 'Medium', 'Low'].map(opt => (
                   <label key={opt} className={styles.optionLabel} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}>
@@ -396,18 +404,18 @@ const AgenticAI = ({ onNavigateBack }) => {
               padding: '12px 24px',
               borderRadius: '6px',
               fontWeight: '600',
-              cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
+              cursor: disabled ? 'not-allowed' : 'pointer',
               opacity: (saving || navigatingBack) ? 0.6 : 1,
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
-              if (!(saving || navigatingBack)) {
+              if (!saving && !navigatingBack) {
                 e.target.style.backgroundColor = '#9C27B0';
                 e.target.style.color = 'white';
               }
             }}
             onMouseLeave={(e) => {
-              if (!(saving || navigatingBack)) {
+              if (!saving && !navigatingBack) {
                 e.target.style.backgroundColor = '#f5f5f5';
                 e.target.style.color = '#9C27B0';
               }
