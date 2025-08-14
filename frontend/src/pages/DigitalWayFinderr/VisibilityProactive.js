@@ -348,7 +348,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
                   style={{ 
                     width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
                     height: '100%',
-                    backgroundColor: '#4CAF50',
+                    backgroundColor: '#9C27B0',
                     borderRadius: '4px',
                     transition: 'width 0.3s ease'
                   }} 
@@ -357,13 +357,14 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             </div>
             <div className={styles.questionsList}>
               {questions.map((q, idx) => (
-                <div key={idx} className={styles.questionBlock}>
-                  <div className={styles.questionText}>{idx + 1}. {q}</div>
+                <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
+                  <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
                   <div className={styles.optionsRow}>
                     {['High', 'Medium', 'Low'].map(opt => (
                       <label
                         key={opt}
                         className={styles.optionLabel}
+                        style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
                       >
                         <input
                           type="radio"
@@ -372,8 +373,14 @@ const VisibilityProactive = ({ onNavigateBack }) => {
                           checked={answers[idx] === opt}
                           onChange={() => handleAnswer(idx, opt)}
                           className={styles.radio}
+                          style={{
+                            accentColor: '#9C27B0',
+                            marginRight: '8px',
+                            width: '18px',
+                            height: '18px'
+                          }}
                         />
-                        <span>{opt}</span>
+                        <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
                       </label>
                     ))}
                   </div>
@@ -385,6 +392,29 @@ const VisibilityProactive = ({ onNavigateBack }) => {
                 className={styles.prevBtn} 
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
+                style={{
+                  backgroundColor: '#f5f5f5',
+                  border: '2px solid #9C27B0',
+                  color: '#9C27B0',
+                  padding: '12px 24px',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
+                  opacity: (saving || navigatingBack) ? 0.6 : 1,
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (!saving && !navigatingBack) {
+                    e.target.style.backgroundColor = '#9C27B0';
+                    e.target.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!saving && !navigatingBack) {
+                    e.target.style.backgroundColor = '#f5f5f5';
+                    e.target.style.color = '#9C27B0';
+                  }
+                }}
               >
                 {navigatingBack ? 'Saving...' : 'Previous'}
               </button>
@@ -392,6 +422,29 @@ const VisibilityProactive = ({ onNavigateBack }) => {
                 className={styles.saveBtn}
                 disabled={!allQuestionsAnswered || saving || navigatingBack}
                 onClick={handleSaveAndProceed}
+                style={{
+                  backgroundColor: '#9C27B0',
+                  border: '2px solid #9C27B0',
+                  color: 'white',
+                  padding: '12px 24px',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  cursor: (!allQuestionsAnswered || saving || navigatingBack) ? 'not-allowed' : 'pointer',
+                  opacity: (!allQuestionsAnswered || saving || navigatingBack) ? 0.6 : 1,
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (allQuestionsAnswered && !saving && !navigatingBack) {
+                    e.target.style.backgroundColor = '#7B1FA2';
+                    e.target.style.borderColor = '#7B1FA2';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (allQuestionsAnswered && !saving && !navigatingBack) {
+                    e.target.style.backgroundColor = '#9C27B0';
+                    e.target.style.borderColor = '#9C27B0';
+                  }
+                }}
               >
                 {saving ? 'Saving...' : 'Save & Proceed'}
               </button>
