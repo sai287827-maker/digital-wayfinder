@@ -261,6 +261,17 @@ const AgenticAI = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
+  
+  // Calculate progress percentage
+  const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
+  
+  // Debug logging for progress bar
+  console.log('AgenticAI Progress Debug:', {
+    completedCount,
+    totalQuestions: questions.length,
+    progressPercentage,
+    answers
+  });
 
   // Early return for navigation to WmsReport
   if (showWmsReport) {
@@ -332,8 +343,17 @@ const AgenticAI = ({ onNavigateBack }) => {
         <div className={styles.title}>Agentic AI</div>
         <div className={styles.progressRow}>
           <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-          <div className={styles.progressBarBg}>
-            <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+          <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+            <div 
+              className={styles.progressBarFill} 
+              style={{ 
+                width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
+                height: '100%',
+                backgroundColor: '#9C27B0',
+                borderRadius: '4px',
+                transition: 'width 0.3s ease'
+              }} 
+            />
           </div>
         </div>
         <div className={styles.questionsList}>
@@ -342,7 +362,7 @@ const AgenticAI = ({ onNavigateBack }) => {
               <div className={styles.questionText}>{idx + 1}. {q}</div>
               <div className={styles.optionsRow}>
                 {['High', 'Medium', 'Low'].map(opt => (
-                  <label key={opt} className={styles.optionLabel}>
+                  <label key={opt} className={styles.optionLabel} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}>
                     <input
                       type="radio"
                       name={`q${idx}`}
@@ -350,8 +370,14 @@ const AgenticAI = ({ onNavigateBack }) => {
                       checked={answers[idx] === opt}
                       onChange={() => handleAnswer(idx, opt)}
                       className={styles.radio}
+                      style={{
+                        accentColor: '#9C27B0',
+                        marginRight: '8px',
+                        width: '18px',
+                        height: '18px'
+                      }}
                     />
-                    <span>{opt}</span>
+                    <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
                   </label>
                 ))}
               </div>
@@ -363,6 +389,29 @@ const AgenticAI = ({ onNavigateBack }) => {
             className={styles.prevBtn} 
             disabled={saving || navigatingBack}
             onClick={handlePrevious}
+            style={{
+              backgroundColor: '#f5f5f5',
+              border: '2px solid #9C27B0',
+              color: '#9C27B0',
+              padding: '12px 24px',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: disabled ? 'not-allowed' : 'pointer',
+              opacity: (saving || navigatingBack) ? 0.6 : 1,
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (!saving && !navigatingBack) {
+                e.target.style.backgroundColor = '#9C27B0';
+                e.target.style.color = 'white';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!saving && !navigatingBack) {
+                e.target.style.backgroundColor = '#f5f5f5';
+                e.target.style.color = '#9C27B0';
+              }
+            }}
           >
             {navigatingBack ? 'Saving...' : 'Previous'}
           </button>
@@ -370,8 +419,31 @@ const AgenticAI = ({ onNavigateBack }) => {
             className={styles.saveBtn} 
             disabled={!allQuestionsAnswered || saving || navigatingBack}
             onClick={handleSaveAndProceed}
+            style={{
+              backgroundColor: '#9C27B0',
+              border: '2px solid #9C27B0',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '6px',
+              fontWeight: '600',
+              cursor: (!allQuestionsAnswered || saving || navigatingBack) ? 'not-allowed' : 'pointer',
+              opacity: (!allQuestionsAnswered || saving || navigatingBack) ? 0.6 : 1,
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (allQuestionsAnswered && !saving && !navigatingBack) {
+                e.target.style.backgroundColor = '#7B1FA2';
+                e.target.style.borderColor = '#7B1FA2';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (allQuestionsAnswered && !saving && !navigatingBack) {
+                e.target.style.backgroundColor = '#9C27B0';
+                e.target.style.borderColor = '#9C27B0';
+              }
+            }}
           >
-            {saving ? 'Saving...' : 'Finish'}
+            {saving ? 'Saving...' : 'Generate Report'}
           </button>
         </div>
       </div>

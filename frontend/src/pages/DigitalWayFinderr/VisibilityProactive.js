@@ -11,7 +11,7 @@ const steps = [
   { label: 'Agentic AI', status: 'inactive' }
 ];
 
-const VisibilityProactive = () => {
+const VisibilityProactive = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +19,7 @@ const VisibilityProactive = () => {
   const [saving, setSaving] = useState(false);
   const [showAgenticAI, setShowAgenticAI] = useState(false);
   const [showOperational, setShowOperational] = useState(false);
+  const [navigatingBack, setNavigatingBack] = useState(false);
   
   // State for API response data
   const [userId, setUserId] = useState('');
@@ -32,11 +33,11 @@ const VisibilityProactive = () => {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching visibility-proactive questions...');
+        console.log('Fetching VisibilityProactive questions and existing answers...');
 
         const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
 
-        console.log('API Response:', response);
+        console.log('VisibilityProactive API Response:', response);
 
         // Map the response structure similar to Operational component
         if (response.questions && Array.isArray(response.questions)) {
@@ -49,17 +50,44 @@ const VisibilityProactive = () => {
           
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
+            console.log('Loading existing answers:', response.answers);
             response.answers.forEach(answerObj => {
               const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
+                console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
+              } else {
+                console.warn('Could not find matching question for answer:', answerObj);
               }
             });
+          } else {
+            console.log('No existing answers found in response');
+            
+            // Check if we should try to fetch existing answers separately
+            try {
+              console.log('Attempting to fetch existing answers separately...');
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              
+              if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
+                console.log('Found existing answers in separate call:', answersResponse.answers);
+                answersResponse.answers.forEach(answerObj => {
+                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+                  if (questionIndex !== -1) {
+                    const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                    initialAnswers[questionIndex] = answerValue;
+                    console.log(`Loaded answer from separate call for question ${questionIndex}: ${answerValue}`);
+                  }
+                });
+              }
+            } catch (separateErr) {
+              console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
+            }
           }
           
           setAnswers(initialAnswers);
+          console.log('Final answers array:', initialAnswers);
           
           // Set other response data
           setUserId(response.userId || '');
@@ -91,12 +119,13 @@ const VisibilityProactive = () => {
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for different response structure
+          console.log('Using fallback structure for questions');
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
         }
         
       } catch (err) {
-        console.error('Error fetching questions:', err);
+        console.error('Error fetching VisibilityProactive questions:', err);
         setError('Failed to load questions. Please try again.');
       } finally {
         setLoading(false);
@@ -112,9 +141,78 @@ const VisibilityProactive = () => {
     setAnswers(updated);
   };
 
-  const handlePrevious = () => {
-    console.log('Navigating back to Operational component');
-    setShowOperational(true);
+  const handlePrevious = async () => {
+    // Check if there are any answers to save before going back
+    const hasAnswers = answers.some(answer => answer !== null);
+    
+    if (hasAnswers) {
+      try {
+        setNavigatingBack(true);
+        setError(null);
+        
+        // Save current progress before navigating back
+        let area = functionalArea;
+        if (!area && functionalSubArea) {
+          const areaMapping = {
+            'Warehouse Management System': 'Supply Chain Fulfillment',
+            'Inventory Management': 'Supply Chain Fulfillment',
+            'Order Management': 'Supply Chain Fulfillment',
+            'Transportation Management': 'Supply Chain Fulfillment',
+            'Customer Relationship Management': 'Customer Experience',
+            'Sales Management': 'Customer Experience',
+            'Marketing Automation': 'Customer Experience',
+            'Financial Management': 'Financial Operations',
+            'Accounting': 'Financial Operations',
+            'Procurement': 'Financial Operations'
+          };
+          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
+        }
+        // Default fallback if still empty
+        if (!area) {
+          area = 'Supply Chain Fulfillment';
+        }
+        
+        // Create payload with only answered questions
+        const answeredQuestions = questions
+          .map((question, index) => ({
+            question: question,
+            answer: answers[index]?.toLowerCase() || ''
+          }))
+          .filter(item => item.answer !== ''); // Only include answered questions
+        
+        if (answeredQuestions.length > 0) {
+          const payload = {
+            functionalArea: area,
+            functionalSubArea: functionalSubArea || '',
+            answers: answeredQuestions,
+            isPartialSave: true // Flag to indicate this is a partial save before navigation
+          };
+          
+          console.log('Saving partial VisibilityProactive progress before navigation:', payload);
+          
+          // Save the partial progress
+          await apiPost('api/digital-wayfinder/questionnaire/visibility-proactive/save-answers', payload);
+          console.log('Partial progress saved successfully');
+        }
+        
+      } catch (err) {
+        console.error('Error saving progress before navigation:', err);
+        // Continue with navigation even if save fails
+        console.log('Continuing with navigation despite save error');
+      }
+    }
+    
+    // Navigate back to Operational
+    if (onNavigateBack && typeof onNavigateBack === 'function') {
+      console.log('Navigating back to Operational using onNavigateBack callback');
+      onNavigateBack();
+    } else {
+      // Fallback: Navigate directly to Operational component
+      console.log('Using fallback navigation to Operational');
+      setShowOperational(true);
+    }
+    
+    setNavigatingBack(false);
   };
 
   const handleSaveAndProceed = async () => {
@@ -181,6 +279,17 @@ const VisibilityProactive = () => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
+  
+  // Calculate progress percentage
+  const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
+  
+  // Debug logging for progress bar
+  console.log('VisibilityProactive Progress Debug:', {
+    completedCount,
+    totalQuestions: questions.length,
+    progressPercentage,
+    answers
+  });
 
   // Early return for navigation to AgenticAI
   if (showAgenticAI) {
@@ -233,8 +342,17 @@ const VisibilityProactive = () => {
           <>
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-              <div className={styles.progressBarBg}>
-                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+              <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+                <div 
+                  className={styles.progressBarFill} 
+                  style={{ 
+                    width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
+                    height: '100%',
+                    backgroundColor: '#4CAF50',
+                    borderRadius: '4px',
+                    transition: 'width 0.3s ease'
+                  }} 
+                />
               </div>
             </div>
             <div className={styles.questionsList}>
@@ -265,14 +383,14 @@ const VisibilityProactive = () => {
             <div className={styles.buttonRow}>
               <button 
                 className={styles.prevBtn} 
-                disabled={saving}
+                disabled={saving || navigatingBack}
                 onClick={handlePrevious}
               >
-                Previous
+                {navigatingBack ? 'Saving...' : 'Previous'}
               </button>
               <button
                 className={styles.saveBtn}
-                disabled={!allQuestionsAnswered || saving}
+                disabled={!allQuestionsAnswered || saving || navigatingBack}
                 onClick={handleSaveAndProceed}
               >
                 {saving ? 'Saving...' : 'Save & Proceed'}
