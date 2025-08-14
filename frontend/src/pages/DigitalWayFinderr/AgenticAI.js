@@ -396,18 +396,18 @@ const AgenticAI = ({ onNavigateBack }) => {
               padding: '12px 24px',
               borderRadius: '6px',
               fontWeight: '600',
-              cursor: disabled ? 'not-allowed' : 'pointer',
+              cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
               opacity: (saving || navigatingBack) ? 0.6 : 1,
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
-              if (!saving && !navigatingBack) {
+              if (!(saving || navigatingBack)) {
                 e.target.style.backgroundColor = '#9C27B0';
                 e.target.style.color = 'white';
               }
             }}
             onMouseLeave={(e) => {
-              if (!saving && !navigatingBack) {
+              if (!(saving || navigatingBack)) {
                 e.target.style.backgroundColor = '#f5f5f5';
                 e.target.style.color = '#9C27B0';
               }
