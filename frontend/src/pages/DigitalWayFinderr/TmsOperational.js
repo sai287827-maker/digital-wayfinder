@@ -11,7 +11,7 @@ const steps = [
   { label: 'Agentic AI', status: 'inactive' }
 ];
  
-const Operational = ({ onNavigateBack }) => {
+const TmsOperational = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -462,4 +462,4 @@ const Operational = ({ onNavigateBack }) => {
   );
 };
  
-export default Operational;
+export default TmsOperational;

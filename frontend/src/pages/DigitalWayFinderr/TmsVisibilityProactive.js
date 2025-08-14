@@ -1,43 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import styles from './Operational.module.css';
-import VisibilityProactive from './VisibilityProactive';
-import DataAndCloud from './DataAndCloud';
+import styles from './VisibilityProactive.module.css';
+import AgenticAI from './AgenticAI';
+import Operational from './Operational';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
-  { label: 'Operational Innovations', status: 'active' },
-  { label: 'Visibility and Proactive', status: 'inactive' },
+  { label: 'Operational Innovations', status: 'completed' },
+  { label: 'Visibility and Proactive', status: 'active' },
   { label: 'Agentic AI', status: 'inactive' }
 ];
- 
-const Operational = ({ onNavigateBack }) => {
+
+const TmsVisibilityProactive = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
+  const [showAgenticAI, setShowAgenticAI] = useState(false);
+  const [showOperational, setShowOperational] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
-  // New state for API response data
+  // State for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
- 
+
+  // Fetch questions from API
   useEffect(() => {
-    async function fetchQuestions() {
-      setLoading(true);
-      setError(null);
+    const fetchQuestions = async () => {
       try {
-        console.log('Fetching Operational questions and existing answers...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-        
-        console.log('Operational API Response:', response);
-        
-        // Map the new response structure
+        setLoading(true);
+        setError(null);
+        console.log('Fetching VisibilityProactive questions and existing answers...');
+
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+
+        console.log('VisibilityProactive API Response:', response);
+
+        // Map the response structure similar to Operational component
         if (response.questions && Array.isArray(response.questions)) {
           // Extract questions from the response
           const questionTexts = response.questions.map(q => q.question);
@@ -64,10 +66,9 @@ const Operational = ({ onNavigateBack }) => {
             console.log('No existing answers found in response');
             
             // Check if we should try to fetch existing answers separately
-            // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
@@ -117,21 +118,23 @@ const Operational = ({ onNavigateBack }) => {
           setFunctionalArea(area);
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
-          // Fallback for old response structure
+          // Fallback for different response structure
           console.log('Using fallback structure for questions');
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
         }
+        
       } catch (err) {
-        console.error('Error fetching Operational questions:', err);
-        setError('Failed to load questions.');
+        console.error('Error fetching VisibilityProactive questions:', err);
+        setError('Failed to load questions. Please try again.');
       } finally {
         setLoading(false);
       }
-    }
+    };
+
     fetchQuestions();
   }, []);
- 
+
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
     updated[idx] = value;
@@ -185,10 +188,10 @@ const Operational = ({ onNavigateBack }) => {
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
           
-          console.log('Saving partial Operational progress before navigation:', payload);
+          console.log('Saving partial VisibilityProactive progress before navigation:', payload);
           
           // Save the partial progress
-          await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
+          await apiPost('api/digital-wayfinder/questionnaire/visibility-proactive/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
         
@@ -199,29 +202,29 @@ const Operational = ({ onNavigateBack }) => {
       }
     }
     
-    // Navigate back to DataAndCloud
+    // Navigate back to Operational
     if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to DataAndCloud using onNavigateBack callback');
+      console.log('Navigating back to Operational using onNavigateBack callback');
       onNavigateBack();
     } else {
-      // Fallback: Navigate directly to DataAndCloud component
-      console.log('Using fallback navigation to DataAndCloud');
-      setShowDataAndCloud(true);
+      // Fallback: Navigate directly to Operational component
+      console.log('Using fallback navigation to Operational');
+      setShowOperational(true);
     }
     
     setNavigatingBack(false);
   };
- 
+
   const handleSaveAndProceed = async () => {
     // Validate that all questions are answered
     if (!allQuestionsAnswered) {
       setError('Please answer all questions before proceeding.');
       return;
     }
- 
+
     try {
       setSaving(true);
-      setError(null); // Clear any previous errors
+      setError(null);
       
       // Ensure functional area is set with fallback
       let area = functionalArea;
@@ -258,12 +261,13 @@ const Operational = ({ onNavigateBack }) => {
       
       console.log('Sending payload:', payload);
       
-      const response = await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
- 
+      const response = await apiPost('api/digital-wayfinder/questionnaire/visibility-proactive/save-answers', payload);
+
       console.log('Answers saved successfully:', response);
+      console.log('Setting showAgenticAI to true');
       
-      // Navigate to VisibilityProactive component
-      setShowVisibilityProactive(true);
+      // Navigate to Agentic AI component
+      setShowAgenticAI(true);
       
     } catch (err) {
       console.error('Error saving answers:', err);
@@ -272,7 +276,7 @@ const Operational = ({ onNavigateBack }) => {
       setSaving(false);
     }
   };
- 
+
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
   
@@ -280,25 +284,25 @@ const Operational = ({ onNavigateBack }) => {
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
   
   // Debug logging for progress bar
-  console.log('Progress Debug:', {
+  console.log('VisibilityProactive Progress Debug:', {
     completedCount,
     totalQuestions: questions.length,
     progressPercentage,
     answers
   });
- 
-  // Early return for navigation to VisibilityProactive
-  if (showVisibilityProactive) {
-    console.log('Navigating to VisibilityProactive component');
-    return <VisibilityProactive />;
+
+  // Early return for navigation to AgenticAI
+  if (showAgenticAI) {
+    console.log('Navigating to AgenticAI component, showAgenticAI:', showAgenticAI);
+    return <AgenticAI />;
   }
 
-  // Early return for navigation to DataAndCloud (Previous button)
-  if (showDataAndCloud) {
-    console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
-    return <DataAndCloud />;
+  // Early return for navigation to Operational (Previous button)
+  if (showOperational) {
+    console.log('Navigating back to Operational component, showOperational:', showOperational);
+    return <Operational />;
   }
- 
+
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -311,22 +315,12 @@ const Operational = ({ onNavigateBack }) => {
             <div key={step.label} className={styles.stepItem}>
               <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
                               step.status === 'active' ? styles.stepCircleActive : 
-                              styles.stepCircleInactive}
-                   style={{
-                     backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
-                     color: step.status === 'inactive' ? '#666' : 'white'
-                   }}>
+                              styles.stepCircleInactive}>
                 {step.status === 'completed' ? '✓' : idx + 1}
               </div>
               <span className={step.status === 'completed' ? styles.stepTextCompleted :
                               step.status === 'active' ? styles.stepTextActive : 
-                              styles.stepTextInactive}
-                    style={{
-                      color: step.status === 'completed' ? '#4CAF50' : 
-                             step.status === 'active' ? '#9C27B0' : '#666',
-                      fontWeight: step.status === 'active' ? '600' : '400'
-                    }}>
+                              styles.stepTextInactive}>
                 {step.label}
               </span>
             </div>
@@ -339,7 +333,7 @@ const Operational = ({ onNavigateBack }) => {
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
           <span className={styles.breadcrumbCurrent}>Questionnaire</span>
         </div>
-        <div className={styles.title}>Operational Innovations</div>
+        <div className={styles.title}>Visibility and Proactive</div>
         {loading ? (
           <div className={styles.loading}>Loading questions...</div>
         ) : error ? (
@@ -461,5 +455,5 @@ const Operational = ({ onNavigateBack }) => {
     </div>
   );
 };
- 
-export default Operational;
+
+export default TmsVisibilityProactive;

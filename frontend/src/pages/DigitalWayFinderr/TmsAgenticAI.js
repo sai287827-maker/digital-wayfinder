@@ -10,7 +10,7 @@ const steps = [
   { label: 'Agentic AI', status: 'active' }
 ];
 
-const AgenticAI = ({ onNavigateBack }) => {
+const TmsAgenticAI = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -459,4 +459,4 @@ const AgenticAI = ({ onNavigateBack }) => {
   );
 };
 
-export default AgenticAI;
+export default TmsAgenticAI;

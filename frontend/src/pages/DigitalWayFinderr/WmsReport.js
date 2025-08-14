@@ -1,37 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './WmsReport.css';
 
 const WmsReport = () => {
-  const reportData = [
-    {
-      id: 1,
-      image: "/api/placeholder/200/120",
-      category: "Operations",
-      gapsIdentified: ["MHE and Warehouse Assets"],
-      solutions: ["Warehouse Execution System", "IOT Ecosystem"]
-    },
-    {
-      id: 2,
-      image: "/api/placeholder/200/120",
-      category: "Data and Cloud",
-      gapsIdentified: ["Unified Data Model"],
-      solutions: ["Unified Data Model"]
-    },
-    {
-      id: 3,
-      image: "/api/placeholder/200/120",
-      category: "Operational Innovations",
-      gapsIdentified: ["Automation System Integrations"],
-      solutions: []
-    },
-    {
-      id: 4,
-      image: "/api/placeholder/200/120",
-      category: "Agentic AI",
-      gapsIdentified: ["AI-Driven Decision Making", "Intelligent Process Automation"],
-      solutions: ["Autonomous AI Agents", "Smart Decision Engine"]
+  const [reportData, setReportData] = useState([]);
+
+  useEffect(() => {
+    async function fetchReport() {
+      try {
+        const response = await apiGet('api/digital-wayfinder/questionnaire/report');
+        // Map the response to desired structure
+        if (response && response.reportData) {
+          setReportData(response.reportData.map(item => ({
+            assetName: item.assetName,
+            category: item.category,
+            gaps: item.gaps
+          })));
+        }
+      } catch (error) {
+        console.error('Failed to fetch report:', error);
+      }
     }
-  ];
+    fetchReport();
+  }, []);
 
   const renderIcon = (id) => {
     switch (id) {
@@ -92,11 +82,11 @@ const WmsReport = () => {
         <div className="breadcrumb-container">
           <nav className="breadcrumb-nav">
             <span className="breadcrumb-link">Home</span>
-            <span className="breadcrumb-separator">></span>
+            <span className="breadcrumb-separator"></span>
             <span className="breadcrumb-link">Digital Wayfinder</span>
-            <span className="breadcrumb-separator">></span>
+            <span className="breadcrumb-separator"></span>
             <span className="breadcrumb-link">Questionnaire</span>
-            <span className="breadcrumb-separator">></span>
+            <span className="breadcrumb-separator"></span>
             <span className="breadcrumb-current">Report</span>
           </nav>
         </div>
@@ -114,12 +104,12 @@ const WmsReport = () => {
 
         {/* Report Cards */}
         <div className="report-cards">
-          {reportData.map((item) => (
-            <div key={item.id} className="report-card">
+          {reportData.map((item, index) => (
+            <div key={index} className="report-card">
               <div className="report-card-content">
                 {/* Image Section */}
                 <div className="image-section">
-                  {renderIcon(item.id)}
+                  {renderIcon(index % 4 + 1)}
                 </div>
 
                 {/* Content Section */}
@@ -135,8 +125,8 @@ const WmsReport = () => {
                     <div>
                       <p className="section-label">GAPS IDENTIFIED</p>
                       <div className="tags-container">
-                        {item.gapsIdentified.map((gap, index) => (
-                          <span key={index} className="tag tag-gap">
+                        {item.gaps.map((gap, idx) => (
+                          <span key={idx} className="tag tag-gap">
                             {gap}
                           </span>
                         ))}
@@ -144,12 +134,12 @@ const WmsReport = () => {
                     </div>
 
                     {/* Solutions */}
-                    {item.solutions.length > 0 && (
+                    {item.solutions && item.solutions.length > 0 && (
                       <div>
                         <p className="section-label">SOLUTIONS</p>
                         <div className="tags-container">
-                          {item.solutions.map((solution, index) => (
-                            <span key={index} className="tag tag-solution">
+                          {item.solutions.map((solution, idx) => (
+                            <span key={idx} className="tag tag-solution">
                               {solution}
                             </span>
                           ))}
