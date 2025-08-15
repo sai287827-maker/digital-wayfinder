@@ -11,7 +11,7 @@ import com.example.DigitalWayfinder.dto.SaveAnswersResponse;
 import com.example.DigitalWayfinder.entity.WmsQuestions;
 import com.example.DigitalWayfinder.entity.TmsQuestions;
 import com.example.DigitalWayfinder.entity.DWQuestions;
-import com.example.DigitalWayfinder.repository.WmsQuestionsRepository;
+import com.example.DigitalWayfinder.repository.WmsQuestionsWithTypeRepository;
 import com.example.DigitalWayfinder.repository.TmsQuestionsRepository;
 import com.example.DigitalWayfinder.repository.DWQuestionsRepository;
 
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class QuestionnaireService {
     
-    private final WmsQuestionsRepository wmsQuestionsRepository;
+    private final WmsQuestionsWithTypeRepository wmsQuestionsRepository;
     private final TmsQuestionsRepository tmsQuestionsRepository;
     private final DWQuestionsRepository dwQuestionsRepository;
     
@@ -97,6 +97,7 @@ public class QuestionnaireService {
         
         try {
             List<DWQuestions> savedAnswers = new ArrayList<>();
+            String functionalArea = deriveFunctionalArea(request.getFunctionalSubArea());
             
             for (SaveAnswersRequest.AnswerItem answerItem : request.getAnswers()) {
                 // Check if answer already exists for this user, session, category, and question
@@ -114,7 +115,7 @@ public class QuestionnaireService {
                     dwQuestion = DWQuestions.builder()
                             .userId(userId)
                             .sessionId(sessionId)
-                            .functionalArea(request.getFunctionalArea())
+                            .functionalArea(functionalArea)  // Use derived value for database constraint
                             .functionalSubArea(request.getFunctionalSubArea())
                             .category(category)
                             .question(answerItem.getQuestion())
@@ -131,7 +132,7 @@ public class QuestionnaireService {
             return SaveAnswersResponse.builder()
                     .userId(userId)
                     .sessionId(sessionId)
-                    .functionalArea(request.getFunctionalArea())
+                    .functionalArea(functionalArea)
                     .functionalSubArea(request.getFunctionalSubArea())
                     .category(category)
                     .savedCount(savedAnswers.size())
@@ -185,15 +186,32 @@ public class QuestionnaireService {
         return query.toLowerCase().trim();
     }
     
+    private String deriveFunctionalArea(String functionalSubArea) {
+        String normalized = normalizeQuery(functionalSubArea);
+        
+        if (normalized.contains("warehouse")) {
+            return "WMS";
+        } else if (normalized.contains("transfer") || normalized.contains("transport")) {
+            return "TMS";
+        } else if (normalized.contains("order")) {
+            return "OMS";
+        }
+        
+        // Default fallback
+        return "WMS";
+    }
+    
     private QuestionnaireResponse.QuestionItem convertWmsToQuestionItem(WmsQuestions wms) {
         return QuestionnaireResponse.QuestionItem.builder()
                 .question(wms.getQuestion())
+                .answerType(wms.getAnswer())  // Added answer type
                 .build();
     }
     
     private QuestionnaireResponse.QuestionItem convertTmsToQuestionItem(TmsQuestions tms) {
         return QuestionnaireResponse.QuestionItem.builder()
                 .question(tms.getQuestion())
+                .answerType(tms.getAnswer())  // Added answer type
                 .build();
     }
 }

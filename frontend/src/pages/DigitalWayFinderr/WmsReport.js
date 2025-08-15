@@ -4,23 +4,67 @@ import { apiGet } from '../../api'; // Adjust the path if needed
 
 const WmsReport = () => {
   const [reportData, setReportData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fallback data in case API fails
+  const fallbackData = [
+    {
+      assetName: "Warehouse Management",
+      category: "Operations",
+      gaps: ["MHE and Warehouse Assets"],
+      solutions: ["Warehouse Execution System", "IOT Ecosystem"]
+    },
+    {
+      assetName: "Data Platform",
+      category: "Data and Cloud",
+      gaps: ["Unified Data Model"],
+      solutions: ["Unified Data Model"]
+    },
+    {
+      assetName: "Innovation Hub",
+      category: "Operational Innovations",
+      gaps: ["Automation System Integrations"],
+      solutions: []
+    },
+    {
+      assetName: "AI Engine",
+      category: "Agentic AI",
+      gaps: ["AI-Driven Decision Making", "Intelligent Process Automation"],
+      solutions: ["Autonomous AI Agents", "Smart Decision Engine"]
+    }
+  ];
 
   useEffect(() => {
     async function fetchReport() {
       try {
+        setLoading(true);
         const response = await apiGet('api/digital-wayfinder/questionnaire/report');
+        console.log('API Response:', response); // Debug log
+        
         // Map the response to desired structure
-        if (response && response.reportData) {
-          setReportData(response.reportData.map(item => ({
-            assetName: item.assetName,
-            category: item.category,
-            gaps: item.gaps
-          })));
+        if (response && response.reportData && Array.isArray(response.reportData)) {
+          const mappedData = response.reportData.map(item => ({
+            assetName: item.assetName || 'Unknown Asset',
+            category: item.category || 'Unknown Category',
+            gaps: Array.isArray(item.gaps) ? item.gaps : [],
+            solutions: Array.isArray(item.solutions) ? item.solutions : []
+          }));
+          setReportData(mappedData);
+        } else {
+          console.warn('Invalid API response structure, using fallback data');
+          setReportData(fallbackData);
         }
       } catch (error) {
         console.error('Failed to fetch report:', error);
+        setError(error.message);
+        // Use fallback data when API fails
+        setReportData(fallbackData);
+      } finally {
+        setLoading(false);
       }
     }
+    
     fetchReport();
   }, []);
 
@@ -57,7 +101,7 @@ const WmsReport = () => {
             </div>
           </div>
         );
-      case 4:
+        case 4:
         return (
           <div className="icon-container">
             <div className="icon-wrapper">
@@ -76,7 +120,19 @@ const WmsReport = () => {
     }
   };
 
-  return (
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="assessment-container">
+        <div className="main-content">
+          <div className="header-section">
+            <h1 className="main-title">Loading Assessment Report...</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+ return (
     <div className="assessment-container">
       {/* Breadcrumb Navigation */}
       <div className="breadcrumb-wrapper">
@@ -101,16 +157,21 @@ const WmsReport = () => {
           <p className="main-description">
             We have analyzed capabilities in your current ERP system and recommend following solutions based on the questionnaire inputs and gaps identified in the current solution
           </p>
+          {error && (
+            <div className="error-message" style={{color: 'red', marginTop: '1rem'}}>
+              API Error: {error} (Showing fallback data)
+            </div>
+          )}
         </div>
 
         {/* Report Cards */}
         <div className="report-cards">
-          {reportData.map((item, index) => (
+          {reportData.length > 0 ? reportData.map((item, index) => (
             <div key={index} className="report-card">
               <div className="report-card-content">
                 {/* Image Section */}
                 <div className="image-section">
-                  {renderIcon(index % 4 + 1)}
+                  {renderIcon((index % 4) + 1)}
                 </div>
 
                 {/* Content Section */}
@@ -123,16 +184,18 @@ const WmsReport = () => {
                     </div>
 
                     {/* Gaps Identified */}
-                    <div>
-                      <p className="section-label">GAPS IDENTIFIED</p>
-                      <div className="tags-container">
-                        {item.gaps.map((gap, idx) => (
-                          <span key={idx} className="tag tag-gap">
-                            {gap}
-                          </span>
-                        ))}
+                    {item.gaps && item.gaps.length > 0 && (
+                      <div>
+                        <p className="section-label">GAPS IDENTIFIED</p>
+                        <div className="tags-container">
+                          {item.gaps.map((gap, idx) => (
+                            <span key={idx} className="tag tag-gap">
+                              {gap}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {/* Solutions */}
                     {item.solutions && item.solutions.length > 0 && (
@@ -151,7 +214,11 @@ const WmsReport = () => {
                 </div>
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="no-data-message">
+              <p>No report data available.</p>
+            </div>
+          )}
         </div>
 
         {/* Download Button */}
