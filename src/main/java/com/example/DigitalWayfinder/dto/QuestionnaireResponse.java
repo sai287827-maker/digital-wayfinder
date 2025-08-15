@@ -27,5 +27,6 @@ public class QuestionnaireResponse {
     @Builder
     public static class QuestionItem {
         private String question;
+        private String answerType;
     }
 }

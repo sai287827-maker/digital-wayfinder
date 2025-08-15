@@ -28,7 +28,10 @@ public class TmsQuestions {
     @Id
     @Column(name = "question", columnDefinition = "TEXT")
     private String question;
-    
+
+    @Column(name = "Answer Type", columnDefinition = "TEXT")
+    private String answer;
+
     // Composite key class
     @Data
     @NoArgsConstructor
