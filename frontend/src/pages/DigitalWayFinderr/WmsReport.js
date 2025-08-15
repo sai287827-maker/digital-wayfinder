@@ -43,17 +43,14 @@ const WmsReport = () => {
         console.log('API Response:', response); // Debug log
         
         // Map the response to desired structure
-        if (response && response.reportData && Array.isArray(response.reportData)) {
-          const mappedData = response.reportData.map(item => ({
-            assetName: item.assetName || 'Unknown Asset',
-            category: item.category || 'Unknown Category',
-            gaps: Array.isArray(item.gaps) ? item.gaps : [],
-            solutions: Array.isArray(item.solutions) ? item.solutions : []
-          }));
-          setReportData(mappedData);
-        } else {
-          console.warn('Invalid API response structure, using fallback data');
-          setReportData(fallbackData);
+        if (response && response.reportData) {
+        setReportData(response.reportData.map(item => ({
+  assetName: item.assetName,
+  category: item.category,
+  gaps: item.gaps || [],
+  solutions: item.solutions || [] // ✅ include solutions
+})));
+
         }
       } catch (error) {
         console.error('Failed to fetch report:', error);

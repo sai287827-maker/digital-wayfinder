@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from './DataAndCloud.module.css';
+import styles from './IndustryDataandCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import Operational from './Operational';
 import WmsSystem from './WmsSystem'; // Add import for WmsSystem
@@ -12,10 +12,9 @@ const steps = [
   { label: 'Agentic  AI', status: 'inactive' }
 ];
  
-const DataAndCloud = ({ onNavigateBack }) => {
+const IndustryDataandCloud = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
-  const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -29,34 +28,6 @@ const DataAndCloud = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
-  // Function to determine answer options from API response
-  const determineAnswerOptions = (apiResponse) => {
-    // Check if the API response has predefined answer options
-    if (apiResponse.answerOptions && Array.isArray(apiResponse.answerOptions)) {
-      return apiResponse.answerOptions;
-    }
-    
-    // Check existing answers to determine the pattern
-    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
-      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
-      const hasYesNo = existingAnswers.some(answer => 
-        ['yes', 'no'].includes(answer)
-      );
-      const hasHighMediumLow = existingAnswers.some(answer => 
-        ['high', 'medium', 'low'].includes(answer)
-      );
-      
-      if (hasYesNo) {
-        return ['Yes', 'No'];
-      } else if (hasHighMediumLow) {
-        return ['High', 'Medium', 'Low'];
-      }
-    }
-    
-    // Default to High/Medium/Low if no pattern is detected
-    return ['High', 'Medium', 'Low'];
-  };
-
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
@@ -69,10 +40,6 @@ const DataAndCloud = ({ onNavigateBack }) => {
           // Extract questions from the response
           const questionTexts = response.questions.map(q => q.question);
           setQuestions(questionTexts);
-          
-          // Determine answer options from API response
-          const options = determineAnswerOptions(response);
-          setAnswerOptions(options);
           
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
@@ -119,7 +86,6 @@ const DataAndCloud = ({ onNavigateBack }) => {
           // Fallback for old response structure
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
-          setAnswerOptions(['High', 'Medium', 'Low']); // Default options
         }
       } catch (err) {
         setError('Failed to load questions.');
@@ -255,53 +221,54 @@ const DataAndCloud = ({ onNavigateBack }) => {
   }
  
   return (
-    <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <div className={styles.sidebarTitle}>Questionnaire</div>
-        <div className={styles.sidebarDesc}>
-          Structured framework for selecting functional requirements, prioritising them based on different measures for informed decision-making.
-        </div>
-        <div className={styles.steps}>
-          {steps.map((step, idx) => (
-            <div key={step.label} className={styles.stepItem}>
-              <div className={step.status === 'active' ? styles.stepCircleActive : styles.stepCircleInactive}>
-                {idx + 1}
-              </div>
-              <span className={step.status === 'active' ? styles.stepTextActive : styles.stepTextInactive}>
-                {step.label}
-              </span>
-            </div>
-          ))}
-        </div>
+    <div className={styles.industryDataCloudWrapper}>
+      <div className={styles.industryDataCloudBreadcrumb}>
+        <span className={styles.industryDataCloudBreadcrumbLink}>Home</span> &gt;{' '}
+        <span className={styles.industryDataCloudBreadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
+        <span className={styles.industryDataCloudBreadcrumbCurrent}>Questionnaire</span>
       </div>
-      <div className={styles.mainContent}>
-        <div className={styles.breadcrumb}>
-          <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
-          <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
-          <span className={styles.breadcrumbCurrent}>Questionnaire</span>
+      <div className={styles.industryDataCloudContainer}>
+        <div className={styles.industryDataCloudSidebar}>
+          <div className={styles.industryDataCloudSidebarTitle}>Questionnaire</div>
+          <div className={styles.industryDataCloudSidebarDesc}>
+            Structured framework for selecting functional requirements, prioritising them based on different measures for informed decision-making.
+          </div>
+          <div className={styles.industryDataCloudSteps}>
+            {steps.map((step, idx) => (
+              <div key={step.label} className={styles.industryDataCloudStepItem}>
+                <div className={step.status === 'active' ? styles.industryDataCloudStepCircleActive : styles.industryDataCloudStepCircleInactive}>
+                  {idx + 1}
+                </div>
+                <span className={step.status === 'active' ? styles.industryDataCloudStepTextActive : styles.industryDataCloudStepTextInactive}>
+                  {step.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className={styles.title}>Data and Cloud</div>
+        <div className={styles.industryDataCloudMainContent}>
+        <div className={styles.industryDataCloudTitle}>Industry Data and Cloud</div>
         {loading ? (
-          <div className={styles.loading}>Loading questions...</div>
+          <div className={styles.industryDataCloudLoading}>Loading questions...</div>
         ) : error ? (
-          <div className={styles.error}>{error}</div>
+          <div className={styles.industryDataCloudError}>{error}</div>
         ) : (
           <>
-            <div className={styles.progressRow}>
-              <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-              <div className={styles.progressBarBg}>
-                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+            <div className={styles.industryDataCloudProgressRow}>
+              <span className={styles.industryDataCloudProgressLabel}>Completed question {completedCount}/{questions.length}</span>
+              <div className={styles.industryDataCloudProgressBarBg}>
+                <div className={styles.industryDataCloudProgressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
               </div>
             </div>
-            <div className={styles.questionsList}>
+            <div className={styles.industryDataCloudQuestionsList}>
               {questions.map((q, idx) => (
-                <div key={idx} className={styles.questionBlock}>
-                  <div className={styles.questionText}>{idx + 1}. {q}</div>
-                  <div className={styles.optionsRow}>
-                    {answerOptions.map(opt => (
+                <div key={idx} className={styles.industryDataCloudQuestionBlock}>
+                  <div className={styles.industryDataCloudQuestionText}>{idx + 1}. {q}</div>
+                  <div className={styles.industryDataCloudOptionsRow}>
+                    {['High', 'Medium', 'Low'].map(opt => (
                       <label
                         key={opt}
-                        className={styles.optionLabel}
+                        className={styles.industryDataCloudOptionLabel}
                       >
                         <input
                           type="radio"
@@ -309,7 +276,7 @@ const DataAndCloud = ({ onNavigateBack }) => {
                           value={opt}
                           checked={answers[idx] === opt}
                           onChange={() => handleAnswer(idx, opt)}
-                          className={styles.radio}
+                          className={styles.industryDataCloudRadio}
                         />
                         <span>{opt}</span>
                       </label>
@@ -318,16 +285,16 @@ const DataAndCloud = ({ onNavigateBack }) => {
                 </div>
               ))}
             </div>
-            <div className={styles.buttonRow}>
+            <div className={styles.industryDataCloudButtonRow}>
               <button 
-                className={styles.prevBtn} 
+                className={styles.industryDataCloudPrevBtn} 
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
               >
                 {navigatingBack ? 'Saving...' : 'Previous'}
               </button>
               <button
-                className={styles.saveBtn}
+                className={styles.industryDataCloudSaveBtn}
                 disabled={!allQuestionsAnswered || saving || navigatingBack}
                 onClick={handleSaveAndProceed}
               >
@@ -336,9 +303,9 @@ const DataAndCloud = ({ onNavigateBack }) => {
             </div>
           </>
         )}
+        </div>
       </div>
     </div>
-  );
-};
+  )};
  
-export default DataAndCloud;
+export default IndustryDataandCloud;
