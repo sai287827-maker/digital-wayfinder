@@ -13,6 +13,8 @@ const steps = [
 const AgenticAI = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]); // Store answer type per question
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -24,6 +26,43 @@ const AgenticAI = ({ onNavigateBack }) => {
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
+
+  // Function to determine answer options from API response
+  const determineAnswerOptions = (apiResponse) => {
+    // Check if questions have answerType specified
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      // Look at the first question's answerType to determine the pattern
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
+    }
+    
+    // Check existing answers to determine the pattern
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => 
+        ['yes', 'no'].includes(answer)
+      );
+      const hasHighMediumLow = existingAnswers.some(answer => 
+        ['high', 'medium', 'low'].includes(answer)
+      );
+      
+      if (hasYesNo) {
+        return ['Yes', 'No'];
+      } else if (hasHighMediumLow) {
+        return ['High', 'Medium', 'Low'];
+      }
+    }
+    
+    // Default to High/Medium/Low if no pattern is detected
+    return ['High', 'Medium', 'Low'];
+  };
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -37,26 +76,79 @@ const AgenticAI = ({ onNavigateBack }) => {
 
         // Map the response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
+          // Extract questions and their answer types from the response
           const questionTexts = response.questions.map(q => q.question);
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low']; // Default fallback
+          });
+          
           setQuestions(questionTexts);
+          setQuestionAnswerTypes(answerTypes);
+          
+          // For backward compatibility, set answerOptions to the most common type
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
+          console.log('Determined answer options for AgenticAI:', options);
           
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
           
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
+            console.log('Loading existing AgenticAI answers:', response.answers);
             response.answers.forEach(answerObj => {
               const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
+                console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
+              } else {
+                console.warn('Could not find matching question for answer:', answerObj);
               }
             });
+          } else {
+            console.log('No existing answers found in response');
+            
+            // Check if we should try to fetch existing answers separately
+            try {
+              console.log('Attempting to fetch existing answers separately...');
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              
+              if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
+                console.log('Found existing answers in separate call:', answersResponse.answers);
+                
+                // Re-determine answer options from separate response if needed
+                if (!response.questions || !response.questions[0]?.answerType) {
+                  const separateOptions = determineAnswerOptions(answersResponse);
+                  setAnswerOptions(separateOptions);
+                  console.log('Updated answer options from separate call:', separateOptions);
+                }
+                
+                answersResponse.answers.forEach(answerObj => {
+                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+                  if (questionIndex !== -1) {
+                    const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                    initialAnswers[questionIndex] = answerValue;
+                    console.log(`Loaded answer from separate call for question ${questionIndex}: ${answerValue}`);
+                  }
+                });
+              }
+            } catch (separateErr) {
+              console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
+            }
           }
           
           setAnswers(initialAnswers);
+          console.log('Final AgenticAI answers array:', initialAnswers);
           
           // Set other response data
           setUserId(response.userId || '');
@@ -88,8 +180,11 @@ const AgenticAI = ({ onNavigateBack }) => {
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for old response structure
+          console.log('Using fallback structure for AgenticAI questions');
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setAnswerOptions(['High', 'Medium', 'Low']); // Default options
+          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
       } catch (err) {
         console.error('Error fetching Agentic AI questions:', err);
@@ -270,7 +365,9 @@ const AgenticAI = ({ onNavigateBack }) => {
     completedCount,
     totalQuestions: questions.length,
     progressPercentage,
-    answers
+    answers,
+    answerOptions,
+    questionAnswerTypes
   });
 
   // Early return for navigation to WmsReport
@@ -365,32 +462,37 @@ const AgenticAI = ({ onNavigateBack }) => {
           </div>
         </div>
         <div className={styles.questionsList}>
-          {questions.map((q, idx) => (
-            <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-              <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
-              <div className={styles.optionsRow}>
-                {['High', 'Medium', 'Low'].map(opt => (
-                  <label key={opt} className={styles.optionLabel} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name={`q${idx}`}
-                      value={opt}
-                      checked={answers[idx] === opt}
-                      onChange={() => handleAnswer(idx, opt)}
-                      className={styles.radio}
-                      style={{
-                        accentColor: '#9C27B0',
-                        marginRight: '8px',
-                        width: '18px',
-                        height: '18px'
-                      }}
-                    />
-                    <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
-                  </label>
-                ))}
+          {questions.map((q, idx) => {
+            // Get the specific answer options for this question
+            const questionOptions = questionAnswerTypes[idx] || answerOptions;
+            
+            return (
+              <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
+                <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                <div className={styles.optionsRow}>
+                  {questionOptions.map(opt => (
+                    <label key={opt} className={styles.optionLabel} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name={`q${idx}`}
+                        value={opt}
+                        checked={answers[idx] === opt}
+                        onChange={() => handleAnswer(idx, opt)}
+                        className={styles.radio}
+                        style={{
+                          accentColor: '#9C27B0',
+                          marginRight: '8px',
+                          width: '18px',
+                          height: '18px'
+                        }}
+                      />
+                      <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className={styles.buttonRow}>
          <button 
