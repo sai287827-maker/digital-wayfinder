@@ -39,7 +39,7 @@ public class SaveAnswersRequest {
         private String question;
         
         @NotBlank(message = "answer is required")
-        @Pattern(regexp = "^(low|medium|high)$", message = "answer must be 'low', 'medium', or 'high'")
+        @Pattern(regexp = "^(low|medium|high|yes|no)$", message = "answer must be 'low', 'medium', 'high', 'yes', or 'no'")
         private String answer;
     }
 }
