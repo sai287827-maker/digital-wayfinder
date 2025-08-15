@@ -1,0 +1,282 @@
+.industryDataCloudWrapper {
+  width: 100%;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.industryDataCloudBreadcrumb {
+  font-size: 13px;
+  color: #6b6b6b;
+  background: #A100FF08;
+  padding: 20px 40px;
+  margin-bottom: 20px;
+}
+
+.industryDataCloudBreadcrumbLink {
+  color: #6b6b6b;
+  text-decoration: none;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+.industryDataCloudBreadcrumbLink:hover {
+  color: #a020f0;
+}
+
+.industryDataCloudBreadcrumbCurrent {
+  color: #a020f0;
+  font-weight: 500;
+}
+
+.industryDataCloudContainer {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 0 40px 40px 40px;
+}
+.industryDataCloudLayout {
+  display: flex;
+  align-items: flex-start;
+  padding: 0 40px 40px 40px;
+}
+.industryDataCloudSidebar {
+  width: 240px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
+  padding: 32px 24px;
+  height: fit-content;
+  flex-shrink: 0;
+}
+.industryDataCloudSidebarTitle {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.industryDataCloudSidebarDesc {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 28px;
+}
+.industryDataCloudSteps {
+  margin-top: 18px;
+}
+.industryDataCloudStepItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.industryDataCloudStepCircleActive {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-right: 12px;
+}
+.industryDataCloudStepCircleInactive {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-right: 12px;
+}
+.industryDataCloudStepTextActive {
+  color: #22c55e;
+  font-weight: 600;
+}
+.industryDataCloudStepTextInactive {
+  color: #888;
+  font-weight: 400;
+}
+.industryDataCloudMainContent {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
+  padding: 40px 48px;
+  min-width: 0;
+}
+.industryDataCloudTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.industryDataCloudProgressRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.industryDataCloudProgressLabel {
+  font-size: 13px;
+  color: #888;
+  margin-right: 18px;
+}
+.industryDataCloudProgressBarBg {
+  width: 180px;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.industryDataCloudProgressBarFill {
+  height: 100%;
+  background: #a020f0;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+.industryDataCloudQuestionsList {
+  margin-bottom: 36px;
+}
+.industryDataCloudQuestionBlock {
+  margin-bottom: 26px;
+}
+.industryDataCloudQuestionText {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.industryDataCloudOptionsRow {
+  display: flex;
+  gap: 36px;
+  margin-left:14px;
+}
+.industryDataCloudOptionLabel {
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.industryDataCloudRadio {
+  accent-color: #a020f0;
+  margin-right: 4px;
+}
+.industryDataCloudButtonRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+.industryDataCloudPrevBtn {
+  background: #f3f4f6;
+  color: #888;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.industryDataCloudPrevBtn:hover {
+  background: #e5e7eb;
+}
+.industryDataCloudSaveBtn {
+  background: #a020f0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 32px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.industryDataCloudSaveBtn:disabled {
+  background: #e5e7eb;
+  color: #aaa;
+  cursor: not-allowed;
+}
+.industryDataCloudLoading {
+  font-size: 16px;
+  color: #888;
+  text-align: center;
+  padding: 40px;
+}
+.industryDataCloudError {
+  font-size: 16px;
+  color: #dc2626;
+  text-align: center;
+  padding: 40px;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+.industryDataCloudOptionHigh {
+  background: #e6f9ed;
+  color: #15803d;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-weight: 500;
+  border: 1px solid #b6e4c7;
+}
+.industryDataCloudOptionHigh input[type="radio"]:checked + span,
+.industryDataCloudOptionHigh input[type="radio"]:focus + span {
+  background: #16a34a;
+}
+.industryDataCloudOptionMedium {
+  background: #fff7e6;
+  color: #b45309;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-weight: 500;
+  border: 1px solid #ffe0b2;
+}
+.industryDataCloudOptionMedium input[type="radio"]:checked + span,
+.industryDataCloudOptionMedium input[type="radio"]:focus + span {
+  background: #ea580c;
+}
+.industryDataCloudOptionLow {
+  background: #fbeaea;
+  color: #b91c1c;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-weight: 500;
+  border: 1px solid #fbcaca;
+}
+.industryDataCloudOptionLow input[type="radio"]:checked + span,
+.industryDataCloudOptionLow input[type="radio"]:focus + span {
+  background: #b91c1c;
+}
+.industryDataCloudOptionHigh, .industryDataCloudOptionMedium, .industryDataCloudOptionLow {
+  transition: box-shadow 0.2s, border 0.2s, background 0.25s, color 0.25s;
+}
+.industryDataCloudOptionHigh.selected, .industryDataCloudOptionMedium.selected, .industryDataCloudOptionLow.selected {
+  box-shadow: 0 2px 8px 0 rgba(80, 160, 80, 0.10);
+  border-width: 2px;
+  border-color: #a020f0;
+  z-index: 1;
+}
+/* Fallback for browsers that support :has() */
+.industryDataCloudOptionsRow label:has(input[type="radio"]:checked) {
+  box-shadow: 0 2px 8px 0 rgba(80, 160, 80, 0.10);
+  border-width: 2px;
+  border-color: #a020f0;
+  z-index: 1;
+}
+.industryDataCloudSelected {
+  animation: industryDataCloudOptionSelectAnim 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes industryDataCloudOptionSelectAnim {
+  0% {
+    box-shadow: 0 0 0 0 rgba(80,160,80,0.00);
+    background-color: #fff;
+    border-color: #e5e7eb;
+  }
+  60% {
+    box-shadow: 0 4px 16px 0 rgba(80,160,80,0.15);
+    background-color: #f3e8ff;
+    border-color: #a020f0;
+  }
+  100% {
+    box-shadow: 0 2px 8px 0 rgba(80,160,80,0.10);
+  }
+}
