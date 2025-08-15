@@ -16,6 +16,7 @@ const DataAndCloud = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]); // Store answer type per question
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -31,9 +32,18 @@ const DataAndCloud = ({ onNavigateBack }) => {
 
   // Function to determine answer options from API response
   const determineAnswerOptions = (apiResponse) => {
-    // Check if the API response has predefined answer options
-    if (apiResponse.answerOptions && Array.isArray(apiResponse.answerOptions)) {
-      return apiResponse.answerOptions;
+    // Check if questions have answerType specified
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      // Look at the first question's answerType to determine the pattern
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
     }
     
     // Check existing answers to determine the pattern
@@ -66,11 +76,24 @@ const DataAndCloud = ({ onNavigateBack }) => {
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
+          // Extract questions and their answer types from the response
           const questionTexts = response.questions.map(q => q.question);
-          setQuestions(questionTexts);
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low']; // Default fallback
+          });
           
-          // Determine answer options from API response
+          setQuestions(questionTexts);
+          setQuestionAnswerTypes(answerTypes);
+          
+          // For backward compatibility, set answerOptions to the most common type
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
           
@@ -120,6 +143,7 @@ const DataAndCloud = ({ onNavigateBack }) => {
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
           setAnswerOptions(['High', 'Medium', 'Low']); // Default options
+          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
       } catch (err) {
         setError('Failed to load questions.');
@@ -294,29 +318,34 @@ const DataAndCloud = ({ onNavigateBack }) => {
               </div>
             </div>
             <div className={styles.questionsList}>
-              {questions.map((q, idx) => (
-                <div key={idx} className={styles.questionBlock}>
-                  <div className={styles.questionText}>{idx + 1}. {q}</div>
-                  <div className={styles.optionsRow}>
-                    {answerOptions.map(opt => (
-                      <label
-                        key={opt}
-                        className={styles.optionLabel}
-                      >
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.radio}
-                        />
-                        <span>{opt}</span>
-                      </label>
-                    ))}
+              {questions.map((q, idx) => {
+                // Get the specific answer options for this question
+                const questionOptions = questionAnswerTypes[idx] || answerOptions;
+                
+                return (
+                  <div key={idx} className={styles.questionBlock}>
+                    <div className={styles.questionText}>{idx + 1}. {q}</div>
+                    <div className={styles.optionsRow}>
+                      {questionOptions.map(opt => (
+                        <label
+                          key={opt}
+                          className={styles.optionLabel}
+                        >
+                          <input
+                            type="radio"
+                            name={`q${idx}`}
+                            value={opt}
+                            checked={answers[idx] === opt}
+                            onChange={() => handleAnswer(idx, opt)}
+                            className={styles.radio}
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className={styles.buttonRow}>
               <button 
