@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.example.DigitalWayfinder.dto.PlatformAnalysisResponse;
 import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.service.PlatformAnalysisService;
@@ -32,7 +31,13 @@ public class PlatformAnalysisController {
                     userSession.getSessionId()
             );
             
-            log.info("Successfully returning {} platform analysis records", response.getReportData().size());
+            // Calculate total number of assets across all categories
+            int totalAssets = response.getCategories().stream()
+                    .mapToInt(category -> category.getAssets().size())
+                    .sum();
+            
+            log.info("Successfully returning {} platform analysis records across {} categories", 
+                    totalAssets, response.getCategories().size());
             
             return ResponseEntity.ok(response);
             
@@ -57,9 +62,14 @@ public class PlatformAnalysisController {
                     userSession.getSessionId()
             );
             
-            log.info("Successfully returning {} records for category: {}", 
-                    response.getReportData().size(), category);
-
+            // Calculate total number of assets across all categories
+            int totalAssets = response.getCategories().stream()
+                    .mapToInt(categoryItem -> categoryItem.getAssets().size())
+                    .sum();
+            
+            log.info("Successfully returning {} records for category: {} across {} categories", 
+                    totalAssets, category, response.getCategories().size());
+            
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {

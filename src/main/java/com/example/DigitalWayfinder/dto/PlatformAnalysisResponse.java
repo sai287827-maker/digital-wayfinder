@@ -17,15 +17,23 @@ public class PlatformAnalysisResponse {
     
     private String userId;
     private String sessionId;
-    private List<PlatformAnalysisItem> reportData;
+    private List<CategoryItem> categories;
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class PlatformAnalysisItem {
+    public static class CategoryItem {
+        private String categoryName;
+        private List<AssetItem> assets;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class AssetItem {
         private String assetName;
-        private String category;
         private String gaps;
     }
 }
