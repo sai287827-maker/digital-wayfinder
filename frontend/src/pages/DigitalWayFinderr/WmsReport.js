@@ -50,21 +50,56 @@ const WmsReport = () => {
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
           
-          // Transform the categories data into the expected format
-          const transformedData = [];
+          // Group assets by category and aggregate gaps and solutions
+          const categoryMap = new Map();
           
           response.categories.forEach(category => {
             if (category.assets && Array.isArray(category.assets)) {
-              category.assets.forEach(asset => {
-                transformedData.push({
-                  assetName: asset.assetName,
+              if (!categoryMap.has(category.categoryName)) {
+                categoryMap.set(category.categoryName, {
                   category: category.categoryName,
-                  gaps: asset.gaps ? [asset.gaps] : [], // Convert single gap string to array
-                  solutions: asset.solutions ? (Array.isArray(asset.solutions) ? asset.solutions : [asset.solutions]) : []
+                  gaps: new Set(),
+                  solutions: new Set(),
+                  assetNames: []
                 });
+              }
+              
+              const categoryData = categoryMap.get(category.categoryName);
+              
+              category.assets.forEach(asset => {
+                // Add asset name
+                if (asset.assetName) {
+                  categoryData.assetNames.push(asset.assetName);
+                }
+                
+                // Add gaps (handle both string and array)
+                if (asset.gaps) {
+                  if (Array.isArray(asset.gaps)) {
+                    asset.gaps.forEach(gap => categoryData.gaps.add(gap));
+                  } else {
+                    categoryData.gaps.add(asset.gaps);
+                  }
+                }
+                
+                // Add solutions (handle both string and array)
+                if (asset.solutions) {
+                  if (Array.isArray(asset.solutions)) {
+                    asset.solutions.forEach(solution => categoryData.solutions.add(solution));
+                  } else {
+                    categoryData.solutions.add(asset.solutions);
+                  }
+                }
               });
             }
           });
+          
+          // Convert Map to array format expected by the component
+          const transformedData = Array.from(categoryMap.values()).map(categoryData => ({
+            category: categoryData.category,
+            assetName: categoryData.assetNames.join(', '), // Combine asset names
+            gaps: Array.from(categoryData.gaps),
+            solutions: Array.from(categoryData.solutions)
+          }));
           
           console.log('Transformed data:', transformedData);
           setReportData(transformedData);
