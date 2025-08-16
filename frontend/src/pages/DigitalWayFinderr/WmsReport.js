@@ -6,6 +6,8 @@ const WmsReport = () => {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userId, setUserId] = useState('');
+  const [sessionId, setSessionId] = useState('');
 
   // Fallback data in case API fails
   const fallbackData = [
@@ -42,15 +44,41 @@ const WmsReport = () => {
         const response = await apiGet('api/digital-wayfinder/questionnaire/report');
         console.log('API Response:', response); // Debug log
         
-        // Map the response to desired structure
-        if (response && response.reportData) {
-        setReportData(response.reportData.map(item => ({
-  assetName: item.assetName,
-  category: item.category,
-  gaps: item.gaps || [],
-  solutions: item.solutions || [] // ✅ include solutions
-})));
-
+        // Map the new response structure
+        if (response && response.categories) {
+          // Set user and session info
+          setUserId(response.userId || '');
+          setSessionId(response.sessionId || '');
+          
+          // Transform the categories data into the expected format
+          const transformedData = [];
+          
+          response.categories.forEach(category => {
+            if (category.assets && Array.isArray(category.assets)) {
+              category.assets.forEach(asset => {
+                transformedData.push({
+                  assetName: asset.assetName,
+                  category: category.categoryName,
+                  gaps: asset.gaps ? [asset.gaps] : [], // Convert single gap string to array
+                  solutions: asset.solutions ? (Array.isArray(asset.solutions) ? asset.solutions : [asset.solutions]) : []
+                });
+              });
+            }
+          });
+          
+          console.log('Transformed data:', transformedData);
+          setReportData(transformedData);
+        } else if (response && response.reportData) {
+          // Handle old response structure as fallback
+          setReportData(response.reportData.map(item => ({
+            assetName: item.assetName,
+            category: item.category,
+            gaps: item.gaps || [],
+            solutions: item.solutions || []
+          })));
+        } else {
+          console.warn('Unexpected API response structure:', response);
+          setReportData(fallbackData);
         }
       } catch (error) {
         console.error('Failed to fetch report:', error);
@@ -154,6 +182,11 @@ const WmsReport = () => {
           <p className="main-description">
             We have analyzed capabilities in your current ERP system and recommend following solutions based on the questionnaire inputs and gaps identified in the current solution
           </p>
+          {userId && sessionId && (
+            <div className="session-info" style={{fontSize: '0.875rem', color: '#666', marginTop: '0.5rem'}}>
+              User: {userId} | Session: {sessionId}
+            </div>
+          )}
           {error && (
             <div className="error-message" style={{color: 'red', marginTop: '1rem'}}>
               API Error: {error} (Showing fallback data)
@@ -174,6 +207,12 @@ const WmsReport = () => {
                 {/* Content Section */}
                 <div className="content-section">
                   <div className="content-wrapper">
+                    {/* Asset Name */}
+                    <div>
+                      <p className="category-label">ASSET</p>
+                      <h3 className="category-title">{item.assetName}</h3>
+                    </div>
+
                     {/* Category */}
                     <div>
                       <p className="category-label">CATEGORY</p>
