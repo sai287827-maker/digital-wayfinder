@@ -31,9 +31,9 @@ public class PlatformAnalysis {
     @Column(name = "Gaps", columnDefinition = "TEXT")
     private String gaps;
 
-    @Column(name = "Session ID")
-    private String sessionId;
+    // @Column(name = "Session ID")
+    // private String sessionId;
 
-    @Column(name = "User ID")
-    private String userId;
+    // @Column(name = "User ID")
+    // private String userId;
 }
