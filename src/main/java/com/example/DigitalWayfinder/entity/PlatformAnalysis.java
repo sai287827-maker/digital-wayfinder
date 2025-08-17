@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "vw_Fnl_FunctionScore_WMS")  // Changed to match your actual table name
+@Table(name = "vw_Fnl_FunctionScore_WMS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,20 +20,24 @@ public class PlatformAnalysis {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
+
+    @Column(name = "L2")
+    private String l2;
 
     @Column(name = "Asset Name")
     private String assetName;
 
-    @Column(name = "Category", columnDefinition = "TEXT")
+    @Column(name = "Category")
     private String category;
 
-    @Column(name = "Gaps", columnDefinition = "TEXT")
+    @Column(name = "SessionID")
+    private String sessionID;
+
+    @Column(name = "UserID")
+    private String userID;
+
+    @Column(name = "Gaps")
     private String gaps;
-
-    // @Column(name = "Session ID")
-    // private String sessionId;
-
-    // @Column(name = "User ID")
-    // private String userId;
 }

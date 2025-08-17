@@ -27,17 +27,17 @@ public class PlatformAnalysisService {
         log.info("Fetching all platform analysis records for user: {}, session: {}", userId, sessionId);
         
         try {
-            // Get the actual userId and sessionId to use
+            // Get the actual userId and sessionId to use from latest ProjectType
             UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
             
-            // Since PlatformAnalysis table doesn't have userId/sessionId columns,
-            // we'll fetch all records and return them with the resolved session info
-            List<PlatformAnalysis> records = platformAnalysisRepository.findAll();
+            // Fetch records based on resolved UserID and SessionID (including null handling)
+            List<PlatformAnalysis> records = platformAnalysisRepository
+                    .findByUserIDAndSessionIDIncludingNulls(sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(records);
             
-            log.info("Successfully fetched {} platform analysis records grouped into {} categories", 
-                    records.size(), categories.size());
+            log.info("Successfully fetched {} platform analysis records grouped into {} categories for user: {}, session: {}", 
+                    records.size(), categories.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             return PlatformAnalysisResponse.builder()
                     .userId(sessionInfo.getUserId())
@@ -52,18 +52,21 @@ public class PlatformAnalysisService {
     }
     
     public PlatformAnalysisResponse getPlatformAnalysisByCategory(String category, String userId, String sessionId) {
-        log.info("Fetching platform analysis records for category: {}", category);
+        log.info("Fetching platform analysis records for category: {} with user: {}, session: {}", 
+                category, userId, sessionId);
         
         try {
-            // Get the actual userId and sessionId to use
+            // Get the actual userId and sessionId to use from latest ProjectType
             UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
             
-            // Filter by category only (since no userId/sessionId in PlatformAnalysis table)
-            List<PlatformAnalysis> records = platformAnalysisRepository.findByCategory(category);
+            // Filter by category, UserID and SessionID (including null handling)
+            List<PlatformAnalysis> records = platformAnalysisRepository
+                    .findByCategoryAndUserIDAndSessionIDIncludingNulls(category, sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(records);
             
-            log.info("Successfully fetched {} records for category: {}", records.size(), category);
+            log.info("Successfully fetched {} records for category: {} with user: {}, session: {}", 
+                    records.size(), category, sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             return PlatformAnalysisResponse.builder()
                     .userId(sessionInfo.getUserId())
@@ -94,22 +97,23 @@ public class PlatformAnalysisService {
             
             if (latestProject.isPresent()) {
                 ProjectType project = latestProject.get();
-                String resolvedUserId = project.getUserID();    // Note: getUserID() with capital letters
-                String resolvedSessionId = project.getSessionID(); // Note: getSessionID() with capital letters
+                String resolvedUserId = project.getUserID();
+                String resolvedSessionId = project.getSessionID();
                 
                 log.info("Resolved session from latest project (createdDate: {}) - User: {}, Session: {}", 
                     project.getCreatedDate(), resolvedUserId, resolvedSessionId);
                 
                 return new UserSessionInfo(resolvedUserId, resolvedSessionId, true);
             } else {
-                log.warn("No project records found to resolve session");
-                // Return some default values or handle as needed
-                return new UserSessionInfo("UNKNOWN", "UNKNOWN", false);
+                log.warn("No project records found to resolve session, will return records with null userId/sessionId");
+                // Return null values to fetch records with null userId/sessionId
+                return new UserSessionInfo(null, null, true);
             }
             
         } catch (Exception e) {
             log.error("Error resolving latest session from ProjectType table using createdDate", e);
-            return new UserSessionInfo("ERROR", "ERROR", false);
+            // Return null values to fetch records with null userId/sessionId
+            return new UserSessionInfo(null, null, true);
         }
     }
     
