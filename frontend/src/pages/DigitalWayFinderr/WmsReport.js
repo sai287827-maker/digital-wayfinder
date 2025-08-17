@@ -96,9 +96,8 @@ const WmsReport = () => {
           // Convert Map to array format expected by the component
           const transformedData = Array.from(categoryMap.values()).map(categoryData => ({
             category: categoryData.category,
-            assetName: categoryData.assetNames.join(', '), // Combine asset names
             gaps: Array.from(categoryData.gaps),
-            solutions: Array.from(categoryData.solutions)
+            solutions: [...Array.from(categoryData.solutions), ...categoryData.assetNames] // Combine solutions and asset names
           }));
           
           console.log('Transformed data:', transformedData);
@@ -242,12 +241,6 @@ const WmsReport = () => {
                 {/* Content Section */}
                 <div className="content-section">
                   <div className="content-wrapper">
-                    {/* Asset Name */}
-                    <div>
-                      <p className="category-label">ASSET</p>
-                      <h3 className="category-title">{item.assetName}</h3>
-                    </div>
-
                     {/* Category */}
                     <div>
                       <p className="category-label">CATEGORY</p>
