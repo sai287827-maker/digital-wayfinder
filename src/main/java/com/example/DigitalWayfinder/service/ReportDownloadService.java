@@ -82,13 +82,9 @@ public class ReportDownloadService {
                     .setMarginBottom(10);
             document.add(title);
             
-            // Add metadata
+            // Add metadata (only generation timestamp)
             Paragraph metadata = new Paragraph()
                     .add("Generated on: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                    .add("\n")
-                    .add("User ID: " + (sessionInfo.getUserId() != null ? sessionInfo.getUserId() : "N/A"))
-                    .add("\n")
-                    .add("Session ID: " + (sessionInfo.getSessionId() != null ? sessionInfo.getSessionId() : "N/A"))
                     .setFont(font)
                     .setFontSize(10)
                     .setMarginBottom(20);
