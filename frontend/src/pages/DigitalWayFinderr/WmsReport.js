@@ -179,7 +179,45 @@ const WmsReport = () => {
     }
   };
 
-  // Show loading state
+  const handleDownloadReport = async () => {
+    try {
+      const response = await fetch('/api/digital-wayfinder/questionnaire/report/download', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Get the filename from the response headers or use a default
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = 'assessment-report.pdf';
+      
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      // Create blob and download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      alert('Failed to download report. Please try again.');
+    }
+  };
   if (loading) {
     return (
       <div className="assessment-container">
@@ -287,7 +325,7 @@ const WmsReport = () => {
 
         {/* Download Button */}
         <div className="download-section">
-          <button className="download-button">
+          <button className="download-button" onClick={handleDownloadReport}>
             <svg className="download-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
