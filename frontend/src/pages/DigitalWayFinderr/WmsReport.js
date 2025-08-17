@@ -254,11 +254,6 @@ const WmsReport = () => {
           <p className="main-description">
             We have analyzed capabilities in your current ERP system and recommend following solutions based on the questionnaire inputs and gaps identified in the current solution
           </p>
-          {userId && sessionId && (
-            <div className="session-info" style={{fontSize: '0.875rem', color: '#666', marginTop: '0.5rem'}}>
-              User: {userId} | Session: {sessionId}
-            </div>
-          )}
           {error && (
             <div className="error-message" style={{color: 'red', marginTop: '1rem'}}>
               API Error: {error} (Showing fallback data)
