@@ -13,7 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "vw_Fnl_FunctionScore_WMS") // Replace with your actual table name
+@Table(name = "vw_Fnl_FunctionScore_WMS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,10 +22,10 @@ public class ReportDownloadEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long id;
     
-    @Column(name = "Assert Name")
+    @Column(name = "Asset Name")  // Fixed: was "Assert Name"
     private String assetName;
     
     @Column(name = "Category")
@@ -33,6 +33,12 @@ public class ReportDownloadEntity {
     
     @Column(name = "Gaps")
     private String gaps;
+
+    @Column(name = "SessionID")
+    private String sessionID;
+
+    @Column(name = "UserID")
+    private String userID;
     
     @Column(name = "L2")
     private String l2;

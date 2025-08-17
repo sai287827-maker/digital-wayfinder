@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.example.DigitalWayfinder.dto.ReportDownloadDto;
+import com.example.DigitalWayfinder.entity.ProjectType;
+import com.example.DigitalWayfinder.repository.ProjectTypeRepository;
 import com.example.DigitalWayfinder.repository.ReportDownloadRepository;
 
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,26 +35,34 @@ import java.util.List;
 public class ReportDownloadService {
     
     private final ReportDownloadRepository reportDownloadRepository;
+    private final ProjectTypeRepository projectTypeRepository;
     
     public byte[] generatePdfReport(String userId, String sessionId) {
         log.info("Generating PDF report for user: {}, session: {}", userId, sessionId);
         
         try {
-            // Fetch data from database using native query
-            List<Object[]> rawData = reportDownloadRepository.findAllReportData();
+            // Step 1: Resolve the latest userId and sessionId from ProjectType table
+            UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
+            
+            // Step 2: Fetch ONLY records that match the latest session OR have null session info
+            List<Object[]> rawData = reportDownloadRepository.findReportDataByUserAndSession(
+                    sessionInfo.getUserId(), sessionInfo.getSessionId());
+            
             List<ReportDownloadDto> reportData = new ArrayList<>();
             
             // Convert raw data to DTOs
+            // Query returns: ID, [Asset Name], Category, Gaps, L2, SessionID, UserID
             for (Object[] row : rawData) {
                 ReportDownloadDto dto = ReportDownloadDto.builder()
-                        .assetName(row[1] != null ? row[1].toString() : null)  // Assert Name
+                        .assetName(row[1] != null ? row[1].toString() : null)  // Asset Name
                         .category(row[2] != null ? row[2].toString() : null)   // Category
                         .gaps(row[3] != null ? row[3].toString() : null)       // Gaps
                         .build();
                 reportData.add(dto);
             }
             
-            log.info("Fetched {} records from database", reportData.size());
+            log.info("Fetched {} records from database for user: {}, session: {}", 
+                    reportData.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             // Generate PDF
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -75,9 +86,9 @@ public class ReportDownloadService {
             Paragraph metadata = new Paragraph()
                     .add("Generated on: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                     .add("\n")
-                    .add("User ID: " + userId)
+                    .add("User ID: " + (sessionInfo.getUserId() != null ? sessionInfo.getUserId() : "N/A"))
                     .add("\n")
-                    .add("Session ID: " + sessionId)
+                    .add("Session ID: " + (sessionInfo.getSessionId() != null ? sessionInfo.getSessionId() : "N/A"))
                     .setFont(font)
                     .setFontSize(10)
                     .setMarginBottom(20);
@@ -128,6 +139,47 @@ public class ReportDownloadService {
         }
     }
     
+    /**
+     * Resolves the actual userId and sessionId to use.
+     * Gets the latest session from ProjectType table using createdDate.
+     */
+    private UserSessionInfo resolveUserSession(String userId, String sessionId) {
+        // If both userId and sessionId are provided, use them directly
+        if (isValidString(userId) && isValidString(sessionId)) {
+            log.info("Using provided session for report - User: {}, Session: {}", userId, sessionId);
+            return new UserSessionInfo(userId, sessionId, true);
+        }
+        
+        // Try to get the latest session from ProjectType table using createdDate
+        try {
+            Optional<ProjectType> latestProject = projectTypeRepository.findLatestSession();
+            
+            if (latestProject.isPresent()) {
+                ProjectType project = latestProject.get();
+                String resolvedUserId = project.getUserID();
+                String resolvedSessionId = project.getSessionID();
+                
+                log.info("Resolved session for report from latest project (createdDate: {}) - User: {}, Session: {}", 
+                    project.getCreatedDate(), resolvedUserId, resolvedSessionId);
+                
+                return new UserSessionInfo(resolvedUserId, resolvedSessionId, true);
+            } else {
+                log.warn("No project records found to resolve session for report, will include records with null userId/sessionId");
+                // Return null values to include records with null userId/sessionId
+                return new UserSessionInfo(null, null, true);
+            }
+            
+        } catch (Exception e) {
+            log.error("Error resolving latest session from ProjectType table for report", e);
+            // Return null values to include records with null userId/sessionId
+            return new UserSessionInfo(null, null, true);
+        }
+    }
+    
+    private boolean isValidString(String str) {
+        return str != null && !str.trim().isEmpty();
+    }
+    
     private Cell createHeaderCell(String content, PdfFont font) {
         return new Cell()
                 .add(new Paragraph(content))
@@ -144,5 +196,22 @@ public class ReportDownloadService {
                 .setFont(font)
                 .setFontSize(10)
                 .setPadding(5);
+    }
+    
+    // Helper class to hold session resolution result
+    private static class UserSessionInfo {
+        private final String userId;
+        private final String sessionId;
+        private final boolean valid;
+        
+        public UserSessionInfo(String userId, String sessionId, boolean valid) {
+            this.userId = userId;
+            this.sessionId = sessionId;
+            this.valid = valid;
+        }
+        
+        public String getUserId() { return userId; }
+        public String getSessionId() { return sessionId; }
+        public boolean isValid() { return valid; }
     }
 }
