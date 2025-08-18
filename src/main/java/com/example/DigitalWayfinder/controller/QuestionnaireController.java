@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.DigitalWayfinder.dto.GetAnswersResponse;
 import com.example.DigitalWayfinder.dto.QuestionnaireResponse;
 import com.example.DigitalWayfinder.dto.SaveAnswersRequest;
 import com.example.DigitalWayfinder.dto.SaveAnswersResponse;
@@ -23,6 +24,8 @@ import jakarta.validation.constraints.NotBlank;
 public class QuestionnaireController {
     
     private final QuestionnaireService questionnaireService;
+    
+    // =================== GET QUESTIONS APIs ===================
     
     @GetMapping("/data-cloud/get-questions")
     public ResponseEntity<QuestionnaireResponse> getDataCloudQuestions(
@@ -136,7 +139,103 @@ public class QuestionnaireController {
         }
     }
 
-       @PostMapping("/data-cloud/save-answers")
+    // =================== GET ANSWERS APIs ===================
+    
+    @GetMapping("/data-cloud/get-answers")
+    public ResponseEntity<GetAnswersResponse> getDataCloudAnswers(
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Data & Cloud answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            GetAnswersResponse response = questionnaireService.getDataCloudAnswers(
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning {} Data & Cloud answers", response.getAnswersCount());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error fetching Data & Cloud answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GetMapping("/operational-innovations/get-answers")
+    public ResponseEntity<GetAnswersResponse> getOperationalInnovationsAnswers(
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Operational Innovations answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            GetAnswersResponse response = questionnaireService.getOperationalInnovationsAnswers(
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning {} Operational Innovations answers", response.getAnswersCount());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error fetching Operational Innovations answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GetMapping("/visibility-proactive/get-answers")
+    public ResponseEntity<GetAnswersResponse> getVisibilityProactiveAnswers(
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Visibility & Proactive Planning answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            GetAnswersResponse response = questionnaireService.getVisibilityProactiveAnswers(
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning {} Visibility & Proactive Planning answers", response.getAnswersCount());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error fetching Visibility & Proactive Planning answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    @GetMapping("/genai/get-answers")
+    public ResponseEntity<GetAnswersResponse> getGenAIAnswers(
+            @ModelAttribute UserSession userSession) {
+        
+        log.info("Received request for Agentic AI answers - user: {}, session: {}", 
+                userSession.getUserId(), userSession.getSessionId());
+        
+        try {
+            GetAnswersResponse response = questionnaireService.getAgenticAIAnswers(
+                    userSession.getUserId(), 
+                    userSession.getSessionId()
+            );
+            
+            log.info("Successfully returning {} Agentic AI answers", response.getAnswersCount());
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error fetching Agentic AI answers", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // =================== SAVE ANSWERS APIs ===================
+
+    @PostMapping("/data-cloud/save-answers")
     public ResponseEntity<SaveAnswersResponse> saveDataCloudAnswers(
             @Valid @RequestBody SaveAnswersRequest request,
             @ModelAttribute UserSession userSession) {

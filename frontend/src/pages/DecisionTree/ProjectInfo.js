@@ -8,6 +8,7 @@ const ProjectInfo = () => {
   const [projectType, setProjectType] = useState('internal');
   const [formData, setFormData] = useState({
     requestId: '',
+    mmsId: '', // <-- Add MMSID field
     clientName: '',
     description: '',
     projectScope: ''
@@ -27,6 +28,7 @@ const ProjectInfo = () => {
         const data = await apiGet('api/decision-tree/project-info/get');
         setFormData({
           requestId: data.requestID || '',
+          mmsId: data.mmsID || '', // <-- Add MMSID field from API
           clientName: data.clientName || '',
           description: data.clientDescription || '',
           projectScope: data.projectScope || ''
@@ -36,6 +38,7 @@ const ProjectInfo = () => {
         // If error, keep fields empty
         setFormData({
           requestId: '',
+          mmsId: '', // <-- Reset MMSID field
           clientName: '',
           description: '',
           projectScope: ''
@@ -60,6 +63,7 @@ const ProjectInfo = () => {
     // Reset form data based on project type
     setFormData({
       requestId: '',
+      mmsId: '', // <-- Reset MMSID field
       clientName: '',
       description: '',
       projectScope: ''
@@ -76,6 +80,7 @@ const ProjectInfo = () => {
     try {
       await apiPost('api/decision-tree/project-info/save', {
         requestID: formData.requestId,
+        mmsID: formData.mmsId, // <-- Send MMSID to API
         clientName: formData.clientName,
         clientDescription: formData.description,
         projectScope: formData.projectScope,
@@ -155,6 +160,21 @@ console.log("formData",formData);
                   onChange={(e) => handleInputChange('requestId', e.target.value)}
                   className="field-input"
                   placeholder={projectType === 'internal' ? 'Enter Project ID' : 'Enter Request ID'}
+                />
+              </div>
+              <div className="field-group">
+                <label className="field-label">MMSID</label>
+                <input
+                  type="text"
+                  value={formData.mmsId}
+                  onChange={(e) => {
+                    // Only allow alphanumeric input
+                    const val = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                    handleInputChange('mmsId', val);
+                  }}
+                  className="field-input"
+                  placeholder="Enter MMSID (alphanumeric)"
+                  maxLength={20}
                 />
               </div>
               <div className="field-group">

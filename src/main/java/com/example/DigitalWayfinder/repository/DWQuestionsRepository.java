@@ -23,4 +23,12 @@ public interface DWQuestionsRepository extends JpaRepository<DWQuestions, Long> 
             @Param("userId") String userId, 
             @Param("sessionId") String sessionId, 
             @Param("category") String category);
+    
+    // Find answers by category for resolved session (including null sessions)
+    @Query("SELECT d FROM DWQuestions d WHERE d.category = :category AND " +
+           "(d.userId = :userId OR d.userId IS NULL) AND " +
+           "(d.sessionId = :sessionId OR d.sessionId IS NULL)")
+    List<DWQuestions> findAnswersByCategoryAndSession(@Param("category") String category,
+                                                      @Param("userId") String userId, 
+                                                      @Param("sessionId") String sessionId);
 }
