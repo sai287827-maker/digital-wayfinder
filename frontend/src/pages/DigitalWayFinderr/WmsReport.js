@@ -2,6 +2,12 @@ import React, { useEffect, useState } from 'react';
 import './WmsReport.css';
 import { apiGet } from '../../api'; // Adjust the path if needed
 
+// Import your images
+import OperationsImage from '../../assets/Operations.jpg';
+import DataCloudImage from '../../assets/DataCloud.jpg';
+import InnovationImage from '../../assets/planning-crop.png';
+import AIEngineImage from '../../assets/AI.webp';
+
 const WmsReport = () => {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -127,56 +133,74 @@ const WmsReport = () => {
     fetchReport();
   }, []);
 
-  const renderIcon = (id) => {
-    switch (id) {
-      case 1:
-        return (
-          <div className="icon-container">
-            <div className="icon-wrapper">
-              <div className="image-overlay" style={{backgroundImage: 'url(/api/placeholder/320/192)'}} />
-            </div>
-          </div>
-        );
-      case 2:
-        return (
-          <div className="icon-container">
-            <div className="icon-wrapper">
-              <div className="operations-icon">
-                <div className="operations-icon-inner"></div>
-              </div>
-              <div className="operations-line"></div>
-            </div>
-          </div>
-        );
-      case 3:
-        return (
-          <div className="icon-container">
-            <div className="icon-wrapper">
-              <div className="innovations-icon">
-                <div className="innovations-icon-center"></div>
-              </div>
-              <div className="innovations-dot-1"></div>
-              <div className="innovations-dot-2"></div>
-            </div>
-          </div>
-        );
-        case 4:
-        return (
-          <div className="icon-container">
-            <div className="icon-wrapper">
-              <div className="ai-icon">
-                <div className="ai-icon-inner">
-                  <div className="ai-icon-center"></div>
-                </div>
-              </div>
-              <div className="ai-dot-1"></div>
-              <div className="ai-dot-2"></div>
-            </div>
-          </div>
-        );
-      default:
-        return null;
+  // Function to get the appropriate image for each category
+  const getCategoryImage = (category, index) => {
+    const categoryLower = category.toLowerCase();
+    
+    // Debug: Log the imported images
+    console.log('Images loaded:', { OperationsImage, DataCloudImage, InnovationImage, AIEngineImage });
+    
+    // Map categories to specific images based on your requirements
+    if (categoryLower.includes('operations') || categoryLower.includes('warehouse')) {
+      return OperationsImage;
     }
+    if (categoryLower.includes('data') || categoryLower.includes('cloud')) {
+      return DataCloudImage;
+    }
+    if (categoryLower.includes('innovation') || categoryLower.includes('operational innovation')) {
+      return InnovationImage;
+    }
+    if (categoryLower.includes('ai') || categoryLower.includes('agentic')) {
+      return AIEngineImage;
+    }
+    
+    // Fallback: use Operations image for unmatched categories
+    return OperationsImage;
+  };
+
+  const renderIcon = (category, index) => {
+    const imageSource = getCategoryImage(category, index);
+    
+    // Debug: Log the image source
+    console.log('Image source for category', category, ':', imageSource);
+    
+    // Use full cover image that fills the entire blue section
+    return (
+      <div className="icon-container" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
+        <img 
+          src={imageSource} 
+          alt={category}
+          className="category-image"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1
+          }}
+          onLoad={() => console.log(`Image loaded successfully: ${category}`)}
+          onError={(e) => {
+            console.error('Image failed to load for category:', category, 'Source:', imageSource);
+            // Hide the image if it fails to load, showing the blue background
+            e.target.style.display = 'none';
+          }}
+        />
+        {/* Optional overlay for better text readability */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(30, 58, 138, 0.3)', // Semi-transparent blue overlay
+          zIndex: 2
+        }} />
+      </div>
+    );
   };
 
   const handleDownloadReport = async () => {
@@ -218,6 +242,7 @@ const WmsReport = () => {
       alert('Failed to download report. Please try again.');
     }
   };
+
   if (loading) {
     return (
       <div className="assessment-container">
@@ -229,7 +254,8 @@ const WmsReport = () => {
       </div>
     );
   }
- return (
+
+  return (
     <div className="assessment-container">
       {/* Breadcrumb Navigation */}
       <div className="breadcrumb-wrapper">
@@ -268,7 +294,7 @@ const WmsReport = () => {
               <div className="report-card-content">
                 {/* Image Section */}
                 <div className="image-section">
-                  {renderIcon((index % 4) + 1)}
+                  {renderIcon(item.category, index)}
                 </div>
 
                 {/* Content Section */}
