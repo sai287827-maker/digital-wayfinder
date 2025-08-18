@@ -109,6 +109,8 @@ const WmsReport = () => {
           
           // Define the desired order for categories
           const categoryOrder = [
+            'Platform Analysis',
+            'Platform Analysis- Core Functionalities',
             'Data & Cloud',
             'Data and Cloud', 
             'Operational Innovations',
@@ -352,12 +354,12 @@ const WmsReport = () => {
                 }}>
                   <div className="content-wrapper">
                     {/* Category */}
-                    <div style={{ marginBottom: '1.5rem' }}>
+                    <div style={{ marginBottom: '2rem' }}>
                       <p className="category-label" style={{ 
                         fontSize: '0.75rem', 
                         fontWeight: '600', 
                         color: '#6b7280', 
-                        marginBottom: '0.25rem',
+                        marginBottom: '0.5rem',
                         letterSpacing: '0.05em'
                       }}>CATEGORY</p>
                       <h3 className="category-title" style={{ 
@@ -371,12 +373,12 @@ const WmsReport = () => {
  
                     {/* Gaps Identified */}
                     {item.gaps && item.gaps.length > 0 && (
-                      <div style={{ marginBottom: '1.5rem' }}>
+                      <div style={{ marginBottom: '2rem' }}>
                         <p className="section-label" style={{ 
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
                           color: '#6b7280', 
-                          marginBottom: '0.75rem',
+                          marginBottom: '1rem',
                           letterSpacing: '0.05em'
                         }}>GAPS IDENTIFIED</p>
                         <div className="tags-container" style={{ 
@@ -408,7 +410,7 @@ const WmsReport = () => {
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
                           color: '#6b7280', 
-                          marginBottom: '0.75rem',
+                          marginBottom: '1rem',
                           letterSpacing: '0.05em'
                         }}>SOLUTIONS</p>
                         <div className="tags-container" style={{ 
