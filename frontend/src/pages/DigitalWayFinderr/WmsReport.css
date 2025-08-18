@@ -308,12 +308,6 @@
   border-color: #bbf7d0;
 }
 
-.image-overlay {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-}
-
 /* Download Button */
 .download-section {
   display: flex;
