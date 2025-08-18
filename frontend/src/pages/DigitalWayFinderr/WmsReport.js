@@ -337,13 +337,13 @@
 import React, { useEffect, useState } from 'react';
 import './WmsReport.css';
 import { apiGet } from '../../api'; // Adjust the path if needed
- 
+
 // Import your images
 import OperationsImage from '../../assets/Operations.jpg';
 import DataCloudImage from '../../assets/DataCloud.jpg';
 import InnovationImage from '../../assets/planning-crop.png';
 import AIEngineImage from '../../assets/AI.webp';
- 
+
 const WmsReport = () => {
   const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -468,14 +468,14 @@ const WmsReport = () => {
    
     fetchReport();
   }, []);
- 
+
   // Function to get the appropriate image for each category
   const getCategoryImage = (category, index) => {
     const categoryLower = category.toLowerCase();
-   
+    
     // Debug: Log the imported images
     console.log('Images loaded:', { OperationsImage, DataCloudImage, InnovationImage, AIEngineImage });
-   
+    
     // Map categories to specific images based on your requirements
     if (categoryLower.includes('operations') || categoryLower.includes('warehouse')) {
       return OperationsImage;
@@ -489,22 +489,22 @@ const WmsReport = () => {
     if (categoryLower.includes('ai') || categoryLower.includes('agentic')) {
       return AIEngineImage;
     }
-   
+    
     // Fallback: use Operations image for unmatched categories
     return OperationsImage;
   };
- 
+
   const renderIcon = (category, index) => {
     const imageSource = getCategoryImage(category, index);
-   
+    
     // Debug: Log the image source
     console.log('Image source for category', category, ':', imageSource);
-   
+    
     // Use full cover image that fills the entire blue section
     return (
       <div className="icon-container" style={{ width: '100%', height: '100%', position: 'absolute', inset: 0 }}>
-        <img
-          src={imageSource}
+        <img 
+          src={imageSource} 
           alt={category}
           className="category-image"
           style={{
@@ -578,7 +578,7 @@ const WmsReport = () => {
       alert('Failed to download report. Please try again.');
     }
   };
- 
+
   if (loading) {
     return (
       <div className="assessment-container">
@@ -590,7 +590,7 @@ const WmsReport = () => {
       </div>
     );
   }
- 
+
   return (
     <div className="assessment-container">
       {/* Breadcrumb Navigation */}
