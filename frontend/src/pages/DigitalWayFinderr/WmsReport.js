@@ -354,12 +354,12 @@ const WmsReport = () => {
                 }}>
                   <div className="content-wrapper">
                     {/* Category */}
-                    <div style={{ marginBottom: '2rem' }}>
+                    <div style={{ marginBottom: '1rem' }}>
                       <p className="category-label" style={{ 
                         fontSize: '0.75rem', 
                         fontWeight: '600', 
                         color: '#6b7280', 
-                        marginBottom: '0.5rem',
+                        marginBottom: '0.25rem',
                         letterSpacing: '0.05em'
                       }}>CATEGORY</p>
                       <h3 className="category-title" style={{ 
@@ -373,12 +373,12 @@ const WmsReport = () => {
  
                     {/* Gaps Identified */}
                     {item.gaps && item.gaps.length > 0 && (
-                      <div style={{ marginBottom: '2rem' }}>
+                      <div style={{ marginBottom: '1rem' }}>
                         <p className="section-label" style={{ 
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
                           color: '#6b7280', 
-                          marginBottom: '1rem',
+                          marginBottom: '0.5rem',
                           letterSpacing: '0.05em'
                         }}>GAPS IDENTIFIED</p>
                         <div className="tags-container" style={{ 
@@ -410,7 +410,7 @@ const WmsReport = () => {
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
                           color: '#6b7280', 
-                          marginBottom: '1rem',
+                          marginBottom: '0.5rem',
                           letterSpacing: '0.05em'
                         }}>SOLUTIONS</p>
                         <div className="tags-container" style={{ 
@@ -448,7 +448,7 @@ const WmsReport = () => {
         {/* Download Button */}
         <div className="download-section" style={{ 
           display: 'flex', 
-          justifyContent: 'center', 
+          justifyContent: 'flex-end', 
           marginTop: '2rem' 
         }}>
           <button className="download-button" onClick={handleDownloadReport} style={{
@@ -475,5 +475,4 @@ const WmsReport = () => {
     </div>
   );
 };
- 
 export default WmsReport;
