@@ -121,7 +121,7 @@ const AgenticAI = ({ onNavigateBack }) => {
             // Check if we should try to fetch existing answers separately
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
