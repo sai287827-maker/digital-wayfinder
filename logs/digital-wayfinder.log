@@ -21595,3 +21595,6 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2025-08-18 11:43:33 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/planning-crop.06f3745b530ca71d1357.png", parameters={}
 2025-08-18 11:43:33 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
 2025-08-18 11:43:33 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-18 12:05:56 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-18 12:05:56 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-18 12:05:56 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
