@@ -341,8 +341,9 @@ import { apiGet } from '../../api'; // Adjust the path if needed
 // Import your images
 import OperationsImage from '../../assets/Operations.jpg';
 import DataCloudImage from '../../assets/DataCloud.jpg';
-import InnovationImage from '../../assets/planning-crop.png';
+import OperationalInnovationImage from '../../assets/OperationalInnovation.webp';
 import AIEngineImage from '../../assets/AI.webp';
+import PlanningCropImage from '../../assets/planning-crop.png';
 
 const WmsReport = () => {
   const [reportData, setReportData] = useState([]);
@@ -474,7 +475,7 @@ const WmsReport = () => {
     const categoryLower = category.toLowerCase();
     
     // Debug: Log the imported images
-    console.log('Images loaded:', { OperationsImage, DataCloudImage, InnovationImage, AIEngineImage });
+    console.log('Images loaded:', { OperationsImage, DataCloudImage, OperationalInnovationImage, AIEngineImage, PlanningCropImage });
     
     // Map categories to specific images based on your requirements
     if (categoryLower.includes('operations') || categoryLower.includes('warehouse')) {
@@ -484,10 +485,13 @@ const WmsReport = () => {
       return DataCloudImage;
     }
     if (categoryLower.includes('innovation') || categoryLower.includes('operational innovation')) {
-      return InnovationImage;
+      return OperationalInnovationImage;
     }
     if (categoryLower.includes('ai') || categoryLower.includes('agentic')) {
       return AIEngineImage;
+    }
+    if (categoryLower.includes('planning') || categoryLower.includes('crop')) {
+      return PlanningCropImage;
     }
     
     // Fallback: use Operations image for unmatched categories
