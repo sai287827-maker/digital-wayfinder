@@ -357,7 +357,7 @@ const WmsReport = () => {
                 }}>
                   <div className="content-wrapper">
                     {/* Category */}
-                    <div style={{ marginBottom: '0.75rem' }}>
+                    <div style={{ marginBottom: '0.5rem' }}>
                       <p className="category-label" style={{ 
                         fontSize: '0.75rem', 
                         fontWeight: '600', 
@@ -376,7 +376,7 @@ const WmsReport = () => {
  
                     {/* Gaps Identified */}
                     {item.gaps && item.gaps.length > 0 && (
-                      <div style={{ marginBottom: '0.75rem' }}>
+                      <div style={{ marginBottom: '0.5rem' }}>
                         <p className="section-label" style={{ 
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
