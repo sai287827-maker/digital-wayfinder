@@ -32,7 +32,7 @@ const DecisionCriteria = () => {
           functional: response.functional?.levelSelections ? response.functional : { levelSelections: {} },
           nonFunctional: response.nonFunctional?.levelSelections ? response.nonFunctional : { levelSelections: {} }
         });
-
+ 
       } catch (err) {
         setError('Failed to fetch decision criteria.');
       } finally {
@@ -70,18 +70,18 @@ const DecisionCriteria = () => {
       }
     });
   };
-
+ 
   // Render hierarchical tree items based on mapping data
   const renderTreeItems = (levelSelections, type) => {
     if (!levelSelections || Object.keys(levelSelections).length === 0) {
       return <div className="dc-no-data">No selections available</div>;
     }
-
+ 
     const renderLevel = (level, selections, parentNumber = '') => {
       return selections.map((selection, index) => {
         const itemNumber = parentNumber ? `${parentNumber}.${index + 1}` : `${index + 1}.0`;
         const itemId = `${type}-${level}-${index}`;
-        
+       
         return (
           <div key={itemId} className={`dc-tree-item level-${level}`}>
             <div className="dc-tree-item-content">
@@ -105,7 +105,7 @@ const DecisionCriteria = () => {
         );
       });
     };
-
+ 
     return (
       <div className="dc-tree-items">
         {Object.entries(levelSelections).map(([level, selections]) => {
@@ -168,7 +168,7 @@ const DecisionCriteria = () => {
               <button className="dc-header-button filled">Select Parameters</button>
             </div>
           </div>
-
+ 
           {/* Content Header */}
           <div className="dc-content-header">
             <div className="dc-content-title">Decision Criteria</div>
@@ -205,14 +205,14 @@ const DecisionCriteria = () => {
                       />
                     </div>
                   </div>
-                  
+                 
                   {expanded.functional && mappingData?.functional?.levelSelections && (
                     <div className="dc-category-content-expanded">
                       {renderTreeItems(mappingData.functional.levelSelections, 'functional')}
                     </div>
                   )}
                 </div>
-
+ 
                 {/* Non-Functional Section */}
                 <div className="dc-main-category">
                   <div className="dc-category-header">
@@ -235,7 +235,7 @@ const DecisionCriteria = () => {
                       />
                     </div>
                   </div>
-                  
+                 
                   {expanded.nonFunctional && mappingData?.nonFunctional?.levelSelections && (
                     <div className="dc-category-content-expanded">
                       {renderTreeItems(mappingData.nonFunctional.levelSelections, 'nonFunctional')}
