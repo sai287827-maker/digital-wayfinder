@@ -71,51 +71,6 @@ const DecisionCriteria = () => {
     });
   };
  
-  // Render hierarchical tree items based on mapping data
-  const renderTreeItems = (levelSelections, type) => {
-    if (!levelSelections || Object.keys(levelSelections).length === 0) {
-      return <div className="dc-no-data">No selections available</div>;
-    }
- 
-    const renderLevel = (level, selections, parentNumber = '') => {
-      return selections.map((selection, index) => {
-        const itemNumber = parentNumber ? `${parentNumber}.${index + 1}` : `${index + 1}.0`;
-        const itemId = `${type}-${level}-${index}`;
-       
-        return (
-          <div key={itemId} className={`dc-tree-item level-${level}`}>
-            <div className="dc-tree-item-content">
-              <div className="dc-tree-indicator">
-                <div className={`dc-tree-dot level-${level}`}></div>
-              </div>
-              <div className="dc-tree-text">
-                <span className="dc-item-number">{itemNumber}</span>
-                <span className="dc-item-label">{selection}</span>
-              </div>
-              <div className="dc-tree-checkbox">
-                <input
-                  type="checkbox"
-                  checked={true}
-                  onChange={() => {}}
-                  className="dc-scope-checkbox"
-                />
-              </div>
-            </div>
-          </div>
-        );
-      });
-    };
- 
-    return (
-      <div className="dc-tree-items">
-        {Object.entries(levelSelections).map(([level, selections]) => {
-          const levelNum = parseInt(level.replace('l', ''));
-          return renderLevel(levelNum, selections);
-        })}
-      </div>
-    );
-  };
- 
   return (
     <div className="decision-criteria-container">
       {/* Breadcrumb */}
@@ -125,128 +80,141 @@ const DecisionCriteria = () => {
           <span>›</span>
           <span className="dc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="dc-breadcrumb-current">Functional Scope</span>
+          <span className="dc-breadcrumb-current">Decision Criteria</span>
         </div>
       </div>
  
       <div className="dc-main-layout">
         {/* Left Sidebar Box */}
         <div className="dc-left-sidebar">
-          <h2 className="dc-sidebar-title">Functional Scope</h2>
+          <h2 className="dc-sidebar-title">Decision Criteria</h2>
           <p className="dc-sidebar-description">
             Structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
  
+          {/* Vertical line connecting all steps */}
+          <div className="dc-step-line"></div>
+ 
           {/* Step indicators */}
           <div className="dc-steps-container">
             <div className="dc-step-item">
-              <div className="dc-step-number completed">1</div>
-              <span className="dc-step-text completed">Functional Scope</span>
+              <div className="dc-step-circle dc-completed">
+                <svg className="step-check" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span className="dc-step-text dc-completed">Functional Scope</span>
             </div>
            
             <div className="dc-step-item">
-              <div className="dc-step-number active">2</div>
-              <span className="dc-step-text active">Decision Criteria</span>
+              <div className="dc-step-circle dc-completed">
+                <svg className="step-check" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span className="dc-step-text dc-completed">Non Functional</span>
             </div>
            
             <div className="dc-step-item">
-              <div className="dc-step-number inactive">3</div>
-              <span className="dc-step-text inactive">Solution</span>
+              <div className="dc-step-circle dc-active">3</div>
+              <span className="dc-step-text dc-active">Reviews</span>
+            </div>
+           
+            <div className="dc-step-item">
+              <div className="dc-step-circle dc-inactive">4</div>
+              <span className="dc-step-text dc-inactive">Solution</span>
             </div>
           </div>
         </div>
  
         {/* Main Content Box */}
         <div className="dc-main-content">
-          {/* Header */}
-          <div className="dc-header">
-            <h1 className="dc-page-title">Decision Criteria</h1>
-            <div className="dc-header-buttons">
-              <button className="dc-header-button outline">Define Weightage</button>
-              <button className="dc-header-button outline">Custom Criteria</button>
-              <button className="dc-header-button filled">Select Parameters</button>
+          {/* Decision Criteria Header */}
+          <div className="dc-title-section">
+            <h1 className="dc-page-title"> Reviews </h1>
+          </div>
+ 
+          {/* Table Container */}
+          <div className="dc-table-container">
+            <div className="dc-table-header">
+              <div className="dc-header-criteria">Scope Reviews</div>
+              <div className="dc-header-scope">In-Scope</div>
+            </div>
+            <div className="dc-table-content">
+              {loading ? (
+                <div className="loading-text">Loading...</div>
+              ) : error ? (
+                <div className="error-message">{error}</div>
+              ) : criteria.map((c) => (
+                <React.Fragment key={c.id}>
+                  <div className="dc-table-row">
+                    <div className="dc-criteria-cell">
+                      <button
+                        onClick={() => toggleExpand(c.id)}
+                        className="dc-expand-button"
+                        aria-label={expanded[c.id] ? "Collapse" : "Expand"}
+                        type="button"
+                      >
+                        {expanded[c.id] ? "−" : "+"}
+                      </button>
+                      <span className="dc-criteria-label">{c.label}</span>
+                    </div>
+                    <div className="dc-scope-cell">
+                      <input
+                        type="checkbox"
+                        checked={c.inScope}
+                        onChange={e => handleInScopeChange(c.id, e.target.checked)}
+                        className="dc-scope-checkbox"
+                      />
+                    </div>
+                  </div>
+                  {expanded[c.id] && (
+                    <div className="dc-expanded-content">
+                      Additional details for <b>{c.label}</b> criteria.
+                      {/* Show mapped data for Functional Scope */}
+                      {c.id === 'functional' && mappingData?.functional?.levelSelections && (
+                        <div className="dc-data-display">
+                          <p><strong>Functional Level Selections:</strong></p>
+                          <ul>
+                            {Object.entries(mappingData.functional.levelSelections).map(([level, selections]) => (
+                              <li key={level}>
+                                <strong>{level.toUpperCase()}:</strong> {selections.length === 0 ? 'None' : selections.join(', ')}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {/* Show mapped data for Non-Functional Scope */}
+                      {c.id === 'nonFunctional' && mappingData?.nonFunctional?.levelSelections && (
+                        <div className="dc-data-display">
+                          <p><strong>Non-Functional Level Selections:</strong></p>
+                          <ul>
+                            {Object.entries(mappingData.nonFunctional.levelSelections).map(([level, selections]) => (
+                              <li key={level}>
+                                <strong>{level.toUpperCase()}:</strong> {selections.length === 0 ? 'None' : selections.join(', ')}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {/* Show mapped data from previous Non-Functional page if available */}
+                      {c.id === 'nonFunctional' && fromNonFunctionalScope && levelSelections && (
+                        <div className="dc-data-display">
+                          <p><strong>Selections from Non-Functional Scope (Previous Page):</strong></p>
+                          <pre className="dc-data-pre">
+                            {JSON.stringify(levelSelections, null, 2)}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
             </div>
           </div>
  
-          {/* Content Header */}
-          <div className="dc-content-header">
-            <div className="dc-content-title">Decision Criteria</div>
-            <div className="dc-content-scope">In-Scope</div>
-          </div>
- 
-          {/* Tree Container */}
-          <div className="dc-tree-container">
-            {loading ? (
-              <div className="loading-text">Loading...</div>
-            ) : error ? (
-              <div className="error-message">{error}</div>
-            ) : (
-              <>
-                {/* Functional Section */}
-                <div className="dc-main-category">
-                  <div className="dc-category-header">
-                    <div className="dc-category-content">
-                      <button
-                        onClick={() => toggleExpand('functional')}
-                        className="dc-expand-button"
-                        aria-label={expanded.functional ? "Collapse" : "Expand"}
-                      >
-                        {expanded.functional ? "−" : "+"}
-                      </button>
-                      <span className="dc-category-label">Functional</span>
-                    </div>
-                    <div className="dc-category-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={criteria.find(c => c.id === 'functional')?.inScope || true}
-                        onChange={e => handleInScopeChange('functional', e.target.checked)}
-                        className="dc-scope-checkbox main"
-                      />
-                    </div>
-                  </div>
-                 
-                  {expanded.functional && mappingData?.functional?.levelSelections && (
-                    <div className="dc-category-content-expanded">
-                      {renderTreeItems(mappingData.functional.levelSelections, 'functional')}
-                    </div>
-                  )}
-                </div>
- 
-                {/* Non-Functional Section */}
-                <div className="dc-main-category">
-                  <div className="dc-category-header">
-                    <div className="dc-category-content">
-                      <button
-                        onClick={() => toggleExpand('nonFunctional')}
-                        className="dc-expand-button"
-                        aria-label={expanded.nonFunctional ? "Collapse" : "Expand"}
-                      >
-                        {expanded.nonFunctional ? "−" : "+"}
-                      </button>
-                      <span className="dc-category-label">Non Functional</span>
-                    </div>
-                    <div className="dc-category-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={criteria.find(c => c.id === 'nonFunctional')?.inScope || true}
-                        onChange={e => handleInScopeChange('nonFunctional', e.target.checked)}
-                        className="dc-scope-checkbox main"
-                      />
-                    </div>
-                  </div>
-                 
-                  {expanded.nonFunctional && mappingData?.nonFunctional?.levelSelections && (
-                    <div className="dc-category-content-expanded">
-                      {renderTreeItems(mappingData.nonFunctional.levelSelections, 'nonFunctional')}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
- 
-          {/* Footer buttons */}
+          {/* Footer buttons inside main content */}
           <div className="dc-footer-buttons-container">
             <div className="dc-footer-content">
               <button

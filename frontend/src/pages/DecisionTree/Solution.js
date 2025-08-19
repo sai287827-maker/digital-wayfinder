@@ -6,7 +6,7 @@ import { apiGet, apiPost } from '../../api';
 const Solution = () => {
   const navigate = useNavigate();
   const [solutionData, setSolutionData] = useState([]);
-  const [selectedSolutions, setSelectedSolutions] = useState([]);
+  const [selectedPlatforms, setselectedPlatforms] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -37,7 +37,7 @@ const Solution = () => {
  
   // Handle solution selection
   const handleSolutionSelect = (solutionId) => {
-    setSelectedSolutions(prev => {
+    setselectedPlatforms(prev => {
       if (prev.includes(solutionId)) {
         return prev.filter(id => id !== solutionId);
       } else {
@@ -50,10 +50,10 @@ const Solution = () => {
   const handleSelectAll = () => {
     const filteredSolutions = getFilteredSolutions();
     const allFilteredIds = filteredSolutions.map(solution => solution.id);
-    if (selectedSolutions.length === allFilteredIds.length) {
-      setSelectedSolutions([]);
+    if (selectedPlatforms.length === allFilteredIds.length) {
+      setselectedPlatforms([]);
     } else {
-      setSelectedSolutions(allFilteredIds);
+      setselectedPlatforms(allFilteredIds);
     }
   };
  
@@ -65,7 +65,7 @@ const Solution = () => {
   // Handle generate dashboard - navigate to dashboard page
   const handleGenerateDashboard = async () => {
     try {
-      if (selectedSolutions.length === 0) {
+      if (selectedPlatforms.length === 0) {
         setError('Please select at least one solution before generating dashboard.');
         setTimeout(() => setError(null), 3000);
         return;
@@ -74,13 +74,13 @@ const Solution = () => {
      
       // Save the selected solutions data via API
       await apiPost('api/decision-tree/functional-scope/solution/save', {
-        selectedSolutions,
+        selectedPlatforms,
         searchQuery,
         timestamp: new Date().toISOString()
       });
      
       // Navigate to dashboard page
-      navigate('/dashboard');
+      navigate('/decision-tree/dashboard');
      
     } catch (error) {
       setError('Failed to generate dashboard. Please try again.');
@@ -204,13 +204,13 @@ const Solution = () => {
               ) : getFilteredSolutions().map((solution) => (
                 <div
                   key={solution.id || solution.platformName}
-                  className={`solution-row ${selectedSolutions.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
+                  className={`solution-row ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
                   onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
                 >
                   <div className="solution-checkbox-container">
                     <input
                       type="checkbox"
-                      checked={selectedSolutions.includes(solution.id || solution.platformName)}
+                      checked={selectedPlatforms.includes(solution.id || solution.platformName)}
                       onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
                       className="solution-checkbox"
                     />
