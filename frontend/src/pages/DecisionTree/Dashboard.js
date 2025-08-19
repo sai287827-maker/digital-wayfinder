@@ -202,7 +202,7 @@ const ExecutiveDashboard = () => {
               </div>
               <iframe
                 title="Power BI Report Dashboard"
-                src="https://app.powerbi.com/onedrive/open?pbi_source=ODSPViewer&driveId=b!U-7Q1OZl0kC_0-SPe1rHj_HeWSkRUz1KubdCyBOp2BQlwpLAGK9WTIaRAqGSU2o4&itemId=01AJRXTDSU3GHDKZYG55AJA7VFWFVQO2PW"
+                src="https://app.powerbi.com/reportEmbed?reportId=aa37619c-b039-405b-82b5-40f7f86b027b&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
                 style={{
                   width: "100%",
                   height: "calc(100% - 53px)",
