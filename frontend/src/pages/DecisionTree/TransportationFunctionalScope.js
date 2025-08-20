@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import './FunctionalScope.css';
+import { useNavigate } from 'react-router-dom';
+import './TransportationFunctionalScope.css';
 import { apiGet, apiPost } from '../../api';
 
 const TransportationFunctionalScope = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [functionalScopeData, setFunctionalScopeData] = useState([]);
-  const [selectedPath, setSelectedPath] = useState({});
+  const [levelSelections, setSelectedPath] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  const [showParameterModal, setShowParameterModal] = useState(false);
-  const [parameterLevel, setParameterLevel] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
@@ -31,122 +29,102 @@ const TransportationFunctionalScope = () => {
     fetchData();
   }, []);
 
-  // Check if user has selected from all 4 levels
-  const hasAllLevelsSelected = () => {
-    return [1, 2, 3, 4].every(level => {
-      const levelKey = `l${level}`;
-      return selectedPath[levelKey] && selectedPath[levelKey].length > 0;
-    });
+  // Check if user has selected from Level 4 (enable save button after Level 4)
+  const hasLevel4Selected = () => {
+    const level4Key = 'l4';
+    return levelSelections[level4Key] && levelSelections[level4Key].length > 0;
   };
 
   // Get the maximum level that should be visible based on selections
   const getMaxVisibleLevel = () => {
     for (let level = 1; level <= 4; level++) {
       const levelKey = `l${level}`;
-      if (!selectedPath[levelKey] || selectedPath[levelKey].length === 0) {
-        return level; // Return the first level without selections
+      if (!levelSelections[levelKey] || levelSelections[levelKey].length === 0) {
+        return level;
       }
     }
-    return 4; // All levels have selections
+    return 4;
   };
 
   // Check if a level should be enabled (visible and clickable)
   const isLevelEnabled = (level) => {
-    if (level === 1) return true; // Level 1 is always enabled
-    
-    // Check if previous level has selections
+    if (level === 1) return true;
     const prevLevelKey = `l${level - 1}`;
-    return selectedPath[prevLevelKey] && selectedPath[prevLevelKey].length > 0;
+    return levelSelections[prevLevelKey] && levelSelections[prevLevelKey].length > 0;
   };
 
   // Check if a level should be visible
   const isLevelVisible = (level) => {
     return level <= getMaxVisibleLevel();
   };
-  
+
   // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
-      // Validate that user has made selections
-      if (!hasAllLevelsSelected()) {
-        setError('Please select at least one option from each level before proceeding.');
-        // Clear error after 3 seconds
+      if (!hasLevel4Selected()) {
+        setError('Please select at least one option from Level 4 before proceeding.');
         setTimeout(() => setError(null), 3000);
         return;
       }
 
-      // Set loading state
       setLoading(true);
 
-      // Prepare data for next step
-      const nonFunctionalScopeData = {
+      const functionalScopeData = {
         selectedItems,
-        selectedPath,
+        levelSelections,
         searchQuery,
         selectedLevel,
         timestamp: new Date().toISOString()
       };
 
-      // Log current selections for debugging
-      console.log('Proceeding with selected items:', selectedItems);
-      console.log('Current path:', selectedPath);
+      console.log('Payload:', {
+        selectedItems,
+        levelSelections,
+        searchQuery,
+        selectedLevel,
+        timestamp: new Date().toISOString()
+      });
 
-      // Save to localStorage for persistence across pages
-      localStorage.setItem('nonFunctionalScopeData', JSON.stringify(nonFunctionalScopeData));
+      await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
 
-      // Navigate to page
       navigate('/decision-tree/non-functional-scope', { 
         state: { 
-          fromNonFunctionalScope: true,
-          selectedData: nonFunctionalScopeData 
+          fromFunctionalScope: true,
+          selectedData: functionalScopeData
         }
       });
 
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save data. Please try again.');
-      // Clear error after 3 seconds
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
     }
   };
 
-  // Filter data based on search query
-  const getFilteredData = () => {
-    if (!searchQuery) return functionalScopeData;
-    
-    return functionalScopeData.filter(item => 
-      Object.values(item).some(value => 
-        value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
-  };
-
-  // Get unique items for a specific level based on selected path
+  // FIXED: More precise search that only searches the current level items
   const getLevelItems = (level) => {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) return [];
-    
-    let levelData = filteredData;
-    
+    // Start with original data for level hierarchy
+    let levelData = functionalScopeData;
+   
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
       const levelKey = `l${i}`;
-      const selectedForLevel = selectedPath[levelKey];
-      
+      const selectedForLevel = levelSelections[levelKey];
+     
       if (selectedForLevel && selectedForLevel.length > 0) {
-        levelData = levelData.filter(item => 
+        levelData = levelData.filter(item =>
           selectedForLevel.includes(item[levelKey])
         );
       }
     }
-    
-    // Get unique items for current level
+
+    // Get unique items for current level from hierarchy-filtered data
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
-    
+   
     levelData.forEach((item) => {
       const value = item[levelKey];
       if (value && !seen.has(value)) {
@@ -159,7 +137,16 @@ const TransportationFunctionalScope = () => {
         });
       }
     });
-    
+
+    // FIXED: Apply search filter only to the current level items, not across all levels
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      return uniqueItems.filter(item => 
+        // Only search in the current level's name, not across all hierarchy levels
+        item.name.toLowerCase().includes(query)
+      );
+    }
+   
     return uniqueItems;
   };
 
@@ -167,54 +154,53 @@ const TransportationFunctionalScope = () => {
   const getHighestSelectedLevel = () => {
     for (let level = 4; level >= 1; level--) {
       const levelKey = `l${level}`;
-      if (selectedPath[levelKey] && selectedPath[levelKey].length > 0) {
+      if (levelSelections[levelKey] && levelSelections[levelKey].length > 0) {
         return level;
       }
     }
-    return 1; // Default to level 1 if no selections
+    return 1;
   };
 
   const handleItemSelect = (item, level) => {
     const levelKey = `l${level}`;
-    const newSelectedPath = { ...selectedPath };
-    
+    const newSelectedPath = { ...levelSelections };
+   
     if (!newSelectedPath[levelKey]) {
       newSelectedPath[levelKey] = [];
     }
-    
+   
     const currentSelections = [...newSelectedPath[levelKey]];
     const itemIndex = currentSelections.indexOf(item.name);
-    
+   
     if (itemIndex > -1) {
       currentSelections.splice(itemIndex, 1);
     } else {
       currentSelections.push(item.name);
     }
-    
+   
     newSelectedPath[levelKey] = currentSelections;
-    
+   
     // Clear deeper levels when selections change
     for (let i = level + 1; i <= 4; i++) {
       delete newSelectedPath[`l${i}`];
     }
-    
+   
     setSelectedPath(newSelectedPath);
-    
-    // Auto-advance logic - move to next level when selecting (if not last level)
+   
+    // Auto-advance logic
     if (currentSelections.length > 0 && level < 4) {
       setSelectedLevel(level + 1);
     } else if (currentSelections.length === 0 && level > 1) {
-      // Move backward when deselecting - go to previous level
       setSelectedLevel(level - 1);
     }
-    
+   
     const itemId = item.id;
     setSelectedItems(prev => {
       const filteredItems = prev.filter(id => {
         const levelFromId = parseInt(id.split('-')[0].replace('l', ''));
         return levelFromId <= level;
       });
-      
+     
       if (itemIndex > -1) {
         return filteredItems.filter(id => id !== itemId);
       } else {
@@ -234,26 +220,28 @@ const TransportationFunctionalScope = () => {
   };
 
   const getItemNumber = (level, item) => {
-    const levelItems = getLevelItems(level);
-    const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-    
-    if (level === 1) {
-      return `${currentIndex + 1}.0`;
-    }
-    
-    const fullItem = functionalScopeData.find(dataItem => 
+    const fullItem = functionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
-    
-    if (!fullItem) return `${currentIndex + 1}`;
-    
+   
+    if (!fullItem) return `1.0`;
+   
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
+     
+      const l1Items = [];
+      const l1Seen = new Set();
+      functionalScopeData.forEach(dataItem => {
+        const value = dataItem.l1;
+        if (value && !l1Seen.has(value)) {
+          l1Seen.add(value);
+          l1Items.push(value);
+        }
+      });
       
-      const l1Items = getLevelItems(1);
-      const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
+      const l1Index = l1Items.findIndex(l1Item => l1Item === targetItem.l1);
       parts.push(l1Index + 1);
-      
+     
       for (let i = 2; i <= targetLevel; i++) {
         let contextData = functionalScopeData.filter(dataItem => {
           for (let j = 1; j < i; j++) {
@@ -263,11 +251,11 @@ const TransportationFunctionalScope = () => {
           }
           return true;
         });
-        
+       
         const levelKey = `l${i}`;
         const uniqueItems = [];
         const seen = new Set();
-        
+       
         contextData.forEach(dataItem => {
           const value = dataItem[levelKey];
           if (value && !seen.has(value)) {
@@ -275,16 +263,16 @@ const TransportationFunctionalScope = () => {
             uniqueItems.push(value);
           }
         });
-        
+       
         const itemIndex = uniqueItems.findIndex(uniqueItem => uniqueItem === targetItem[levelKey]);
         parts.push(itemIndex + 1);
       }
-      
+     
       return parts;
     };
-    
+   
     const numberParts = buildNumber(level, fullItem);
-    
+   
     if (level === 1) {
       return `${numberParts[0]}.0`;
     } else if (level === 2) {
@@ -294,14 +282,14 @@ const TransportationFunctionalScope = () => {
     } else if (level === 4) {
       return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}.${numberParts[3]}`;
     }
-    
+   
     return numberParts.join('.');
   };
 
   const renderLevelColumn = (level, idx, totalColumns = 4) => {
     const levelItems = getLevelItems(level);
     const levelKey = `l${level}`;
-    const isLevelActive = level === 1 || (selectedPath[`l${level - 1}`] && selectedPath[`l${level - 1}`].length > 0);
+    const isLevelActive = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
 
     return (
       <div
@@ -312,9 +300,9 @@ const TransportationFunctionalScope = () => {
           <h3 className="column-title">
             LEVEL {level} PROCESS
           </h3>
-          {selectedPath[levelKey] && selectedPath[levelKey].length > 0 && (
+          {levelSelections[levelKey] && levelSelections[levelKey].length > 0 && (
             <div className="column-selected">
-              {selectedPath[levelKey].length} selected
+              {levelSelections[levelKey].length} selected
             </div>
           )}
         </div>
@@ -336,7 +324,7 @@ const TransportationFunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              No items available
+              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
             </div>
           ) : (
             <div className="items-container">
@@ -419,17 +407,17 @@ const TransportationFunctionalScope = () => {
               <div className="step-circle active">1</div>
               <span className="step-text active">Functional Scope</span>
             </div>
-            
+           
             <div className="step-item">
               <div className="step-circle inactive">2</div>
               <span className="step-text inactive">Non Functional</span>
             </div>
-            
+           
             <div className="step-item">
               <div className="step-circle inactive">3</div>
               <span className="step-text inactive">Decision Criteria</span>
             </div>
-            
+           
             <div className="step-item">
               <div className="step-circle inactive">4</div>
               <span className="step-text inactive">Solution</span>
@@ -460,15 +448,25 @@ const TransportationFunctionalScope = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
-            </div>
-
-            <div className="header-buttons">
-              <button
-                className="parameter-button"
-                onClick={() => setShowParameterModal(true)}
-              >
-                Select Parameters
-              </button>
+              {/* Clear button - only show when there's text */}
+              {searchQuery.trim() && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="search-clear-button"
+                  title="Clear search"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="#6b7280"
+                    className="search-clear-icon"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
 
@@ -481,7 +479,7 @@ const TransportationFunctionalScope = () => {
                 <span className="level-label">Select Level View</span>
 
                 <div className="level-progress">
-                  <div 
+                  <div
                     className="level-progress-fill"
                     style={{ width: `${(getHighestSelectedLevel()) / 4 * 100}%` }}
                   />
@@ -489,10 +487,9 @@ const TransportationFunctionalScope = () => {
 
                 <div className="level-buttons">
                   {[1, 2, 3, 4].map((level) => {
-                    // Check if this level should be enabled
-                    const isLevelEnabled = level === 1 || (selectedPath[`l${level - 1}`] && selectedPath[`l${level - 1}`].length > 0);
-                    const hasSelections = selectedPath[`l${level}`] && selectedPath[`l${level}`].length > 0;
-                    
+                    const isLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
+                    const hasSelections = levelSelections[`l${level}`] && levelSelections[`l${level}`].length > 0;
+                   
                     return (
                       <button
                         key={level}
@@ -522,90 +519,29 @@ const TransportationFunctionalScope = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{ 
-        display: 'flex', 
-        justifyContent: 'flex-end', 
+      {/* Save & Proceed Button */}
+      <div className="save-proceed-container" style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
         marginTop: '20px',
         paddingRight: '20px'
        }}>
         <button
-          className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
+          className={`proceed-button ${hasLevel4Selected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
-          disabled={loading || !hasAllLevelsSelected()}
+          disabled={loading || !hasLevel4Selected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+          backgroundColor: hasLevel4Selected() ? '#8b5cf6' : '#e5e7eb',
+          color: hasLevel4Selected() ? 'white' : '#9ca3af',
+          cursor: hasLevel4Selected() ? 'pointer' : 'not-allowed',
+          opacity: hasLevel4Selected() ? 1 : 0.6
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
         </button>
       </div>
-
-      {/* Parameter Modal */}
-      {showParameterModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-header">
-              Select Parameters
-              <button 
-                onClick={() => setShowParameterModal(false)} 
-                className="modal-close"
-              >
-                &times;
-              </button>
-            </h2>
-
-            <div>
-              <div className="modal-section-title">Process Granularity</div>
-              {[1, 2, 3, 4].map((level) => {
-                // For parameter modal: Level 1 is always enabled, others need previous level selections
-                const isParameterLevelEnabled = level === 1 || (selectedPath[`l${level - 1}`] && selectedPath[`l${level - 1}`].length > 0);
-                
-                return (
-                  <label 
-                    key={level} 
-                    className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
-                    style={{
-                      opacity: isParameterLevelEnabled ? 1 : 0.4,
-                      cursor: isParameterLevelEnabled ? 'pointer' : 'not-allowed'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="parameterLevel"
-                      value={level}
-                      checked={parameterLevel === level}
-                      onChange={() => isParameterLevelEnabled ? setParameterLevel(level) : null}
-                      disabled={!isParameterLevelEnabled}
-                      className="modal-radio"
-                    />
-                    Level {level}
-                  </label>
-                );
-              })}
-            </div>
-
-            <div className="modal-footer">
-              <button
-                onClick={() => {
-                  setSelectedLevel(parameterLevel);
-                  setShowParameterModal(false);
-                }}
-                className="modal-save-button"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
 export default TransportationFunctionalScope;
-

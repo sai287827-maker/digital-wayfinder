@@ -1,136 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './TransportationalNonFunctionalScope.css';
-import DecisionCriteria from './DecisionCriteria.js';
+import { apiGet, apiPost } from '../../api';
+import TmsDecisionCriteria from './TmsDecisionCriteria.js';
 
-const TransportationalNonFunctionalScope = () => {
+const TransportationNonFunctionalScope = () => {
   const navigate = useNavigate();
   const [nonFunctionalScopeData, setNonFunctionalScopeData] = useState([]);
-  const [selectedPath, setSelectedPath] = useState({});
+  const [levelSelections, setlevelSelections] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  const [showParameterModal, setShowParameterModal] = useState(false);
-  const [parameterLevel, setParameterLevel] = useState(1);
+  // const [showParameterModal, setShowParameterModal] = useState(false);
+  // const [parameterLevel, setParameterLevel] = useState(1);
   const [proceedToDecisionCriteria, setProceedToDecisionCriteria] = useState(false);
 
-  // Mock API data for Non Functional Requirements
-  const mockApiData = [
-    {
-      "l1": "Performance Requirements",
-      "l2": "Response Time",
-      "l3": "System Response Time",
-      "l4": "API Response Time"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Response Time",
-      "l3": "API Response Time",
-      "l4": "Database Query Response Time"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Response Time",
-      "l3": "Database Query Response Time",
-      "l4": "User Interface Response Time"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Throughput",
-      "l3": "Transaction Throughput",
-      "l4": "Concurrent User Capacity"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Throughput",
-      "l3": "Concurrent User Capacity",
-      "l4": "Data Processing Throughput"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Throughput",
-      "l3": "Data Processing Throughput",
-      "l4": "Network Bandwidth Requirements"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Scalability",
-      "l3": "Horizontal Scalability",
-      "l4": "Vertical Scalability"
-    },
-    {
-      "l1": "Performance Requirements",
-      "l2": "Scalability",
-      "l3": "Vertical Scalability",
-      "l4": "Auto-scaling Capabilities"
-    },
-    {
-      "l1": "Security Requirements",
-      "l2": "Authentication",
-      "l3": "Multi-factor Authentication",
-      "l4": "Single Sign-On (SSO)"
-    },
-    {
-      "l1": "Security Requirements",
-      "l2": "Authentication",
-      "l3": "Single Sign-On (SSO)",
-      "l4": "Role-based Access Control"
-    },
-    {
-      "l1": "Security Requirements",
-      "l2": "Data Protection",
-      "l3": "Data Encryption",
-      "l4": "Data Masking"
-    },
-    {
-      "l1": "Security Requirements",
-      "l2": "Data Protection",
-      "l3": "Data Masking",
-      "l4": "Audit Logging"
-    },
-    {
-      "l1": "Availability Requirements",
-      "l2": "System Uptime",
-      "l3": "High Availability",
-      "l4": "Disaster Recovery"
-    },
-    {
-      "l1": "Availability Requirements",
-      "l2": "System Uptime",
-      "l3": "Disaster Recovery",
-      "l4": "Backup & Restore"
-    },
-    {
-      "l1": "Usability Requirements",
-      "l2": "User Experience",
-      "l3": "Interface Design",
-      "l4": "Accessibility Compliance"
-    },
-    {
-      "l1": "Usability Requirements",
-      "l2": "User Experience",
-      "l3": "Accessibility Compliance",
-      "l4": "Mobile Responsiveness"
-    }
-  ];
-
   useEffect(() => {
-    setNonFunctionalScopeData(mockApiData);
+    async function fetchData() {
+      setLoading(true);
+      setError(null);
+      try {
+        // TODO: Use the correct endpoint based on the system/context
+        const data = await apiGet('api/decision-tree/non-functional-scope/tms/all');
+        setNonFunctionalScopeData(data);
+      } catch (err) {
+        setError('Failed to fetch non-functional scope data.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
   }, []);
+
   if (proceedToDecisionCriteria) {
-    return <DecisionCriteria />;
+    return <TmsDecisionCriteria />;
   }
-  // Check if user has selected from all 4 levels
+  
+  // Check if user has selected from all 3 levels
   const hasAllLevelsSelected = () => {
-    return [1, 2, 3, 4].every(level => {
+    return [1, 2, 3].every(level => {
       const levelKey = `l${level}`;
-      return selectedPath[levelKey] && selectedPath[levelKey].length > 0;
+      return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
     });
   };
 
   // Add this new function for handling Save & Proceed
+ // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
       // Validate that user has made selections
@@ -140,38 +57,31 @@ const TransportationalNonFunctionalScope = () => {
         setTimeout(() => setError(null), 3000);
         return;
       }
-
+ 
       // Set loading state
       setLoading(true);
-setProceedToDecisionCriteria(true);
-      // Prepare data for next step
-      const nonFunctionalData = {
+      // Save non-functional scope
+      await apiPost('api/decision-tree/non-functional-scope/save', {
         selectedItems,
-        selectedPath,
+        levelSelections,
         searchQuery,
         selectedLevel,
         timestamp: new Date().toISOString()
-      };
-
-      // Log current selections for debugging
-      console.log('Proceeding with selected items:', selectedItems);
-      console.log('Current path:', selectedPath);
-
-      // Save to localStorage for persistence across pages
-      localStorage.setItem('nonFunctionalScopeData', JSON.stringify(nonFunctionalScopeData));
-
-      // Optional: You can also save to sessionStorage if you prefer
-      // sessionStorage.setItem('nonFunctionalScopeData', JSON.stringify(nonFunctionalScopeData));
-
-
-      // Navigate to Decision Criteria page (step 3)
-      navigate('/decision-tree/decision-criteria', { 
-        state: { 
+      });
+      setProceedToDecisionCriteria(true);
+      navigate('/decision-tree/decision-criteria', {
+        state: {
           fromNonFunctionalScope: true,
-          selectedData: nonFunctionalData 
+          selectedData: {
+            selectedItems,
+            levelSelections,
+            searchQuery,
+            selectedLevel,
+            timestamp: new Date().toISOString()
+          }
         }
       });
-
+ 
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save data. Please try again.');
@@ -181,7 +91,7 @@ setProceedToDecisionCriteria(true);
       setLoading(false);
     }
   };
-
+ 
   // Filter data based on search query
   const getFilteredData = () => {
     if (!searchQuery) return nonFunctionalScopeData;
@@ -203,7 +113,7 @@ setProceedToDecisionCriteria(true);
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
       const levelKey = `l${i}`;
-      const selectedForLevel = selectedPath[levelKey];
+      const selectedForLevel = levelSelections[levelKey];
       
       if (selectedForLevel && selectedForLevel.length > 0) {
         levelData = levelData.filter(item => 
@@ -235,9 +145,9 @@ setProceedToDecisionCriteria(true);
 
   // Helper function to get the highest level with selections
   const getHighestSelectedLevel = () => {
-    for (let level = 4; level >= 1; level--) {
+    for (let level = 3; level >= 1; level--) {
       const levelKey = `l${level}`;
-      if (selectedPath[levelKey] && selectedPath[levelKey].length > 0) {
+      if (levelSelections[levelKey] && levelSelections[levelKey].length > 0) {
         return level;
       }
     }
@@ -246,13 +156,13 @@ setProceedToDecisionCriteria(true);
 
   const handleItemSelect = (item, level) => {
     const levelKey = `l${level}`;
-    const newSelectedPath = { ...selectedPath };
+    const newlevelSelections = { ...levelSelections };
     
-    if (!newSelectedPath[levelKey]) {
-      newSelectedPath[levelKey] = [];
+    if (!newlevelSelections[levelKey]) {
+      newlevelSelections[levelKey] = [];
     }
     
-    const currentSelections = [...newSelectedPath[levelKey]];
+    const currentSelections = [...newlevelSelections[levelKey]];
     const itemIndex = currentSelections.indexOf(item.name);
     
     if (itemIndex > -1) {
@@ -261,26 +171,26 @@ setProceedToDecisionCriteria(true);
       currentSelections.push(item.name);
     }
     
-    newSelectedPath[levelKey] = currentSelections;
+    newlevelSelections[levelKey] = currentSelections;
     
     // Clear deeper levels when selections change
-    for (let i = level + 1; i <= 4; i++) {
-      delete newSelectedPath[`l${i}`];
+    for (let i = level + 1; i <= 3; i++) {
+      delete newlevelSelections[`l${i}`];
     }
     
-    setSelectedPath(newSelectedPath);
+    setlevelSelections(newlevelSelections);
     
     // Auto-advance logic with reverse support
-    if (currentSelections.length > 0 && level < 4) {
+    if (currentSelections.length > 0 && level < 3) {
       // Move forward to next level when selecting
       setSelectedLevel(level + 1);
     } else if (currentSelections.length === 0) {
       // Move backward when deselecting - find the highest level with selections
-      const updatedPath = { ...newSelectedPath };
+      const updatedPath = { ...newlevelSelections };
       updatedPath[levelKey] = currentSelections;
       
       let highestLevel = 1;
-      for (let i = 4; i >= 1; i--) {
+      for (let i = 3; i >= 1; i--) {
         const checkLevelKey = `l${i}`;
         if (updatedPath[checkLevelKey] && updatedPath[checkLevelKey].length > 0) {
           highestLevel = i;
@@ -378,17 +288,15 @@ setProceedToDecisionCriteria(true);
       return `${numberParts[0]}.${numberParts[1]}`;
     } else if (level === 3) {
       return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}`;
-    } else if (level === 4) {
-      return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}.${numberParts[3]}`;
     }
     
     return numberParts.join('.');
   };
 
-  const renderLevelColumn = (level, idx, totalColumns = 4) => {
+  const renderLevelColumn = (level, idx, totalColumns = 3) => {
     const levelItems = getLevelItems(level);
     const levelKey = `l${level}`;
-    const isLevelActive = level === 1 || (selectedPath[`l${level - 1}`] && selectedPath[`l${level - 1}`].length > 0);
+    const isLevelActive = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
 
     return (
       <div
@@ -399,9 +307,9 @@ setProceedToDecisionCriteria(true);
           <h3 className="column-title">
             LEVEL {level} REQUIREMENT
           </h3>
-          {selectedPath[levelKey] && selectedPath[levelKey].length > 0 && (
+          {levelSelections[levelKey] && levelSelections[levelKey].length > 0 && (
             <div className="column-selected">
-              {selectedPath[levelKey].length} selected
+              {levelSelections[levelKey].length} selected
             </div>
           )}
         </div>
@@ -427,47 +335,109 @@ setProceedToDecisionCriteria(true);
             </div>
           ) : (
             <div className="items-container">
-              {levelItems.map((item, index) => {
-                const isSelected = selectedItems.includes(item.id);
-                const itemNumber = getItemNumber(level, item);
-                return (
-                  <div
-                    key={item.id}
-                    className="item"
-                    onClick={() => handleItemSelect(item, level)}
-                  >
-                    <div className="item-content">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handleCheckboxChange(item, level, e)}
-                        className="item-checkbox"
-                      />
-                      <div className="item-text-container">
-                        <div className="item-text">
-                          {itemNumber} {item.name}
+              {/* Custom rendering for each level, without More Information button */}
+              {level === 1 ? (
+                <>
+                  {getLevelItems(1).map((item, idx) => {
+                    const isSelected = selectedItems.includes(item.id);
+                    const itemNumber = getItemNumber(1, item);
+                    return (
+                      <div
+                        key={item.id}
+                        className="item"
+                        style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                        onClick={() => handleItemSelect(item, 1)}
+                      >
+                        <div className="item-content">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => handleCheckboxChange(item, 1, e)}
+                            className="item-checkbox"
+                          />
+                          <div className="item-text-container">
+                            <div className="item-text">
+                              {itemNumber} {item.name}
+                            </div>
+                          </div>
+                        </div>
+                        {/* Removed More Information Button */}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : level === 2 ? (
+                <>
+                  {getLevelItems(1).map((parentItem, idx) => {
+                    const children = getLevelItems(2).filter(
+                      child => child.fullItem.l1 === parentItem.name
+                    );
+                    return (
+                      <div key={parentItem.id + '-group'}>
+                        {children.length === 0 ? (
+                          <div style={{ minHeight: '48px' }}></div>
+                        ) : (
+                          children.map((item, cidx) => {
+                            const isSelected = selectedItems.includes(item.id);
+                            const itemNumber = getItemNumber(2, item);
+                            return (
+                              <div
+                                key={item.id}
+                                className="item"
+                                style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                                onClick={() => handleItemSelect(item, 2)}
+                              >
+                                <div className="item-content">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={(e) => handleCheckboxChange(item, 2, e)}
+                                    className="item-checkbox"
+                                  />
+                                  <div className="item-text-container">
+                                    <div className="item-text">
+                                      {itemNumber} {item.name}
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* Removed More Information Button */}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                // Default rendering for other levels
+                levelItems.map((item, index) => {
+                  const isSelected = selectedItems.includes(item.id);
+                  const itemNumber = getItemNumber(level, item);
+                  return (
+                    <div
+                      key={item.id}
+                      className="item"
+                      onClick={() => handleItemSelect(item, level)}
+                    >
+                      <div className="item-content">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => handleCheckboxChange(item, level, e)}
+                          className="item-checkbox"
+                        />
+                        <div className="item-text-container">
+                          <div className="item-text">
+                            {itemNumber} {item.name}
+                          </div>
                         </div>
                       </div>
+                      {/* Removed More Information Button */}
                     </div>
-                    <button
-                      onClick={(e) => handleInfoClick(item, e)}
-                      className="item-info-button"
-                      title="More information"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="item-info-icon"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2.25M12 15h.01m-.01-10.5a9 9 0 100 18 9 9 0 000-18z" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </div>
@@ -553,14 +523,14 @@ setProceedToDecisionCriteria(true);
               </svg>
             </div>
 
-            <div className="header-buttons">
+            {/* <div className="header-buttons">
               <button
                 className="parameter-button"
                 onClick={() => setShowParameterModal(true)}
               >
                 Select Parameters
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Non Functional Scope Header and Select Level View */}
@@ -574,15 +544,15 @@ setProceedToDecisionCriteria(true);
                 <div className="level-progress">
                   <div 
                     className="level-progress-fill"
-                    style={{ width: `${(getHighestSelectedLevel()) / 4 * 100}%` }}
+                    style={{ width: `${(getHighestSelectedLevel()) / 3 * 100}%` }}
                   />
                 </div>
 
                 <div className="level-buttons">
-                  {[1, 2, 3, 4].map((level) => {
+                  {[1, 2, 3].map((level) => {
                     // Check if this level should be enabled
-                    const isLevelEnabled = level === 1 || (selectedPath[`l${level - 1}`] && selectedPath[`l${level - 1}`].length > 0);
-                    const hasSelections = selectedPath[`l${level}`] && selectedPath[`l${level}`].length > 0;
+                    const isLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
+                    const hasSelections = levelSelections[`l${level}`] && levelSelections[`l${level}`].length > 0;
                     
                     return (
                       <button
@@ -608,7 +578,7 @@ setProceedToDecisionCriteria(true);
 
           {/* Multi-column layout */}
           <div className="columns-container">
-            {[1, 2, 3, 4].map((level, idx) => renderLevelColumn(level, idx, 4))}
+            {[1, 2, 3].map((level, idx) => renderLevelColumn(level, idx, 3))}
           </div>
         </div>
       </div>
@@ -636,7 +606,7 @@ setProceedToDecisionCriteria(true);
       </div>
 
       {/* Parameter Modal */}
-      {showParameterModal && (
+      {/* {showParameterModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-header">
@@ -651,25 +621,37 @@ setProceedToDecisionCriteria(true);
 
             <div>
               <div className="modal-section-title">Requirement Granularity</div>
-              {[1, 2, 3, 4].map((level) => (
-                <label key={level} className="modal-option">
-                  <input
-                    type="radio"
-                    name="parameterLevel"
-                    value={level}
-                    checked={parameterLevel === level}
-                    onChange={() => setParameterLevel(level)}
-                    className="modal-radio"
-                  />
-                  Level {level}
-                </label>
-              ))}
+              {[1, 2, 3].map((level) => {
+                // For parameter modal: Level 1 is always enabled, others need previous level selections
+                const isParameterLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
+                
+                return (
+                  <label 
+                    key={level} 
+                    className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
+                    style={{
+                      opacity: isParameterLevelEnabled ? 1 : 0.4,
+                      cursor: isParameterLevelEnabled ? 'pointer' : 'not-allowed'
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="parameterLevel"
+                      value={level}
+                      checked={parameterLevel === level}
+                      onChange={() => isParameterLevelEnabled ? setParameterLevel(level) : null}
+                      disabled={!isParameterLevelEnabled}
+                      className="modal-radio"
+                    />
+                    Level {level}
+                  </label>
+                );
+              })}
             </div>
 
             <div className="modal-footer">
               <button
                 onClick={() => {
-                  setProceedToDecisionCriteria(true)
                   setSelectedLevel(parameterLevel);
                   setShowParameterModal(false);
                 }}
@@ -680,9 +662,9 @@ setProceedToDecisionCriteria(true);
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
 
-export default TransportationalNonFunctionalScope;
+export default TransportationNonFunctionalScope;
