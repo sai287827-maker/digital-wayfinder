@@ -106,8 +106,38 @@ const WmsReport = () => {
             gaps: Array.from(categoryData.gaps),
             solutions: [...Array.from(categoryData.solutions), ...categoryData.assetNames] // Combine solutions and asset names
           }));
+          
+          // Define the desired order for categories
+          const categoryOrder = [
+            'Platform Analysis',
+            'Platform Analysis- Core Functionalities',
+            'Data & Cloud',
+            'Data and Cloud', 
+            'Operational Innovations',
+            'Visibility and Proactive',
+            'Visibility Proactive',
+            'Agentic AI'
+          ];
+          
+          // Sort the data according to the desired order
+          transformedData.sort((a, b) => {
+            const indexA = categoryOrder.findIndex(cat => 
+              cat.toLowerCase() === a.category.toLowerCase() || 
+              a.category.toLowerCase().includes(cat.toLowerCase())
+            );
+            const indexB = categoryOrder.findIndex(cat => 
+              cat.toLowerCase() === b.category.toLowerCase() || 
+              b.category.toLowerCase().includes(cat.toLowerCase())
+            );
+            
+            // If both found, sort by order; if one not found, put it at end
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return 0;
+          });
          
-          console.log('Transformed data:', transformedData);
+          console.log('Transformed and sorted data:', transformedData);
           setReportData(transformedData);
         } else if (response && response.reportData) {
           // Handle old response structure as fallback
@@ -257,8 +287,9 @@ const WmsReport = () => {
       </div>
     );
   }
- return (
-    <div className="assessment-container">
+
+  return (
+    <div className="assessment-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
       {/* Breadcrumb Navigation */}
       <div className="breadcrumb-wrapper">
         <div className="breadcrumb-container">
@@ -290,31 +321,80 @@ const WmsReport = () => {
         </div>
  
         {/* Report Cards */}
-        <div className="report-cards">
+        <div className="report-cards" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '3rem' }}>
           {reportData.length > 0 ? reportData.map((item, index) => (
-            <div key={index} className="report-card">
-              <div className="report-card-content">
+            <div key={index} className="report-card" style={{ 
+              display: 'flex', 
+              backgroundColor: 'white', 
+              borderRadius: '12px', 
+              overflow: 'hidden', 
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              minHeight: '200px'
+            }}>
+              <div className="report-card-content" style={{ display: 'flex', width: '100%' }}>
                 {/* Image Section */}
-                <div className="image-section">
-                  {renderIcon((index % 4) + 1)}
+                <div className="image-section" style={{ 
+                  position: 'relative', 
+                  width: '300px', 
+                  minHeight: '200px',
+                  backgroundColor: '#1e3a8a',
+                  flexShrink: 0
+                }}>
+                  {renderIcon(item.category, index)}
                 </div>
  
                 {/* Content Section */}
-                <div className="content-section">
+                <div className="content-section" style={{ 
+                  flex: 1, 
+                  padding: '1.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start'
+                }}>
                   <div className="content-wrapper">
                     {/* Category */}
-                    <div>
-                      <p className="category-label">CATEGORY</p>
-                      <h3 className="category-title">{item.category}</h3>
+                    <div style={{ marginBottom: '2rem' }}>
+                      <p className="category-label" style={{ 
+                        fontSize: '0.75rem', 
+                        fontWeight: '600', 
+                        color: '#6b7280', 
+                        marginBottom: '0.5rem',
+                        letterSpacing: '0.05em'
+                      }}>CATEGORY</p>
+                      <h3 className="category-title" style={{ 
+                        fontSize: '1.5rem', 
+                        fontWeight: '700', 
+                        color: '#111827',
+                        margin: 0,
+                        lineHeight: '1.2'
+                      }}>{item.category}</h3>
                     </div>
  
                     {/* Gaps Identified */}
                     {item.gaps && item.gaps.length > 0 && (
-                      <div>
-                        <p className="section-label">GAPS IDENTIFIED</p>
-                        <div className="tags-container">
+                      <div style={{ marginBottom: '2rem' }}>
+                        <p className="section-label" style={{ 
+                          fontSize: '0.75rem', 
+                          fontWeight: '600', 
+                          color: '#6b7280', 
+                          marginBottom: '1rem',
+                          letterSpacing: '0.05em'
+                        }}>GAPS IDENTIFIED</p>
+                        <div className="tags-container" style={{ 
+                          display: 'flex', 
+                          flexWrap: 'wrap', 
+                          gap: '0.5rem' 
+                        }}>
                           {item.gaps.map((gap, idx) => (
-                            <span key={idx} className="tag tag-gap">
+                            <span key={idx} className="tag tag-gap" style={{
+                              backgroundColor: '#fef2f2',
+                              color: '#dc2626',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '6px',
+                              fontSize: '0.875rem',
+                              fontWeight: '500',
+                              border: '1px solid #fecaca'
+                            }}>
                               {gap}
                             </span>
                           ))}
@@ -325,10 +405,28 @@ const WmsReport = () => {
                     {/* Solutions */}
                     {item.solutions && item.solutions.length > 0 && (
                       <div>
-                        <p className="section-label">SOLUTIONS</p>
-                        <div className="tags-container">
+                        <p className="section-label" style={{ 
+                          fontSize: '0.75rem', 
+                          fontWeight: '600', 
+                          color: '#6b7280', 
+                          marginBottom: '1rem',
+                          letterSpacing: '0.05em'
+                        }}>SOLUTIONS</p>
+                        <div className="tags-container" style={{ 
+                          display: 'flex', 
+                          flexWrap: 'wrap', 
+                          gap: '0.5rem' 
+                        }}>
                           {item.solutions.map((solution, idx) => (
-                            <span key={idx} className="tag tag-solution">
+                            <span key={idx} className="tag tag-solution" style={{
+                              backgroundColor: '#f0fdf4',
+                              color: '#16a34a',
+                              padding: '0.5rem 1rem',
+                              borderRadius: '6px',
+                              fontSize: '0.875rem',
+                              fontWeight: '500',
+                              border: '1px solid #bbf7d0'
+                            }}>
                               {solution}
                             </span>
                           ))}
@@ -347,9 +445,26 @@ const WmsReport = () => {
         </div>
  
         {/* Download Button */}
-        <div className="download-section">
-          <button className="download-button" onClick={handleDownloadReport}>
-            <svg className="download-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <div className="download-section" style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          marginTop: '2rem' 
+        }}>
+          <button className="download-button" onClick={handleDownloadReport} style={{
+            backgroundColor: '#9333ea',
+            color: 'white',
+            border: 'none',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '8px',
+            fontSize: '1rem',
+            fontWeight: '600',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            transition: 'background-color 0.2s'
+          }}>
+            <svg className="download-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ width: '1.25rem', height: '1.25rem' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Download Report
