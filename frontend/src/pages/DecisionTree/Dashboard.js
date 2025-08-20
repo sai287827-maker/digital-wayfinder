@@ -176,9 +176,9 @@ const ExecutiveDashboard = () => {
             </div>
           </div>
  
-          <div className={styles.lastUpdated}>
+          {/* <div className={styles.lastUpdated}>
             Last Updated on Mon 14-Apr-2025 , 2:50PM
-          </div>
+          </div> */}
  
           {/* Power BI Report Section - Full Screen */}
           {showPowerBI && (
