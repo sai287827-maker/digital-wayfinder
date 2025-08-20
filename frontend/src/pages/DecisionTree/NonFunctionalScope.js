@@ -46,6 +46,11 @@ const NonFunctionalScope = () => {
     });
   };
 
+  // Handle Previous button click
+  const handlePrevious = () => {
+    navigate('/decision-tree/functional-scope');
+  };
+
   // Add this new function for handling Save & Proceed
  // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
@@ -583,25 +588,91 @@ const NonFunctionalScope = () => {
         </div>
       </div>
 
-      {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{ 
+      {/* Footer with Previous and Save & Proceed buttons */}
+      <div className="footer-buttons-container" style={{ 
         display: 'flex', 
-        justifyContent: 'flex-end', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         marginTop: '20px',
-        paddingRight: '20px'
+        padding: '20px',
+        backgroundColor: '#f8fafc'
        }}>
+        <button
+          className="previous-button"
+          onClick={handlePrevious}
+          style={{
+            backgroundColor: 'transparent',
+            color: '#8b5cf6',
+            border: '2px solid #8b5cf6',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#8b5cf6';
+          }}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
+
         <button
           className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
           disabled={loading || !hasAllLevelsSelected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+            backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb'),
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
+            opacity: hasAllLevelsSelected() ? 1 : 0.6,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
+          {!loading && (
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          )}
         </button>
       </div>
 
