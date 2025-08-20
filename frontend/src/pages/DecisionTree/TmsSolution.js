@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Solution.css';
+import './TmsSolution.css';
 import { apiGet, apiPost } from '../../api';
  
-const Solution = () => {
+const TmsSolution = () => {
   const navigate = useNavigate();
   const [solutionData, setSolutionData] = useState([]);
   const [selectedPlatforms, setselectedPlatforms] = useState([]);
@@ -265,4 +265,4 @@ const Solution = () => {
   );
 };
  
-export default Solution;
+export default TmsSolution;

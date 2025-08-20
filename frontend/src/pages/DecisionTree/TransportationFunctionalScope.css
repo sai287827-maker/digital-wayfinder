@@ -936,4 +936,59 @@ FunctionalScope.css
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-} 
+}
+
+/*clear button*/
+/* Search container styling */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 300px; /* Adjust as needed */
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 40px 8px 12px; /* Extra padding on right for icons */
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  right: 32px; /* Position to left of clear button */
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* Clear button styling */
+.search-clear-button {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.search-clear-button:hover {
+  background-color: #f3f4f6;
+}
+
+.search-clear-icon {
+  width: 16px;
+  height: 16px;
+}

@@ -28,6 +28,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +66,13 @@ public class ReportDownloadService {
             log.info("Fetched {} records from database for user: {}, session: {}", 
                     reportData.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
             
-            // Generate PDF
+            // Step 3: Remove duplicates and filter out null asset names
+            List<ReportDownloadDto> cleanedData = removeDuplicatesAndFilterNulls(reportData);
+            
+            log.info("After deduplication and filtering: {} records remaining (removed {} duplicates/null entries)", 
+                    cleanedData.size(), reportData.size() - cleanedData.size());
+            
+            // Generate PDF with cleaned data
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PdfWriter writer = new PdfWriter(baos);
             PdfDocument pdf = new PdfDocument(writer);
@@ -90,8 +98,8 @@ public class ReportDownloadService {
                     .setMarginBottom(20);
             document.add(metadata);
             
-            // Add summary
-            Paragraph summary = new Paragraph("Total Records: " + reportData.size())
+            // Add summary with cleaned data count
+            Paragraph summary = new Paragraph("Total Records: " + cleanedData.size())
                     .setFont(font)
                     .setFontSize(12)
                     .setMarginBottom(10);
@@ -106,8 +114,8 @@ public class ReportDownloadService {
             table.addHeaderCell(createHeaderCell("Category", boldFont));
             table.addHeaderCell(createHeaderCell("Gaps", boldFont));
             
-            // Add data rows
-            for (ReportDownloadDto dto : reportData) {
+            // Add data rows using cleaned data
+            for (ReportDownloadDto dto : cleanedData) {
                 table.addCell(createDataCell(dto.getAssetName() != null ? dto.getAssetName() : "N/A", font));
                 table.addCell(createDataCell(dto.getCategory() != null ? dto.getCategory() : "N/A", font));
                 table.addCell(createDataCell(dto.getGaps() != null ? dto.getGaps() : "N/A", font));
@@ -126,13 +134,46 @@ public class ReportDownloadService {
             // Close document
             document.close();
             
-            log.info("Successfully generated PDF report with {} records", reportData.size());
+            log.info("Successfully generated PDF report with {} cleaned records", cleanedData.size());
             return baos.toByteArray();
             
         } catch (Exception e) {
             log.error("Error generating PDF report", e);
             throw new RuntimeException("Failed to generate PDF report: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Removes duplicate records and filters out records with null or empty asset names.
+     * Uses assetName, category, and gaps combination as the unique key.
+     */
+    private List<ReportDownloadDto> removeDuplicatesAndFilterNulls(List<ReportDownloadDto> reportData) {
+        return reportData.stream()
+                // Filter out records where assetName is null or empty
+                .filter(dto -> dto.getAssetName() != null && !dto.getAssetName().trim().isEmpty())
+                .collect(Collectors.toMap(
+                    // Key: Create a unique key based on assetName, category, and gaps
+                    dto -> createUniqueKey(dto.getAssetName(), dto.getCategory(), dto.getGaps()),
+                    // Value: The DTO itself
+                    dto -> dto,
+                    // Merge function: Keep the first occurrence in case of duplicates
+                    (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Creates a unique key for deduplication.
+     * Handles null values by converting them to empty strings.
+     */
+    private String createUniqueKey(String assetName, String category, String gaps) {
+        String safeAssetName = Objects.toString(assetName, "");
+        String safeCategory = Objects.toString(category, "");
+        String safeGaps = Objects.toString(gaps, "");
+        
+        return safeAssetName + "|" + safeCategory + "|" + safeGaps;
     }
     
     /**

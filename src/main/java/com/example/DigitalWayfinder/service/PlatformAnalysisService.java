@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +35,13 @@ public class PlatformAnalysisService {
             List<PlatformAnalysis> records = platformAnalysisRepository
                     .findByUserIDAndSessionIDIncludingNulls(sessionInfo.getUserId(), sessionInfo.getSessionId());
             
-            List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(records);
+            // Remove duplicates before grouping
+            List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
             
-            log.info("Successfully fetched {} platform analysis records grouped into {} categories for user: {}, session: {}", 
-                    records.size(), categories.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
+            List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
+            
+            log.info("Successfully fetched {} platform analysis records (after deduplication: {}) grouped into {} categories for user: {}, session: {}", 
+                    records.size(), uniqueRecords.size(), categories.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             return PlatformAnalysisResponse.builder()
                     .userId(sessionInfo.getUserId())
@@ -63,10 +67,13 @@ public class PlatformAnalysisService {
             List<PlatformAnalysis> records = platformAnalysisRepository
                     .findByCategoryAndUserIDAndSessionIDIncludingNulls(category, sessionInfo.getUserId(), sessionInfo.getSessionId());
             
-            List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(records);
+            // Remove duplicates before grouping
+            List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
             
-            log.info("Successfully fetched {} records for category: {} with user: {}, session: {}", 
-                    records.size(), category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+            List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
+            
+            log.info("Successfully fetched {} records (after deduplication: {}) for category: {} with user: {}, session: {}", 
+                    records.size(), uniqueRecords.size(), category, sessionInfo.getUserId(), sessionInfo.getSessionId());
             
             return PlatformAnalysisResponse.builder()
                     .userId(sessionInfo.getUserId())
@@ -78,6 +85,39 @@ public class PlatformAnalysisService {
             log.error("Error fetching platform analysis records for category: {}", category, e);
             throw new RuntimeException("Failed to fetch records: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Removes duplicate records and filters out records with null asset names.
+     * Keeps the first occurrence of each unique combination based on assetName, category, and gaps.
+     */
+    private List<PlatformAnalysis> removeDuplicates(List<PlatformAnalysis> records) {
+        return records.stream()
+                // Filter out records where assetName is null or empty
+                .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
+                .collect(Collectors.toMap(
+                    // Key: Create a unique key based on assetName, category, and gaps
+                    record -> createUniqueKey(record.getAssetName(), record.getCategory(), record.getGaps()),
+                    // Value: The record itself
+                    record -> record,
+                    // Merge function: Keep the first occurrence in case of duplicates
+                    (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Creates a unique key for deduplication.
+     * Handles null values by converting them to empty strings.
+     */
+    private String createUniqueKey(String assetName, String category, String gaps) {
+        String safeAssetName = Objects.toString(assetName, "");
+        String safeCategory = Objects.toString(category, "");
+        String safeGaps = Objects.toString(gaps, "");
+        
+        return safeAssetName + "|" + safeCategory + "|" + safeGaps;
     }
     
     /**

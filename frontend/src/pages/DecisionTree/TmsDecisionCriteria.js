@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
-import './DecisionCriteria.css';
+import './TmsDecisionCriteria.css';
 import { apiGet } from '../../api';
  
-const DecisionCriteria = () => {
+const TmsDecisionCriteria = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [criteria, setCriteria] = useState([]);
@@ -58,11 +58,11 @@ const DecisionCriteria = () => {
   };
  
   const handlePrevious = () => {
-    navigate('/decision-tree/non-functional-scope');
+    navigate('/decision-tree/retail-non-functional-scope');
   };
  
   const handleProceed = () => {
-    navigate('/decision-tree/solution', {
+    navigate('/decision-tree/retail-solution', {
       state: {
         fromDecisionCriteria: true,
         criteriaData: criteria,
@@ -125,16 +125,16 @@ const DecisionCriteria = () => {
           <span>›</span>
           <span className="rdc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="rdc-breadcrumb-current">Functional Scope</span>
+          <span className="rdc-breadcrumb-current">Retail Functional Scope</span>
         </div>
       </div>
  
       <div className="rdc-main-layout">
         {/* Left Sidebar Box */}
         <div className="rdc-left-sidebar">
-          <h2 className="rdc-sidebar-title">Functional Scope</h2>
+          <h2 className="rdc-sidebar-title">Retail Functional Scope</h2>
           <p className="rdc-sidebar-description">
-            structured framework for selecting functional requirements,
+            Retail-specific structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
  
@@ -144,19 +144,14 @@ const DecisionCriteria = () => {
               <div className="rdc-step-number completed">1</div>
               <span className="rdc-step-text completed">Functional Scope</span>
             </div>
-
+           
             <div className="rdc-step-item">
-              <div className="rdc-step-number completed">2</div>
-              <span className="rdc-step-text completed">Non Functional Scope</span>
+              <div className="rdc-step-number active">2</div>
+              <span className="rdc-step-text active">Decision Criteria</span>
             </div>
            
             <div className="rdc-step-item">
-              <div className="rdc-step-number active">3</div>
-              <span className="rdc-step-text active">Reviews</span>
-            </div>
-           
-            <div className="rdc-step-item">
-              <div className="rdc-step-number inactive">4</div>
+              <div className="rdc-step-number inactive">3</div>
               <span className="rdc-step-text inactive">Solution</span>
             </div>
           </div>
@@ -167,6 +162,11 @@ const DecisionCriteria = () => {
           {/* Header */}
           <div className="rdc-header">
             <h1 className="rdc-page-title">Decision Criteria</h1>
+            <div className="rdc-header-buttons">
+              <button className="rdc-header-button outline">Define Weightage</button>
+              <button className="rdc-header-button outline">Custom Criteria</button>
+              <button className="rdc-header-button filled">Select Parameters</button>
+            </div>
           </div>
 
           {/* Content Header */}
@@ -269,4 +269,4 @@ const DecisionCriteria = () => {
   );
 };
  
-export default DecisionCriteria;
+export default TmsDecisionCriteria;

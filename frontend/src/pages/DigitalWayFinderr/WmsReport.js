@@ -116,6 +116,7 @@ const WmsReport = () => {
             'Operational Innovations',
             'Visibility and Proactive',
             'Visibility Proactive',
+            'Visibility & Proactive Planning',
             'Agentic AI'
           ];
           
@@ -123,11 +124,13 @@ const WmsReport = () => {
           transformedData.sort((a, b) => {
             const indexA = categoryOrder.findIndex(cat => 
               cat.toLowerCase() === a.category.toLowerCase() || 
-              a.category.toLowerCase().includes(cat.toLowerCase())
+              a.category.toLowerCase().includes(cat.toLowerCase()) ||
+              cat.toLowerCase().includes(a.category.toLowerCase())
             );
             const indexB = categoryOrder.findIndex(cat => 
               cat.toLowerCase() === b.category.toLowerCase() || 
-              b.category.toLowerCase().includes(cat.toLowerCase())
+              b.category.toLowerCase().includes(cat.toLowerCase()) ||
+              cat.toLowerCase().includes(b.category.toLowerCase())
             );
             
             // If both found, sort by order; if one not found, put it at end
@@ -289,7 +292,7 @@ const WmsReport = () => {
   }
 
   return (
-    <div className="assessment-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
+    <div className="assessment-container" style={{ maxWidth: '95vw', margin: '0 auto', padding: '0 1rem' }}>
       {/* Breadcrumb Navigation */}
       <div className="breadcrumb-wrapper">
         <div className="breadcrumb-container">
@@ -329,13 +332,14 @@ const WmsReport = () => {
               borderRadius: '12px', 
               overflow: 'hidden', 
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              minHeight: '200px'
+              minHeight: '200px',
+              width: '100%'
             }}>
               <div className="report-card-content" style={{ display: 'flex', width: '100%' }}>
-                {/* Image Section */}
+                {/* Image Section - Increased width */}
                 <div className="image-section" style={{ 
                   position: 'relative', 
-                  width: '300px', 
+                  width: '400px', 
                   minHeight: '200px',
                   backgroundColor: '#1e3a8a',
                   flexShrink: 0
@@ -346,23 +350,23 @@ const WmsReport = () => {
                 {/* Content Section */}
                 <div className="content-section" style={{ 
                   flex: 1, 
-                  padding: '1.5rem',
+                  padding: '2rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-start'
                 }}>
                   <div className="content-wrapper">
                     {/* Category */}
-                    <div style={{ marginBottom: '2rem' }}>
+                    <div style={{ marginBottom: '1rem' }}>
                       <p className="category-label" style={{ 
                         fontSize: '0.75rem', 
                         fontWeight: '600', 
                         color: '#6b7280', 
-                        marginBottom: '0.5rem',
+                        marginBottom: '0.25rem',
                         letterSpacing: '0.05em'
                       }}>CATEGORY</p>
                       <h3 className="category-title" style={{ 
-                        fontSize: '1.5rem', 
+                        fontSize: '1.75rem', 
                         fontWeight: '700', 
                         color: '#111827',
                         margin: 0,
@@ -372,26 +376,26 @@ const WmsReport = () => {
  
                     {/* Gaps Identified */}
                     {item.gaps && item.gaps.length > 0 && (
-                      <div style={{ marginBottom: '2rem' }}>
+                      <div style={{ marginBottom: '1rem' }}>
                         <p className="section-label" style={{ 
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
                           color: '#6b7280', 
-                          marginBottom: '1rem',
+                          marginBottom: '0.5rem',
                           letterSpacing: '0.05em'
                         }}>GAPS IDENTIFIED</p>
                         <div className="tags-container" style={{ 
                           display: 'flex', 
                           flexWrap: 'wrap', 
-                          gap: '0.5rem' 
+                          gap: '0.75rem' 
                         }}>
                           {item.gaps.map((gap, idx) => (
                             <span key={idx} className="tag tag-gap" style={{
                               backgroundColor: '#fef2f2',
                               color: '#dc2626',
-                              padding: '0.5rem 1rem',
-                              borderRadius: '6px',
-                              fontSize: '0.875rem',
+                              padding: '0.75rem 1.25rem',
+                              borderRadius: '8px',
+                              fontSize: '0.9rem',
                               fontWeight: '500',
                               border: '1px solid #fecaca'
                             }}>
@@ -409,21 +413,21 @@ const WmsReport = () => {
                           fontSize: '0.75rem', 
                           fontWeight: '600', 
                           color: '#6b7280', 
-                          marginBottom: '1rem',
+                          marginBottom: '0.5rem',
                           letterSpacing: '0.05em'
                         }}>SOLUTIONS</p>
                         <div className="tags-container" style={{ 
                           display: 'flex', 
                           flexWrap: 'wrap', 
-                          gap: '0.5rem' 
+                          gap: '0.75rem' 
                         }}>
                           {item.solutions.map((solution, idx) => (
                             <span key={idx} className="tag tag-solution" style={{
                               backgroundColor: '#f0fdf4',
                               color: '#16a34a',
-                              padding: '0.5rem 1rem',
-                              borderRadius: '6px',
-                              fontSize: '0.875rem',
+                              padding: '0.75rem 1.25rem',
+                              borderRadius: '8px',
+                              fontSize: '0.9rem',
                               fontWeight: '500',
                               border: '1px solid #bbf7d0'
                             }}>
@@ -447,7 +451,7 @@ const WmsReport = () => {
         {/* Download Button */}
         <div className="download-section" style={{ 
           display: 'flex', 
-          justifyContent: 'center', 
+          justifyContent: 'flex-end', 
           marginTop: '2rem' 
         }}>
           <button className="download-button" onClick={handleDownloadReport} style={{
@@ -474,5 +478,5 @@ const WmsReport = () => {
     </div>
   );
 };
- 
+
 export default WmsReport;
