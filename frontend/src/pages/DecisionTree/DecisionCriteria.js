@@ -32,7 +32,7 @@ const DecisionCriteria = () => {
           functional: response.functional?.levelSelections ? response.functional : { levelSelections: {} },
           nonFunctional: response.nonFunctional?.levelSelections ? response.nonFunctional : { levelSelections: {} }
         });
- 
+
       } catch (err) {
         setError('Failed to fetch decision criteria.');
       } finally {
@@ -56,123 +56,6 @@ const DecisionCriteria = () => {
       [id]: !prev[id]
     }));
   };
-
-  // Function to render hierarchical tree structure
-  const renderTreeItem = (items, level = 0, parentKey = '') => {
-    if (!items || !Array.isArray(items)) return null;
-
-    return items.map((item, index) => {
-      const itemKey = `${parentKey}-${level}-${index}`;
-      const hasChildren = item.children && item.children.length > 0;
-      const isExpanded = expanded[itemKey];
-
-      return (
-        <div key={itemKey} className={`tree-item level-${level}`}>
-          <div className="tree-item-content">
-            <div className="tree-item-left">
-              {hasChildren && (
-                <button
-                  onClick={() => toggleExpand(itemKey)}
-                  className={`tree-expand-btn ${isExpanded ? 'expanded' : ''}`}
-                >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                    <path d={isExpanded ? "M2 4l4 4 4-4" : "M4 2l4 4-4 4"} />
-                  </svg>
-                </button>
-              )}
-              {!hasChildren && <div className="tree-spacer"></div>}
-              
-              <div className={`tree-indicator level-${level}`}>
-                {level === 0 && (
-                  <div className="main-indicator">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="2" fill="none"/>
-                    </svg>
-                  </div>
-                )}
-                {level === 1 && (
-                  <div className="sub-indicator">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                      <circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="2" fill="none"/>
-                    </svg>
-                  </div>
-                )}
-                {level === 2 && (
-                  <div className="sub-sub-indicator">
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor">
-                      <circle cx="4" cy="4" r="3"/>
-                    </svg>
-                  </div>
-                )}
-                {level >= 3 && (
-                  <div className="deep-indicator">
-                    <div className="indicator-dot"></div>
-                  </div>
-                )}
-              </div>
-              
-              <span className={`tree-label level-${level}`}>{item.label || item.name || item.title}</span>
-            </div>
-            
-            <div className="tree-item-right">
-              <input
-                type="checkbox"
-                checked={item.inScope || false}
-                onChange={e => {
-                  // Handle checkbox change for tree items
-                  console.log(`Item ${itemKey} checked:`, e.target.checked);
-                }}
-                className="tree-checkbox"
-              />
-            </div>
-          </div>
-          
-          {hasChildren && isExpanded && (
-            <div className="tree-children">
-              {renderTreeItem(item.children, level + 1, itemKey)}
-            </div>
-          )}
-        </div>
-      );
-    });
-  };
-
-  // Function to create tree structure from mapping data
-  const createTreeStructure = (levelSelections) => {
-    const tree = [];
-    
-    Object.entries(levelSelections).forEach(([level, selections]) => {
-      if (selections && selections.length > 0) {
-        const levelNode = {
-          label: `${level.charAt(0).toUpperCase() + level.slice(1)} Level`,
-          inScope: true,
-          children: selections.map(selection => ({
-            label: selection,
-            inScope: true,
-            children: [
-              {
-                label: `${selection} - Implementation Details`,
-                inScope: true,
-                children: [
-                  {
-                    label: `${selection} - Configuration and Setup`,
-                    inScope: true
-                  },
-                  {
-                    label: `${selection} - Integration Requirements`,
-                    inScope: true
-                  }
-                ]
-              }
-            ]
-          }))
-        };
-        tree.push(levelNode);
-      }
-    });
-    
-    return tree;
-  };
  
   const handlePrevious = () => {
     navigate('/decision-tree/non-functional-scope');
@@ -187,174 +70,193 @@ const DecisionCriteria = () => {
       }
     });
   };
+
+  // Render hierarchical tree items based on mapping data (supports 5 levels for retail)
+  const renderTreeItems = (levelSelections, type) => {
+    if (!levelSelections || Object.keys(levelSelections).length === 0) {
+      return <div className="rdc-no-data">No selections available</div>;
+    }
+
+    const renderLevel = (level, selections, parentNumber = '') => {
+      return selections.map((selection, index) => {
+        const itemNumber = parentNumber ? `${parentNumber}.${index + 1}` : `${index + 1}.0`;
+        const itemId = `${type}-${level}-${index}`;
+        
+        return (
+          <div key={itemId} className={`rdc-tree-item level-${level}`}>
+            <div className="rdc-tree-item-content">
+              <div className="rdc-tree-indicator">
+                <div className={`rdc-tree-dot level-${level}`}></div>
+              </div>
+              <div className="rdc-tree-text">
+                <span className="rdc-item-number">{itemNumber}</span>
+                <span className="rdc-item-label">{selection}</span>
+              </div>
+              <div className="rdc-tree-checkbox">
+                <input
+                  type="checkbox"
+                  checked={true}
+                  onChange={() => {}}
+                  className="rdc-scope-checkbox"
+                />
+              </div>
+            </div>
+          </div>
+        );
+      });
+    };
+
+    return (
+      <div className="rdc-tree-items">
+        {Object.entries(levelSelections).map(([level, selections]) => {
+          const levelNum = parseInt(level.replace('l', ''));
+          return renderLevel(levelNum, selections);
+        })}
+      </div>
+    );
+  };
  
   return (
-    <div className="decision-criteria-container">
+    <div className="retail-decision-criteria-container">
       {/* Breadcrumb */}
-      <div className="dc-breadcrumb">
-        <div className="dc-breadcrumb-content">
-          <span className="dc-breadcrumb-link" style={{ color: '#0036C9' }}>Home</span>
+      <div className="rdc-breadcrumb">
+        <div className="rdc-breadcrumb-content">
+          <span className="rdc-breadcrumb-link" style={{ color: '#0036C9' }}>Home</span>
           <span>›</span>
-          <span className="dc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
+          <span className="rdc-breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="dc-breadcrumb-current">Decision Criteria</span>
+          <span className="rdc-breadcrumb-current">Functional Scope</span>
         </div>
       </div>
  
-      <div className="dc-main-layout">
+      <div className="rdc-main-layout">
         {/* Left Sidebar Box */}
-        <div className="dc-left-sidebar">
-          <h2 className="dc-sidebar-title">Decision Criteria</h2>
-          <p className="dc-sidebar-description">
-            Structured framework for selecting functional requirements,
+        <div className="rdc-left-sidebar">
+          <h2 className="rdc-sidebar-title">Functional Scope</h2>
+          <p className="rdc-sidebar-description">
+            structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
           </p>
  
-          {/* Vertical line connecting all steps */}
-          <div className="dc-step-line"></div>
- 
           {/* Step indicators */}
-          <div className="dc-steps-container">
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-completed">
-                <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <span className="dc-step-text dc-completed">Functional Scope</span>
+          <div className="rdc-steps-container">
+            <div className="rdc-step-item">
+              <div className="rdc-step-number completed">1</div>
+              <span className="rdc-step-text completed">Functional Scope</span>
+            </div>
+
+            <div className="rdc-step-item">
+              <div className="rdc-step-number completed">2</div>
+              <span className="rdc-step-text completed">Non Functional Scope</span>
             </div>
            
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-completed">
-                <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <span className="dc-step-text dc-completed">Non Functional</span>
+            <div className="rdc-step-item">
+              <div className="rdc-step-number active">3</div>
+              <span className="rdc-step-text active">Reviews</span>
             </div>
            
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-active">3</div>
-              <span className="dc-step-text dc-active">Reviews</span>
-            </div>
-           
-            <div className="dc-step-item">
-              <div className="dc-step-circle dc-inactive">4</div>
-              <span className="dc-step-text dc-inactive">Solution</span>
+            <div className="rdc-step-item">
+              <div className="rdc-step-number inactive">4</div>
+              <span className="rdc-step-text inactive">Solution</span>
             </div>
           </div>
         </div>
  
         {/* Main Content Box */}
-        <div className="dc-main-content">
-          {/* Decision Criteria Header */}
-          <div className="dc-title-section">
-            <h1 className="dc-page-title">Reviews</h1>
+        <div className="rdc-main-content">
+          {/* Header */}
+          <div className="rdc-header">
+            <h1 className="rdc-page-title">Decision Criteria</h1>
+          </div>
+
+          {/* Content Header */}
+          <div className="rdc-content-header">
+            <div className="rdc-content-title">Decision Criteria</div>
+            <div className="rdc-content-scope">In-Scope</div>
           </div>
  
           {/* Tree Container */}
-          <div className="dc-tree-container">
-            <div className="dc-tree-header">
-              <div className="dc-header-criteria">Scope Reviews</div>
-              <div className="dc-header-scope">In-Scope</div>
-            </div>
-            
-            <div className="dc-tree-content">
-              {loading ? (
-                <div className="loading-text">Loading...</div>
-              ) : error ? (
-                <div className="error-message">{error}</div>
-              ) : (
-                <>
-                  {/* Functional Section */}
-                  <div className="tree-section">
-                    <div className="tree-section-header">
+          <div className="rdc-tree-container">
+            {loading ? (
+              <div className="loading-text">Loading...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <>
+                {/* Functional Section */}
+                <div className="rdc-main-category">
+                  <div className="rdc-category-header">
+                    <div className="rdc-category-content">
                       <button
                         onClick={() => toggleExpand('functional')}
-                        className={`tree-expand-btn ${expanded['functional'] ? 'expanded' : ''}`}
+                        className="rdc-expand-button"
+                        aria-label={expanded.functional ? "Collapse" : "Expand"}
                       >
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                          <path d={expanded['functional'] ? "M2 4l4 4 4-4" : "M4 2l4 4-4 4"} />
-                        </svg>
+                        {expanded.functional ? "−" : "+"}
                       </button>
-                      
-                      <div className="main-indicator functional">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                          <circle cx="8" cy="8" r="6" stroke="#8B5CF6" strokeWidth="2" fill="none"/>
-                        </svg>
-                      </div>
-                      
-                      <span className="tree-section-title">Functional</span>
-                      
-                      <div className="tree-section-checkbox">
-                        <input
-                          type="checkbox"
-                          checked={criteria.find(c => c.id === 'functional')?.inScope || false}
-                          onChange={e => handleInScopeChange('functional', e.target.checked)}
-                          className="tree-checkbox"
-                        />
-                      </div>
+                      <span className="rdc-category-label">Functional</span>
                     </div>
-                    
-                    {expanded['functional'] && mappingData?.functional?.levelSelections && (
-                      <div className="tree-section-content">
-                        {renderTreeItem(createTreeStructure(mappingData.functional.levelSelections))}
-                      </div>
-                    )}
+                    <div className="rdc-category-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={criteria.find(c => c.id === 'functional')?.inScope || true}
+                        onChange={e => handleInScopeChange('functional', e.target.checked)}
+                        className="rdc-scope-checkbox main"
+                      />
+                    </div>
                   </div>
+                  
+                  {expanded.functional && mappingData?.functional?.levelSelections && (
+                    <div className="rdc-category-content-expanded">
+                      {renderTreeItems(mappingData.functional.levelSelections, 'functional')}
+                    </div>
+                  )}
+                </div>
 
-                  {/* Non Functional Section */}
-                  <div className="tree-section">
-                    <div className="tree-section-header">
+                {/* Non-Functional Section */}
+                <div className="rdc-main-category">
+                  <div className="rdc-category-header">
+                    <div className="rdc-category-content">
                       <button
                         onClick={() => toggleExpand('nonFunctional')}
-                        className={`tree-expand-btn ${expanded['nonFunctional'] ? 'expanded' : ''}`}
+                        className="rdc-expand-button"
+                        aria-label={expanded.nonFunctional ? "Collapse" : "Expand"}
                       >
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                          <path d={expanded['nonFunctional'] ? "M2 4l4 4 4-4" : "M4 2l4 4-4 4"} />
-                        </svg>
+                        {expanded.nonFunctional ? "−" : "+"}
                       </button>
-                      
-                      <div className="main-indicator non-functional">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                          <circle cx="8" cy="8" r="6" stroke="#8B5CF6" strokeWidth="2" fill="none"/>
-                        </svg>
-                      </div>
-                      
-                      <span className="tree-section-title">Non Functional</span>
-                      
-                      <div className="tree-section-checkbox">
-                        <input
-                          type="checkbox"
-                          checked={criteria.find(c => c.id === 'nonFunctional')?.inScope || false}
-                          onChange={e => handleInScopeChange('nonFunctional', e.target.checked)}
-                          className="tree-checkbox"
-                        />
-                      </div>
+                      <span className="rdc-category-label">Non Functional</span>
                     </div>
-                    
-                    {expanded['nonFunctional'] && mappingData?.nonFunctional?.levelSelections && (
-                      <div className="tree-section-content">
-                        {renderTreeItem(createTreeStructure(mappingData.nonFunctional.levelSelections))}
-                      </div>
-                    )}
+                    <div className="rdc-category-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={criteria.find(c => c.id === 'nonFunctional')?.inScope || true}
+                        onChange={e => handleInScopeChange('nonFunctional', e.target.checked)}
+                        className="rdc-scope-checkbox main"
+                      />
+                    </div>
                   </div>
-                </>
-              )}
-            </div>
+                  
+                  {expanded.nonFunctional && mappingData?.nonFunctional?.levelSelections && (
+                    <div className="rdc-category-content-expanded">
+                      {renderTreeItems(mappingData.nonFunctional.levelSelections, 'nonFunctional')}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
  
-          {/* Footer buttons inside main content */}
-          <div className="dc-footer-buttons-container">
-            <div className="dc-footer-content">
+          {/* Footer buttons */}
+          <div className="rdc-footer-buttons-container">
+            <div className="rdc-footer-content">
               <button
-                className="dc-footer-button dc-previous"
+                className="rdc-footer-button rdc-previous"
                 onClick={handlePrevious}
               >
                 Previous
               </button>
               <button
-                className="dc-footer-button dc-proceed"
+                className="rdc-footer-button rdc-proceed"
                 onClick={handleProceed}
               >
                 Proceed

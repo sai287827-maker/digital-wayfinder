@@ -144,14 +144,19 @@ const RetailDecisionCriteria = () => {
               <div className="rdc-step-number completed">1</div>
               <span className="rdc-step-text completed">Functional Scope</span>
             </div>
-           
+
             <div className="rdc-step-item">
-              <div className="rdc-step-number active">2</div>
-              <span className="rdc-step-text active">Decision Criteria</span>
+              <div className="rdc-step-number completed">2</div>
+              <span className="rdc-step-text completed">Non Functional Scope</span>
             </div>
            
             <div className="rdc-step-item">
-              <div className="rdc-step-number inactive">3</div>
+              <div className="rdc-step-number active">3</div>
+              <span className="rdc-step-text active">Reviews</span>
+            </div>
+           
+            <div className="rdc-step-item">
+              <div className="rdc-step-number inactive">4</div>
               <span className="rdc-step-text inactive">Solution</span>
             </div>
           </div>
@@ -162,11 +167,6 @@ const RetailDecisionCriteria = () => {
           {/* Header */}
           <div className="rdc-header">
             <h1 className="rdc-page-title">Decision Criteria</h1>
-            <div className="rdc-header-buttons">
-              <button className="rdc-header-button outline">Define Weightage</button>
-              <button className="rdc-header-button outline">Custom Criteria</button>
-              <button className="rdc-header-button filled">Select Parameters</button>
-            </div>
           </div>
 
           {/* Content Header */}
