@@ -28,6 +28,9 @@ const Operational = ({ onNavigateBack }) => {
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
+  
+  // State to store Data & Cloud answers for passing back
+  const [dataCloudAnswers, setDataCloudAnswers] = useState(null);
 
   // Function to determine answer options from API response
   const determineAnswerOptions = (apiResponse) => {
@@ -64,6 +67,24 @@ const Operational = ({ onNavigateBack }) => {
     
     // Default to High/Medium/Low if no pattern is detected
     return ['High', 'Medium', 'Low'];
+  };
+
+  // Function to fetch Data & Cloud answers
+  const fetchDataCloudAnswers = async () => {
+    try {
+      console.log('Fetching Data & Cloud answers...');
+      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+      console.log('Data & Cloud answers response:', response);
+      
+      if (response && response.answers) {
+        setDataCloudAnswers(response);
+        return response;
+      }
+      return null;
+    } catch (err) {
+      console.error('Error fetching Data & Cloud answers:', err);
+      return null;
+    }
   };
  
   useEffect(() => {
@@ -124,7 +145,7 @@ const Operational = ({ onNavigateBack }) => {
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
@@ -189,6 +210,10 @@ const Operational = ({ onNavigateBack }) => {
           setAnswerOptions(['High', 'Medium', 'Low']); // Default options
           setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
+        
+        // Also fetch Data & Cloud answers on component mount
+        await fetchDataCloudAnswers();
+        
       } catch (err) {
         console.error('Error fetching Operational questions:', err);
         setError('Failed to load questions.');
@@ -206,14 +231,14 @@ const Operational = ({ onNavigateBack }) => {
   };
 
   const handlePrevious = async () => {
-    // Check if there are any answers to save before going back
-    const hasAnswers = answers.some(answer => answer !== null);
-    
-    if (hasAnswers) {
-      try {
-        setNavigatingBack(true);
-        setError(null);
-        
+    try {
+      setNavigatingBack(true);
+      setError(null);
+      
+      // Check if there are any answers to save before going back
+      const hasAnswers = answers.some(answer => answer !== null);
+      
+      if (hasAnswers) {
         // Save current progress before navigating back
         let area = functionalArea;
         if (!area && functionalSubArea) {
@@ -258,25 +283,29 @@ const Operational = ({ onNavigateBack }) => {
           await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
-      } catch (err) {
-        console.error('Error saving progress before navigation:', err);
-        // Continue with navigation even if save fails
-        console.log('Continuing with navigation despite save error');
       }
+      
+      // Fetch the latest Data & Cloud answers before navigating back
+      console.log('Fetching latest Data & Cloud answers before navigation...');
+      const latestDataCloudAnswers = await fetchDataCloudAnswers();
+      
+      // Navigate back to DataAndCloud
+      if (onNavigateBack && typeof onNavigateBack === 'function') {
+        console.log('Navigating back to DataAndCloud using onNavigateBack callback');
+        // Pass the Data & Cloud answers to ensure they are retained
+        onNavigateBack(latestDataCloudAnswers);
+      } else {
+        // Fallback: Navigate directly to DataAndCloud component
+        console.log('Using fallback navigation to DataAndCloud');
+        setShowDataAndCloud(true);
+      }
+      
+    } catch (err) {
+      console.error('Error during navigation back:', err);
+      setError('Error occurred while navigating back. Please try again.');
+    } finally {
+      setNavigatingBack(false);
     }
-    
-    // Navigate back to DataAndCloud
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to DataAndCloud using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to DataAndCloud component
-      console.log('Using fallback navigation to DataAndCloud');
-      setShowDataAndCloud(true);
-    }
-    
-    setNavigatingBack(false);
   };
  
   const handleSaveAndProceed = async () => {
@@ -365,7 +394,8 @@ const Operational = ({ onNavigateBack }) => {
   // Early return for navigation to DataAndCloud (Previous button)
   if (showDataAndCloud) {
     console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
-    return <DataAndCloud />;
+    // Pass the retained Data & Cloud answers to the component
+    return <DataAndCloud initialAnswers={dataCloudAnswers} />;
   }
  
   return (
@@ -436,7 +466,7 @@ const Operational = ({ onNavigateBack }) => {
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
                 
                 return (
-                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
+                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '12px', padding: '16px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
                     <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
                     <div className={styles.optionsRow}>
                       {questionOptions.map(opt => (
