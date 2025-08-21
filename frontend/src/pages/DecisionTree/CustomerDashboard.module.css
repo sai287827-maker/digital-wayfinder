@@ -1,0 +1,712 @@
+/* Dashboard.module.css */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #6b7280; /* Tailwind slate-500 */
+  margin-bottom: 16px;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbIcon {
+  margin-right: 4px;
+  width: 16px;
+  height: 16px;
+  color: #4b5563; /* Tailwind slate-600 */
+}
+
+.breadcrumbLink {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.breadcrumbLink:hover {
+  text-decoration: underline;
+  color: #000;
+}
+
+.breadcrumbHome {
+  color: #9333ea; /* Match the brand primary */
+}
+
+.breadcrumbSeparator {
+  margin: 0 8px;
+  color: #9ca3af; /* Tailwind gray-400 */
+  width: 16px;
+  height: 16px;
+}
+
+.dashboardContainer {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.dashboardLayout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 24px 0;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.06);
+}
+
+.sidebarContent {
+  padding: 0 16px;
+}
+
+.sidebarItemContainer {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.sidebarItem:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.sidebarItemActive {
+  background-color: #f3e8ff;
+  color: #9333ea;
+  border: 1px solid #e9d5ff;
+}
+
+.sidebarIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+}
+
+.sidebarLabel {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* Tooltip Styles */
+.tooltip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-left: 12px;
+  width: 240px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.tooltipTitle {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.tooltipDescription {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #d1d5db;
+}
+
+.tooltipArrow {
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid #1f2937;
+}
+
+/* Breadcrumbs - Full width section above dashboard layout */
+.breadcrumbsSection {
+  width: 100%;
+  background-color: #A100FF08;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 12px 0;
+  position: relative;
+  z-index: 10;
+}
+
+.breadcrumbsContainer {
+  padding: 0 32px;
+  max-width: none;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin: 0;
+  padding: 4px 0;
+}
+
+/* Main Content Styles */
+.mainContent {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-x: auto;
+  background-color: #f8fafc;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbIcon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.breadcrumbLink {
+  color: #0036C9;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.breadcrumbLink:hover {
+  color: #002a9c;
+  text-decoration: underline;
+}
+
+.breadcrumbHome {
+  color: #0036C9;
+  font-weight: 500;
+}
+
+.breadcrumbSeparator {
+  width: 16px;
+  height: 16px;
+  margin: 0 8px;
+  color: #9ca3af;
+}
+
+/* Dashboard Header */
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.dashboardTitleContainer {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.dashboardTitleRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dashboardTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  margin-right: 12px;
+}
+
+.infoButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+}
+
+.infoButton:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.infoIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.viewSummaryBtn {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.viewSummaryBtn:hover {
+  background-color: #7c3aed;
+  transform: translateY(-1px);
+}
+
+.lastUpdated {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Power BI Content */
+.powerbiContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.contentRow {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Card Styles */
+.card {
+  background-color: white;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  padding: 24px 24px 16px;
+  gap: 16px;
+}
+
+.cardIcon {
+  width: 48px;
+  height: 48px;
+  background-color: #f3e8ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cardIconPurple {
+  width: 48px;
+  height: 48px;
+  background-color: #9333ea;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cardIconPurple .icon {
+  color: white;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  color: #9333ea;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 8px 0;
+}
+
+.cardUnderline {
+  width: 40px;
+  height: 3px;
+  background-color: #9333ea;
+  border-radius: 2px;
+}
+
+.cardContent {
+  padding: 0 24px 24px;
+}
+
+/* Industry Card */
+.industryCard {
+  flex: 1;
+  min-width: 300px;
+}
+
+.industryInfo {
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.industryValue {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* WMS Chart */
+.wmsChart {
+  flex: 2;
+  min-width: 600px;
+}
+
+.wmsBars {
+  display: flex;
+  align-items: end;
+  justify-content: space-around;
+  height: 300px;
+  padding: 24px;
+  gap: 16px;
+}
+
+.wmsBarContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.wmsBar {
+  width: 100%;
+  max-width: 80px;
+  background-color: #9333ea;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.wmsBar:hover {
+  transform: translateY(-2px);
+}
+
+.wmsPercentage {
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.wmsLabel {
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Decision Card */
+.decisionCard {
+  flex: 1;
+  min-width: 400px;
+}
+
+.decisionSubtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.decisionContent {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.decisionSection {
+  background-color: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.decisionSectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.criteriaTable {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #e5e7eb;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.tableRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.viewWeightagesBtn {
+  background-color: #9333ea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  margin: 16px 24px 24px;
+}
+
+.viewWeightagesBtn:hover {
+  background-color: #7c3aed;
+  transform: translateY(-1px);
+}
+
+/* Sankey Chart */
+.sankeyCard {
+  flex: 2;
+  min-width: 600px;
+}
+
+.sankeyPlaceholder {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sankeyFlow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.flowColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.flowHeader {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.flowItems {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 120px;
+}
+
+.flowItem {
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.flowItem:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sankeyLegend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.legendColor {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .contentRow {
+    flex-direction: column;
+  }
+  
+  .wmsChart,
+  .sankeyCard {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardLayout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .sidebarContent {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+  }
+  
+  .sidebarItemContainer {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .mainContent {
+    padding: 16px;
+  }
+  
+  .dashboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .dashboardTitle {
+    font-size: 24px;
+  }
+  
+  .sankeyLegend {
+    gap: 16px;
+  }
+  
+  .wmsBars {
+    height: 250px;
+    gap: 8px;
+  }
+  
+  .wmsLabel {
+    font-size: 12px;
+  }
+}
+
+.breadcrumbRow {
+  width: 100%;
+  margin-bottom: 12px;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+.breadcrumbs {
+  font-size: 14px;
+  color: #6b6b6b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 400;
+}
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.breadcrumbLink {
+  color: #6b6b6b;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: color 0.2s;
+}
+.breadcrumbLink:hover {
+  color: #a020f0;
+}
+.breadcrumbHome {
+  font-weight: 500;
+  color: #a020f0;
+}
+.breadcrumbSeparator {
+  font-size: 14px;
+  color: #bdbdbd;
+  margin: 0 4px;
+  vertical-align: middle;
+}

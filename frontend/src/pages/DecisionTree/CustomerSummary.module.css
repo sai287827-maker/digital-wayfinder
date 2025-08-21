@@ -1,0 +1,189 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-container {
+  width: 900px;
+  max-width: 98vw;
+  border-radius: 16px;
+  box-shadow: 0 10px 32px rgba(80, 0, 120, 0.10);
+  background: #fff;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.header {
+  background: #f7f2fd;
+  padding: 24px 32px 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  min-height: 56px;
+}
+
+.headerTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #222;
+  cursor: pointer;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  background: #f7f2fd;
+  padding: 0 32px;
+  border-bottom: 1.5px solid #ece6f6;
+  margin-bottom: 0;
+}
+
+.tab {
+  color: #222;
+  font-weight: 500;
+  font-size: 16px;
+  background: none;
+  border: none;
+  padding: 18px 32px 12px 32px;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom 0.2s;
+  outline: none;
+}
+
+.activeTab {
+  color: #a020f0;
+  border-bottom: 3px solid #a020f0;
+  background: none;
+  font-weight: 600;
+}
+
+.content {
+  background: #fff;
+  padding: 32px 32px 32px 32px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dropdown {
+  width: 100%;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  font-size: 16px;
+  color: #222;
+  background: #faf9fb;
+  margin-bottom: 18px;
+  /* appearance: none; */
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: 500;
+  /* box-shadow: none; */
+  height: 48px;
+  cursor: pointer;
+}
+.dropdown:hover, .dropdown:focus {
+  border-color: #a020f0;
+}
+
+/* General Info Table Styles */
+.infoTable {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.infoRow {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #ece6f6;
+  min-height: 56px;
+  align-items: flex-start;
+  padding: 0 0 0 0;
+}
+.infoLabel {
+  width: 220px;
+  font-weight: 600;
+  color: #222;
+  font-size: 15px;
+  padding: 18px 18px 18px 0;
+  background: #fff;
+  vertical-align: top;
+  flex-shrink: 0;
+}
+.infoValue {
+  flex: 1;
+  color: #222;
+  font-size: 15px;
+  padding: 18px 0;
+  background: #fff;
+  vertical-align: top;
+}
+.infoSubfields {
+  margin-top: 8px;
+  margin-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.infoSubLabel {
+  color: #444;
+  font-size: 14px;
+  font-weight: 400;
+  margin-left: 0;
+  padding-left: 0;
+  line-height: 1.6;
+}
+
+.solutionsList {
+  list-style: decimal inside;
+  margin: 0;
+  padding-left: 24px;
+  color: #222;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.solutionItem {
+  margin-bottom: 0;
+  padding: 2px 0;
+  font-size: 16px;
+  color: #222;
+  font-weight: 500;
+  background: none;
+  border: none;
+} 
