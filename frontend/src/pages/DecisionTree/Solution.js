@@ -6,7 +6,7 @@ import { apiGet, apiPost } from '../../api';
 const Solution = () => {
   const navigate = useNavigate();
   const [solutionData, setSolutionData] = useState([]);
-  const [selectedSolutions, setSelectedSolutions] = useState([]);
+  const [selectedPlatforms, setSelectedSolutions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
@@ -30,7 +30,7 @@ const Solution = () => {
   // Reset saved state when selections change
   useEffect(() => {
     setIsSaved(false);
-  }, [selectedSolutions]);
+  }, [selectedPlatforms]);
  
   // Handle solution selection
   const handleSolutionSelect = (solutionId) => {
@@ -46,7 +46,7 @@ const Solution = () => {
   // Handle select all
   const handleSelectAll = () => {
     const allIds = solutionData.map(solution => solution.id);
-    if (selectedSolutions.length === allIds.length) {
+    if (selectedPlatforms.length === allIds.length) {
       setSelectedSolutions([]);
     } else {
       setSelectedSolutions(allIds);
@@ -61,7 +61,7 @@ const Solution = () => {
   // Handle save button
   const handleSave = async () => {
     try {
-      if (selectedSolutions.length === 0) {
+      if (selectedPlatforms.length === 0) {
         setError('Please select at least one solution before saving.');
         setTimeout(() => setError(null), 3000);
         return;
@@ -70,7 +70,7 @@ const Solution = () => {
       
       // Save the selected solutions data via API
       await apiPost('api/decision-tree/functional-scope/solution/save', {
-        selectedSolutions,
+        selectedPlatforms,
         timestamp: new Date().toISOString()
       });
       
@@ -90,7 +90,7 @@ const Solution = () => {
       setLoading(true);
       
       // Navigate to dashboard page
-      navigate('/dashboard');
+      navigate('/decision-tree/dashboard');
       
     } catch (error) {
       setError('Failed to generate dashboard. Please try again.');
@@ -198,13 +198,13 @@ const Solution = () => {
               ) : solutionData.map((solution) => (
                 <div
                   key={solution.id || solution.platformName}
-                  className={`solution-row ${selectedSolutions.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
+                  className={`solution-row ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
                   onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
                 >
                   <div className="solution-checkbox-container">
                     <input
                       type="checkbox"
-                      checked={selectedSolutions.includes(solution.id || solution.platformName)}
+                      checked={selectedPlatforms.includes(solution.id || solution.platformName)}
                       onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
                       className="solution-checkbox"
                     />
@@ -250,7 +250,7 @@ const Solution = () => {
             <button
               className="save-button"
               onClick={handleSave}
-              disabled={loading || selectedSolutions.length === 0}
+              disabled={loading || selectedPlatforms.length === 0}
             >
               {loading ? 'Saving...' : 'Save'}
             </button>

@@ -152,7 +152,7 @@ const DecisionCriteria = () => {
            
             <div className="rdc-step-item">
               <div className="rdc-step-number active">3</div>
-              <span className="rdc-step-text active">Reviews</span>
+              <span className="rdc-step-text active">Review</span>
             </div>
            
             <div className="rdc-step-item">
@@ -166,12 +166,12 @@ const DecisionCriteria = () => {
         <div className="rdc-main-content">
           {/* Header */}
           <div className="rdc-header">
-            <h1 className="rdc-page-title">Decision Criteria</h1>
+            <h1 className="rdc-page-title">Review</h1>
           </div>
 
           {/* Content Header */}
           <div className="rdc-content-header">
-            <div className="rdc-content-title">Decision Criteria</div>
+            <div className="rdc-content-title">Review</div>
             <div className="rdc-content-scope">In-Scope</div>
           </div>
  
