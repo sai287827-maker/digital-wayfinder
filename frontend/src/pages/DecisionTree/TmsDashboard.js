@@ -202,7 +202,7 @@ const TmsDashboard = () => {
               </div>
               <iframe
                 title="Power BI Report Dashboard"
-                src="https://app.powerbi.com/reportEmbed?reportId=aa37619c-b039-405b-82b5-40f7f86b027b&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
+                src="https://app.powerbi.com/reportEmbed?reportId=1ff68422-a7e0-4d70-8395-e55362febb27&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
                 style={{
                   width: "100%",
                   height: "calc(100% - 53px)",

@@ -202,7 +202,7 @@ const CustomerDashboard = () => {
               </div>
               <iframe
                 title="Power BI Report Dashboard"
-                src="https://app.powerbi.com/reportEmbed?reportId=aa37619c-b039-405b-82b5-40f7f86b027b&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
+                src=" https://app.powerbi.com/reportEmbed?reportId=6bc9b2cd-b722-47f6-921d-5f326297962d&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
                 style={{
                   width: "100%",
                   height: "calc(100% - 53px)",
