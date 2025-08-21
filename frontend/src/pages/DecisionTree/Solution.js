@@ -6,11 +6,11 @@ import { apiGet, apiPost } from '../../api';
 const Solution = () => {
   const navigate = useNavigate();
   const [solutionData, setSolutionData] = useState([]);
-  const [selectedPlatforms, setselectedPlatforms] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSolutions, setSelectedSolutions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
- 
+  const [isSaved, setIsSaved] = useState(false);
+
   useEffect(() => {
     async function fetchSolutions() {
       setLoading(true);
@@ -26,18 +26,15 @@ const Solution = () => {
     }
     fetchSolutions();
   }, []);
- 
-  // Filter solutions based on search query
-  const getFilteredSolutions = () => {
-    if (!searchQuery) return solutionData;
-    return solutionData.filter(solution =>
-      solution.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  };
+
+  // Reset saved state when selections change
+  useEffect(() => {
+    setIsSaved(false);
+  }, [selectedSolutions]);
  
   // Handle solution selection
   const handleSolutionSelect = (solutionId) => {
-    setselectedPlatforms(prev => {
+    setSelectedSolutions(prev => {
       if (prev.includes(solutionId)) {
         return prev.filter(id => id !== solutionId);
       } else {
@@ -48,12 +45,11 @@ const Solution = () => {
  
   // Handle select all
   const handleSelectAll = () => {
-    const filteredSolutions = getFilteredSolutions();
-    const allFilteredIds = filteredSolutions.map(solution => solution.id);
-    if (selectedPlatforms.length === allFilteredIds.length) {
-      setselectedPlatforms([]);
+    const allIds = solutionData.map(solution => solution.id);
+    if (selectedSolutions.length === allIds.length) {
+      setSelectedSolutions([]);
     } else {
-      setselectedPlatforms(allFilteredIds);
+      setSelectedSolutions(allIds);
     }
   };
  
@@ -61,27 +57,41 @@ const Solution = () => {
   const handlePrevious = () => {
     navigate('/decision-tree/decision-criteria');
   };
- 
-  // Handle generate dashboard - navigate to dashboard page
-  const handleGenerateDashboard = async () => {
+
+  // Handle save button
+  const handleSave = async () => {
     try {
-      if (selectedPlatforms.length === 0) {
-        setError('Please select at least one solution before generating dashboard.');
+      if (selectedSolutions.length === 0) {
+        setError('Please select at least one solution before saving.');
         setTimeout(() => setError(null), 3000);
         return;
       }
       setLoading(true);
-     
+      
       // Save the selected solutions data via API
       await apiPost('api/decision-tree/functional-scope/solution/save', {
-        selectedPlatforms,
-        searchQuery,
+        selectedSolutions,
         timestamp: new Date().toISOString()
       });
-     
+      
+      setIsSaved(true);
+      
+    } catch (error) {
+      setError('Failed to save solutions. Please try again.');
+      setTimeout(() => setError(null), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+ 
+  // Handle generate dashboard - navigate to dashboard page
+  const handleGenerateDashboard = async () => {
+    try {
+      setLoading(true);
+      
       // Navigate to dashboard page
-      navigate('/decision-tree/dashboard');
-     
+      navigate('/dashboard');
+      
     } catch (error) {
       setError('Failed to generate dashboard. Please try again.');
       setTimeout(() => setError(null), 3000);
@@ -155,28 +165,6 @@ const Solution = () => {
         </div>
         {/* Main Content */}
         <div className="main-content">
-          {/* Header with search */}
-          <div className="content-header">
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="search-icon"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-              </svg>
-            </div>
-          </div>
           {/* Solution Section */}
           <div className="solution-section">
             <div className="solution-header">
@@ -197,20 +185,26 @@ const Solution = () => {
                 {error}
               </div>
             )}
+            {/* Success Message */}
+            {isSaved && (
+              <div className="success-message">
+                Solutions saved successfully!
+              </div>
+            )}
             {/* Solutions Vertical List Layout */}
             <div className="solutions-list">
               {loading ? (
                 <div className="loading-text">Loading...</div>
-              ) : getFilteredSolutions().map((solution) => (
+              ) : solutionData.map((solution) => (
                 <div
                   key={solution.id || solution.platformName}
-                  className={`solution-row ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
+                  className={`solution-row ${selectedSolutions.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
                   onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
                 >
                   <div className="solution-checkbox-container">
                     <input
                       type="checkbox"
-                      checked={selectedPlatforms.includes(solution.id || solution.platformName)}
+                      checked={selectedSolutions.includes(solution.id || solution.platformName)}
                       onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
                       className="solution-checkbox"
                     />
@@ -233,15 +227,15 @@ const Solution = () => {
               ))}
             </div>
             {/* No results message */}
-            {!loading && getFilteredSolutions().length === 0 && (
+            {!loading && solutionData.length === 0 && (
               <div className="no-results">
-                No solutions found matching your search.
+                No solutions found.
               </div>
             )}
           </div>
         </div>
       </div>
-     
+      
       {/* Footer */}
       <div className="footer">
         <div className="footer-content">
@@ -252,13 +246,23 @@ const Solution = () => {
           >
             Previous
           </button>
-          <button
-            className="generate-button"
-            onClick={handleGenerateDashboard}
-            disabled={loading}
-          >
-            {loading ? 'Generating...' : 'Generate Dashboard'}
-          </button>
+          <div className="footer-actions">
+            <button
+              className="save-button"
+              onClick={handleSave}
+              disabled={loading || selectedSolutions.length === 0}
+            >
+              {loading ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              className="generate-button"
+              onClick={handleGenerateDashboard}
+              disabled={loading || !isSaved}
+              title={!isSaved ? 'Please save your selection first' : ''}
+            >
+              {loading ? 'Generating...' : 'Generate Dashboard'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

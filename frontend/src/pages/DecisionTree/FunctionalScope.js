@@ -58,6 +58,11 @@ const FunctionalScope = () => {
     return level <= getMaxVisibleLevel();
   };
 
+  // Handle previous button
+  const handlePrevious = () => {
+    navigate('/decision-tree/industry-type-func');
+  };
+
   // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
@@ -519,25 +524,92 @@ const FunctionalScope = () => {
         </div>
       </div>
 
-      {/* Save & Proceed Button */}
-      <div className="save-proceed-container" style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
+      {/* Footer with Previous and Save & Proceed buttons */}
+      <div className="footer-buttons-container" style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         marginTop: '20px',
-        paddingRight: '20px'
+        padding: '20px',
+        backgroundColor: '#f8fafc'
        }}>
+        <button
+          className="previous-button"
+          onClick={handlePrevious}
+          disabled={loading}
+          style={{
+            backgroundColor: 'transparent',
+            color: '#8b5cf6',
+            border: '2px solid #8b5cf6',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#8b5cf6';
+          }}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
+
         <button
           className={`proceed-button ${hasLevel4Selected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
           disabled={loading || !hasLevel4Selected()}
           style={{
-          backgroundColor: hasLevel4Selected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasLevel4Selected() ? 'white' : '#9ca3af',
-          cursor: hasLevel4Selected() ? 'pointer' : 'not-allowed',
-          opacity: hasLevel4Selected() ? 1 : 0.6
+            backgroundColor: hasLevel4Selected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasLevel4Selected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasLevel4Selected() ? '#8b5cf6' : '#e5e7eb'),
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: hasLevel4Selected() ? 'pointer' : 'not-allowed',
+            opacity: hasLevel4Selected() ? 1 : 0.6,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
+          {!loading && (
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          )}
         </button>
       </div>
     </div>

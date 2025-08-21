@@ -279,7 +279,6 @@ const WmsReport = () => {
       alert('Failed to download report. Please try again.');
     }
   };
-
   if (loading) {
     return (
       <div className="assessment-container">
