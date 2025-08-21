@@ -350,7 +350,7 @@ const WmsReport = () => {
                 {/* Content Section */}
                 <div className="content-section" style={{ 
                   flex: 1, 
-                  padding: '2rem',
+                  padding: '0.8rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-start'
