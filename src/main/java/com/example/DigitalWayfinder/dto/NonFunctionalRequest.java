@@ -18,7 +18,6 @@ public class NonFunctionalRequest {
     
     private String userId;
     private String sessionId;
-    
     private String functionalArea;
     private String industryType;
     private String functionalSubArea;
