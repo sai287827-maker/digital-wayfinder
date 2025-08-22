@@ -30,9 +30,9 @@ const DecisionCriteria = () => {
           sessionId: response.sessionId,
           functionalArea: response.functionalArea,
           industryType: response.industryType,
-          // Handle new array-based structure
-          functional: response.levelSelections ? { levelSelections: response.levelSelections } : { levelSelections: [] },
-          nonFunctional: response.nonFunctional?.levelSelections ? response.nonFunctional : { levelSelections: [] }
+          // Handle nested structure with functional and nonFunctional objects
+          functional: response.functional || { levelSelections: [] },
+          nonFunctional: response.nonFunctional || { levelSelections: [] }
         });
 
       } catch (err) {
