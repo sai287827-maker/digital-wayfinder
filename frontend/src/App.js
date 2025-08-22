@@ -35,6 +35,7 @@ import RetailFunctionalScope from './pages/DecisionTree/RetailFunctionalScope';
 import RetailNonFunctionalScope from './pages/DecisionTree/RetailNonFunctionalScope';
 import RetailDecisionCriteria from './pages/DecisionTree/RetailDecisionCriteria';
 import RetailSolution from './pages/DecisionTree/RetailSolution';
+import RetailDashboard from './pages/DecisionTree/RetailDashboard';
  
  
  
@@ -82,6 +83,7 @@ function App() {
           <Route path="/decision-tree/retail-non-functional-scope" element={<RetailNonFunctionalScope />} />
           <Route path="/decision-tree/retail-decision-criteria" element={<RetailDecisionCriteria/>} />
           <Route path="/decision-tree/retail-solution" element={<RetailSolution />} />
+          <Route path="/decision-tree/retail-dashboard" element={<RetailDashboard/>} />
  
           {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
         </Routes>

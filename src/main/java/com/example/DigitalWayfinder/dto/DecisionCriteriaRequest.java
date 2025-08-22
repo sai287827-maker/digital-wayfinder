@@ -25,9 +25,6 @@ public class DecisionCriteriaRequest {
     @AllArgsConstructor
     @Builder
     public static class FunctionalData {
-        // private String functionalArea;
-        // private String industryType;
-        // private String functionalSubArea;
         private LevelSelections levelSelections;
     }
     
@@ -36,9 +33,6 @@ public class DecisionCriteriaRequest {
     @AllArgsConstructor
     @Builder
     public static class NonFunctionalData {
-        // private String functionalArea;
-        // private String industryType;
-        // private String functionalSubArea;
         private LevelSelections levelSelections;
     }
     
