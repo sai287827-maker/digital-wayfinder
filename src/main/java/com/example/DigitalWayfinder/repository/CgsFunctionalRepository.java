@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.example.DigitalWayfinder.entity.WmsFunctional;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @Repository
 public interface CgsFunctionalRepository extends JpaRepository<WmsFunctional, Long> {
@@ -26,4 +28,13 @@ public interface CgsFunctionalRepository extends JpaRepository<WmsFunctional, Lo
     
     @Query("SELECT DISTINCT w.l4 FROM CgsFunctional w WHERE w.l1 = :l1 AND w.l2 = :l2 AND w.l3 = :l3 AND w.l4 IS NOT NULL AND w.l4 != ''")
     List<String> findDistinctL4ByL1AndL2AndL3(@Param("l1") String l1, @Param("l2") String l2, @Param("l3") String l3);
+    
+    @Query("SELECT w.l1, w.l2, w.l3, w.l4 FROM WmsFunctional w WHERE w.l4 = :l4")
+    Optional<Object[]> findCompletePathByL4(@Param("l4") String l4);
+    
+@Query("SELECT w.l1, w.l2, w.l3 FROM WmsFunctional w WHERE w.l3 = :l3")
+List<Object[]> findPathsByL3(@Param("l3") String l3);
+
+@Query("SELECT w.l1, w.l2 FROM WmsFunctional w WHERE w.l2 = :l2")  
+List<Object[]> findPathsByL2(@Param("l2") String l2);
 }
