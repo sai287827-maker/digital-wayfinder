@@ -407,7 +407,7 @@ const AgnosticFunctionalScope = () => {
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
-          <h2 className="sidebar-title">Agnostic Functional Scope</h2>
+          <h2 className="sidebar-title">Functional Scope</h2>
           <p className="sidebar-description">
             Industry-agnostic structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
@@ -430,7 +430,7 @@ const AgnosticFunctionalScope = () => {
            
             <div className="step-item">
               <div className="step-circle inactive">3</div>
-              <span className="step-text inactive">Decision Criteria</span>
+              <span className="step-text inactive">Review</span>
             </div>
            
             <div className="step-item">
@@ -477,7 +477,7 @@ const AgnosticFunctionalScope = () => {
  
           {/* Functional Scope Header and Select Level View */}
           <div className="title-section">
-            <h1 className="page-title">Agnostic Functional Scope</h1>
+            <h1 className="page-title">Functional Scope</h1>
  
             <div className="level-controls">
               <div className="level-control-row">

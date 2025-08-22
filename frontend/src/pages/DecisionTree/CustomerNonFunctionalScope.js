@@ -13,8 +13,6 @@ const CustomerNonFunctionalScope = () => {
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  // const [showParameterModal, setShowParameterModal] = useState(false);
-  // const [parameterLevel, setParameterLevel] = useState(1);
   const [proceedToDecisionCriteria, setProceedToDecisionCriteria] = useState(false);
 
   useEffect(() => {
@@ -46,7 +44,12 @@ const CustomerNonFunctionalScope = () => {
     });
   };
 
-  // Handle Save & Proceed
+  // Handle Previous button click
+  const handlePrevious = () => {
+    navigate('/decision-tree/customer-functional-scope');
+  };
+
+  // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
       // Validate that user has made selections
@@ -69,7 +72,7 @@ const CustomerNonFunctionalScope = () => {
         scope: 'cgs'
       });
       setProceedToDecisionCriteria(true);
-      navigate('/decision-tree/decision-criteria', {
+      navigate('/decision-tree/customer-decision-criteria', {
         state: {
           fromNonFunctionalScope: true,
           selectedData: {
@@ -93,23 +96,10 @@ const CustomerNonFunctionalScope = () => {
     }
   };
  
-  // Filter data based on search query
-  const getFilteredData = () => {
-    if (!searchQuery) return nonFunctionalScopeData;
-    
-    return nonFunctionalScopeData.filter(item => 
-      Object.values(item).some(value => 
-        value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
-  };
-
-  // Get unique items for a specific level based on selected path
+  // FIXED: More precise search that only searches the current level items
   const getLevelItems = (level) => {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) return [];
-    
-    let levelData = filteredData;
+    // Start with original data for level hierarchy
+    let levelData = nonFunctionalScopeData;
     
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
@@ -123,7 +113,7 @@ const CustomerNonFunctionalScope = () => {
       }
     }
     
-    // Get unique items for current level
+    // Get unique items for current level from hierarchy-filtered data
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
@@ -140,6 +130,15 @@ const CustomerNonFunctionalScope = () => {
         });
       }
     });
+    
+    // FIXED: Apply search filter only to the current level items, not across all levels
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      return uniqueItems.filter(item => 
+        // Only search in the current level's name, not across all hierarchy levels
+        item.name.toLowerCase().includes(query)
+      );
+    }
     
     return uniqueItems;
   };
@@ -232,24 +231,26 @@ const CustomerNonFunctionalScope = () => {
   };
 
   const getItemNumber = (level, item) => {
-    const levelItems = getLevelItems(level);
-    const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-    
-    if (level === 1) {
-      return `${currentIndex + 1}.0`;
-    }
-    
     const fullItem = nonFunctionalScopeData.find(dataItem => 
       dataItem[`l${level}`] === item.name
     );
     
-    if (!fullItem) return `${currentIndex + 1}`;
+    if (!fullItem) return `1.0`;
     
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
       
-      const l1Items = getLevelItems(1);
-      const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
+      const l1Items = [];
+      const l1Seen = new Set();
+      nonFunctionalScopeData.forEach(dataItem => {
+        const value = dataItem.l1;
+        if (value && !l1Seen.has(value)) {
+          l1Seen.add(value);
+          l1Items.push(value);
+        }
+      });
+      
+      const l1Index = l1Items.findIndex(l1Item => l1Item === targetItem.l1);
       parts.push(l1Index + 1);
       
       for (let i = 2; i <= targetLevel; i++) {
@@ -332,51 +333,113 @@ const CustomerNonFunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              No items available
+              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
             </div>
           ) : (
             <div className="items-container">
-              {levelItems.map((item, index) => {
-                const isSelected = selectedItems.includes(item.id);
-                const itemNumber = getItemNumber(level, item);
-                return (
-                  <div
-                    key={item.id}
-                    className="item"
-                    onClick={() => handleItemSelect(item, level)}
-                  >
-                    <div className="item-content">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handleCheckboxChange(item, level, e)}
-                        className="item-checkbox"
-                      />
-                      <div className="item-text-container">
-                        <div className="item-text">
-                          {itemNumber} {item.name}
+              {/* Custom rendering for each level, without More Information button */}
+              {level === 1 ? (
+                <>
+                  {getLevelItems(1).map((item, idx) => {
+                    const isSelected = selectedItems.includes(item.id);
+                    const itemNumber = getItemNumber(1, item);
+                    return (
+                      <div
+                        key={item.id}
+                        className="item"
+                        style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                        onClick={() => handleItemSelect(item, 1)}
+                      >
+                        <div className="item-content">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => handleCheckboxChange(item, 1, e)}
+                            className="item-checkbox"
+                          />
+                          <div className="item-text-container">
+                            <div className="item-text">
+                              {itemNumber} {item.name}
+                            </div>
+                          </div>
+                        </div>
+                        {/* Removed More Information Button */}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : level === 2 ? (
+                <>
+                  {getLevelItems(1).map((parentItem, idx) => {
+                    const children = getLevelItems(2).filter(
+                      child => child.fullItem.l1 === parentItem.name
+                    );
+                    return (
+                      <div key={parentItem.id + '-group'}>
+                        {children.length === 0 ? (
+                          <div style={{ minHeight: '48px' }}></div>
+                        ) : (
+                          children.map((item, cidx) => {
+                            const isSelected = selectedItems.includes(item.id);
+                            const itemNumber = getItemNumber(2, item);
+                            return (
+                              <div
+                                key={item.id}
+                                className="item"
+                                style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                                onClick={() => handleItemSelect(item, 2)}
+                              >
+                                <div className="item-content">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={(e) => handleCheckboxChange(item, 2, e)}
+                                    className="item-checkbox"
+                                  />
+                                  <div className="item-text-container">
+                                    <div className="item-text">
+                                      {itemNumber} {item.name}
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* Removed More Information Button */}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                // Default rendering for other levels
+                levelItems.map((item, index) => {
+                  const isSelected = selectedItems.includes(item.id);
+                  const itemNumber = getItemNumber(level, item);
+                  return (
+                    <div
+                      key={item.id}
+                      className="item"
+                      onClick={() => handleItemSelect(item, level)}
+                    >
+                      <div className="item-content">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => handleCheckboxChange(item, level, e)}
+                          className="item-checkbox"
+                        />
+                        <div className="item-text-container">
+                          <div className="item-text">
+                            {itemNumber} {item.name}
+                          </div>
                         </div>
                       </div>
+                      {/* Removed More Information Button */}
                     </div>
-                    <button
-                      onClick={(e) => handleInfoClick(item, e)}
-                      className="item-info-button"
-                      title="More information"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="item-info-icon"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2.25M12 15h.01m-.01-10.5a9 9 0 100 18 9 9 0 000-18z" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </div>
@@ -393,7 +456,7 @@ const CustomerNonFunctionalScope = () => {
           <span>›</span>
           <span className="breadcrumb-link" style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="breadcrumb-current">Non Functional Scope</span>
+          <span className="breadcrumb-current">Customer Non Functional Scope</span>
         </div>
       </div>
 
@@ -460,16 +523,26 @@ const CustomerNonFunctionalScope = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
+              {/* Clear button - only show when there's text */}
+              {searchQuery.trim() && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="search-clear-button"
+                  title="Clear search"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="#6b7280"
+                    className="search-clear-icon"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
-
-            {/* <div className="header-buttons">
-              <button
-                className="parameter-button"
-                onClick={() => setShowParameterModal(true)}
-              >
-                Select Parameters
-              </button>
-            </div> */}
           </div>
 
           {/* Non Functional Scope Header and Select Level View */}
@@ -515,93 +588,100 @@ const CustomerNonFunctionalScope = () => {
             </div>
           </div>
 
-          {/* Multi-column layout - Limited to 3 levels */}
+          {/* Multi-column layout */}
           <div className="columns-container">
             {[1, 2, 3].map((level, idx) => renderLevelColumn(level, idx, 3))}
           </div>
         </div>
       </div>
 
-      {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{ 
+      {/* Footer with Previous and Save & Proceed buttons */}
+      <div className="footer-buttons-container" style={{ 
         display: 'flex', 
-        justifyContent: 'flex-end', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         marginTop: '20px',
-        paddingRight: '20px'
+        padding: '20px',
+        backgroundColor: '#f8fafc'
        }}>
+        <button
+          className="previous-button"
+          onClick={handlePrevious}
+          style={{
+            backgroundColor: 'transparent',
+            color: '#8b5cf6',
+            border: '2px solid #8b5cf6',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#8b5cf6';
+          }}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
+
         <button
           className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
           disabled={loading || !hasAllLevelsSelected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+            backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb'),
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
+            opacity: hasAllLevelsSelected() ? 1 : 0.6,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
+          {!loading && (
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          )}
         </button>
       </div>
-
-      {/* Parameter Modal - Limited to 3 levels */}
-      {/* {showParameterModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-header">
-              Select Parameters
-              <button 
-                onClick={() => setShowParameterModal(false)} 
-                className="modal-close"
-              >
-                &times;
-              </button>
-            </h2>
-
-            <div>
-              <div className="modal-section-title">Requirement Granularity</div>
-              {[1, 2, 3].map((level) => {
-                // For parameter modal: Level 1 is always enabled, others need previous level selections
-                const isParameterLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
-                
-                return (
-                  <label 
-                    key={level} 
-                    className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
-                    style={{
-                      opacity: isParameterLevelEnabled ? 1 : 0.4,
-                      cursor: isParameterLevelEnabled ? 'pointer' : 'not-allowed'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="parameterLevel"
-                      value={level}
-                      checked={parameterLevel === level}
-                      onChange={() => isParameterLevelEnabled ? setParameterLevel(level) : null}
-                      disabled={!isParameterLevelEnabled}
-                      className="modal-radio"
-                    />
-                    Level {level}
-                  </label>
-                );
-              })}
-            </div>
-
-            <div className="modal-footer">
-              <button
-                onClick={() => {
-                  setSelectedLevel(parameterLevel);
-                  setShowParameterModal(false);
-                }}
-                className="modal-save-button"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

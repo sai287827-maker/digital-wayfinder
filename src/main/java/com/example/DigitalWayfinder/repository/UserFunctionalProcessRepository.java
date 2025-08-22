@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.DigitalWayfinder.entity.UserFunctionalProcess;
 
+import java.util.List;
 import java.util.Optional;
+
 
 @Repository
 public interface UserFunctionalProcessRepository extends JpaRepository<UserFunctionalProcess, Long> {
@@ -16,6 +18,8 @@ public interface UserFunctionalProcessRepository extends JpaRepository<UserFunct
     
     @Query("SELECT ufp FROM UserFunctionalProcess ufp WHERE ufp.userId = :userId AND ufp.sessionId = :sessionId")
     Optional<UserFunctionalProcess> findByUserIdAndSessionIdWithQuery(@Param("userId") String userId, @Param("sessionId") String sessionId);
+    
+    List<UserFunctionalProcess> findAllByUserIdAndSessionId(String userId, String sessionId);
     
     boolean existsByUserIdAndSessionId(String userId, String sessionId);
     

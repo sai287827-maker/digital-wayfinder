@@ -19,18 +19,17 @@ public class NonFunctionalResponse {
     private String functionalArea;
     private String industryType;
     private String functionalSubArea;
-    private LevelSelections levelSelections;
-    
+    private List<LevelPath> levelSelections;
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class LevelSelections {
-        private List<String> l1;
-        private List<String> l2;
-        private List<String> l3;
-        private List<String> l4;
-        private List<String> l5;
+    public static class LevelPath {
+        private String l1;
+        private String l2;
+        private String l3;
+        private String l4;
+        private String l5;
     }
 }
-
