@@ -45,18 +45,21 @@ const RetailNonFunctionalScope = () => {
     });
   };
 
-  // Handle Save & Proceed
+  // Handle Previous button click
+  const handlePrevious = () => {
+    navigate('/decision-tree/retail-functional-scope');
+  };
+
+  // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
       // Validate that user has made selections
       if (!hasAllLevelsSelected()) {
         setError('Please select at least one option from each level before proceeding.');
-        // Clear error after 3 seconds
         setTimeout(() => setError(null), 3000);
         return;
       }
  
-      // Set loading state
       setLoading(true);
       // Save non-functional scope
       await apiPost('api/decision-tree/non-functional-scope/save', {
@@ -85,7 +88,6 @@ const RetailNonFunctionalScope = () => {
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save data. Please try again.');
-      // Clear error after 3 seconds
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
@@ -151,7 +153,7 @@ const RetailNonFunctionalScope = () => {
         return level;
       }
     }
-    return 1; // Default to level 1 if no selections
+    return 1;
   };
 
   const handleItemSelect = (item, level) => {
@@ -335,47 +337,109 @@ const RetailNonFunctionalScope = () => {
             </div>
           ) : (
             <div className="items-container">
-              {levelItems.map((item, index) => {
-                const isSelected = selectedItems.includes(item.id);
-                const itemNumber = getItemNumber(level, item);
-                return (
-                  <div
-                    key={item.id}
-                    className="item"
-                    onClick={() => handleItemSelect(item, level)}
-                  >
-                    <div className="item-content">
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => handleCheckboxChange(item, level, e)}
-                        className="item-checkbox"
-                      />
-                      <div className="item-text-container">
-                        <div className="item-text">
-                          {itemNumber} {item.name}
+              {/* Custom rendering for each level, without More Information button */}
+              {level === 1 ? (
+                <>
+                  {getLevelItems(1).map((item, idx) => {
+                    const isSelected = selectedItems.includes(item.id);
+                    const itemNumber = getItemNumber(1, item);
+                    return (
+                      <div
+                        key={item.id}
+                        className="item"
+                        style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                        onClick={() => handleItemSelect(item, 1)}
+                      >
+                        <div className="item-content">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={(e) => handleCheckboxChange(item, 1, e)}
+                            className="item-checkbox"
+                          />
+                          <div className="item-text-container">
+                            <div className="item-text">
+                              {itemNumber} {item.name}
+                            </div>
+                          </div>
+                        </div>
+                        {/* Removed More Information Button */}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : level === 2 ? (
+                <>
+                  {getLevelItems(1).map((parentItem, idx) => {
+                    const children = getLevelItems(2).filter(
+                      child => child.fullItem.l1 === parentItem.name
+                    );
+                    return (
+                      <div key={parentItem.id + '-group'}>
+                        {children.length === 0 ? (
+                          <div style={{ minHeight: '48px' }}></div>
+                        ) : (
+                          children.map((item, cidx) => {
+                            const isSelected = selectedItems.includes(item.id);
+                            const itemNumber = getItemNumber(2, item);
+                            return (
+                              <div
+                                key={item.id}
+                                className="item"
+                                style={{ minHeight: '48px', display: 'flex', alignItems: 'center' }}
+                                onClick={() => handleItemSelect(item, 2)}
+                              >
+                                <div className="item-content">
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={(e) => handleCheckboxChange(item, 2, e)}
+                                    className="item-checkbox"
+                                  />
+                                  <div className="item-text-container">
+                                    <div className="item-text">
+                                      {itemNumber} {item.name}
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* Removed More Information Button */}
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    );
+                  })}
+                </>
+              ) : (
+                // Default rendering for other levels
+                levelItems.map((item, index) => {
+                  const isSelected = selectedItems.includes(item.id);
+                  const itemNumber = getItemNumber(level, item);
+                  return (
+                    <div
+                      key={item.id}
+                      className="item"
+                      onClick={() => handleItemSelect(item, level)}
+                    >
+                      <div className="item-content">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => handleCheckboxChange(item, level, e)}
+                          className="item-checkbox"
+                        />
+                        <div className="item-text-container">
+                          <div className="item-text">
+                            {itemNumber} {item.name}
+                          </div>
                         </div>
                       </div>
+                      {/* Removed More Information Button */}
                     </div>
-                    <button
-                      onClick={(e) => handleInfoClick(item, e)}
-                      className="item-info-button"
-                      title="More information"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="item-info-icon"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2.25M12 15h.01m-.01-10.5a9 9 0 100 18 9 9 0 000-18z" />
-                      </svg>
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </div>
@@ -399,7 +463,7 @@ const RetailNonFunctionalScope = () => {
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
-          <h2 className="sidebar-title">Retail Non Functional Scope</h2>
+          <h2 className="sidebar-title">Non Functional Scope</h2>
           <p className="sidebar-description">
             Specialized framework for selecting retail-specific non-functional requirements,
             prioritising them based on different measures for informed decision-making.
@@ -426,7 +490,7 @@ const RetailNonFunctionalScope = () => {
             
             <div className="step-item">
               <div className="step-circle inactive">3</div>
-              <span className="step-text inactive">Decision Criteria</span>
+              <span className="step-text inactive">Reviews</span>
             </div>
             
             <div className="step-item">
@@ -461,19 +525,22 @@ const RetailNonFunctionalScope = () => {
               </svg>
             </div>
 
-            {/* <div className="header-buttons">
+            {/* COMMENTED OUT - Select Parameters Button */}
+            {/*
+            <div className="header-buttons">
               <button
                 className="parameter-button"
                 onClick={() => setShowParameterModal(true)}
               >
                 Select Parameters
               </button>
-            </div> */}
+            </div>
+            */}
           </div>
 
           {/* Non Functional Scope Header and Select Level View */}
           <div className="title-section">
-            <h1 className="page-title">Retail Non Functional Scope</h1>
+            <h1 className="page-title">Non Functional Scope</h1>
 
             <div className="level-controls">
               <div className="level-control-row">
@@ -514,37 +581,104 @@ const RetailNonFunctionalScope = () => {
             </div>
           </div>
 
-          {/* Multi-column layout - Limited to 3 levels */}
+          {/* Multi-column layout */}
           <div className="columns-container">
             {[1, 2, 3].map((level, idx) => renderLevelColumn(level, idx, 3))}
           </div>
         </div>
       </div>
 
-      {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{ 
+      {/* Footer with Previous and Save & Proceed buttons */}
+      <div className="footer-buttons-container" style={{ 
         display: 'flex', 
-        justifyContent: 'flex-end', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         marginTop: '20px',
-        paddingRight: '20px'
+        padding: '20px',
+        backgroundColor: '#f8fafc'
        }}>
+        <button
+          className="previous-button"
+          onClick={handlePrevious}
+          style={{
+            backgroundColor: 'transparent',
+            color: '#8b5cf6',
+            border: '2px solid #8b5cf6',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#8b5cf6';
+          }}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
+
         <button
           className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
           disabled={loading || !hasAllLevelsSelected()}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+            backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb'),
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
+            opacity: hasAllLevelsSelected() ? 1 : 0.6,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
+          {!loading && (
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          )}
         </button>
       </div>
 
-      {/* Parameter Modal - Limited to 3 levels */}
-      {/* {showParameterModal && (
+      {/* COMMENTED OUT - Parameter Modal */}
+      {/*
+      {showParameterModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-header">
@@ -600,7 +734,8 @@ const RetailNonFunctionalScope = () => {
             </div>
           </div>
         </div>
-      )} */}
+      )}
+      */}
     </div>
   );
 };

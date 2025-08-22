@@ -13,8 +13,6 @@ const RetailFunctionalScope = () => {
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  // const [showParameterModal, setShowParameterModal] = useState(false);
-  //const [parameterLevel, setParameterLevel] = useState(1);
  
   useEffect(() => {
     async function fetchData() {
@@ -32,13 +30,11 @@ const RetailFunctionalScope = () => {
     }
     fetchData();
   }, []);
- 
-  // Check if user has selected from all 5 levels
-  const hasAllLevelsSelected = () => {
-    return [1, 2, 3, 4, 5].every(level => {
-      const levelKey = `l${level}`;
-      return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
-    });
+
+  // Check if user has selected from Level 5 (enable save button after Level 5)
+  const hasLevel5Selected = () => {
+    const level5Key = 'l5';
+    return levelSelections[level5Key] && levelSelections[level5Key].length > 0;
   };
  
   // Get the maximum level that should be visible based on selections
@@ -46,17 +42,15 @@ const RetailFunctionalScope = () => {
     for (let level = 1; level <= 5; level++) {
       const levelKey = `l${level}`;
       if (!levelSelections[levelKey] || levelSelections[levelKey].length === 0) {
-        return level; // Return the first level without selections
+        return level;
       }
     }
-    return 5; // All levels have selections
+    return 5;
   };
  
   // Check if a level should be enabled (visible and clickable)
   const isLevelEnabled = (level) => {
-    if (level === 1) return true; // Level 1 is always enabled
-   
-    // Check if previous level has selections
+    if (level === 1) return true;
     const prevLevelKey = `l${level - 1}`;
     return levelSelections[prevLevelKey] && levelSelections[prevLevelKey].length > 0;
   };
@@ -66,19 +60,22 @@ const RetailFunctionalScope = () => {
     return level <= getMaxVisibleLevel();
   };
 
+  // Handle previous button
+  const handlePrevious = () => {
+    navigate('/decision-tree/industry-type-plannD');
+  };
+
   // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
-      // Validate that user has made selections
-      if (!hasAllLevelsSelected()) {
-        setError('Please select at least one option from each level before proceeding.');
+      if (!hasLevel5Selected()) {
+        setError('Please select at least one option from Level 5 before proceeding.');
         setTimeout(() => setError(null), 3000);
         return;
       }
  
       setLoading(true);
  
-      // Prepare data for API
       const functionalScopeData = {
         selectedItems,
         levelSelections,
@@ -95,10 +92,8 @@ const RetailFunctionalScope = () => {
         timestamp: new Date().toISOString()
       });
  
-      // Save functional scope
       await apiPost('api/decision-tree/functional-scope/save', functionalScopeData);
  
-      // Navigate to Retail Non Functional Scope page and pass data
       navigate('/decision-tree/retail-non-functional-scope', { 
         state: { 
           fromRetailFunctionalScope: true,
@@ -170,7 +165,7 @@ const RetailFunctionalScope = () => {
         return level;
       }
     }
-    return 1; // Default to level 1 if no selections
+    return 1;
   };
  
   const handleItemSelect = (item, level) => {
@@ -199,11 +194,10 @@ const RetailFunctionalScope = () => {
    
     setSelectedPath(newSelectedPath);
    
-    // Auto-advance logic - move to next level when selecting (if not last level)
+    // Auto-advance logic
     if (currentSelections.length > 0 && level < 5) {
       setSelectedLevel(level + 1);
     } else if (currentSelections.length === 0 && level > 1) {
-      // Move backward when deselecting - go to previous level
       setSelectedLevel(level - 1);
     }
    
@@ -233,24 +227,26 @@ const RetailFunctionalScope = () => {
   };
  
   const getItemNumber = (level, item) => {
-    const levelItems = getLevelItems(level);
-    const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-   
-    if (level === 1) {
-      return `${currentIndex + 1}.0`;
-    }
-   
     const fullItem = functionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
    
-    if (!fullItem) return `${currentIndex + 1}`;
+    if (!fullItem) return `1.0`;
    
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
      
-      const l1Items = getLevelItems(1);
-      const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
+      const l1Items = [];
+      const l1Seen = new Set();
+      functionalScopeData.forEach(dataItem => {
+        const value = dataItem.l1;
+        if (value && !l1Seen.has(value)) {
+          l1Seen.add(value);
+          l1Items.push(value);
+        }
+      });
+      
+      const l1Index = l1Items.findIndex(l1Item => l1Item === targetItem.l1);
       parts.push(l1Index + 1);
      
       for (let i = 2; i <= targetLevel; i++) {
@@ -405,7 +401,7 @@ const RetailFunctionalScope = () => {
       <div className="main-layout">
         {/* Left Sidebar Box */}
         <div className="left-sidebar">
-          <h2 className="sidebar-title">Retail Functional Scope</h2>
+          <h2 className="sidebar-title">Functional Scope</h2>
           <p className="sidebar-description">
             Retail-specific structured framework for selecting functional requirements,
             prioritising them based on different measures for informed decision-making.
@@ -428,7 +424,7 @@ const RetailFunctionalScope = () => {
            
             <div className="step-item">
               <div className="step-circle inactive">3</div>
-              <span className="step-text inactive">Decision Criteria</span>
+              <span className="step-text inactive">Reviews</span>
             </div>
            
             <div className="step-item">
@@ -481,20 +477,11 @@ const RetailFunctionalScope = () => {
                 </button>
               )}
             </div>
- 
-            {/* <div className="header-buttons">
-              <button
-                className="parameter-button"
-                onClick={() => setShowParameterModal(true)}
-              >
-                Select Parameters
-              </button>
-            </div> */}
           </div>
  
           {/* Functional Scope Header and Select Level View */}
           <div className="title-section">
-            <h1 className="page-title">Retail Functional Scope</h1>
+            <h1 className="page-title">Functional Scope</h1>
  
             <div className="level-controls">
               <div className="level-control-row">
@@ -509,7 +496,6 @@ const RetailFunctionalScope = () => {
  
                 <div className="level-buttons">
                   {[1, 2, 3, 4, 5].map((level) => {
-                    // Check if this level should be enabled
                     const isLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
                     const hasSelections = levelSelections[`l${level}`] && levelSelections[`l${level}`].length > 0;
                    
@@ -542,87 +528,94 @@ const RetailFunctionalScope = () => {
         </div>
       </div>
  
-      {/* Footer */}
-      {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
+      {/* Footer with Previous and Save & Proceed buttons */}
+      <div className="footer-buttons-container" style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         marginTop: '20px',
-        paddingRight: '20px'
+        padding: '20px',
+        backgroundColor: '#f8fafc'
        }}>
         <button
-          className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
-          onClick={handleSaveAndProceed}
-          disabled={loading || !hasAllLevelsSelected()}
+          className="previous-button"
+          onClick={handlePrevious}
+          disabled={loading}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+            backgroundColor: 'transparent',
+            color: '#8b5cf6',
+            border: '2px solid #8b5cf6',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#8b5cf6';
+          }}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
+
+        <button
+          className={`proceed-button ${hasLevel5Selected() ? 'enabled' : 'disabled'}`}
+          onClick={handleSaveAndProceed}
+          disabled={loading || !hasLevel5Selected()}
+          style={{
+            backgroundColor: hasLevel5Selected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasLevel5Selected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasLevel5Selected() ? '#8b5cf6' : '#e5e7eb'),
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: hasLevel5Selected() ? 'pointer' : 'not-allowed',
+            opacity: hasLevel5Selected() ? 1 : 0.6,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
+          {!loading && (
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          )}
         </button>
       </div>
- 
-      {/* Parameter Modal */}
-      {/* {showParameterModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-header">
-              Select Parameters
-              <button
-                onClick={() => setShowParameterModal(false)}
-                className="modal-close"
-              >
-                &times;
-              </button>
-            </h2>
- 
-            <div>
-              <div className="modal-section-title">Process Granularity</div>
-              {[1, 2, 3, 4, 5].map((level) => {
-                // For parameter modal: Level 1 is always enabled, others need previous level selections
-                const isParameterLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
-               
-                return (
-                  <label
-                    key={level}
-                    className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
-                    style={{
-                      opacity: isParameterLevelEnabled ? 1 : 0.4,
-                      cursor: isParameterLevelEnabled ? 'pointer' : 'not-allowed'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="parameterLevel"
-                      value={level}
-                      checked={parameterLevel === level}
-                      onChange={() => isParameterLevelEnabled ? setParameterLevel(level) : null}
-                      disabled={!isParameterLevelEnabled}
-                      className="modal-radio"
-                    />
-                    Level {level}
-                  </label>
-                );
-              })}
-            </div>
- 
-            <div className="modal-footer">
-              <button
-                onClick={() => {
-                  setSelectedLevel(parameterLevel);
-                  setShowParameterModal(false);
-                }}
-                className="modal-save-button"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };
