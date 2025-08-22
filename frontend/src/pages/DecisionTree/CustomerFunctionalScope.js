@@ -13,8 +13,6 @@ const CustomerFunctionalScope = () => {
   const [error, setError] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(1);
-  // const [showParameterModal, setShowParameterModal] = useState(false);
-  // const [parameterLevel, setParameterLevel] = useState(1);
  
   useEffect(() => {
     async function fetchData() {
@@ -33,12 +31,10 @@ const CustomerFunctionalScope = () => {
     fetchData();
   }, []);
  
-  // Check if user has selected from all 5 levels
-  const hasAllLevelsSelected = () => {
-    return [1, 2, 3, 4, 5].every(level => {
-      const levelKey = `l${level}`;
-      return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
-    });
+  // Check if user has selected from Level 5 (enable save button after Level 5)
+  const hasLevel5Selected = () => {
+    const level5Key = 'l5';
+    return levelSelections[level5Key] && levelSelections[level5Key].length > 0;
   };
  
   // Get the maximum level that should be visible based on selections
@@ -66,12 +62,16 @@ const CustomerFunctionalScope = () => {
     return level <= getMaxVisibleLevel();
   };
 
+  // Handle previous button
+  const handlePrevious = () => {
+    navigate('/decision-tree/industry-type-plannD');
+  };
+
   // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
-      // Validate that user has made selections
-      if (!hasAllLevelsSelected()) {
-        setError('Please select at least one option from each level before proceeding.');
+      if (!hasLevel5Selected()) {
+        setError('Please select at least one option from Level 5 before proceeding.');
         setTimeout(() => setError(null), 3000);
         return;
       }
@@ -115,23 +115,10 @@ const CustomerFunctionalScope = () => {
     }
   };
  
-  // Filter data based on search query
-  const getFilteredData = () => {
-    if (!searchQuery) return functionalScopeData;
-   
-    return functionalScopeData.filter(item =>
-      Object.values(item).some(value =>
-        value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
-  };
- 
-  // Get unique items for a specific level based on selected path
+  // FIXED: More precise search that only searches the current level items
   const getLevelItems = (level) => {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) return [];
-   
-    let levelData = filteredData;
+    // Start with original data for level hierarchy
+    let levelData = functionalScopeData;
    
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
@@ -144,8 +131,8 @@ const CustomerFunctionalScope = () => {
         );
       }
     }
-   
-    // Get unique items for current level
+
+    // Get unique items for current level from hierarchy-filtered data
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
@@ -162,6 +149,15 @@ const CustomerFunctionalScope = () => {
         });
       }
     });
+
+    // FIXED: Apply search filter only to the current level items, not across all levels
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      return uniqueItems.filter(item => 
+        // Only search in the current level's name, not across all hierarchy levels
+        item.name.toLowerCase().includes(query)
+      );
+    }
    
     return uniqueItems;
   };
@@ -203,11 +199,10 @@ const CustomerFunctionalScope = () => {
    
     setSelectedPath(newSelectedPath);
    
-    // Auto-advance logic - move to next level when selecting (if not last level)
+    // Auto-advance logic
     if (currentSelections.length > 0 && level < 5) {
       setSelectedLevel(level + 1);
     } else if (currentSelections.length === 0 && level > 1) {
-      // Move backward when deselecting - go to previous level
       setSelectedLevel(level - 1);
     }
    
@@ -237,24 +232,26 @@ const CustomerFunctionalScope = () => {
   };
  
   const getItemNumber = (level, item) => {
-    const levelItems = getLevelItems(level);
-    const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-   
-    if (level === 1) {
-      return `${currentIndex + 1}.0`;
-    }
-   
     const fullItem = functionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
    
-    if (!fullItem) return `${currentIndex + 1}`;
+    if (!fullItem) return `1.0`;
    
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
      
-      const l1Items = getLevelItems(1);
-      const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
+      const l1Items = [];
+      const l1Seen = new Set();
+      functionalScopeData.forEach(dataItem => {
+        const value = dataItem.l1;
+        if (value && !l1Seen.has(value)) {
+          l1Seen.add(value);
+          l1Items.push(value);
+        }
+      });
+      
+      const l1Index = l1Items.findIndex(l1Item => l1Item === targetItem.l1);
       parts.push(l1Index + 1);
      
       for (let i = 2; i <= targetLevel; i++) {
@@ -341,7 +338,7 @@ const CustomerFunctionalScope = () => {
             </div>
           ) : levelItems.length === 0 ? (
             <div className="no-items">
-              No items available
+              {searchQuery.trim() ? 'No items match your search' : 'No items available'}
             </div>
           ) : (
             <div className="items-container">
@@ -402,7 +399,7 @@ const CustomerFunctionalScope = () => {
           <span>›</span>
           <span className="breadcrumb-link " style={{ color: '#0036C9' }}>Decision Tree</span>
           <span>›</span>
-          <span className="breadcrumb-current">Functional Scope</span>
+          <span className="breadcrumb-current">Customer Functional Scope</span>
         </div>
       </div>
  
@@ -465,16 +462,26 @@ const CustomerFunctionalScope = () => {
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
+              {/* Clear button - only show when there's text */}
+              {searchQuery.trim() && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="search-clear-button"
+                  title="Clear search"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="#6b7280"
+                    className="search-clear-icon"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
- 
-            {/* <div className="header-buttons">
-              <button
-                className="parameter-button"
-                onClick={() => setShowParameterModal(true)}
-              >
-                Select Parameters
-              </button>
-            </div> */}
           </div>
  
           {/* Functional Scope Header and Select Level View */}
@@ -527,87 +534,94 @@ const CustomerFunctionalScope = () => {
         </div>
       </div>
  
-      {/* Footer */}
-      {/* Save & Proceed Button - Moved to right side */}
-      <div className="save-proceed-container" style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
+      {/* Footer with Previous and Save & Proceed buttons */}
+      <div className="footer-buttons-container" style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         marginTop: '20px',
-        paddingRight: '20px'
+        padding: '20px',
+        backgroundColor: '#f8fafc'
        }}>
         <button
-          className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
-          onClick={handleSaveAndProceed}
-          disabled={loading || !hasAllLevelsSelected()}
+          className="previous-button"
+          onClick={handlePrevious}
+          disabled={loading}
           style={{
-          backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-          color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-          cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-          opacity: hasAllLevelsSelected() ? 1 : 0.6
+            backgroundColor: 'transparent',
+            color: '#8b5cf6',
+            border: '2px solid #8b5cf6',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#8b5cf6';
+            e.target.style.color = 'white';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#8b5cf6';
+          }}
+        >
+          <svg 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+          Previous
+        </button>
+
+        <button
+          className={`proceed-button ${hasLevel5Selected() ? 'enabled' : 'disabled'}`}
+          onClick={handleSaveAndProceed}
+          disabled={loading || !hasLevel5Selected()}
+          style={{
+            backgroundColor: hasLevel5Selected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasLevel5Selected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasLevel5Selected() ? '#8b5cf6' : '#e5e7eb'),
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: hasLevel5Selected() ? 'pointer' : 'not-allowed',
+            opacity: hasLevel5Selected() ? 1 : 0.6,
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
           }}
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
+          {!loading && (
+            <svg 
+              width="16" 
+              height="16" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          )}
         </button>
       </div>
- 
-      {/* Parameter Modal */}
-      {/* {showParameterModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2 className="modal-header">
-              Select Parameters
-              <button
-                onClick={() => setShowParameterModal(false)}
-                className="modal-close"
-              >
-                &times;
-              </button>
-            </h2>
- 
-            <div>
-              <div className="modal-section-title">Process Granularity</div>
-              {[1, 2, 3, 4, 5].map((level) => {
-                // For parameter modal: Level 1 is always enabled, others need previous level selections
-                const isParameterLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
-               
-                return (
-                  <label
-                    key={level}
-                    className={`modal-option ${!isParameterLevelEnabled ? 'disabled' : ''}`}
-                    style={{
-                      opacity: isParameterLevelEnabled ? 1 : 0.4,
-                      cursor: isParameterLevelEnabled ? 'pointer' : 'not-allowed'
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="parameterLevel"
-                      value={level}
-                      checked={parameterLevel === level}
-                      onChange={() => isParameterLevelEnabled ? setParameterLevel(level) : null}
-                      disabled={!isParameterLevelEnabled}
-                      className="modal-radio"
-                    />
-                    Level {level}
-                  </label>
-                );
-              })}
-            </div>
- 
-            <div className="modal-footer">
-              <button
-                onClick={() => {
-                  setSelectedLevel(parameterLevel);
-                  setShowParameterModal(false);
-                }}
-                className="modal-save-button"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };
