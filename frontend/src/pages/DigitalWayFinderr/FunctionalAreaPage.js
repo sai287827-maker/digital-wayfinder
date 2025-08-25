@@ -134,7 +134,7 @@ function FunctionalAreaPage() {
           </div>
 
           <div className="progress-footer">
-            <div className="progress-text">Completed step 0 of 3</div>
+            <div className="progress-text">Completed step 1 of 3</div>
             <button 
               className="finish-button"
               disabled={!selectedArea}

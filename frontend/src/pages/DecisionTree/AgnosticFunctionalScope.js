@@ -22,7 +22,7 @@ const AgnosticFunctionalScope = () => {
       setError(null);
       try {
         // Updated API endpoint to industry agnostic
-        const data = await apiGet('api/decision-tree/functional-scope/ind-agnostic/all');
+        const data = await apiGet('api/decision-tree/functional-scope/ind-agnoustic/all');
         setFunctionalScopeData(data);
       } catch (err) {
         setError('Failed to fetch functional scope data.');

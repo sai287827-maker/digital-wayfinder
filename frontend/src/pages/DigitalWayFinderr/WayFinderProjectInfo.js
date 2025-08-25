@@ -112,12 +112,7 @@ console.log("formData",formData);
            <Link to="/">Home</Link> &gt; 
           <span>Digital Wayfinder</span>
         </div>
-        {/* Navigation Tabs */}
-        <div className="nav-tabs">
-          <button className="nav-tab active">Project Information</button>
-          <button className="nav-tab">Functional Area</button>
-          <button className="nav-tab">Industry Type</button>
-        </div>
+        
         {/* Content Grid */}
         <div className="content-grid">
           {/* Left Side - Form */}
