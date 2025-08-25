@@ -125,7 +125,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             // Check if we should try to fetch existing answers separately
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
@@ -384,19 +384,29 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             <div key={step.label} className={styles.stepItem}>
               <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
                               step.status === 'active' ? styles.stepCircleActive : 
-                              styles.stepCircleInactive}>
+                              styles.stepCircleInactive}
+                   style={{
+                     backgroundColor: step.status === 'completed' ? '#4CAF50' : 
+                                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                     color: step.status === 'inactive' ? '#666' : 'white'
+                   }}>
                 {step.status === 'completed' ? '✓' : idx + 1}
               </div>
               <span className={step.status === 'completed' ? styles.stepTextCompleted :
                               step.status === 'active' ? styles.stepTextActive : 
-                              styles.stepTextInactive}>
+                              styles.stepTextInactive}
+                    style={{
+                      color: step.status === 'completed' ? '#4CAF50' : 
+                             step.status === 'active' ? '#9C27B0' : '#666',
+                      fontWeight: step.status === 'active' ? '600' : '400'
+                    }}>
                 {step.label}
               </span>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.mainContent}>
+      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
@@ -430,8 +440,8 @@ const VisibilityProactive = ({ onNavigateBack }) => {
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
                 
                 return (
-                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                    <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
+                    <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
                     <div className={styles.optionsRow}>
                       {questionOptions.map(opt => (
                         <label

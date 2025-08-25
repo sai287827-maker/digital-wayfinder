@@ -432,7 +432,7 @@ const Operational = ({ onNavigateBack }) => {
           ))}
         </div>
       </div>
-      <div className={styles.mainContent}>
+      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
@@ -466,8 +466,8 @@ const Operational = ({ onNavigateBack }) => {
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
                 
                 return (
-                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '12px', padding: '16px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                    <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
+                    <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
                     <div className={styles.optionsRow}>
                       {questionOptions.map(opt => (
                         <label
