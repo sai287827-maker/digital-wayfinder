@@ -91,22 +91,22 @@ public class PlatformAnalysisService {
      * Removes duplicate records and filters out records with null asset names.
      * Keeps the first occurrence of each unique combination based on assetName, category, and gaps.
      */
-    private List<PlatformAnalysis> removeDuplicates(List<PlatformAnalysis> records) {
-        return records.stream()
-                // Filter out records where assetName is null or empty
-                .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
-                .collect(Collectors.toMap(
-                    // Key: Create a unique key based on assetName, category, and gaps
-                    record -> createUniqueKey(record.getAssetName(), record.getCategory(), record.getGaps()),
-                    // Value: The record itself
-                    record -> record,
-                    // Merge function: Keep the first occurrence in case of duplicates
-                    (existing, replacement) -> existing
-                ))
-                .values()
-                .stream()
-                .collect(Collectors.toList());
-    }
+private List<PlatformAnalysis> removeDuplicates(List<PlatformAnalysis> records) {
+    return records.stream()
+            // Filter out records where assetName is null or empty
+            .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
+            .collect(Collectors.toMap(
+                // Key: Use only assetName as the unique key
+                PlatformAnalysis::getAssetName,
+                // Value: The record itself
+                record -> record,
+                // Merge function: Keep the first occurrence in case of duplicates
+                (existing, replacement) -> existing
+            ))
+            .values()
+            .stream()
+            .collect(Collectors.toList());
+}
     
     /**
      * Creates a unique key for deduplication.
