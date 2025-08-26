@@ -79,10 +79,10 @@ function IndustryTypeFullfillment() {
     navigate('/digital-wayfinder/functional-area');
   };
 
-  const tooltipContent = {
-    'warehouse-management': 'The storage of goods in a facility until they are needed for distribution or sale. Manages inventory, location tracking, and warehouse operations.',
-    'order-management': 'The process of tracking, processing, and fulfilling customer orders from placement to delivery. Handles order lifecycle and customer communications.',
-    'transportation-management': 'The movement of goods from one location to another within the supply chain. Optimizes routes, manages carriers, and tracks shipments.'
+  const tooltipContent =  {
+    'warehouse-management': 'Controls and optimizes how inventory is received, stored, picked, packed, and shipped within a warehouse. Also, refers to the storage of goods before they are distributed to retailers, wholesalers, or directly to customers.',
+    'order-management': ' A centralized platform to track, control, and automate the order process across multiple sales channels, warehouses, and customer touchpoints.',
+    'transportation-management': 'To plan, execute, and optimize the movement of goods. It’s designed to manage the entire transportation process—from choosing the best shipping methods and carriers to tracking deliveries and handling freight billing.',
   };
 
   const systemData = [

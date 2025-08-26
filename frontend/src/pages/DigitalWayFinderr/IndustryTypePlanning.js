@@ -96,9 +96,9 @@ function IndustryTypePlanning() {
   };
 
   const tooltipContent = {
-    'Industry Agnostic': 'The process of aligning supply and demand across various industries.',
-    'Retail Industry Specific': 'The process of forecasting demand, managing inventory, and ensuring timely product availability to meet customer needs in retail.',
-    'Consumer Goods Industry Specific': 'The process of forecasting demand, optimizing inventory and distribution for timely delivery of consumer goods.'
+    'Industry Agnostic': ' The process of managing the flow of goods, services, and information across various industries, focusing on optimizing inventory, demand forecasting, and resource allocation to improve efficiency and meet customer needs.',
+    'Retail Industry Specific': 'The process of managing inventory, demand forecasting, and replenishment strategies to ensure the right products are available at the right time and place, optimizing efficiency and meeting customer expectations in the retail sector.',
+    'Consumer Goods Industry Specific': 'The process of forecasting demand, managing inventory, optimizing production and distribution to ensure timely delivery of consumer goods.'
   };
 
   const systemData = [
@@ -185,7 +185,7 @@ function IndustryTypePlanning() {
             >
               Previous
             </button>
-            <div className="progress-text">Completed step 1 of 3</div>
+            <div className="progress-text">Completed step 2 of 4</div>
             <button 
               className="finish-button"
               disabled={!selectedSystem}

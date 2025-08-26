@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './IndustryTypePlanParts.css';
@@ -68,17 +67,17 @@ function IndustryTypePlanParts() {
       case 'industry-agnostic-system':
         return {
           title: 'Select the Industry Platform',
-          description: 'Choose your Warehouse Management System platform'
+          description: 'Choose your Industry Agnostic Platform'
         };
       case 'retail-industry-specific-system':
         return {
           title: 'Select the Retail Industry Platform',
-          description: 'Choose your Transportation Management System platform'
+          description: 'Choose your Retail Industry Specific System Platform'
         };
       case 'consumer-goods-industry-specific-system':
         return {
           title: 'Select the Consumer Goods Platform',
-          description: 'Choose your Order Management System platform'
+          description: 'Choose your Consumer Goods Industry Specific System Platform'
         };
       default:
         return {
@@ -195,7 +194,7 @@ function IndustryTypePlanParts() {
             >
               Previous
             </button>
-            <div className="progress-text">Completed step 2 of 3</div>
+            <div className="progress-text">Completed step 3 of 4</div>
             <button 
               className="finish-button"
               disabled={selectedPlatforms.length === 0}
