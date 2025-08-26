@@ -79,10 +79,10 @@ function IndustryTypeFullfillment() {
     navigate('/digital-wayfinder/functional-area');
   };
 
-  const tooltipContent =  {
+  const tooltipContent = {
     'warehouse-management': 'Controls and optimizes how inventory is received, stored, picked, packed, and shipped within a warehouse. Also, refers to the storage of goods before they are distributed to retailers, wholesalers, or directly to customers.',
     'order-management': ' A centralized platform to track, control, and automate the order process across multiple sales channels, warehouses, and customer touchpoints.',
-    'transportation-management': 'To plan, execute, and optimize the movement of goods. It’s designed to manage the entire transportation process—from choosing the best shipping methods and carriers to tracking deliveries and handling freight billing.',
+    'transportation-management': 'To plan, execute, and optimize the movement of goods. Its designed to manage the entire transportation process—from choosing the best shipping methods and carriers to tracking deliveries and handling freight billing.',
   };
 
   const systemData = [
@@ -93,17 +93,19 @@ function IndustryTypeFullfillment() {
       image: warehouseManagementImg
     },
     {
-      id: 'order-management',  
-      title: 'Order Management System',
-      description: 'The process of tracking, processing, and fulfilling customer orders from placement to delivery',
-      image: orderManagementImg
-    },
-    {
       id: 'transportation-management',
       title: 'Transportation Management System', 
       description: 'The movement of goods from one location to another within the supply chain',
       image: transportationManagementImg
+    },
+      {
+      id: 'order-management',  
+      title: 'Order Management System',
+      description: 'The process of tracking, processing, and fulfilling customer orders from placement to delivery',
+      image: orderManagementImg
     }
+
+
   ];
   // const getProgressText = () => {
   //   if (selectedSystem === 'warehouse-management') {
@@ -137,42 +139,50 @@ function IndustryTypeFullfillment() {
           <p className="subtitle">Begin by choosing a key area</p>
 
           <div className="system-cards">
-            {systemData.map((system) => (
-              <div 
-                key={system.id}
-                className={`system-card ${selectedSystem === system.id ? 'selected' : ''}`}
-                onClick={() => handleSystemSelect(system.id)}
-              >
-                <div className="card-content">
-                  <div className="card-image">
-                    <img src={system.image} alt={system.title} />
-                  </div>
-                  <div className="card-text">
-                    <h3>{system.title}</h3>
-                    <p>{system.description}</p>
-                  </div>
-                </div>
+            {systemData.map((system) => {
+              const isOrderManagement = system.id === 'order-management';
+              return (
                 <div 
-                  className="info-icon"
-                  onMouseEnter={() => showTooltip(system.id)}
-                  onMouseLeave={hideTooltip}
+                  key={system.id}
+                  className={`system-card ${selectedSystem === system.id ? 'selected' : ''} ${isOrderManagement ? 'disabled' : ''}`}
+                  onClick={() => !isOrderManagement && handleSystemSelect(system.id)}
+                  style={{
+                    opacity: isOrderManagement ? 0.5 : 1,
+                    pointerEvents: isOrderManagement ? 'none' : 'auto',
+                    cursor: isOrderManagement ? 'not-allowed' : 'pointer'
+                  }}
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  {tooltipVisible === system.id && (
-                    <div className="tooltip">
-                      <div className="tooltip-header">{system.title}</div>
-                      <div className="tooltip-content">
-                        {tooltipContent[system.id]}
-                      </div>
+                  <div className="card-content">
+                    <div className="card-image">
+                      <img src={system.image} alt={system.title} />
                     </div>
-                  )}
+                    <div className="card-text">
+                      <h3>{system.title}</h3>
+                      <p>{system.description}</p>
+                    </div>
+                  </div>
+                  <div 
+                    className="info-icon"
+                    onMouseEnter={() => showTooltip(system.id)}
+                    onMouseLeave={hideTooltip}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    {tooltipVisible === system.id && (
+                      <div className="tooltip">
+                        <div className="tooltip-header">{system.title}</div>
+                        <div className="tooltip-content">
+                          {tooltipContent[system.id]}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="progress-footer">

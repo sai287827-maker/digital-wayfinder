@@ -31,17 +31,25 @@ import AgnosticFunctionalScope from './pages/DecisionTree/AgnosticFunctionalScop
 import AgnosticNonFunctionalScope from './pages/DecisionTree/AgnosticNonFunctionalScope';
 import AgnosticDecisionCriteria from './pages/DecisionTree/AgnosticDecisionCriteria';
 import AgnosticSolution from './pages/DecisionTree/AgnosticSolution';
+import AgnosticDashboard from './pages/DecisionTree/AgnosticDashboard';
 import RetailFunctionalScope from './pages/DecisionTree/RetailFunctionalScope';
 import RetailNonFunctionalScope from './pages/DecisionTree/RetailNonFunctionalScope';
 import RetailDecisionCriteria from './pages/DecisionTree/RetailDecisionCriteria';
 import RetailSolution from './pages/DecisionTree/RetailSolution';
 import RetailDashboard from './pages/DecisionTree/RetailDashboard';
+import CustomerFunctionalScope from './pages/DecisionTree/CustomerFunctionalScope';
+import CustomerNonFunctionalScope from './pages/DecisionTree/CustomerNonFunctionalScope';
+import CustomerDecisionCriteria from './pages/DecisionTree/CustomerDecisionCriteria';
+import CustomerSolution from './pages/DecisionTree/CustomerSolution';
+import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
  
  
  
 // import FinalPage from './pages/DigitalWayFinderr/FinalPage';
  
 import './App.css';
+
+
  
  
 function App() {
@@ -79,11 +87,19 @@ function App() {
           <Route path="/decision-tree/agnostic-non-functional-scope" element={<AgnosticNonFunctionalScope />} />
           <Route path="/decision-tree/agnostic-decision-criteria" element={<AgnosticDecisionCriteria/>} />
           <Route path="/decision-tree/agnostic-solution" element={<AgnosticSolution />} />
+          <Route path="/decision-tree/agnostic-dashboard" element={<AgnosticDashboard/>} />
           <Route path="/decision-tree/retail-functional-scope" element={<RetailFunctionalScope />} />
           <Route path="/decision-tree/retail-non-functional-scope" element={<RetailNonFunctionalScope />} />
           <Route path="/decision-tree/retail-decision-criteria" element={<RetailDecisionCriteria/>} />
           <Route path="/decision-tree/retail-solution" element={<RetailSolution />} />
           <Route path="/decision-tree/retail-dashboard" element={<RetailDashboard/>} />
+          <Route path="/decision-tree/customer-functional-scope" element={<CustomerFunctionalScope />} />
+          <Route path="/decision-tree/customer-functional-scope" element={<CustomerNonFunctionalScope />} />
+          <Route path="/decision-tree/customer-decision-criteria" element={<CustomerDecisionCriteria/>} />
+          <Route path="/decision-tree/customer-solution" element={<CustomerSolution />} />
+          <Route path="/decision-tree/customer-dashboard" element={<CustomerDashboard/>} />
+          
+          
  
           {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
         </Routes>
