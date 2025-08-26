@@ -14,8 +14,8 @@ const steps = [
 const Operational = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
-  const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
-  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]); // Store answer type per question
+  const [answerOptions, setAnswerOptions] = useState([]);
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -140,35 +140,6 @@ const Operational = ({ onNavigateBack }) => {
             });
           } else {
             console.log('No existing answers found in response');
-            
-            // Check if we should try to fetch existing answers separately
-            // This is a fallback in case the get-questions endpoint doesn't return answers
-            try {
-              console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-              
-              if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
-                console.log('Found existing answers in separate call:', answersResponse.answers);
-                
-                // Re-determine answer options from separate response if needed
-                if (!response.questions || !response.questions[0]?.answerType) {
-                  const separateOptions = determineAnswerOptions(answersResponse);
-                  setAnswerOptions(separateOptions);
-                  console.log('Updated answer options from separate call:', separateOptions);
-                }
-                
-                answersResponse.answers.forEach(answerObj => {
-                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
-                  if (questionIndex !== -1) {
-                    const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
-                    initialAnswers[questionIndex] = answerValue;
-                    console.log(`Loaded answer from separate call for question ${questionIndex}: ${answerValue}`);
-                  }
-                });
-              }
-            } catch (separateErr) {
-              console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
-            }
           }
           
           setAnswers(initialAnswers);
@@ -432,7 +403,7 @@ const Operational = ({ onNavigateBack }) => {
           ))}
         </div>
       </div>
-      <div className={styles.mainContent}>
+      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
@@ -466,8 +437,8 @@ const Operational = ({ onNavigateBack }) => {
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
                 
                 return (
-                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '12px', padding: '16px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                    <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
+                    <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
                     <div className={styles.optionsRow}>
                       {questionOptions.map(opt => (
                         <label

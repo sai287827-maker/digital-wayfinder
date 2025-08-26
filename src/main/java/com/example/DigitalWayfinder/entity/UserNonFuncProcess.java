@@ -1,5 +1,6 @@
 package com.example.DigitalWayfinder.entity;
 
+import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "UserNonFuncProcess")
@@ -52,4 +55,14 @@ public class UserNonFuncProcess {
     
     @Column(name = "L5", columnDefinition = "TEXT")
     private String l5;
+
+    @Column(name = "CreatedDate")
+    private LocalDateTime createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdDate == null) {
+            createdDate = LocalDateTime.now();
+        }
+    }
 }

@@ -6,7 +6,7 @@
 // const RetailSolution = () => {
 //   const navigate = useNavigate();
 //   const [solutionData, setSolutionData] = useState([]);
-//   const [selectedSolutions, setSelectedSolutions] = useState([]);
+//   const [selectedPlatforms, setSelectedSolutions] = useState([]);
 //   const [searchQuery, setSearchQuery] = useState('');
 //   const [loading, setLoading] = useState(false);
 //   const [error, setError] = useState(null);
@@ -52,7 +52,7 @@
 //   const handleSelectAll = () => {
 //     const filteredSolutions = getFilteredSolutions();
 //     const allFilteredIds = filteredSolutions.map(solution => solution.id || solution.platformName);
-//     const allSelected = allFilteredIds.every(id => selectedSolutions.includes(id));
+//     const allSelected = allFilteredIds.every(id => selectedPlatforms.includes(id));
     
 //     if (allSelected) {
 //       // Deselect all filtered solutions
@@ -71,14 +71,14 @@
 //   // Handle generate dashboard
 //   const handleGenerateReport = async () => {
 //     try {
-//       if (selectedSolutions.length === 0) {
+//       if (selectedPlatforms.length === 0) {
 //         setError('Please select at least one retail solution before generating the report.');
 //         setTimeout(() => setError(null), 3000);
 //         return;
 //       }
 //       setLoading(true);
 //       await apiPost('api/decision-tree/retail-solution/save', {
-//         selectedSolutions,
+//         selectedPlatforms,
 //         searchQuery,
 //         timestamp: new Date().toISOString()
 //       });
@@ -86,7 +86,7 @@
 //         state: {
 //           fromRetailSolution: true,
 //           selectedData: {
-//             selectedSolutions,
+//             selectedPlatforms,
 //             searchQuery,
 //             timestamp: new Date().toISOString()
 //           }
@@ -103,7 +103,7 @@
 //   // Check if all filtered solutions are selected
 //   const filteredSolutions = getFilteredSolutions();
 //   const allFilteredSelected = filteredSolutions.length > 0 && 
-//     filteredSolutions.every(solution => selectedSolutions.includes(solution.id || solution.platformName));
+//     filteredSolutions.every(solution => selectedPlatforms.includes(solution.id || solution.platformName));
 
 //   return (
 //     <div className="retail-solution-wrapper">
@@ -192,7 +192,7 @@
 //               <h1 className="retail-solutions-title">Retail Solutions</h1>
 //               <div className="retail-solutions-controls">
 //                 <span className="retail-solutions-counter">
-//                   Selected Solutions(s) ({selectedSolutions.length})
+//                   Selected Solutions(s) ({selectedPlatforms.length})
 //                 </span>
 //                 <button
 //                   className="retail-select-all-btn"
@@ -220,13 +220,13 @@
 //               ) : getFilteredSolutions().map((solution, index) => (
 //                 <div
 //                   key={solution.id || solution.platformName || index}
-//                   className={`retail-solution-card ${selectedSolutions.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
+//                   className={`retail-solution-card ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
 //                   onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
 //                 >
 //                   <div className="retail-solution-checkbox-wrapper">
 //                     <input
 //                       type="checkbox"
-//                       checked={selectedSolutions.includes(solution.id || solution.platformName)}
+//                       checked={selectedPlatforms.includes(solution.id || solution.platformName)}
 //                       onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
 //                       className="retail-solution-checkbox"
 //                     />
@@ -318,7 +318,7 @@ import { apiGet, apiPost } from '../../api';
 const RetailSolution = () => {
   const navigate = useNavigate();
   const [solutionData, setSolutionData] = useState([]);
-  const [selectedSolutions, setSelectedSolutions] = useState([]);
+  const [selectedPlatforms, setSelectedSolutions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -364,7 +364,7 @@ const RetailSolution = () => {
   const handleSelectAll = () => {
     const filteredSolutions = getFilteredSolutions();
     const allFilteredIds = filteredSolutions.map(solution => solution.id || solution.platformName);
-    const allSelected = allFilteredIds.every(id => selectedSolutions.includes(id));
+    const allSelected = allFilteredIds.every(id => selectedPlatforms.includes(id));
     
     if (allSelected) {
       // Deselect all filtered solutions
@@ -383,14 +383,14 @@ const RetailSolution = () => {
   // Handle generate dashboard
   const handleGenerateReport = async () => {
     try {
-      if (selectedSolutions.length === 0) {
+      if (selectedPlatforms.length === 0) {
         setError('Please select at least one retail solution before generating the report.');
         setTimeout(() => setError(null), 3000);
         return;
       }
       setLoading(true);
-      await apiPost('api/decision-tree/retail-solution/save', {
-        selectedSolutions,
+      await apiPost('api/decision-tree/functional-scope/solution/save', {
+        selectedPlatforms,
         searchQuery,
         timestamp: new Date().toISOString()
       });
@@ -398,7 +398,7 @@ const RetailSolution = () => {
         state: {
           fromRetailSolution: true,
           selectedData: {
-            selectedSolutions,
+            selectedPlatforms,
             searchQuery,
             timestamp: new Date().toISOString()
           }
@@ -415,7 +415,7 @@ const RetailSolution = () => {
   // Check if all filtered solutions are selected
   const filteredSolutions = getFilteredSolutions();
   const allFilteredSelected = filteredSolutions.length > 0 && 
-    filteredSolutions.every(solution => selectedSolutions.includes(solution.id || solution.platformName));
+    filteredSolutions.every(solution => selectedPlatforms.includes(solution.id || solution.platformName));
 
   return (
     <div className="retail-solution-wrapper">
@@ -504,7 +504,7 @@ const RetailSolution = () => {
               <h1 className="retail-solutions-title">Retail Solutions</h1>
               <div className="retail-solutions-controls">
                 <span className="retail-solutions-counter">
-                  Selected Solutions(s) ({selectedSolutions.length})
+                  Selected Solutions(s) ({selectedPlatforms.length})
                 </span>
                 <button
                   className="retail-select-all-btn"
@@ -532,13 +532,13 @@ const RetailSolution = () => {
               ) : getFilteredSolutions().map((solution, index) => (
                 <div
                   key={solution.id || solution.platformName || index}
-                  className={`retail-solution-card ${selectedSolutions.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
+                  className={`retail-solution-card ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
                   onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
                 >
                   <div className="retail-solution-checkbox-wrapper">
                     <input
                       type="checkbox"
-                      checked={selectedSolutions.includes(solution.id || solution.platformName)}
+                      checked={selectedPlatforms.includes(solution.id || solution.platformName)}
                       onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
                       className="retail-solution-checkbox"
                     />

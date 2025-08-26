@@ -14,7 +14,8 @@ import java.util.Optional;
 @Repository
 public interface UserFunctionalProcessRepository extends JpaRepository<UserFunctionalProcess, Long> {
     
-    Optional<UserFunctionalProcess> findByUserIdAndSessionId(String userId, String sessionId);
+    List<UserFunctionalProcess> findByUserIdAndSessionId(String userId, String sessionId);
+
     
     @Query("SELECT ufp FROM UserFunctionalProcess ufp WHERE ufp.userId = :userId AND ufp.sessionId = :sessionId")
     Optional<UserFunctionalProcess> findByUserIdAndSessionIdWithQuery(@Param("userId") String userId, @Param("sessionId") String sessionId);

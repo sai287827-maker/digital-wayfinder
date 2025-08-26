@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+
 
 
 @Service
@@ -47,6 +49,7 @@ public class UserPlatformService {
                             .functionalArea(previousProcess.getFunctionalArea())
                             .industryType(previousProcess.getIndustryType())
                             .functionalSubArea(previousProcess.getFunctionalSubArea())
+                            
                             .platform(platform)
                             // .key(request.getKey())
                             .build())

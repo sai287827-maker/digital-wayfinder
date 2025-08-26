@@ -13,6 +13,8 @@ const steps = [
 const TmsAgenticAI = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]);
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -25,47 +27,122 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
+  // Function to determine answer options from API response
+  const determineAnswerOptions = (apiResponse) => {
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
+    }
+    
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => 
+        ['yes', 'no'].includes(answer)
+      );
+      const hasHighMediumLow = existingAnswers.some(answer => 
+        ['high', 'medium', 'low'].includes(answer)
+      );
+      
+      if (hasYesNo) {
+        return ['Yes', 'No'];
+      } else if (hasHighMediumLow) {
+        return ['High', 'Medium', 'Low'];
+      }
+    }
+    
+    return ['High', 'Medium', 'Low'];
+  };
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
       setError(null);
       try {
         console.log('Fetching Agentic AI questions...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
 
         console.log('Agentic AI API Response:', response);
 
-        // Map the response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
           const questionTexts = response.questions.map(q => q.question);
-          setQuestions(questionTexts);
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low'];
+          });
           
-          // Initialize answers array
+          setQuestions(questionTexts);
+          setQuestionAnswerTypes(answerTypes);
+          
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
+          console.log('Determined answer options for AgenticAI:', options);
+          
           const initialAnswers = Array(questionTexts.length).fill(null);
           
-          // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
+            console.log('Loading existing AgenticAI answers:', response.answers);
             response.answers.forEach(answerObj => {
               const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
               if (questionIndex !== -1) {
-                // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
+                console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
+              } else {
+                console.warn('Could not find matching question for answer:', answerObj);
               }
             });
+          } else {
+            console.log('No existing answers found in response');
+            
+            try {
+              console.log('Attempting to fetch existing answers separately...');
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
+              
+              if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
+                console.log('Found existing answers in separate call:', answersResponse.answers);
+                
+                if (!response.questions || !response.questions[0]?.answerType) {
+                  const separateOptions = determineAnswerOptions(answersResponse);
+                  setAnswerOptions(separateOptions);
+                  console.log('Updated answer options from separate call:', separateOptions);
+                }
+                
+                answersResponse.answers.forEach(answerObj => {
+                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+                  if (questionIndex !== -1) {
+                    const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                    initialAnswers[questionIndex] = answerValue;
+                    console.log(`Loaded answer from separate call for question ${questionIndex}: ${answerValue}`);
+                  }
+                });
+              }
+            } catch (separateErr) {
+              console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
+            }
           }
           
           setAnswers(initialAnswers);
+          console.log('Final AgenticAI answers array:', initialAnswers);
           
-          // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
           
-          // Set functional area - if not provided, determine from functionalSubArea
           let area = response.functionalArea || '';
           if (!area && response.functionalSubArea) {
-            // Map functional sub-areas to functional areas
             const areaMapping = {
               'Warehouse Management System': 'Supply Chain Fulfillment',
               'Inventory Management': 'Supply Chain Fulfillment',
@@ -80,16 +157,17 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
             };
             area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
           }
-          // Default fallback if still empty
           if (!area) {
             area = 'Supply Chain Fulfillment';
           }
           setFunctionalArea(area);
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
-          // Fallback for old response structure
+          console.log('Using fallback structure for AgenticAI questions');
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setAnswerOptions(['High', 'Medium', 'Low']);
+          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
       } catch (err) {
         console.error('Error fetching Agentic AI questions:', err);
@@ -108,7 +186,6 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
   };
 
   const handlePrevious = async () => {
-    // Check if there are any answers to save before going back
     const hasAnswers = answers.some(answer => answer !== null);
     
     if (hasAnswers) {
@@ -116,7 +193,6 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
         setNavigatingBack(true);
         setError(null);
         
-        // Save current progress before navigating back
         let area = functionalArea;
         if (!area && functionalSubArea) {
           const areaMapping = {
@@ -137,60 +213,42 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
           area = 'Supply Chain Fulfillment';
         }
         
-        // Create payload with only answered questions
         const answeredQuestions = questions
           .map((question, index) => ({
             question: question,
             answer: answers[index]?.toLowerCase() || ''
           }))
-          .filter(item => item.answer !== ''); // Only include answered questions
+          .filter(item => item.answer !== '');
         
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
             functionalSubArea: functionalSubArea || '',
             answers: answeredQuestions,
-            isPartialSave: true // Flag to indicate this is a partial save before navigation
+            isPartialSave: true
           };
           
           console.log('Saving partial Agentic AI progress before navigation:', payload);
-          
-          // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/genai/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
         
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
-        // Continue with navigation even if save fails
         console.log('Continuing with navigation despite save error');
       }
     }
     
-    // Navigate back to previous step
     if (onNavigateBack && typeof onNavigateBack === 'function') {
       console.log('Navigating back using onNavigateBack callback');
       onNavigateBack();
     } else {
-      // Fallback navigation methods
       console.log('Using fallback navigation method');
       
-      // Option 1: If using React Router, you might have history available
       if (window.history && window.history.length > 1) {
         window.history.back();
       } else {
-        // Option 2: Navigate to a specific route (adjust based on your routing structure)
-        // This assumes you have a router setup
         console.log('Attempting to navigate to previous step...');
-        
-        // You might need to replace this with your specific routing logic
-        // For example, if using React Router:
-        // navigate('/digital-wayfinder/visibility-and-proactive');
-        
-        // Or if you have a parent component handling navigation:
-        // window.parent.postMessage({ action: 'navigateToPreviousStep' }, '*');
-        
-        // For now, we'll show an alert as a placeholder
         alert('Previous step navigation would be implemented here based on your routing setup.');
       }
     }
@@ -199,7 +257,6 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
   };
 
   const handleSaveAndProceed = async () => {
-    // Validate that all questions are answered
     if (!allQuestionsAnswered) {
       setError('Please answer all questions before proceeding.');
       return;
@@ -209,10 +266,8 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
       setSaving(true);
       setError(null);
       
-      // Ensure functional area is set with fallback
       let area = functionalArea;
       if (!area && functionalSubArea) {
-        // Map functional sub-areas to functional areas
         const areaMapping = {
           'Warehouse Management System': 'Supply Chain Fulfillment',
           'Inventory Management': 'Supply Chain Fulfillment',
@@ -227,12 +282,10 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
         };
         area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
       }
-      // Default fallback if still empty
       if (!area) {
         area = 'Supply Chain Fulfillment';
       }
       
-      // Call API to save answers
       const payload = {
         functionalArea: area,
         functionalSubArea: functionalSubArea || '',
@@ -248,7 +301,6 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
 
       console.log('Agentic AI answers saved successfully:', response);
       
-      // Navigate to WmsReport or next step without popup
       setShowWmsReport(true);
       
     } catch (err) {
@@ -261,19 +313,17 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-  
-  // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
   
-  // Debug logging for progress bar
   console.log('AgenticAI Progress Debug:', {
     completedCount,
     totalQuestions: questions.length,
     progressPercentage,
-    answers
+    answers,
+    answerOptions,
+    questionAnswerTypes
   });
 
-  // Early return for navigation to WmsReport
   if (showWmsReport) {
     console.log('Navigating to WmsReport component, showWmsReport:', showWmsReport);
     return <WmsReport />;
@@ -343,117 +393,96 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
         </div>
       </div>
       <div className={styles.mainContent}>
-        <div className={styles.breadcrumb}>
-          <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
-          <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
-          <span className={styles.breadcrumbCurrent}>Questionnaire</span>
-        </div>
         <div className={styles.title}>Agentic AI</div>
         <div className={styles.progressRow}>
-          <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-          <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-            <div 
-              className={styles.progressBarFill} 
-              style={{ 
-                width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
-                height: '100%',
-                backgroundColor: '#9C27B0',
-                borderRadius: '4px',
-                transition: 'width 0.3s ease'
-              }} 
-            />
-          </div>
+          <span className={styles.progressLabel}>Progress: {completedCount} of {questions.length} questions completed</span>
+          <span style={{color: '#666', fontSize: '14px'}}>{Math.round(progressPercentage)}%</span>
         </div>
         <div className={styles.questionsList}>
-          {questions.map((q, idx) => (
-            <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-              <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
-              <div className={styles.optionsRow}>
-                {['High', 'Medium', 'Low'].map(opt => (
-                  <label key={opt} className={styles.optionLabel} style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name={`q${idx}`}
-                      value={opt}
-                      checked={answers[idx] === opt}
-                      onChange={() => handleAnswer(idx, opt)}
-                      className={styles.radio}
-                      style={{
-                        accentColor: '#9C27B0',
-                        marginRight: '8px',
-                        width: '18px',
-                        height: '18px'
-                      }}
-                    />
-                    <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
-                  </label>
-                ))}
+          {questions.map((q, idx) => {
+            const questionOptions = questionAnswerTypes[idx] || answerOptions;
+            
+            return (
+              <div key={idx} style={{ marginBottom: '24px' }}>
+                <div style={{ marginBottom: '12px', fontSize: '16px', color: '#333', fontWeight: 'normal' }}>
+                  <strong>{idx + 1}. {q}</strong>
+                </div>
+                <div style={{ display: 'flex', gap: '16px', marginLeft: '0px' }}>
+                  {questionOptions.map(opt => (
+                    <label key={opt} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      cursor: 'pointer',
+                      fontSize: '14px'
+                    }}>
+                      <input
+                        type="radio"
+                        name={`q${idx}`}
+                        value={opt}
+                        checked={answers[idx] === opt}
+                        onChange={() => handleAnswer(idx, opt)}
+                        style={{
+                          marginRight: '8px',
+                          accentColor: '#9C27B0'
+                        }}
+                      />
+                      <span style={{ color: '#333' }}>{opt}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-        <div className={styles.buttonRow}>
+        <div className={styles.buttonRow} style={{ marginTop: '32px', display: 'flex', gap: '16px' }}>
           <button 
             className={styles.prevBtn} 
             disabled={saving || navigatingBack}
             onClick={handlePrevious}
             style={{
-              backgroundColor: '#f5f5f5',
-              border: '2px solid #9C27B0',
-              color: '#9C27B0',
-              padding: '12px 24px',
-              borderRadius: '6px',
-              fontWeight: '600',
-              cursor: disabled ? 'not-allowed' : 'pointer',
+              backgroundColor: 'white',
+              border: '1px solid #ccc',
+              color: '#333',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
               opacity: (saving || navigatingBack) ? 0.6 : 1,
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (!saving && !navigatingBack) {
-                e.target.style.backgroundColor = '#9C27B0';
-                e.target.style.color = 'white';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!saving && !navigatingBack) {
-                e.target.style.backgroundColor = '#f5f5f5';
-                e.target.style.color = '#9C27B0';
-              }
+              fontSize: '14px'
             }}
           >
             {navigatingBack ? 'Saving...' : 'Previous'}
           </button>
+
           <button 
             className={styles.saveBtn} 
             disabled={!allQuestionsAnswered || saving || navigatingBack}
             onClick={handleSaveAndProceed}
             style={{
-              backgroundColor: '#9C27B0',
-              border: '2px solid #9C27B0',
+              backgroundColor: (!allQuestionsAnswered || saving || navigatingBack) ? '#ccc' : '#007bff',
+              border: 'none',
               color: 'white',
-              padding: '12px 24px',
-              borderRadius: '6px',
-              fontWeight: '600',
+              padding: '8px 16px',
+              borderRadius: '4px',
               cursor: (!allQuestionsAnswered || saving || navigatingBack) ? 'not-allowed' : 'pointer',
-              opacity: (!allQuestionsAnswered || saving || navigatingBack) ? 0.6 : 1,
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (allQuestionsAnswered && !saving && !navigatingBack) {
-                e.target.style.backgroundColor = '#7B1FA2';
-                e.target.style.borderColor = '#7B1FA2';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (allQuestionsAnswered && !saving && !navigatingBack) {
-                e.target.style.backgroundColor = '#9C27B0';
-                e.target.style.borderColor = '#9C27B0';
-              }
+              fontSize: '14px'
             }}
           >
             {saving ? 'Saving...' : 'Generate Report'}
           </button>
         </div>
+        {error && (
+          <div style={{ 
+            marginTop: '16px', 
+            padding: '12px', 
+            backgroundColor: '#fff3cd', 
+            border: '1px solid #ffeaa7', 
+            borderRadius: '4px',
+            color: '#856404',
+            fontSize: '14px'
+          }}>
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );

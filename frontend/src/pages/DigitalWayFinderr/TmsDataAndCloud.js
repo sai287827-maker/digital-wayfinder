@@ -33,7 +33,7 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management')}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {

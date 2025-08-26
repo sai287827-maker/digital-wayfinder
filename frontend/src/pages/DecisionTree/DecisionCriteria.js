@@ -22,6 +22,7 @@ const DecisionCriteria = () => {
       try {
         // Fetch decision criteria and mapping data (single API)
         const response = await apiGet('api/decision-tree/functional-scope/decision-criteria/get-details');
+        
         // Map criteria and mapping data from response
         setCriteria(response.criteria || []);
         setMappingData({
@@ -29,8 +30,9 @@ const DecisionCriteria = () => {
           sessionId: response.sessionId,
           functionalArea: response.functionalArea,
           industryType: response.industryType,
-          functional: response.functional?.levelSelections ? response.functional : { levelSelections: {} },
-          nonFunctional: response.nonFunctional?.levelSelections ? response.nonFunctional : { levelSelections: {} }
+          // Handle nested structure with functional and nonFunctional objects
+          functional: response.functional || { levelSelections: [] },
+          nonFunctional: response.nonFunctional || { levelSelections: [] }
         });
 
       } catch (err) {
@@ -71,16 +73,40 @@ const DecisionCriteria = () => {
     });
   };
 
-  // Render hierarchical tree items based on mapping data (supports 5 levels for retail)
+  // Render hierarchical tree items based on new array-based structure
   const renderTreeItems = (levelSelections, type) => {
-    if (!levelSelections || Object.keys(levelSelections).length === 0) {
+    if (!levelSelections || !Array.isArray(levelSelections) || levelSelections.length === 0) {
       return <div className="rdc-no-data">No selections available</div>;
     }
 
-    const renderLevel = (level, selections, parentNumber = '') => {
-      return selections.map((selection, index) => {
-        const itemNumber = parentNumber ? `${parentNumber}.${index + 1}` : `${index + 1}.0`;
-        const itemId = `${type}-${level}-${index}`;
+    // Group by l1, then l2, then l3, then l4
+    const grouped = {};
+    
+    levelSelections.forEach((item, index) => {
+      const l1 = item.l1 || 'Uncategorized';
+      const l2 = item.l2 || '';
+      const l3 = item.l3 || '';
+      const l4 = item.l4 || '';
+      const l5 = item.l5 || '';
+      
+      if (!grouped[l1]) grouped[l1] = {};
+      if (!grouped[l1][l2]) grouped[l1][l2] = {};
+      if (!grouped[l1][l2][l3]) grouped[l1][l2][l3] = {};
+      if (!grouped[l1][l2][l3][l4]) grouped[l1][l2][l3][l4] = [];
+      
+      if (l5) {
+        grouped[l1][l2][l3][l4].push(l5);
+      }
+    });
+
+    const renderTreeLevel = (data, level = 1, parentNumber = '') => {
+      return Object.entries(data).map(([key, value], index) => {
+        if (!key) return null;
+        
+        const itemNumber = parentNumber ? `${parentNumber}.${index + 1}` : `${index + 1}`;
+        const itemId = `${type}-${level}-${index}-${key}`;
+        
+        const hasChildren = typeof value === 'object' && Object.keys(value).length > 0 && Object.keys(value).some(k => k !== '');
         
         return (
           <div key={itemId} className={`rdc-tree-item level-${level}`}>
@@ -90,7 +116,7 @@ const DecisionCriteria = () => {
               </div>
               <div className="rdc-tree-text">
                 <span className="rdc-item-number">{itemNumber}</span>
-                <span className="rdc-item-label">{selection}</span>
+                <span className="rdc-item-label">{key}</span>
               </div>
               <div className="rdc-tree-checkbox">
                 <input
@@ -101,17 +127,46 @@ const DecisionCriteria = () => {
                 />
               </div>
             </div>
+            
+            {hasChildren && (
+              <div className="rdc-tree-children">
+                {renderTreeLevel(value, level + 1, itemNumber)}
+              </div>
+            )}
+            
+            {Array.isArray(value) && value.length > 0 && (
+              <div className="rdc-tree-children">
+                {value.map((item, idx) => (
+                  <div key={`${itemId}-${idx}`} className={`rdc-tree-item level-${level + 1}`}>
+                    <div className="rdc-tree-item-content">
+                      <div className="rdc-tree-indicator">
+                        <div className={`rdc-tree-dot level-${level + 1}`}></div>
+                      </div>
+                      <div className="rdc-tree-text">
+                        <span className="rdc-item-number">{itemNumber}.{idx + 1}</span>
+                        <span className="rdc-item-label">{item}</span>
+                      </div>
+                      <div className="rdc-tree-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={true}
+                          onChange={() => {}}
+                          className="rdc-scope-checkbox"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
-      });
+      }).filter(Boolean);
     };
 
     return (
       <div className="rdc-tree-items">
-        {Object.entries(levelSelections).map(([level, selections]) => {
-          const levelNum = parseInt(level.replace('l', ''));
-          return renderLevel(levelNum, selections);
-        })}
+        {renderTreeLevel(grouped)}
       </div>
     );
   };

@@ -14,6 +14,8 @@ const steps = [
 const TmsOperational = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]); // Store answer type per question
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -26,6 +28,64 @@ const TmsOperational = ({ onNavigateBack }) => {
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
+  
+  // State to store Data & Cloud answers for passing back
+  const [dataCloudAnswers, setDataCloudAnswers] = useState(null);
+
+  // Function to determine answer options from API response
+  const determineAnswerOptions = (apiResponse) => {
+    // Check if questions have answerType specified
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      // Look at the first question's answerType to determine the pattern
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
+    }
+    
+    // Check existing answers to determine the pattern
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => 
+        ['yes', 'no'].includes(answer)
+      );
+      const hasHighMediumLow = existingAnswers.some(answer => 
+        ['high', 'medium', 'low'].includes(answer)
+      );
+      
+      if (hasYesNo) {
+        return ['Yes', 'No'];
+      } else if (hasHighMediumLow) {
+        return ['High', 'Medium', 'Low'];
+      }
+    }
+    
+    // Default to High/Medium/Low if no pattern is detected
+    return ['High', 'Medium', 'Low'];
+  };
+
+  // Function to fetch Data & Cloud answers
+  const fetchDataCloudAnswers = async () => {
+    try {
+      console.log('Fetching Data & Cloud answers...');
+      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+      console.log('Data & Cloud answers response:', response);
+      
+      if (response && response.answers) {
+        setDataCloudAnswers(response);
+        return response;
+      }
+      return null;
+    } catch (err) {
+      console.error('Error fetching Data & Cloud answers:', err);
+      return null;
+    }
+  };
  
   useEffect(() => {
     async function fetchQuestions() {
@@ -39,9 +99,27 @@ const TmsOperational = ({ onNavigateBack }) => {
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
+          // Extract questions and their answer types from the response
           const questionTexts = response.questions.map(q => q.question);
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low']; // Default fallback
+          });
+          
           setQuestions(questionTexts);
+          setQuestionAnswerTypes(answerTypes);
+          
+          // For backward compatibility, set answerOptions to the most common type
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
+          console.log('Determined answer options:', options);
           
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
@@ -71,6 +149,14 @@ const TmsOperational = ({ onNavigateBack }) => {
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
+                
+                // Re-determine answer options from separate response if needed
+                if (!response.questions || !response.questions[0]?.answerType) {
+                  const separateOptions = determineAnswerOptions(answersResponse);
+                  setAnswerOptions(separateOptions);
+                  console.log('Updated answer options from separate call:', separateOptions);
+                }
+                
                 answersResponse.answers.forEach(answerObj => {
                   const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
                   if (questionIndex !== -1) {
@@ -121,7 +207,13 @@ const TmsOperational = ({ onNavigateBack }) => {
           console.log('Using fallback structure for questions');
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setAnswerOptions(['High', 'Medium', 'Low']); // Default options
+          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
+        
+        // Also fetch Data & Cloud answers on component mount
+        await fetchDataCloudAnswers();
+        
       } catch (err) {
         console.error('Error fetching Operational questions:', err);
         setError('Failed to load questions.');
@@ -139,14 +231,14 @@ const TmsOperational = ({ onNavigateBack }) => {
   };
 
   const handlePrevious = async () => {
-    // Check if there are any answers to save before going back
-    const hasAnswers = answers.some(answer => answer !== null);
-    
-    if (hasAnswers) {
-      try {
-        setNavigatingBack(true);
-        setError(null);
-        
+    try {
+      setNavigatingBack(true);
+      setError(null);
+      
+      // Check if there are any answers to save before going back
+      const hasAnswers = answers.some(answer => answer !== null);
+      
+      if (hasAnswers) {
         // Save current progress before navigating back
         let area = functionalArea;
         if (!area && functionalSubArea) {
@@ -191,25 +283,29 @@ const TmsOperational = ({ onNavigateBack }) => {
           await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
-      } catch (err) {
-        console.error('Error saving progress before navigation:', err);
-        // Continue with navigation even if save fails
-        console.log('Continuing with navigation despite save error');
       }
+      
+      // Fetch the latest Data & Cloud answers before navigating back
+      console.log('Fetching latest Data & Cloud answers before navigation...');
+      const latestDataCloudAnswers = await fetchDataCloudAnswers();
+      
+      // Navigate back to DataAndCloud
+      if (onNavigateBack && typeof onNavigateBack === 'function') {
+        console.log('Navigating back to DataAndCloud using onNavigateBack callback');
+        // Pass the Data & Cloud answers to ensure they are retained
+        onNavigateBack(latestDataCloudAnswers);
+      } else {
+        // Fallback: Navigate directly to DataAndCloud component
+        console.log('Using fallback navigation to DataAndCloud');
+        setShowDataAndCloud(true);
+      }
+      
+    } catch (err) {
+      console.error('Error during navigation back:', err);
+      setError('Error occurred while navigating back. Please try again.');
+    } finally {
+      setNavigatingBack(false);
     }
-    
-    // Navigate back to DataAndCloud
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to DataAndCloud using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to DataAndCloud component
-      console.log('Using fallback navigation to DataAndCloud');
-      setShowDataAndCloud(true);
-    }
-    
-    setNavigatingBack(false);
   };
  
   const handleSaveAndProceed = async () => {
@@ -284,7 +380,9 @@ const TmsOperational = ({ onNavigateBack }) => {
     completedCount,
     totalQuestions: questions.length,
     progressPercentage,
-    answers
+    answers,
+    answerOptions,
+    questionAnswerTypes
   });
  
   // Early return for navigation to VisibilityProactive
@@ -296,7 +394,8 @@ const TmsOperational = ({ onNavigateBack }) => {
   // Early return for navigation to DataAndCloud (Previous button)
   if (showDataAndCloud) {
     console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
-    return <DataAndCloud />;
+    // Pass the retained Data & Cloud answers to the component
+    return <DataAndCloud initialAnswers={dataCloudAnswers} />;
   }
  
   return (
@@ -333,7 +432,7 @@ const TmsOperational = ({ onNavigateBack }) => {
           ))}
         </div>
       </div>
-      <div className={styles.mainContent}>
+      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
@@ -362,36 +461,41 @@ const TmsOperational = ({ onNavigateBack }) => {
               </div>
             </div>
             <div className={styles.questionsList}>
-              {questions.map((q, idx) => (
-                <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                  <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
-                  <div className={styles.optionsRow}>
-                    {['High', 'Medium', 'Low'].map(opt => (
-                      <label
-                        key={opt}
-                        className={styles.optionLabel}
-                        style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
-                      >
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.radio}
-                          style={{
-                            accentColor: '#9C27B0',
-                            marginRight: '8px',
-                            width: '18px',
-                            height: '18px'
-                          }}
-                        />
-                        <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
-                      </label>
-                    ))}
+              {questions.map((q, idx) => {
+                // Get the specific answer options for this question
+                const questionOptions = questionAnswerTypes[idx] || answerOptions;
+                
+                return (
+                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
+                    <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                    <div className={styles.optionsRow}>
+                      {questionOptions.map(opt => (
+                        <label
+                          key={opt}
+                          className={styles.optionLabel}
+                          style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
+                        >
+                          <input
+                            type="radio"
+                            name={`q${idx}`}
+                            value={opt}
+                            checked={answers[idx] === opt}
+                            onChange={() => handleAnswer(idx, opt)}
+                            className={styles.radio}
+                            style={{
+                              accentColor: '#9C27B0',
+                              marginRight: '8px',
+                              width: '18px',
+                              height: '18px'
+                            }}
+                          />
+                          <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className={styles.buttonRow}>
               <button 

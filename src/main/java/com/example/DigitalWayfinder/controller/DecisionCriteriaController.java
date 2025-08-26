@@ -8,29 +8,25 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.DigitalWayfinder.dto.DecisionCriteriaRequest;
 import com.example.DigitalWayfinder.dto.DecisionCriteriaResponse;
 import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.service.DecisionCriteriaService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/decision-tree/functional-scope/decision-criteria")
 @RequiredArgsConstructor
-@Slf4j
+@Slf4j 
 @Validated
 public class DecisionCriteriaController {
 
     @Autowired
-    public DecisionCriteriaService decisionCriteriaService;
+    private DecisionCriteriaService decisionCriteriaService;
     
     @GetMapping("/get-details")
-    public ResponseEntity<DecisionCriteriaResponse> getDecisionCriteria(@Valid @RequestBody DecisionCriteriaRequest request,@ModelAttribute UserSession userSession) {
-        
+    public ResponseEntity<DecisionCriteriaResponse> getDecisionCriteria(@ModelAttribute UserSession userSession) {
         
         log.info("Received decision criteria request for user: {} and session: {}", userSession.getUserId(), userSession.getSessionId());
         

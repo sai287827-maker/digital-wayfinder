@@ -14,6 +14,8 @@ const steps = [
 const TmsVisibilityProactive = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]); // Store answer type per question
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -27,6 +29,43 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
+  // Function to determine answer options from API response
+  const determineAnswerOptions = (apiResponse) => {
+    // Check if questions have answerType specified
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      // Look at the first question's answerType to determine the pattern
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
+    }
+    
+    // Check existing answers to determine the pattern
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => 
+        ['yes', 'no'].includes(answer)
+      );
+      const hasHighMediumLow = existingAnswers.some(answer => 
+        ['high', 'medium', 'low'].includes(answer)
+      );
+      
+      if (hasYesNo) {
+        return ['Yes', 'No'];
+      } else if (hasHighMediumLow) {
+        return ['High', 'Medium', 'Low'];
+      }
+    }
+    
+    // Default to High/Medium/Low if no pattern is detected
+    return ['High', 'Medium', 'Low'];
+  };
+
   // Fetch questions from API
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -35,15 +74,33 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
         setError(null);
         console.log('Fetching VisibilityProactive questions and existing answers...');
 
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
 
         console.log('VisibilityProactive API Response:', response);
 
         // Map the response structure similar to Operational component
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
+          // Extract questions and their answer types from the response
           const questionTexts = response.questions.map(q => q.question);
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low']; // Default fallback
+          });
+          
           setQuestions(questionTexts);
+          setQuestionAnswerTypes(answerTypes);
+          
+          // For backward compatibility, set answerOptions to the most common type
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
+          console.log('Determined answer options for VisibilityProactive:', options);
           
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
@@ -68,10 +125,18 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
             // Check if we should try to fetch existing answers separately
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
+                
+                // Re-determine answer options from separate response if needed
+                if (!response.questions || !response.questions[0]?.answerType) {
+                  const separateOptions = determineAnswerOptions(answersResponse);
+                  setAnswerOptions(separateOptions);
+                  console.log('Updated answer options from separate call:', separateOptions);
+                }
+                
                 answersResponse.answers.forEach(answerObj => {
                   const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
                   if (questionIndex !== -1) {
@@ -122,6 +187,8 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
           console.log('Using fallback structure for questions');
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setAnswerOptions(['High', 'Medium', 'Low']); // Default options
+          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
         
       } catch (err) {
@@ -288,7 +355,9 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
     completedCount,
     totalQuestions: questions.length,
     progressPercentage,
-    answers
+    answers,
+    answerOptions,
+    questionAnswerTypes
   });
 
   // Early return for navigation to AgenticAI
@@ -315,19 +384,29 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
             <div key={step.label} className={styles.stepItem}>
               <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
                               step.status === 'active' ? styles.stepCircleActive : 
-                              styles.stepCircleInactive}>
+                              styles.stepCircleInactive}
+                   style={{
+                     backgroundColor: step.status === 'completed' ? '#4CAF50' : 
+                                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                     color: step.status === 'inactive' ? '#666' : 'white'
+                   }}>
                 {step.status === 'completed' ? '✓' : idx + 1}
               </div>
               <span className={step.status === 'completed' ? styles.stepTextCompleted :
                               step.status === 'active' ? styles.stepTextActive : 
-                              styles.stepTextInactive}>
+                              styles.stepTextInactive}
+                    style={{
+                      color: step.status === 'completed' ? '#4CAF50' : 
+                             step.status === 'active' ? '#9C27B0' : '#666',
+                      fontWeight: step.status === 'active' ? '600' : '400'
+                    }}>
                 {step.label}
               </span>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.mainContent}>
+      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
@@ -356,36 +435,41 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
               </div>
             </div>
             <div className={styles.questionsList}>
-              {questions.map((q, idx) => (
-                <div key={idx} className={styles.questionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                  <div className={styles.questionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
-                  <div className={styles.optionsRow}>
-                    {['High', 'Medium', 'Low'].map(opt => (
-                      <label
-                        key={opt}
-                        className={styles.optionLabel}
-                        style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
-                      >
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.radio}
-                          style={{
-                            accentColor: '#9C27B0',
-                            marginRight: '8px',
-                            width: '18px',
-                            height: '18px'
-                          }}
-                        />
-                        <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
-                      </label>
-                    ))}
+              {questions.map((q, idx) => {
+                // Get the specific answer options for this question
+                const questionOptions = questionAnswerTypes[idx] || answerOptions;
+                
+                return (
+                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
+                    <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                    <div className={styles.optionsRow}>
+                      {questionOptions.map(opt => (
+                        <label
+                          key={opt}
+                          className={styles.optionLabel}
+                          style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
+                        >
+                          <input
+                            type="radio"
+                            name={`q${idx}`}
+                            value={opt}
+                            checked={answers[idx] === opt}
+                            onChange={() => handleAnswer(idx, opt)}
+                            className={styles.radio}
+                            style={{
+                              accentColor: '#9C27B0',
+                              marginRight: '8px',
+                              width: '18px',
+                              height: '18px'
+                            }}
+                          />
+                          <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className={styles.buttonRow}>
               <button 
