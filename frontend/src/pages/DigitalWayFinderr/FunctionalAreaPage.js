@@ -24,6 +24,10 @@ function FunctionalAreaPage() {
     setTooltipVisible(null);
   };
 
+  const handlePrevious = () => {
+    navigate('/digital-wayfinder/project-info');
+  };
+
  const handleProceed = () => {
   if (selectedArea === 'supply-chain-planning') {
     navigate('/digital-wayfinder/industry-type-planning/', {
@@ -48,9 +52,9 @@ function FunctionalAreaPage() {
       </div>
 
       <div className="tabs">
-        <div className="tab active">FUNCTIONAL AREA</div>
-        <div className="tab">INDUSTRY TYPE</div>
-        <div className="tab">SYSTEM</div>
+        <div className="tab active">Functional Area</div>
+        <div className="tab">Industry Type</div>
+        <div className="tab">System</div>
       </div>
 
       <div className="content-area">
@@ -85,7 +89,7 @@ function FunctionalAreaPage() {
                 {tooltipVisible === 'supply-chain-planning' && (
                   // <div className="tooltip"> 
                    <div className="tooltip tooltip-top-right">
- "
+"
                     <div className="tooltip-header">Supply Chain Planning</div>
                     <div className="tooltip-content">
                       {tooltipContent['supply-chain-planning']}
@@ -134,7 +138,13 @@ function FunctionalAreaPage() {
           </div>
 
           <div className="progress-footer">
-            <div className="progress-text">Completed step 0 of 3</div>
+            <button 
+              className="previous-button"
+              onClick={handlePrevious}
+            >
+              Previous
+            </button>
+            <div className="progress-text">Completed step 1 of 4</div>
             <button 
               className="finish-button"
               disabled={!selectedArea}

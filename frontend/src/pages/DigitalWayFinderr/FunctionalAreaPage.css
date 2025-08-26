@@ -205,10 +205,35 @@
 
 .progress-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
+  justify-content: space-between;
+  margin-top: 40px;
+  width: 100%;
+}
+/* Style for the previous button - same as finish button but with different colors */
+.previous-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 2px solid #666;
+  background-color: transparent;
+  color: #666;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.previous-button:hover {
+  background-color: #666;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.previous-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .progress-text {
@@ -217,25 +242,32 @@
 }
 
 .finish-button {
-  padding: 12px 32px;
-  background: #8b5cf6;
-  color: white;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 24px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  min-width: 100px;
 }
 
 .finish-button:hover:not(:disabled) {
-  background: #7c3aed;
+  background-color: #0056b3;
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.finish-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
 }
 
 .finish-button:disabled {
-  background: #d1d5db;
+  background-color: #ccc;
+  color: #999;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -268,6 +300,24 @@
   
   .content-right {
     max-width: 100%;
+  }
+}
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .progress-footer {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .progress-text {
+    margin: 0;
+    order: -1; /* Show progress text first on mobile */
+  }
+  
+  .previous-button,
+  .finish-button {
+    width: 100%;
+    max-width: 200px;
   }
 }
 

@@ -182,7 +182,7 @@ function IndustryTypeFullfillment() {
             >
               Previous
             </button>
-            <div className="progress-text">Completed step 1 of 3</div>
+            <div className="progress-text">Completed step 2 of 4</div>
             <button 
               className="finish-button"
               disabled={!selectedSystem}

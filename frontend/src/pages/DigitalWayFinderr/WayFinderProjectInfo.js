@@ -71,8 +71,12 @@ const ProjectInfo = () => {
   };
 
   const handleProceed = async () => {
-    if (!formData.requestId.trim() || !formData.clientName.trim()) {
-      alert('Please fill in all required fields (Request ID and Client/Project Name)');
+    if (
+      !formData.requestId.trim() ||
+      !formData.clientName.trim() ||
+      !formData.mmsId.trim() // <-- Make MMSID mandatory
+    ) {
+      alert('Please fill in all required fields (Request ID, MMSID and Client/Project Name)');
       return;
     }
     setLoading(true);
@@ -80,7 +84,7 @@ const ProjectInfo = () => {
     try {
       await apiPost('api/decision-tree/project-info/save', {
         requestID: formData.requestId,
-        mmsID: formData.mmsId, // <-- Send MMSID to API
+        mmsID: formData.mmsId,
         clientName: formData.clientName,
         clientDescription: formData.description,
         projectScope: formData.projectScope,
@@ -115,8 +119,6 @@ console.log("formData",formData);
         {/* Navigation Tabs */}
         <div className="nav-tabs">
           <button className="nav-tab active">Project Information</button>
-          <button className="nav-tab">Functional Area</button>
-          <button className="nav-tab">Industry Type</button>
         </div>
         {/* Content Grid */}
         <div className="content-grid">
@@ -163,7 +165,7 @@ console.log("formData",formData);
                 />
               </div>
               <div className="field-group">
-                <label className="field-label">MMSID</label>
+                <label className="field-label">MMSID*</label>
                 <input
                   type="text"
                   value={formData.mmsId}
@@ -175,6 +177,7 @@ console.log("formData",formData);
                   className="field-input"
                   placeholder="Enter MMSID (alphanumeric)"
                   maxLength={20}
+                  required
                 />
               </div>
               <div className="field-group">
@@ -214,7 +217,7 @@ console.log("formData",formData);
             </div>
             {/* Footer */}
             <div className="form-footer">
-              <span className="step-indicator">Completed step 0 of 3</span>
+              <span className="step-indicator">Completed step 0 of 4</span>
               <button className="proceed-button" onClick={handleProceed} disabled={loading}>
                 {loading ? 'Saving...' : 'Proceed'}
               </button>

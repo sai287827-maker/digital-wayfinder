@@ -4,45 +4,45 @@ import './Navbar.css';
 import logo from '../assets/logo.png';
 import UserProfilePopover from './UserProfilePopover';
 import HelpDocPopover from './HelpDocPopover';
- 
+
 function Navbar() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
- 
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
- 
+
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
- 
+
   // Helper function to check if a nav item should be active
   const isNavItemActive = (path) => {
     if (path === '/') {
       return location.pathname === '/';
     }
-   
+    
     // For digital-wayfinder, check if current path starts with /digital-wayfinder
     if (path === '/digital-wayfinder') {
       return location.pathname.startsWith('/digital-wayfinder');
     }
-   
+    
     // For decision-tree, check if current path starts with /decision-tree
     if (path === '/decision-tree') {
       return location.pathname.startsWith('/decision-tree');
     }
-   
+    
     // For report, check if current path starts with /report
     if (path === '/report') {
       return location.pathname.startsWith('/report');
     }
-   
+    
     return location.pathname === path;
   };
- 
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -50,9 +50,9 @@ function Navbar() {
           <img src={logo} alt="Digital Wayfinder logo" width="40" height="40" />
           <span>Digital Wayfinder</span>
         </Link>
- 
+
         {/* Mobile Menu Toggle Button */}
-        <button
+        <button 
           className={`mobile-menu-toggle ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
           aria-label="Toggle navigation menu"
@@ -61,39 +61,39 @@ function Navbar() {
           <span></span>
           <span></span>
         </button>
- 
+
         {/* Navigation Menu */}
         <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <Link
-            to="/"
+          <Link 
+            to="/" 
             className={`nav-item ${isNavItemActive('/') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             Home
           </Link>
-          <Link
-            to="/digital-wayfinder"
+          <Link 
+            to="/digital-wayfinder" 
             className={`nav-item ${isNavItemActive('/digital-wayfinder') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             Digital Wayfinder
           </Link>
-          <Link
-            to="/decision-tree"
+          <Link 
+            to="/decision-tree" 
             className={`nav-item ${isNavItemActive('/decision-tree') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             Decision Tree
           </Link>
-          <Link
-            to="/report"
+          <Link 
+            to="/report" 
             className={`nav-item ${isNavItemActive('/report') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             Report
           </Link>
         </div>
- 
+
         {/* Icon Buttons */}
         <div className="nav-icons">
           <button className="icon-button" aria-label="Notifications">
@@ -132,12 +132,12 @@ function Navbar() {
             {showProfile && <UserProfilePopover />}
           </div>
         </div>
- 
+
         {/* Mobile Menu Overlay */}
         {isMenuOpen && <div className="menu-overlay" onClick={closeMenu}></div>}
       </div>
     </nav>
   );
 }
- 
+
 export default Navbar;
