@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class NonFunctionalResponse {
     private String functionalArea;
     private String industryType;
     private String functionalSubArea;
+    private LocalDateTime createdDate;
     private List<LevelPath> levelSelections;
 
     @Data

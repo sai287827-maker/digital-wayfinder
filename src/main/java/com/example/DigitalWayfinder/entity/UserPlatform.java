@@ -2,7 +2,7 @@ package com.example.DigitalWayfinder.entity;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 // import javax.persistence.*;
-
+import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 // import jakarta.persistence.GeneratedValue;
@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
-// import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "UserPlatform")
@@ -46,6 +46,16 @@ public class UserPlatform {
     @Id
     @Column(name = "Platform", nullable = false)
     private String platform;
+
+    @Column(name = "CreatedDate")
+    private LocalDateTime createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdDate == null) {
+            createdDate = LocalDateTime.now();
+        }
+    }    
     
     // @Column(name = "Key")
     // private String key;

@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -382,6 +384,7 @@ private List<UserFunctionalProcess> convertToMultipleRecords(
                         .functionalArea(previousProcess.getFunctionalArea())
                         .industryType(previousProcess.getIndustryType())
                         .functionalSubArea(previousProcess.getFunctionalSubArea())
+                        
                         .l1(l1)
                         .l2(null)
                         .l3(null)
@@ -434,6 +437,7 @@ private UserFunctionalProcess createRecordUpToL2(Object[] path, String userId, S
         .functionalArea(previousProcess.getFunctionalArea())
         .industryType(previousProcess.getIndustryType())
         .functionalSubArea(previousProcess.getFunctionalSubArea())
+        
         .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
         .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
         .l3(null)
@@ -455,6 +459,7 @@ private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, S
         .functionalArea(previousProcess.getFunctionalArea())
         .industryType(previousProcess.getIndustryType())
         .functionalSubArea(previousProcess.getFunctionalSubArea())
+        
         .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
         .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
         .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
@@ -677,6 +682,7 @@ private String findL1ByL2(String l2, String functionalArea) {
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
+            
             .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
             .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
             .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
@@ -710,6 +716,7 @@ private String findL1ByL2(String l2, String functionalArea) {
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
+            
             .levelSelections(levelPaths)
             .build();
     }

@@ -28,6 +28,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.time.LocalDateTime;
+
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -289,6 +292,7 @@ public class NonFunctionalScopeService {
                             .functionalArea(previousProcess.getFunctionalArea())
                             .industryType(previousProcess.getIndustryType())
                             .functionalSubArea(previousProcess.getFunctionalSubArea())
+                            
                             .l1(l1)
                             .l2(null)
                             .l3(null)
@@ -461,6 +465,7 @@ public class NonFunctionalScopeService {
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
+            
             .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
             .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
             .l3(null)
@@ -487,6 +492,7 @@ public class NonFunctionalScopeService {
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
+            
             .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
             .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
             .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
@@ -509,6 +515,7 @@ private NonFunctionalResponse mapToNonFunctionalScopeResponse(
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
+            
             .levelSelections(new ArrayList<>()) // Empty list
             .build();
     }
@@ -533,6 +540,7 @@ private NonFunctionalResponse mapToNonFunctionalScopeResponse(
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
+            
             .levelSelections(levelPaths)
             .build();
     }

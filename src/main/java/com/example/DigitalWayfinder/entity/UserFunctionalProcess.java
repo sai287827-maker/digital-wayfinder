@@ -1,9 +1,13 @@
 package com.example.DigitalWayfinder.entity;
 
+import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,4 +58,14 @@ public class UserFunctionalProcess {
     
     @Column(name = "L5", columnDefinition = "TEXT")
     private String l5;
+
+    @Column(name = "CreatedDate")
+    private LocalDateTime createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdDate == null) {
+            createdDate = LocalDateTime.now();
+        }
+    }  
 }

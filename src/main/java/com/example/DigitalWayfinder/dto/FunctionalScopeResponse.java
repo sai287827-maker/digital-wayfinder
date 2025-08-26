@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDateTime;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -18,6 +19,7 @@ public class FunctionalScopeResponse {
     private String functionalArea;
     private String industryType;
     private String functionalSubArea;
+    private LocalDateTime createdDate;
     private List<LevelPath> levelSelections;
 
     @Data
