@@ -392,7 +392,7 @@ const AgenticAI = ({ onNavigateBack }) => {
           ))}
         </div>
       </div>
-      <div className={styles.mainContent}>
+      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.title}>Agentic AI</div>
         <div className={styles.progressRow}>
           <span className={styles.progressLabel}>Progress: {completedCount} of {questions.length} questions completed</span>
@@ -458,7 +458,7 @@ const AgenticAI = ({ onNavigateBack }) => {
             disabled={!allQuestionsAnswered || saving || navigatingBack}
             onClick={handleSaveAndProceed}
             style={{
-              backgroundColor: (!allQuestionsAnswered || saving || navigatingBack) ? '#ccc' : '#007bff',
+              backgroundColor: (!allQuestionsAnswered || saving || navigatingBack) ? '#ccc' : '#9C27B0',
               border: 'none',
               color: 'white',
               padding: '8px 16px',
