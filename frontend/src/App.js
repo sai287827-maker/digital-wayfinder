@@ -94,7 +94,7 @@ function App() {
           <Route path="/decision-tree/retail-solution" element={<RetailSolution />} />
           <Route path="/decision-tree/retail-dashboard" element={<RetailDashboard/>} />
           <Route path="/decision-tree/customer-functional-scope" element={<CustomerFunctionalScope />} />
-          <Route path="/decision-tree/customer-functional-scope" element={<CustomerNonFunctionalScope />} />
+          <Route path="/decision-tree/customer-non-functional-scope" element={<CustomerNonFunctionalScope />} />
           <Route path="/decision-tree/customer-decision-criteria" element={<CustomerDecisionCriteria/>} />
           <Route path="/decision-tree/customer-solution" element={<CustomerSolution />} />
           <Route path="/decision-tree/customer-dashboard" element={<CustomerDashboard/>} />

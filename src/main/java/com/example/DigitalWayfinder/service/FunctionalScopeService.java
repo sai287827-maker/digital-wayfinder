@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.Collections; 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Arrays;
 
 import java.time.LocalDateTime;
 
@@ -93,20 +94,28 @@ public class FunctionalScopeService {
         }
     }
 
-    public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
-        log.info("Fetching all functional scope levels");
-        try {
-            List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
-            return functionalScopes.stream()
-                    .map(this::convertToDto)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
+    log.info("Fetching all functional scope levels");
+    try {
+        List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
+        log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+        
+        // DEBUG: Log first few records to see the actual data structure
+        if (!functionalScopes.isEmpty()) {
+            for (int i = 0; i < Math.min(5, functionalScopes.size()); i++) {
+                Object[] record = functionalScopes.get(i);
+                log.info("IndAgnoustic Record {}: Length={}, Content={}", i, record.length, Arrays.toString(record));
+            }
         }
+        
+        return functionalScopes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    } catch (Exception e) {
+        log.error("Error fetching functional scopes: {}", e.getMessage(), e);
+        throw new RuntimeException("Failed to fetch functional scopes", e);
     }
+}
 
     public List<FunctionalScopeDto> getAllFunctionalScopesRetail() {
         log.info("Fetching all functional scope levels");
@@ -183,290 +192,514 @@ public class FunctionalScopeService {
         }
     }
     
-private List<UserFunctionalProcess> convertToMultipleRecords(
-        FunctionalScopeRequest.LevelSelections levelSelections,
-        String userId, String sessionId, FunctionalAreaDT previousProcess) {
-    
-    List<UserFunctionalProcess> records = new ArrayList<>();
-    Set<String> processedPaths = new HashSet<>();
-    
-    List<String> l1List = levelSelections.getL1() != null ? levelSelections.getL1() : new ArrayList<>();
-    List<String> l2List = levelSelections.getL2() != null ? levelSelections.getL2() : new ArrayList<>();
-    List<String> l3List = levelSelections.getL3() != null ? levelSelections.getL3() : new ArrayList<>();
-    List<String> l4List = levelSelections.getL4() != null ? levelSelections.getL4() : new ArrayList<>();
-    
-    String functionalArea = previousProcess.getFunctionalArea();
-    
-    log.info("Processing selections - L1: {}, L2: {}, L3: {}, L4: {}", 
-             l1List.size(), l2List.size(), l3List.size(), l4List.size());
-    
-    // Strategy: Build a selection tree to understand user intent
-    
-    // 1. Process explicitly selected L4s first
-    for (String l4 : l4List) {
-        Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
-        if (pathOpt.isPresent()) {
-            Object[] path = pathOpt.get();
-            String pathKey = createPathKey(path);
-            if (!processedPaths.contains(pathKey)) {
-                records.add(createRecord(path, userId, sessionId, previousProcess));
-                processedPaths.add(pathKey);
-                log.info("Added explicitly selected L4: {}", l4);
-            }
-        }
-    }
-    
-    // 2. Process L3 selections
-    for (String l3 : l3List) {
-        // Check if user selected any L4s under this L3
-        List<String> l4sUnderThisL3 = findAllL4ByL3(l3, functionalArea);
-        List<String> selectedL4sUnderThisL3 = l4sUnderThisL3.stream()
-                .filter(l4List::contains)
-                .collect(Collectors.toList());
+    private List<UserFunctionalProcess> convertToMultipleRecords(
+            FunctionalScopeRequest.LevelSelections levelSelections,
+            String userId, String sessionId, FunctionalAreaDT previousProcess) {
         
-        if (selectedL4sUnderThisL3.isEmpty()) {
-            // No L4s selected under this L3 → auto-expand all L4s
-            log.info("No L4s selected under L3 '{}', auto-expanding all L4s", l3);
-            for (String l4 : l4sUnderThisL3) {
-                Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
-                if (pathOpt.isPresent()) {
-                    Object[] path = pathOpt.get();
-                    String pathKey = createPathKey(path);
-                    if (!processedPaths.contains(pathKey)) {
-                        records.add(createRecord(path, userId, sessionId, previousProcess));
+        List<UserFunctionalProcess> records = new ArrayList<>();
+        Set<String> processedPaths = new HashSet<>();
+        
+        // Safely get lists with null checks
+        List<String> l1List = levelSelections.getL1() != null ? levelSelections.getL1() : new ArrayList<>();
+        List<String> l2List = levelSelections.getL2() != null ? levelSelections.getL2() : new ArrayList<>();
+        List<String> l3List = levelSelections.getL3() != null ? levelSelections.getL3() : new ArrayList<>();
+        List<String> l4List = levelSelections.getL4() != null ? levelSelections.getL4() : new ArrayList<>();
+        
+        String functionalArea = determineFunctionalAreaForRepository(previousProcess);
+
+            if ("IND-AGNOUSTIC".equals(functionalArea.toUpperCase())) {
+        debugIndAgnousticRepository();
+    }
+        
+        log.info("Processing selections for functionalArea: {} - L1: {}, L2: {}, L3: {}, L4: {}", 
+                 functionalArea, l1List.size(), l2List.size(), l3List.size(), l4List.size());
+        
+        // Debug: Log the actual selections
+        log.info("L1 selections: {}", l1List);
+        log.info("L2 selections: {}", l2List);
+        log.info("L3 selections: {}", l3List);
+        log.info("L4 selections: {}", l4List);
+        
+        // Strategy: Process from most specific to least specific
+        
+        // 1. Process explicitly selected L4s first
+        for (String l4 : l4List) {
+            log.info("Processing L4: {}", l4);
+            Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
+            if (pathOpt.isPresent()) {
+                Object[] path = pathOpt.get();
+                log.info("Found path for L4 '{}': {}", l4, Arrays.toString(path));
+                String pathKey = createPathKey(path);
+                if (!processedPaths.contains(pathKey)) {
+                    UserFunctionalProcess record = createRecordSafe(path, userId, sessionId, previousProcess);
+                    if (record != null) {
+                        records.add(record);
                         processedPaths.add(pathKey);
-                        log.info("Auto-expanded L4 under L3 '{}': {}", l3, l4);
+                        log.info("Added record for L4: {}", l4);
+                    } else {
+                        log.warn("Failed to create record for L4: {}", l4);
                     }
                 }
+            } else {
+                log.warn("No complete path found for L4: {}", l4);
             }
+        }
+        
+        // 2. Process L3 selections that don't have corresponding L4 selections
+        for (String l3 : l3List) {
+            log.info("Processing L3: {}", l3);
             
-            // If no L4s exist, save the L3 itself
-            if (l4sUnderThisL3.isEmpty()) {
-                Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
-                if (pathOpt.isPresent()) {
-                    Object[] path = pathOpt.get();
-                    String pathKey = createPathKey(path);
-                    if (!processedPaths.contains(pathKey)) {
-                        records.add(createRecordUpToL3(path, userId, sessionId, previousProcess));
-                        processedPaths.add(pathKey);
-                        log.info("Added L3 with no L4 children: {}", l3);
-                    }
-                }
-            }
-        } else {
-            log.info("L4s were explicitly selected under L3 '{}', skipping auto-expansion", l3);
-            // L4s were explicitly selected under this L3, so don't auto-expand
-            // The explicitly selected L4s were already processed above
-        }
-    }
-    
-    // 3. Process L2 selections
-    for (String l2 : l2List) {
-        // Find all L3s under this L2
-        List<String> l3sUnderThisL2 = findAllL3ByL2(l2, functionalArea);
-        List<String> selectedL3sUnderThisL2 = l3sUnderThisL2.stream()
-                .filter(l3List::contains)
-                .collect(Collectors.toList());
-        
-        if (selectedL3sUnderThisL2.isEmpty()) {
-            // No L3s selected under this L2 → auto-expand all L3s and their L4s
-            log.info("No L3s selected under L2 '{}', auto-expanding all L3s and L4s", l2);
-            for (String l3 : l3sUnderThisL2) {
-                List<String> l4sUnderThisL3 = findAllL4ByL3(l3, functionalArea);
-                for (String l4 : l4sUnderThisL3) {
-                    Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
-                    if (pathOpt.isPresent()) {
-                        Object[] path = pathOpt.get();
-                        String pathKey = createPathKey(path);
-                        if (!processedPaths.contains(pathKey)) {
-                            records.add(createRecord(path, userId, sessionId, previousProcess));
-                            processedPaths.add(pathKey);
-                            log.info("Auto-expanded L4 under L2 '{}' -> L3 '{}': {}", l2, l3, l4);
-                        }
-                    }
-                }
-                
-                // If no L4s exist under this L3, save the L3
-                if (l4sUnderThisL3.isEmpty()) {
-                    Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
-                    if (pathOpt.isPresent()) {
-                        Object[] path = pathOpt.get();
-                        String pathKey = createPathKey(path);
-                        if (!processedPaths.contains(pathKey)) {
-                            records.add(createRecordUpToL3(path, userId, sessionId, previousProcess));
-                            processedPaths.add(pathKey);
-                            log.info("Auto-expanded L3 with no L4s under L2 '{}': {}", l2, l3);
-                        }
-                    }
-                }
-            }
+            // Check if any L4s under this L3 were already selected
+            List<String> l4sUnderL3 = findAllL4ByL3Safe(l3, functionalArea);
+            boolean hasSelectedL4s = l4sUnderL3.stream().anyMatch(l4List::contains);
             
-            // If no L3s exist under this L2, save the L2 itself
-            if (l3sUnderThisL2.isEmpty()) {
-                Optional<Object[]> pathOpt = getFirstPathForL2(l2, functionalArea);
-                if (pathOpt.isPresent()) {
-                    Object[] path = pathOpt.get();
-                    String pathKey = createPathKey(path);
-                    if (!processedPaths.contains(pathKey)) {
-                        records.add(createRecordUpToL2(path, userId, sessionId, previousProcess));
-                        processedPaths.add(pathKey);
-                        log.info("Added L2 with no L3 children: {}", l2);
-                    }
-                }
-            }
-        } else {
-            log.info("L3s were explicitly selected under L2 '{}', skipping auto-expansion", l2);
-            // L3s were explicitly selected under this L2, so don't auto-expand
-            // The explicitly selected L3s were already processed above
-        }
-    }
-    
-    // 4. Process L1 selections
-    for (String l1 : l1List) {
-        // Find all L2s under this L1
-        List<String> l2sUnderThisL1 = findAllL2ByL1(l1, functionalArea);
-        List<String> selectedL2sUnderThisL1 = l2sUnderThisL1.stream()
-                .filter(l2List::contains)
-                .collect(Collectors.toList());
-        
-        if (selectedL2sUnderThisL1.isEmpty()) {
-            // No L2s selected under this L1 → auto-expand everything
-            log.info("No L2s selected under L1 '{}', auto-expanding all children", l1);
-            for (String l2 : l2sUnderThisL1) {
-                List<String> l3sUnderThisL2 = findAllL3ByL2(l2, functionalArea);
-                for (String l3 : l3sUnderThisL2) {
-                    List<String> l4sUnderThisL3 = findAllL4ByL3(l3, functionalArea);
-                    for (String l4 : l4sUnderThisL3) {
+            if (!hasSelectedL4s) {
+                // Auto-expand all L4s under this L3
+                if (!l4sUnderL3.isEmpty()) {
+                    log.info("Auto-expanding {} L4s under L3: {}", l4sUnderL3.size(), l3);
+                    for (String l4 : l4sUnderL3) {
                         Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
                         if (pathOpt.isPresent()) {
-                            Object[] path = pathOpt.get();
-                            String pathKey = createPathKey(path);
+                            String pathKey = createPathKey(pathOpt.get());
                             if (!processedPaths.contains(pathKey)) {
-                                records.add(createRecord(path, userId, sessionId, previousProcess));
-                                processedPaths.add(pathKey);
-                                log.info("Auto-expanded L4 under L1 '{}' -> L2 '{}' -> L3 '{}': {}", l1, l2, l3, l4);
+                                UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId, previousProcess);
+                                if (record != null) {
+                                    records.add(record);
+                                    processedPaths.add(pathKey);
+                                }
                             }
                         }
                     }
-                    
-                    if (l4sUnderThisL3.isEmpty()) {
-                        Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
-                        if (pathOpt.isPresent()) {
-                            Object[] path = pathOpt.get();
-                            String pathKey = createPathKey(path);
-                            if (!processedPaths.contains(pathKey)) {
-                                records.add(createRecordUpToL3(path, userId, sessionId, previousProcess));
-                                processedPaths.add(pathKey);
-                            }
-                        }
-                    }
-                }
-                
-                if (l3sUnderThisL2.isEmpty()) {
-                    Optional<Object[]> pathOpt = getFirstPathForL2(l2, functionalArea);
-                    if (pathOpt.isPresent()) {
-                        Object[] path = pathOpt.get();
-                        String pathKey = createPathKey(path);
+                } else {
+                    // No L4s under this L3, save the L3 itself
+                    log.info("No L4s found under L3: {}, saving L3 record", l3);
+                    UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess, functionalArea);
+                    if (record != null) {
+                        String pathKey = createPathKeyFromRecord(record);
                         if (!processedPaths.contains(pathKey)) {
-                            records.add(createRecordUpToL2(path, userId, sessionId, previousProcess));
+                            records.add(record);
                             processedPaths.add(pathKey);
                         }
                     }
                 }
             }
+        }
+        
+        // 3. Process L2 selections that don't have corresponding L3 selections
+        for (String l2 : l2List) {
+            log.info("Processing L2: {}", l2);
             
-            if (l2sUnderThisL1.isEmpty()) {
-                String pathKey = l1;
-                if (!processedPaths.contains(pathKey)) {
-                    UserFunctionalProcess record = UserFunctionalProcess.builder()
-                        .userId(userId)
-                        .sessionId(sessionId)
-                        .functionalArea(previousProcess.getFunctionalArea())
-                        .industryType(previousProcess.getIndustryType())
-                        .functionalSubArea(previousProcess.getFunctionalSubArea())
-                        
-                        .l1(l1)
-                        .l2(null)
-                        .l3(null)
-                        .l4(null)
-                        .l5(null)
-                        .build();
-                    records.add(record);
-                    processedPaths.add(pathKey);
+            List<String> l3sUnderL2 = findAllL3ByL2Safe(l2, functionalArea);
+            boolean hasSelectedL3s = l3sUnderL2.stream().anyMatch(l3List::contains);
+            
+            if (!hasSelectedL3s) {
+                if (!l3sUnderL2.isEmpty()) {
+                    log.info("Auto-expanding {} L3s under L2: {}", l3sUnderL2.size(), l2);
+                    for (String l3 : l3sUnderL2) {
+                        List<String> l4sUnderL3 = findAllL4ByL3Safe(l3, functionalArea);
+                        if (!l4sUnderL3.isEmpty()) {
+                            for (String l4 : l4sUnderL3) {
+                                Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
+                                if (pathOpt.isPresent()) {
+                                    String pathKey = createPathKey(pathOpt.get());
+                                    if (!processedPaths.contains(pathKey)) {
+                                        UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId, previousProcess);
+                                        if (record != null) {
+                                            records.add(record);
+                                            processedPaths.add(pathKey);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess, functionalArea);
+                            if (record != null) {
+                                String pathKey = createPathKeyFromRecord(record);
+                                if (!processedPaths.contains(pathKey)) {
+                                    records.add(record);
+                                    processedPaths.add(pathKey);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    log.info("No L3s found under L2: {}, saving L2 record", l2);
+                    UserFunctionalProcess record = createRecordForL2(l2, userId, sessionId, previousProcess, functionalArea);
+                    if (record != null) {
+                        String pathKey = createPathKeyFromRecord(record);
+                        if (!processedPaths.contains(pathKey)) {
+                            records.add(record);
+                            processedPaths.add(pathKey);
+                        }
+                    }
                 }
             }
-        } else {
-            log.info("L2s were explicitly selected under L1 '{}', skipping auto-expansion", l1);
-            // L2s were explicitly selected under this L1, so don't auto-expand
-            // The explicitly selected L2s were already processed above
+        }
+        
+        // 4. Process L1 selections that don't have corresponding L2 selections
+        for (String l1 : l1List) {
+            log.info("Processing L1: {}", l1);
+            
+            List<String> l2sUnderL1 = findAllL2ByL1Safe(l1, functionalArea);
+            boolean hasSelectedL2s = l2sUnderL1.stream().anyMatch(l2List::contains);
+            
+            if (!hasSelectedL2s) {
+                if (!l2sUnderL1.isEmpty()) {
+                    log.info("Auto-expanding {} L2s under L1: {}", l2sUnderL1.size(), l1);
+                    // Auto-expand all L2s under this L1 (and their children)
+                    for (String l2 : l2sUnderL1) {
+                        List<String> l3sUnderL2 = findAllL3ByL2Safe(l2, functionalArea);
+                        if (!l3sUnderL2.isEmpty()) {
+                            for (String l3 : l3sUnderL2) {
+                                List<String> l4sUnderL3 = findAllL4ByL3Safe(l3, functionalArea);
+                                if (!l4sUnderL3.isEmpty()) {
+                                    for (String l4 : l4sUnderL3) {
+                                        Optional<Object[]> pathOpt = findCompletePathByL4(l4, functionalArea);
+                                        if (pathOpt.isPresent()) {
+                                            String pathKey = createPathKey(pathOpt.get());
+                                            if (!processedPaths.contains(pathKey)) {
+                                                UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId, previousProcess);
+                                                if (record != null) {
+                                                    records.add(record);
+                                                    processedPaths.add(pathKey);
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess, functionalArea);
+                                    if (record != null) {
+                                        String pathKey = createPathKeyFromRecord(record);
+                                        if (!processedPaths.contains(pathKey)) {
+                                            records.add(record);
+                                            processedPaths.add(pathKey);
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            UserFunctionalProcess record = createRecordForL2(l2, userId, sessionId, previousProcess, functionalArea);
+                            if (record != null) {
+                                String pathKey = createPathKeyFromRecord(record);
+                                if (!processedPaths.contains(pathKey)) {
+                                    records.add(record);
+                                    processedPaths.add(pathKey);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    log.info("No L2s found under L1: {}, saving L1 record", l1);
+                    UserFunctionalProcess record = createRecordForL1(l1, userId, sessionId, previousProcess);
+                    if (record != null) {
+                        String pathKey = createPathKeyFromRecord(record);
+                        if (!processedPaths.contains(pathKey)) {
+                            records.add(record);
+                            processedPaths.add(pathKey);
+                        }
+                    }
+                }
+            }
+        }
+        
+        log.info("Total records created: {}", records.size());
+        return records;
+    }
+
+    /**
+     * Determines which repository to use based on the combination of functionalArea, 
+     * industryType, and functionalSubArea
+     */
+private String determineFunctionalAreaForRepository(FunctionalAreaDT previousProcess) {
+    String functionalArea = previousProcess.getFunctionalArea();
+    String industryType = previousProcess.getIndustryType();
+    String functionalSubArea = previousProcess.getFunctionalSubArea();
+    
+    log.info("Determining repository for - functionalArea: {}, industryType: {}, functionalSubArea: {}", 
+             functionalArea, industryType, functionalSubArea);
+    
+    // Priority 1: Check industryType first (most specific)
+    if (industryType != null) {
+        String industryUpper = industryType.toUpperCase();
+        
+        if (industryUpper.contains("WAREHOUSE-MANAGEMENT") || industryUpper.contains("WAREHOUSE MANAGEMENT")) {
+            log.info("Using WMS repository based on industryType: {}", industryType);
+            return "WMS";
+        }
+        
+        if (industryUpper.contains("TRANSPORTATION-MANAGEMENT") || industryUpper.contains("TRANSPORTATION MANAGEMENT")) {
+            log.info("Using TMS repository based on industryType: {}", industryType);
+            return "TRANSPORTATION-MANAGEMENT";
+        }
+        
+        if (industryUpper.contains("INDUSTRY AGNOSTIC") || industryUpper.contains("AGNOSTIC")) {
+            log.info("Using IND-AGNOUSTIC repository based on industryType: {}", industryType);
+            return "IND-AGNOUSTIC";
+        }
+        
+        if (industryUpper.contains("CONSUMER GOODS") || industryUpper.contains("CGS")) {
+            log.info("Using CGS repository based on industryType: {}", industryType);
+            return "CGS";
+        }
+        
+        if (industryUpper.contains("RETAIL") && industryUpper.contains("SPECIFIC")) {
+            log.info("Using RETAIL repository based on industryType: {}", industryType);
+            return "RETAIL";
         }
     }
     
-    log.info("Total records created: {}", records.size());
-    return records;
-}
-
-// Helper method to create a unique key for each path to avoid duplicates
-private String createPathKey(Object[] path) {
-    Object[] actualPath = path;
-    if (path.length == 1 && path[0] instanceof Object[]) {
-        actualPath = (Object[]) path[0];
-    }
-    
-    StringBuilder key = new StringBuilder();
-    for (int i = 0; i < actualPath.length; i++) {
-        if (actualPath[i] != null) {
-            key.append(actualPath[i].toString()).append("|");
-        } else {
-            key.append("null|");
+    // Priority 2: Check functionalSubArea
+    if (functionalSubArea != null) {
+        String subAreaUpper = functionalSubArea.toUpperCase();
+        
+        if (subAreaUpper.contains("WAREHOUSE") || subAreaUpper.contains("WMS")) {
+            log.info("Using WMS repository based on functionalSubArea: {}", functionalSubArea);
+            return "WMS";
+        }
+        
+        if (subAreaUpper.contains("TRANSPORTATION") || subAreaUpper.contains("TMS")) {
+            log.info("Using TMS repository based on functionalSubArea: {}", functionalSubArea);
+            return "TRANSPORTATION-MANAGEMENT";
+        }
+        
+        if (subAreaUpper.contains("ORDER") || subAreaUpper.contains("OMS")) {
+            log.info("Using OMS repository based on functionalSubArea: {}", functionalSubArea);
+            return "OMS";
+        }
+        
+        if (subAreaUpper.contains("RETAIL")) {
+            log.info("Using RETAIL repository based on functionalSubArea: {}", functionalSubArea);
+            return "RETAIL";
+        }
+        
+        if (subAreaUpper.contains("CGS") || subAreaUpper.contains("CONSUMER")) {
+            log.info("Using CGS repository based on functionalSubArea: {}", functionalSubArea);
+            return "CGS";
         }
     }
-    return key.toString();
-}
-
-// Helper method to create record stopping at L2
-private UserFunctionalProcess createRecordUpToL2(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
-    Object[] actualPath = path;
-    if (path.length == 1 && path[0] instanceof Object[]) {
-        actualPath = (Object[]) path[0];
+    
+    // Priority 3: Check functionalArea (least specific, only for very clear cases)
+    if (functionalArea != null) {
+        String areaUpper = functionalArea.toUpperCase();
+        
+        // Only match very specific functional area names
+        if (areaUpper.equals("WAREHOUSE-MANAGEMENT") || areaUpper.equals("WMS")) {
+            log.info("Using WMS repository based on functionalArea: {}", functionalArea);
+            return "WMS";
+        }
+        
+        if (areaUpper.equals("TRANSPORTATION-MANAGEMENT") || areaUpper.equals("TMS")) {
+            log.info("Using TMS repository based on functionalArea: {}", functionalArea);
+            return "TRANSPORTATION-MANAGEMENT";
+        }
+        
+        if (areaUpper.equals("ORDER-MANAGEMENT") || areaUpper.equals("OMS")) {
+            log.info("Using OMS repository based on functionalArea: {}", functionalArea);
+            return "OMS";
+        }
     }
     
-    return UserFunctionalProcess.builder()
-        .userId(userId)
-        .sessionId(sessionId)
-        .functionalArea(previousProcess.getFunctionalArea())
-        .industryType(previousProcess.getIndustryType())
-        .functionalSubArea(previousProcess.getFunctionalSubArea())
+    // Default: Fall back to IND-AGNOUSTIC for ambiguous cases
+    log.info("Using IND-AGNOUSTIC repository as default for: functionalArea={}, industryType={}, functionalSubArea={}", 
+             functionalArea, industryType, functionalSubArea);
+    return "IND-AGNOUSTIC";
+}
+    // Safe wrapper methods with better error handling and logging
+    private List<String> findAllL2ByL1Safe(String l1, String functionalArea) {
+        try {
+            return findAllL2ByL1(l1, functionalArea);
+        } catch (Exception e) {
+            log.error("Error finding L2s for L1 '{}' in area '{}': {}", l1, functionalArea, e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    private List<String> findAllL3ByL2Safe(String l2, String functionalArea) {
+        try {
+            return findAllL3ByL2(l2, functionalArea);
+        } catch (Exception e) {
+            log.error("Error finding L3s for L2 '{}' in area '{}': {}", l2, functionalArea, e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    private List<String> findAllL4ByL3Safe(String l3, String functionalArea) {
+        try {
+            return findAllL4ByL3(l3, functionalArea);
+        } catch (Exception e) {
+            log.error("Error finding L4s for L3 '{}' in area '{}': {}", l3, functionalArea, e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+private UserFunctionalProcess createRecordSafe(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+    try {
+        if (path == null || path.length == 0) {
+            log.warn("Path is null or empty");
+            return null;
+        }
         
-        .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-        .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-        .l3(null)
-        .l4(null)
-        .l5(null)
-        .build();
+        log.info("Creating record from path: {}", Arrays.toString(path));
+        
+        // Handle nested array structure
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+            log.info("Extracted nested array: {}", Arrays.toString(actualPath));
+        }
+        
+        UserFunctionalProcess record = UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+            .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
+            .l4(actualPath.length > 3 && actualPath[3] != null ? actualPath[3].toString() : null)
+            .l5(actualPath.length > 4 && actualPath[4] != null ? actualPath[4].toString() : null) // Add L5 support
+            .build();
+        
+        log.info("Created record: L1={}, L2={}, L3={}, L4={}, L5={}", record.getL1(), record.getL2(), record.getL3(), record.getL4(), record.getL5());
+        return record;
+        
+    } catch (Exception e) {
+        log.error("Error creating record from path: {}", e.getMessage(), e);
+        return null;
+    }
 }
 
-// Helper method to create record stopping at L3
-private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
-    Object[] actualPath = path;
-    if (path.length == 1 && path[0] instanceof Object[]) {
-        actualPath = (Object[]) path[0];
+    private UserFunctionalProcess createRecordForL1(String l1, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+        return UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(l1)
+            .l2(null)
+            .l3(null)
+            .l4(null)
+            .l5(null)
+            .build();
     }
-    
-    return UserFunctionalProcess.builder()
-        .userId(userId)
-        .sessionId(sessionId)
-        .functionalArea(previousProcess.getFunctionalArea())
-        .industryType(previousProcess.getIndustryType())
-        .functionalSubArea(previousProcess.getFunctionalSubArea())
+
+    private UserFunctionalProcess createRecordForL2(String l2, String userId, String sessionId, FunctionalAreaDT previousProcess, String functionalArea) {
+        // Try to find the L1 for this L2
+        String l1 = findL1ByL2(l2, functionalArea);
         
-        .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-        .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-        .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
-        .l4(null)
-        .l5(null)
-        .build();
-}
+        return UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(l1)
+            .l2(l2)
+            .l3(null)
+            .l4(null)
+            .l5(null)
+            .build();
+    }
+
+    private UserFunctionalProcess createRecordForL3(String l3, String userId, String sessionId, FunctionalAreaDT previousProcess, String functionalArea) {
+        // Try to find the complete path up to L3
+        Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
+        
+        String l1 = null;
+        String l2 = null;
+        
+        if (pathOpt.isPresent()) {
+            Object[] path = pathOpt.get();
+            Object[] actualPath = path.length == 1 && path[0] instanceof Object[] ? (Object[]) path[0] : path;
+            
+            l1 = actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null;
+            l2 = actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null;
+        }
+        
+        return UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(l1)
+            .l2(l2)
+            .l3(l3)
+            .l4(null)
+            .l5(null)
+            .build();
+    }
+
+    private String createPathKeyFromRecord(UserFunctionalProcess record) {
+        return String.format("%s|%s|%s|%s|%s", 
+            record.getL1() != null ? record.getL1() : "null",
+            record.getL2() != null ? record.getL2() : "null",
+            record.getL3() != null ? record.getL3() : "null",
+            record.getL4() != null ? record.getL4() : "null",
+            record.getL5() != null ? record.getL5() : "null");
+    }
+
+    // Helper method to create a unique key for each path to avoid duplicates
+    private String createPathKey(Object[] path) {
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+        }
+        
+        StringBuilder key = new StringBuilder();
+        for (int i = 0; i < actualPath.length; i++) {
+            if (actualPath[i] != null) {
+                key.append(actualPath[i].toString()).append("|");
+            } else {
+                key.append("null|");
+            }
+        }
+        return key.toString();
+    }
+
+    // Helper method to create record stopping at L2
+    private UserFunctionalProcess createRecordUpToL2(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+        }
+        
+        return UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+            .l3(null)
+            .l4(null)
+            .l5(null)
+            .build();
+    }
+
+    // Helper method to create record stopping at L3
+    private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+        }
+        
+        return UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+            .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
+            .l4(null)
+            .l5(null)
+            .build();
+    }
 
     private Optional<Object[]> findCompletePathByL4(String l4, String functionalArea) {
         switch (functionalArea.toUpperCase()) {
@@ -474,7 +707,7 @@ private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, S
             case "SUPPLY-CHAIN-FULFILLMENT":
             case "WAREHOUSE-MANAGEMENT":
                 return wmsFunctionalRepository.findCompletePathByL4(l4);
-            case "TMS":
+            case "TRANSPORTATION-MANAGEMENT":
                 return tmsFunctionalRepository.findCompletePathByL4(l4);
             case "OMS":
                 return omsFunctionalRepository.findCompletePathByL4(l4);
@@ -499,7 +732,7 @@ private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, S
             case "WAREHOUSE-MANAGEMENT":
                 paths = wmsFunctionalRepository.findPathsByL3(l3);
                 break;
-            case "TMS":
+            case "TRANSPORTATION-MANAGEMENT":
                 paths = tmsFunctionalRepository.findPathsByL3(l3);
                 break;
             case "OMS":
@@ -531,7 +764,7 @@ private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, S
             case "WAREHOUSE-MANAGEMENT":
                 paths = wmsFunctionalRepository.findPathsByL2(l2);
                 break;
-            case "TMS":
+            case "TRANSPORTATION-MANAGEMENT":
                 paths = tmsFunctionalRepository.findPathsByL2(l2);
                 break;
             case "OMS":
@@ -555,125 +788,125 @@ private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, S
     }
 
     private List<String> findAllL2ByL1(String l1, String functionalArea) {
-    switch (functionalArea.toUpperCase()) {
-        case "WMS":
-        case "SUPPLY-CHAIN-FULFILLMENT":
-        case "WAREHOUSE-MANAGEMENT":
-            return wmsFunctionalRepository.findDistinctL2ByL1(l1);
-        case "TMS":
-            return tmsFunctionalRepository.findDistinctL2ByL1(l1);
-        case "OMS":
-            return omsFunctionalRepository.findDistinctL2ByL1(l1);
-        case "IND-AGNOUSTIC":
-            return indagnousticFunctionalRepository.findDistinctL2ByL1(l1);
-        case "RETAIL":
-            return retailFunctionalRepository.findDistinctL2ByL1(l1);
-        case "CGS":
-            return cgsFunctionalRepository.findDistinctL2ByL1(l1);
-        default:
-            log.warn("Unknown functional area: {}", functionalArea);
-            return new ArrayList<>();
+        switch (functionalArea.toUpperCase()) {
+            case "WMS":
+            case "SUPPLY-CHAIN-FULFILLMENT":
+            case "WAREHOUSE-MANAGEMENT":
+                return wmsFunctionalRepository.findDistinctL2ByL1(l1);
+            case "TRANSPORTATION-MANAGEMENT":
+                return tmsFunctionalRepository.findDistinctL2ByL1(l1);
+            case "OMS":
+                return omsFunctionalRepository.findDistinctL2ByL1(l1);
+            case "IND-AGNOUSTIC":
+                return indagnousticFunctionalRepository.findDistinctL2ByL1(l1);
+            case "RETAIL":
+                return retailFunctionalRepository.findDistinctL2ByL1(l1);
+            case "CGS":
+                return cgsFunctionalRepository.findDistinctL2ByL1(l1);
+            default:
+                log.warn("Unknown functional area: {}", functionalArea);
+                return new ArrayList<>();
+        }
     }
-}
 
-private List<String> findAllL3ByL2(String l2, String functionalArea) {
-    // We need to find L1 first to get L3s
-    String l1 = findL1ByL2(l2, functionalArea);
-    if (l1 == null) {
-        return new ArrayList<>();
-    }
-    
-    switch (functionalArea.toUpperCase()) {
-        case "WMS":
-        case "SUPPLY-CHAIN-FULFILLMENT":
-        case "WAREHOUSE-MANAGEMENT":
-            return wmsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
-        case "TMS":
-            return tmsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
-        case "OMS":
-            return omsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
-        case "IND-AGNOUSTIC":
-            return indagnousticFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
-        case "RETAIL":
-            return retailFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
-        case "CGS":
-            return cgsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
-        default:
-            log.warn("Unknown functional area: {}", functionalArea);
+    private List<String> findAllL3ByL2(String l2, String functionalArea) {
+        // We need to find L1 first to get L3s
+        String l1 = findL1ByL2(l2, functionalArea);
+        if (l1 == null) {
             return new ArrayList<>();
+        }
+        
+        switch (functionalArea.toUpperCase()) {
+            case "WMS":
+            case "SUPPLY-CHAIN-FULFILLMENT":
+            case "WAREHOUSE-MANAGEMENT":
+                return wmsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
+            case "TRANSPORTATION-MANAGEMENT":
+                return tmsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
+            case "OMS":
+                return omsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
+            case "IND-AGNOUSTIC":
+                return indagnousticFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
+            case "RETAIL":
+                return retailFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
+            case "CGS":
+                return cgsFunctionalRepository.findDistinctL3ByL1AndL2(l1, l2);
+            default:
+                log.warn("Unknown functional area: {}", functionalArea);
+                return new ArrayList<>();
+        }
     }
-}
 
-private List<String> findAllL4ByL3(String l3, String functionalArea) {
-    // We need to find L1 and L2 first to get L4s
-    Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
-    if (!pathOpt.isPresent()) {
-        return new ArrayList<>();
-    }
-    
-    Object[] path = pathOpt.get();
-    Object[] actualPath = path;
-    if (path.length == 1 && path[0] instanceof Object[]) {
-        actualPath = (Object[]) path[0];
-    }
-    
-    if (actualPath.length < 2) {
-        return new ArrayList<>();
-    }
-    
-    String l1 = actualPath[0] != null ? actualPath[0].toString() : null;
-    String l2 = actualPath[1] != null ? actualPath[1].toString() : null;
-    
-    if (l1 == null || l2 == null) {
-        return new ArrayList<>();
-    }
-    
-    switch (functionalArea.toUpperCase()) {
-        case "WMS":
-        case "SUPPLY-CHAIN-FULFILLMENT":
-        case "WAREHOUSE-MANAGEMENT":
-            return wmsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
-        case "TMS":
-            return tmsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
-        case "OMS":
-            return omsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
-        case "IND-AGNOUSTIC":
-            return indagnousticFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
-        case "RETAIL":
-            return retailFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
-        case "CGS":
-            return cgsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
-        default:
-            log.warn("Unknown functional area: {}", functionalArea);
+    private List<String> findAllL4ByL3(String l3, String functionalArea) {
+        // We need to find L1 and L2 first to get L4s
+        Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
+        if (!pathOpt.isPresent()) {
             return new ArrayList<>();
+        }
+        
+        Object[] path = pathOpt.get();
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+        }
+        
+        if (actualPath.length < 2) {
+            return new ArrayList<>();
+        }
+        
+        String l1 = actualPath[0] != null ? actualPath[0].toString() : null;
+        String l2 = actualPath[1] != null ? actualPath[1].toString() : null;
+        
+        if (l1 == null || l2 == null) {
+            return new ArrayList<>();
+        }
+        
+        switch (functionalArea.toUpperCase()) {
+            case "WMS":
+            case "SUPPLY-CHAIN-FULFILLMENT":
+            case "WAREHOUSE-MANAGEMENT":
+                return wmsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
+            case "TRANSPORTATION-MANAGEMENT":
+                return tmsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
+            case "OMS":
+                return omsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
+            case "IND-AGNOUSTIC":
+                return indagnousticFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
+            case "RETAIL":
+                return retailFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
+            case "CGS":
+                return cgsFunctionalRepository.findDistinctL4ByL1AndL2AndL3(l1, l2, l3);
+            default:
+                log.warn("Unknown functional area: {}", functionalArea);
+                return new ArrayList<>();
+        }
     }
-}
 
-private String findL1ByL2(String l2, String functionalArea) {
-    Optional<Object[]> pathOpt = getFirstPathForL2(l2, functionalArea);
-    if (!pathOpt.isPresent()) {
-        return null;
+    private String findL1ByL2(String l2, String functionalArea) {
+        Optional<Object[]> pathOpt = getFirstPathForL2(l2, functionalArea);
+        if (!pathOpt.isPresent()) {
+            return null;
+        }
+        
+        Object[] path = pathOpt.get();
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+        }
+        
+        return actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null;
     }
-    
-    Object[] path = pathOpt.get();
-    Object[] actualPath = path;
-    if (path.length == 1 && path[0] instanceof Object[]) {
-        actualPath = (Object[]) path[0];
-    }
-    
-    return actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null;
-}
 
     private UserFunctionalProcess createRecord(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
         log.info("Creating record from path array with length: {}", path.length);
-        log.info("Path contents: {}", java.util.Arrays.toString(path));
+        log.info("Path contents: {}", Arrays.toString(path));
         
         // Handle nested array structure - if path[0] is an Object[], extract it
         Object[] actualPath = path;
         if (path.length == 1 && path[0] instanceof Object[]) {
             actualPath = (Object[]) path[0];
             log.info("Extracted nested array with length: {}", actualPath.length);
-            log.info("Actual path contents: {}", java.util.Arrays.toString(actualPath));
+            log.info("Actual path contents: {}", Arrays.toString(actualPath));
         }
         
         return UserFunctionalProcess.builder()
@@ -682,7 +915,6 @@ private String findL1ByL2(String l2, String functionalArea) {
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
-            
             .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
             .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
             .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
@@ -716,7 +948,6 @@ private String findL1ByL2(String l2, String functionalArea) {
             .functionalArea(previousProcess.getFunctionalArea())
             .industryType(previousProcess.getIndustryType())
             .functionalSubArea(previousProcess.getFunctionalSubArea())
-            
             .levelSelections(levelPaths)
             .build();
     }
@@ -745,4 +976,32 @@ private String findL1ByL2(String l2, String functionalArea) {
             return Collections.emptyList();
         }
     }
+
+    private void debugIndAgnousticRepository() {
+    log.info("=== DEBUG: Testing IndAgnoustic repository methods ===");
+    
+    try {
+        // Test the basic query
+        List<Object[]> allRecords = indagnousticFunctionalRepository.findAllLevelsAsArray();
+        log.info("IndAgnoustic total records: {}", allRecords.size());
+        
+        if (!allRecords.isEmpty()) {
+            Object[] firstRecord = allRecords.get(0);
+            log.info("First record structure: {}", Arrays.toString(firstRecord));
+        }
+        
+        // Test specific path lookups with your actual selections
+        List<Object[]> pathsForL3 = indagnousticFunctionalRepository.findPathsByL3("Define Segmentation Approach");
+        log.info("Paths found for L3 'Define Segmentation Approach': {}", pathsForL3.size());
+        if (!pathsForL3.isEmpty()) {
+            log.info("First path: {}", Arrays.toString(pathsForL3.get(0)));
+        }
+        
+        List<Object[]> pathsForL2 = indagnousticFunctionalRepository.findPathsByL2("Define Demand Segment & Approach");
+        log.info("Paths found for L2 'Define Demand Segment & Approach': {}", pathsForL2.size());
+        
+    } catch (Exception e) {
+        log.error("Error in IndAgnoustic debug: {}", e.getMessage(), e);
+    }
+}
 }

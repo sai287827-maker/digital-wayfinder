@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.DigitalWayfinder.entity.WmsFunctional;
+import com.example.DigitalWayfinder.entity.RetailFunctional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RetailFunctionalRepository extends JpaRepository<WmsFunctional, Long> {
+public interface RetailFunctionalRepository extends JpaRepository<RetailFunctional, Long> {
     
     @Query(value = "SELECT L1, L2, L3, L4, L5 FROM Retail", nativeQuery = true)
     List<Object[]> findAllLevelsAsArray();
@@ -32,12 +32,12 @@ public interface RetailFunctionalRepository extends JpaRepository<WmsFunctional,
     List<String> findDistinctL5ByL1AndL2AndL3AndL4(@Param("l1") String l1, @Param("l2") String l2, @Param("l3") String l3, @Param("l4") String l4);
 
     
-    @Query("SELECT w.l1, w.l2, w.l3, w.l4 FROM WmsFunctional w WHERE w.l4 = :l4")
+    @Query("SELECT w.l1, w.l2, w.l3, w.l4 FROM RetailFunctional w WHERE w.l4 = :l4")
     Optional<Object[]> findCompletePathByL4(@Param("l4") String l4);
     
-@Query("SELECT w.l1, w.l2, w.l3 FROM WmsFunctional w WHERE w.l3 = :l3")
+@Query("SELECT w.l1, w.l2, w.l3 FROM RetailFunctional w WHERE w.l3 = :l3")
 List<Object[]> findPathsByL3(@Param("l3") String l3);
 
-@Query("SELECT w.l1, w.l2 FROM WmsFunctional w WHERE w.l2 = :l2")  
+@Query("SELECT w.l1, w.l2 FROM RetailFunctional w WHERE w.l2 = :l2")  
 List<Object[]> findPathsByL2(@Param("l2") String l2);
 }
