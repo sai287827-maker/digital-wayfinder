@@ -25977,3 +25977,939 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2025-08-26 20:03:37 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
 2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/project-info/get", parameters={}
 2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-26 20:03:47 [http-nio-8080-exec-10] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/project-info/get.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-26 20:03:47 [http-nio-8080-exec-10] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.]
+2025-08-26 20:03:47 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-26 20:03:47 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-26 20:03:47 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:47 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:52 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/project-info/save", parameters={}
+2025-08-26 20:03:52 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.ProjectInfoController#saveProjectInfo(ProjectInfoRequest, UserSession)
+2025-08-26 20:03:52 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [ProjectInfoRequest(projectType=internal, requestID=1235, clientName=rwqer, clientDescription=, proje (truncated)...]
+2025-08-26 20:03:52 [http-nio-8080-exec-1] INFO  c.e.D.c.ProjectInfoController - Received request to save project info: 1235 for user: USER-C6562352 in session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:03:53 [http-nio-8080-exec-1] INFO  c.e.D.service.ProjectInfoService - Processing project info for request ID: 1235 by user: USER-C6562352 in session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:03:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        pt1_0.id,
+        pt1_0.ClientDescription,
+        pt1_0.ClientName,
+        pt1_0.CreatedDate,
+        pt1_0.ProjectScope,
+        pt1_0.ProjectType,
+        pt1_0.RequestID,
+        pt1_0.SessionID,
+        pt1_0.UserID 
+    from
+        ProjectType pt1_0 
+    where
+        pt1_0.UserID=? 
+        and pt1_0.SessionID=?
+2025-08-26 20:03:53 [http-nio-8080-exec-1] INFO  c.e.D.service.ProjectInfoService - Updating existing project with ID: 161
+2025-08-26 20:03:53 [http-nio-8080-exec-1] INFO  c.e.D.service.ProjectInfoService - Project information updated successfully with ID: 161
+2025-08-26 20:03:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    update
+        ProjectType 
+    set
+        ClientDescription=?,
+        ClientName=?,
+        CreatedDate=?,
+        ProjectScope=?,
+        ProjectType=?,
+        RequestID=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-26 20:03:53 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:03:53 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ProjectInfoResponse(id=161, userID=USER-C6562352, projectType=internal, requestID=1235, clientName=r (truncated)...]
+2025-08-26 20:03:53 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:54 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-26 20:03:54 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-area/get", parameters={}
+2025-08-26 20:03:54 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-26 20:03:54 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:54 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:54 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-26 20:03:54 [http-nio-8080-exec-7] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/functional-area/get.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/functional-area/get.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-26 20:03:54 [http-nio-8080-exec-7] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/functional-area/get.]
+2025-08-26 20:03:54 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-26 20:03:54 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:54 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:54 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-26 20:03:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:54 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-26 20:03:54 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:54 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:56 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/functional-area/save", parameters={}
+2025-08-26 20:03:56 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalAreaDTController#saveFunctionalArea(FunctionalAreaRequest, UserSession)
+2025-08-26 20:03:56 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [FunctionalAreaRequest(functionalArea=supply-chain-planning)]
+2025-08-26 20:03:56 [http-nio-8080-exec-9] INFO  c.e.D.c.FunctionalAreaDTController - Saving functional area 'supply-chain-planning' for userId: USER-C6562352, sessionId: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:03:56 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:03:56 [http-nio-8080-exec-9] INFO  c.e.D.s.FunctionalAreaDTService - Updated functionalArea for userId: USER-C6562352, sessionId: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:03:57 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:03:57 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [FunctionalAreaResponse(id=118, userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, fun (truncated)...]
+2025-08-26 20:03:57 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:57 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-26 20:03:57 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:57 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-26 20:03:57 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-26 20:03:57 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-26 20:03:57 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:57 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:57 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:57 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:57 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:57 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:57 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-26 20:03:57 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:57 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:57 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-26 20:03:57 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:57 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:58 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:59 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-26 20:03:59 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:03:59 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/industry-type/supply-chain-planning/save", parameters={}
+2025-08-26 20:03:59 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.IndustryTypeDTController#saveIndustryType(IndustryTypeRequestDTO, UserSession)
+2025-08-26 20:03:59 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [IndustryTypeRequestDTO(industryType=Retail Industry Specific)]
+2025-08-26 20:03:59 [http-nio-8080-exec-2] INFO  c.e.D.c.IndustryTypeDTController - Received request to save industry type: Retail Industry Specific for user: USER-C6562352 in session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:03:59 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:03:59 [http-nio-8080-exec-2] INFO  c.e.D.service.IndustryTypeDTService - Processing industry type: Retail Industry Specific for user: USER-C6562352 in session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:03:59 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:00 [http-nio-8080-exec-2] INFO  c.e.D.service.IndustryTypeDTService - Updating industry type for existing functional area: supply-chain-planning for user: USER-C6562352 in session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:00 [http-nio-8080-exec-2] INFO  c.e.D.service.IndustryTypeDTService - Updating existing functional area ID: 118 with industry type: Retail Industry Specific
+2025-08-26 20:04:00 [http-nio-8080-exec-2] INFO  c.e.D.service.IndustryTypeDTService - Updating existing industry type from 'Consumer Goods Industry Specific' to 'Retail Industry Specific' for functional area ID: 118
+2025-08-26 20:04:00 [http-nio-8080-exec-2] INFO  c.e.D.service.IndustryTypeDTService - Successfully updated functional area ID: 118 with industry type: Retail Industry Specific
+2025-08-26 20:04:00 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    update
+        UserFunctionalArea 
+    set
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        IndustryType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-26 20:04:00 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:00 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [IndustryTypeResponseDTO(id=118, userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, fu (truncated)...]
+2025-08-26 20:04:00 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:00 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/retail/all", parameters={}
+2025-08-26 20:04:00 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalScopeController#getAllFunctionalScopesRetail()
+2025-08-26 20:04:00 [http-nio-8080-exec-6] INFO  c.e.D.c.FunctionalScopeController - Received request to fetch all functional scopes
+2025-08-26 20:04:00 [http-nio-8080-exec-6] INFO  c.e.D.service.FunctionalScopeService - Fetching all functional scope levels
+2025-08-26 20:04:00 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    SELECT
+        L1,
+        L2,
+        L3,
+        L4,
+        L5 
+    FROM
+        Retail
+2025-08-26 20:04:01 [http-nio-8080-exec-6] INFO  c.e.D.service.FunctionalScopeService - Successfully fetched 508 functional scope records
+2025-08-26 20:04:01 [http-nio-8080-exec-6] INFO  c.e.D.c.FunctionalScopeController - Successfully returning 508 functional scope records
+2025-08-26 20:04:01 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:01 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[FunctionalScopeDto(l1=Retail-Specific Analytics & AI/ML, l2=Define Demand Segment & Approach , l3=C (truncated)...]
+2025-08-26 20:04:01 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:06 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/functional-scope/save", parameters={}
+2025-08-26 20:04:06 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalScopeController#saveFunctionalScope(FunctionalScopeRequest, UserSession)
+2025-08-26 20:04:06 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [FunctionalScopeRequest(userId=null, sessionId=null, functionalArea=null, industryType=null, function (truncated)...]
+2025-08-26 20:04:06 [http-nio-8080-exec-9] INFO  c.e.D.c.FunctionalScopeController - Received functional scope save request for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:06 [http-nio-8080-exec-9] INFO  c.e.D.c.FunctionalScopeController - Request body received: {"levelSelections":{"l1":["Retail-Specific Analytics & AI/ML"],"l2":["Define Demand Segment & Approach "],"l3":["Conduct Segmentation Analysis & Planning Approach"],"l4":["Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance."],"l5":["Ability to design and optimize store layouts for efficient product placement."]}}
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Saving functional scope for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:07 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        ufp1_0.id,
+        ufp1_0.CreatedDate,
+        ufp1_0.FunctionalArea,
+        ufp1_0.FunctionalSubArea,
+        ufp1_0.IndustryType,
+        ufp1_0.L1,
+        ufp1_0.L2,
+        ufp1_0.L3,
+        ufp1_0.L4,
+        ufp1_0.L5,
+        ufp1_0.SessionID,
+        ufp1_0.UserID 
+    from
+        UserFunctionalProcess ufp1_0 
+    where
+        ufp1_0.UserID=? 
+        and ufp1_0.SessionID=?
+2025-08-26 20:04:07 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Determining repository for - functionalArea: supply-chain-planning, industryType: Retail Industry Specific, functionalSubArea: null
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Using RETAIL repository based on industryType: Retail Industry Specific
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Processing selections for functionalArea: RETAIL - L1: 1, L2: 1, L3: 1, L4: 1
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - L1 selections: [Retail-Specific Analytics & AI/ML]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - L2 selections: [Define Demand Segment & Approach ]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - L3 selections: [Conduct Segmentation Analysis & Planning Approach]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - L4 selections: [Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Processing L4: Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.
+2025-08-26 20:04:07 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        rf1_0.L1,
+        rf1_0.L2,
+        rf1_0.L3,
+        rf1_0.L4 
+    from
+        Retail rf1_0 
+    where
+        rf1_0.L4=?
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Found path for L4 'Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.': [[Ljava.lang.Object;@7009b76b]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Creating record from path: [[Ljava.lang.Object;@7009b76b]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Extracted nested array: [Retail-Specific Analytics & AI/ML, Define Demand Segment & Approach , Conduct Segmentation Analysis & Planning Approach, Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.]
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Created record: L1=Retail-Specific Analytics & AI/ML, L2=Define Demand Segment & Approach , L3=Conduct Segmentation Analysis & Planning Approach, L4=Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance., L5=null
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Added record for L4: Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.
+2025-08-26 20:04:07 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Processing L3: Conduct Segmentation Analysis & Planning Approach
+2025-08-26 20:04:07 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        rf1_0.L1,
+        rf1_0.L2,
+        rf1_0.L3 
+    from
+        Retail rf1_0 
+    where
+        rf1_0.L3=?
+2025-08-26 20:04:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        distinct rf1_0.L4 
+    from
+        Retail rf1_0 
+    where
+        rf1_0.L1=? 
+        and rf1_0.L2=? 
+        and rf1_0.L3=? 
+        and rf1_0.L4 is not null 
+        and rf1_0.L4<>''
+2025-08-26 20:04:08 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Processing L2: Define Demand Segment & Approach 
+2025-08-26 20:04:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        rf1_0.L1,
+        rf1_0.L2 
+    from
+        Retail rf1_0 
+    where
+        rf1_0.L2=?
+2025-08-26 20:04:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        distinct rf1_0.L3 
+    from
+        Retail rf1_0 
+    where
+        rf1_0.L1=? 
+        and rf1_0.L2=? 
+        and rf1_0.L3 is not null 
+        and rf1_0.L3<>''
+2025-08-26 20:04:08 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Processing L1: Retail-Specific Analytics & AI/ML
+2025-08-26 20:04:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        distinct rf1_0.L2 
+    from
+        Retail rf1_0 
+    where
+        rf1_0.L1=? 
+        and rf1_0.L2 is not null 
+        and rf1_0.L2<>''
+2025-08-26 20:04:08 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Total records created: 1
+2025-08-26 20:04:08 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        UserFunctionalProcess
+        (CreatedDate, FunctionalArea, FunctionalSubArea, IndustryType, L1, L2, L3, L4, L5, SessionID, UserID) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-08-26 20:04:09 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Successfully saved 1 functional scope records
+2025-08-26 20:04:09 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Mapping 1 saved records to response
+2025-08-26 20:04:09 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Record: L1=Retail-Specific Analytics & AI/ML, L2=Define Demand Segment & Approach , L3=Conduct Segmentation Analysis & Planning Approach, L4=Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.
+2025-08-26 20:04:09 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    delete 
+    from
+        UserFunctionalProcess 
+    where
+        id=?
+2025-08-26 20:04:09 [http-nio-8080-exec-9] INFO  c.e.D.c.FunctionalScopeController - Successfully saved functional scope for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:09 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:09 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [FunctionalScopeResponse(userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, functional (truncated)...]
+2025-08-26 20:04:09 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-26 20:04:09 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/non-functional-scope/retail/all", parameters={}
+2025-08-26 20:04:09 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.NonFunctionalScopeController#getAllFunctionalScopesRetail()
+2025-08-26 20:04:09 [http-nio-8080-exec-10] INFO  c.e.D.c.NonFunctionalScopeController - Received request to fetch all functional scopes
+2025-08-26 20:04:09 [http-nio-8080-exec-10] INFO  c.e.D.s.NonFunctionalScopeService - Fetching all non-functional scope levels
+2025-08-26 20:04:09 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    SELECT
+        L1,
+        L2,
+        L3 
+    FROM
+        [Retail_Non Fn]
+2025-08-26 20:04:09 [http-nio-8080-exec-10] INFO  c.e.D.s.NonFunctionalScopeService - Successfully fetched 147 non-functional scope records
+2025-08-26 20:04:09 [http-nio-8080-exec-10] INFO  c.e.D.c.NonFunctionalScopeController - Successfully returning 147 functional scope records
+2025-08-26 20:04:09 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:09 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[NonFunctionalScopeDto(l1=Technical Requirements, l2=Application Hosting, l3=Partnerships with diffe (truncated)...]
+2025-08-26 20:04:09 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:17 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/non-functional-scope/save", parameters={}
+2025-08-26 20:04:17 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.NonFunctionalScopeController#saveNonFunctionalScope(NonFunctionalRequest, UserSession)
+2025-08-26 20:04:17 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [NonFunctionalRequest(userId=null, sessionId=null, functionalArea=null, industryType=null, functional (truncated)...]
+2025-08-26 20:04:17 [http-nio-8080-exec-1] INFO  c.e.D.c.NonFunctionalScopeController - Received non-functional scope save request for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:17 [http-nio-8080-exec-1] INFO  c.e.D.c.NonFunctionalScopeController - Request body received: {"levelSelections":{"l1":["Technical Requirements"],"l2":["Hardware and Infrastructure "],"l3":["Solutions requirements for cloud resources, servers , client devices and networking equipment"],"l4":null,"l5":null}}
+2025-08-26 20:04:17 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Saving non-functional scope for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:17 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        unfp1_0.id,
+        unfp1_0.CreatedDate,
+        unfp1_0.FunctionalArea,
+        unfp1_0.FunctionalSubArea,
+        unfp1_0.IndustryType,
+        unfp1_0.L1,
+        unfp1_0.L2,
+        unfp1_0.L3,
+        unfp1_0.L4,
+        unfp1_0.L5,
+        unfp1_0.SessionID,
+        unfp1_0.UserID 
+    from
+        UserNonFuncProcess unfp1_0 
+    where
+        unfp1_0.UserID=? 
+        and unfp1_0.SessionID=?
+2025-08-26 20:04:17 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Determining repository for - functionalArea: supply-chain-planning, industryType: Retail Industry Specific, functionalSubArea: null
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Using RETAIL repository based on industryType: Retail Industry Specific
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - === DEBUG: Testing non-functional repository methods for area: RETAIL ===
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Processing non-functional selections for functionalArea: RETAIL - L1: 1, L2: 1, L3: 1
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - L1 selections: [Technical Requirements]
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - L2 selections: [Hardware and Infrastructure ]
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - L3 selections: [Solutions requirements for cloud resources, servers , client devices and networking equipment]
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Processing L3: Solutions requirements for cloud resources, servers , client devices and networking equipment
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Looking for L3 'Solutions requirements for cloud resources, servers , client devices and networking equipment' in functionalArea 'RETAIL'
+2025-08-26 20:04:18 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        rnf1_0.L1,
+        rnf1_0.L2,
+        rnf1_0.L3 
+    from
+        [Retail_Non Fn] rnf1_0 
+    where
+        rnf1_0.L3=?
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Returning first path: [Technical Requirements, Hardware and Infrastructure , Solutions requirements for cloud resources, servers , client devices and networking equipment]
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Found path for L3 'Solutions requirements for cloud resources, servers , client devices and networking equipment': [Technical Requirements, Hardware and Infrastructure , Solutions requirements for cloud resources, servers , client devices and networking equipment]
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Creating non-functional record from path: [Technical Requirements, Hardware and Infrastructure , Solutions requirements for cloud resources, servers , client devices and networking equipment]
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Created non-functional record: L1=Technical Requirements, L2=Hardware and Infrastructure , L3=Solutions requirements for cloud resources, servers , client devices and networking equipment
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Added record for L3: Solutions requirements for cloud resources, servers , client devices and networking equipment
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Processing L2: Hardware and Infrastructure 
+2025-08-26 20:04:18 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        rnf1_0.L1,
+        rnf1_0.L2 
+    from
+        [Retail_Non Fn] rnf1_0 
+    where
+        rnf1_0.L2=?
+2025-08-26 20:04:18 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        distinct rnf1_0.L3 
+    from
+        [Retail_Non Fn] rnf1_0 
+    where
+        rnf1_0.L1=? 
+        and rnf1_0.L2=? 
+        and rnf1_0.L3 is not null 
+        and rnf1_0.L3<>''
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Processing L1: Technical Requirements
+2025-08-26 20:04:18 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        distinct rnf1_0.L2 
+    from
+        [Retail_Non Fn] rnf1_0 
+    where
+        rnf1_0.L1=? 
+        and rnf1_0.L2 is not null 
+        and rnf1_0.L2<>''
+2025-08-26 20:04:18 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Total non-functional records created: 1
+2025-08-26 20:04:18 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        UserNonFuncProcess
+        (CreatedDate, FunctionalArea, FunctionalSubArea, IndustryType, L1, L2, L3, L4, L5, SessionID, UserID) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-08-26 20:04:19 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Successfully saved 1 non-functional scope records
+2025-08-26 20:04:19 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Mapping 1 saved non-functional records to response
+2025-08-26 20:04:19 [http-nio-8080-exec-1] INFO  c.e.D.s.NonFunctionalScopeService - Non-functional Record: L1=Technical Requirements, L2=Hardware and Infrastructure , L3=Solutions requirements for cloud resources, servers , client devices and networking equipment, L4=null, L5=null
+2025-08-26 20:04:19 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    delete 
+    from
+        UserNonFuncProcess 
+    where
+        id=?
+2025-08-26 20:04:19 [http-nio-8080-exec-1] INFO  c.e.D.c.NonFunctionalScopeController - Successfully saved non-functional scope for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:19 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:19 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [NonFunctionalResponse(userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, functionalAr (truncated)...]
+2025-08-26 20:04:19 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-26 20:04:19 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/decision-criteria/get-details", parameters={}
+2025-08-26 20:04:19 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.DecisionCriteriaController#getDecisionCriteria(UserSession)
+2025-08-26 20:04:19 [http-nio-8080-exec-4] INFO  c.e.D.c.DecisionCriteriaController - Received decision criteria request for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:19 [http-nio-8080-exec-4] INFO  c.e.D.s.DecisionCriteriaService - Fetching decision criteria for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:19 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ufp1_0.id,
+        ufp1_0.CreatedDate,
+        ufp1_0.FunctionalArea,
+        ufp1_0.FunctionalSubArea,
+        ufp1_0.IndustryType,
+        ufp1_0.L1,
+        ufp1_0.L2,
+        ufp1_0.L3,
+        ufp1_0.L4,
+        ufp1_0.L5,
+        ufp1_0.SessionID,
+        ufp1_0.UserID 
+    from
+        UserFunctionalProcess ufp1_0 
+    where
+        ufp1_0.UserID=? 
+        and ufp1_0.SessionID=?
+2025-08-26 20:04:20 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        unfp1_0.id,
+        unfp1_0.CreatedDate,
+        unfp1_0.FunctionalArea,
+        unfp1_0.FunctionalSubArea,
+        unfp1_0.IndustryType,
+        unfp1_0.L1,
+        unfp1_0.L2,
+        unfp1_0.L3,
+        unfp1_0.L4,
+        unfp1_0.L5,
+        unfp1_0.SessionID,
+        unfp1_0.UserID 
+    from
+        UserNonFuncProcess unfp1_0 
+    where
+        unfp1_0.UserID=? 
+        and unfp1_0.SessionID=?
+2025-08-26 20:04:20 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:20 [http-nio-8080-exec-4] INFO  c.e.D.s.DecisionCriteriaService - Found 1 functional processes and 1 non-functional processes
+2025-08-26 20:04:20 [http-nio-8080-exec-4] INFO  c.e.D.s.DecisionCriteriaService - Successfully converted 1 functional rows and 1 non-functional rows
+2025-08-26 20:04:20 [http-nio-8080-exec-4] INFO  c.e.D.c.DecisionCriteriaController - Successfully retrieved decision criteria for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:20 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:20 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [DecisionCriteriaResponse(userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, functiona (truncated)...]
+2025-08-26 20:04:20 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:20 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/decision-criteria/get-details", parameters={}
+2025-08-26 20:04:20 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.DecisionCriteriaController#getDecisionCriteria(UserSession)
+2025-08-26 20:04:20 [http-nio-8080-exec-8] INFO  c.e.D.c.DecisionCriteriaController - Received decision criteria request for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:21 [http-nio-8080-exec-8] INFO  c.e.D.s.DecisionCriteriaService - Fetching decision criteria for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:21 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        ufp1_0.id,
+        ufp1_0.CreatedDate,
+        ufp1_0.FunctionalArea,
+        ufp1_0.FunctionalSubArea,
+        ufp1_0.IndustryType,
+        ufp1_0.L1,
+        ufp1_0.L2,
+        ufp1_0.L3,
+        ufp1_0.L4,
+        ufp1_0.L5,
+        ufp1_0.SessionID,
+        ufp1_0.UserID 
+    from
+        UserFunctionalProcess ufp1_0 
+    where
+        ufp1_0.UserID=? 
+        and ufp1_0.SessionID=?
+2025-08-26 20:04:21 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        unfp1_0.id,
+        unfp1_0.CreatedDate,
+        unfp1_0.FunctionalArea,
+        unfp1_0.FunctionalSubArea,
+        unfp1_0.IndustryType,
+        unfp1_0.L1,
+        unfp1_0.L2,
+        unfp1_0.L3,
+        unfp1_0.L4,
+        unfp1_0.L5,
+        unfp1_0.SessionID,
+        unfp1_0.UserID 
+    from
+        UserNonFuncProcess unfp1_0 
+    where
+        unfp1_0.UserID=? 
+        and unfp1_0.SessionID=?
+2025-08-26 20:04:21 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:21 [http-nio-8080-exec-8] INFO  c.e.D.s.DecisionCriteriaService - Found 1 functional processes and 1 non-functional processes
+2025-08-26 20:04:21 [http-nio-8080-exec-8] INFO  c.e.D.s.DecisionCriteriaService - Successfully converted 1 functional rows and 1 non-functional rows
+2025-08-26 20:04:22 [http-nio-8080-exec-8] INFO  c.e.D.c.DecisionCriteriaController - Successfully retrieved decision criteria for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:22 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:22 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [DecisionCriteriaResponse(userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, functiona (truncated)...]
+2025-08-26 20:04:22 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:27 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/solution/all?industryType=Retail%20Industry%20Specific", parameters={masked}
+2025-08-26 20:04:27 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.PlatformSolutionController#getAllPlatformSolutions(String, String, String)
+2025-08-26 20:04:27 [http-nio-8080-exec-9] INFO  c.e.D.c.PlatformSolutionController - GET request received for platform solutions with filters
+2025-08-26 20:04:27 [http-nio-8080-exec-9] INFO  c.e.D.s.PlatformSolutionService - Fetching platforms with filters - functionalArea: null, industryType: Retail Industry Specific, functionalSubArea: null
+2025-08-26 20:04:27 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        isp1_0.[Key],
+        isp1_0.FunctionalArea,
+        isp1_0.FunctionalSubArea,
+        isp1_0.IndustryType,
+        isp1_0.PlatformImage,
+        isp1_0.PlatformName 
+    from
+        InScopePlatforms isp1_0 
+    where
+        (
+            ? is null 
+            or isp1_0.FunctionalArea=?
+        ) 
+        and (
+            ? is null 
+            or isp1_0.IndustryType=?
+        ) 
+        and (
+            ? is null 
+            or isp1_0.FunctionalSubArea=?
+        )
+2025-08-26 20:04:27 [http-nio-8080-exec-9] INFO  c.e.D.s.PlatformSolutionService - Retrieved 5 platforms with applied filters
+2025-08-26 20:04:27 [http-nio-8080-exec-9] INFO  c.e.D.c.PlatformSolutionController - Returning 5 platform solutions
+2025-08-26 20:04:27 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:27 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[PlatformSolutionDTO(functionalArea=Supply Chain Planning, industryType=Retail Industry Specific, fu (truncated)...]
+2025-08-26 20:04:27 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:27 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Blueyonder.png", parameters={}
+2025-08-26 20:04:27 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/SAP.jpg", parameters={}
+2025-08-26 20:04:27 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Oracle.png", parameters={}
+2025-08-26 20:04:27 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:27 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/relex.png", parameters={}
+2025-08-26 20:04:27 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Anaplan.png", parameters={}
+2025-08-26 20:04:27 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:27 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:27 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:27 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:27 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:27 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:27 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:27 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:27 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:31 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/functional-scope/solution/save", parameters={}
+2025-08-26 20:04:31 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.SolutionController#saveSolutionSelection(SolutionSelectionRequest, UserSession)
+2025-08-26 20:04:31 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SolutionSelectionRequest(selectedPlatforms=[Relex, Oracle])]
+2025-08-26 20:04:31 [http-nio-8080-exec-2] INFO  c.e.D.controller.SolutionController - POST /api/decision-tree/functional-scope/solution/save - Saving solution selection for user: USER-C6562352
+2025-08-26 20:04:32 [http-nio-8080-exec-2] INFO  c.e.D.service.UserPlatformService - Saving solution selection for user: USER-C6562352 session: A66945F16C720EBC43EDA93E0593924C platforms: [Relex, Oracle]
+2025-08-26 20:04:32 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.Platform,
+        up1_0.SessionID,
+        up1_0.UserID,
+        up1_0.CreatedDate,
+        up1_0.FunctionalArea,
+        up1_0.FunctionalSubArea,
+        up1_0.IndustryType 
+    from
+        UserPlatform up1_0 
+    where
+        up1_0.UserID=? 
+        and up1_0.SessionID=?
+2025-08-26 20:04:32 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:32 [http-nio-8080-exec-2] INFO  c.e.D.service.UserPlatformService - Created 2 platform records
+2025-08-26 20:04:32 [http-nio-8080-exec-2] INFO  c.e.D.service.UserPlatformService - Platform: Relex
+2025-08-26 20:04:32 [http-nio-8080-exec-2] INFO  c.e.D.service.UserPlatformService - Platform: Oracle
+2025-08-26 20:04:32 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.Platform,
+        up1_0.SessionID,
+        up1_0.UserID,
+        up1_0.CreatedDate,
+        up1_0.FunctionalArea,
+        up1_0.FunctionalSubArea,
+        up1_0.IndustryType 
+    from
+        UserPlatform up1_0 
+    where
+        (
+            (
+                up1_0.Platform=? 
+                and up1_0.SessionID=? 
+                and up1_0.UserID=?
+            )
+        )
+2025-08-26 20:04:32 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.Platform,
+        up1_0.SessionID,
+        up1_0.UserID,
+        up1_0.CreatedDate,
+        up1_0.FunctionalArea,
+        up1_0.FunctionalSubArea,
+        up1_0.IndustryType 
+    from
+        UserPlatform up1_0 
+    where
+        (
+            (
+                up1_0.Platform=? 
+                and up1_0.SessionID=? 
+                and up1_0.UserID=?
+            )
+        )
+2025-08-26 20:04:33 [http-nio-8080-exec-2] INFO  c.e.D.service.UserPlatformService - Successfully saved 2 platform selections for user: USER-C6562352 session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:33 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        UserPlatform
+        (CreatedDate, FunctionalArea, FunctionalSubArea, IndustryType, Platform, SessionID, UserID) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-08-26 20:04:33 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        UserPlatform
+        (CreatedDate, FunctionalArea, FunctionalSubArea, IndustryType, Platform, SessionID, UserID) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2025-08-26 20:04:33 [http-nio-8080-exec-2] INFO  c.e.D.controller.SolutionController - Successfully saved solution selection for user: USER-C6562352 - A66945F16C720EBC43EDA93E0593924C platforms saved
+2025-08-26 20:04:33 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:33 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [SolutionSelectionResponse(message=Solutions saved successfully, platformsSaved=2)]
+2025-08-26 20:04:33 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-26 20:04:34 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Blueyonder.png", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/relex.png", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/SAP.jpg", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Oracle.png", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:34 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:34 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:34 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:34 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/images/Anaplan.png", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:34 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:34 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:34 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:34 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/decision-criteria/get-details", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:34 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.DecisionCriteriaController#getDecisionCriteria(UserSession)
+2025-08-26 20:04:34 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:34 [http-nio-8080-exec-4] INFO  c.e.D.c.DecisionCriteriaController - Received decision criteria request for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:34 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/solution/get-all", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/project-info", parameters={}
+2025-08-26 20:04:34 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.SolutionController#getAllSolutions()
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-26 20:04:34 [http-nio-8080-exec-1] INFO  c.e.D.controller.SolutionController - GET /api/v1/solutions/all - Retrieving all solutions
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-26 20:04:34 [http-nio-8080-exec-3] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/project-info.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-26 20:04:34 [http-nio-8080-exec-3] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info.]
+2025-08-26 20:04:34 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-26 20:04:34 [http-nio-8080-exec-4] INFO  c.e.D.s.DecisionCriteriaService - Fetching decision criteria for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:34 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ufp1_0.id,
+        ufp1_0.CreatedDate,
+        ufp1_0.FunctionalArea,
+        ufp1_0.FunctionalSubArea,
+        ufp1_0.IndustryType,
+        ufp1_0.L1,
+        ufp1_0.L2,
+        ufp1_0.L3,
+        ufp1_0.L4,
+        ufp1_0.L5,
+        ufp1_0.SessionID,
+        ufp1_0.UserID 
+    from
+        UserFunctionalProcess ufp1_0 
+    where
+        ufp1_0.UserID=? 
+        and ufp1_0.SessionID=?
+2025-08-26 20:04:34 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        unfp1_0.id,
+        unfp1_0.CreatedDate,
+        unfp1_0.FunctionalArea,
+        unfp1_0.FunctionalSubArea,
+        unfp1_0.IndustryType,
+        unfp1_0.L1,
+        unfp1_0.L2,
+        unfp1_0.L3,
+        unfp1_0.L4,
+        unfp1_0.L5,
+        unfp1_0.SessionID,
+        unfp1_0.UserID 
+    from
+        UserNonFuncProcess unfp1_0 
+    where
+        unfp1_0.UserID=? 
+        and unfp1_0.SessionID=?
+2025-08-26 20:04:34 [http-nio-8080-exec-1] INFO  c.e.D.service.UserPlatformService - Retrieving all solutions from database
+2025-08-26 20:04:34 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.Platform,
+        up1_0.SessionID,
+        up1_0.UserID,
+        up1_0.CreatedDate,
+        up1_0.FunctionalArea,
+        up1_0.FunctionalSubArea,
+        up1_0.IndustryType 
+    from
+        UserPlatform up1_0
+2025-08-26 20:04:34 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-26 20:04:34 [http-nio-8080-exec-1] INFO  c.e.D.service.UserPlatformService - Retrieved 54 total solutions from database
+2025-08-26 20:04:34 [http-nio-8080-exec-4] INFO  c.e.D.s.DecisionCriteriaService - Found 1 functional processes and 1 non-functional processes
+2025-08-26 20:04:34 [http-nio-8080-exec-4] INFO  c.e.D.s.DecisionCriteriaService - Successfully converted 1 functional rows and 1 non-functional rows
+2025-08-26 20:04:35 [http-nio-8080-exec-1] INFO  c.e.D.controller.SolutionController - Successfully retrieved 54 solutions
+2025-08-26 20:04:35 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:35 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[UserPlatform(userId=USER-45DA1B91, sessionId=09491423688BCFA63A83EA8F630C9859, functionalArea=suppl (truncated)...]
+2025-08-26 20:04:35 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-26 20:04:35 [http-nio-8080-exec-4] INFO  c.e.D.c.DecisionCriteriaController - Successfully retrieved decision criteria for user: USER-C6562352 and session: A66945F16C720EBC43EDA93E0593924C
+2025-08-26 20:04:35 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-26 20:04:35 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [DecisionCriteriaResponse(userId=USER-C6562352, sessionId=A66945F16C720EBC43EDA93E0593924C, functiona (truncated)...]
+2025-08-26 20:04:35 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
