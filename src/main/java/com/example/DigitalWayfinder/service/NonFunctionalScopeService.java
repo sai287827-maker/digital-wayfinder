@@ -170,7 +170,6 @@ public class NonFunctionalScopeService {
         
         List<UserNonFuncProcess> records = new ArrayList<>();
         Set<String> processedPaths = new HashSet<>();
-        debugNonFunctionalRepository(functionalArea);
         
         // Safely get lists with null checks
         List<String> l1List = levelSelections.getL1() != null ? levelSelections.getL1() : new ArrayList<>();
@@ -178,7 +177,8 @@ public class NonFunctionalScopeService {
         List<String> l3List = levelSelections.getL3() != null ? levelSelections.getL3() : new ArrayList<>();
 
         String functionalArea = determineFunctionalAreaForRepository(previousProcess);
-        
+        debugNonFunctionalRepository(functionalArea);
+
         log.info("Processing non-functional selections for functionalArea: {} - L1: {}, L2: {}, L3: {}", 
                  functionalArea, l1List.size(), l2List.size(), l3List.size());
 

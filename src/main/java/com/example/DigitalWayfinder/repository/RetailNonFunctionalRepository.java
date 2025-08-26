@@ -24,9 +24,9 @@ public interface RetailNonFunctionalRepository extends JpaRepository<RetailNonFu
     @Query("SELECT DISTINCT w.l3 FROM RetailNonFunctional w WHERE w.l1 = :l1 AND w.l2 = :l2 AND w.l3 IS NOT NULL AND w.l3 != ''")
     List<String> findDistinctL3ByL1AndL2(@Param("l1") String l1, @Param("l2") String l2);
 
-    @Query("SELECT w.l1, w.l2, w.l3 FROM WmsFunctional w WHERE w.l3 = :l3")
+    @Query("SELECT w.l1, w.l2, w.l3 FROM RetailNonFunctional w WHERE w.l3 = :l3")
     List<Object[]> findPathsByL3(@Param("l3") String l3);
 
-    @Query("SELECT w.l1, w.l2 FROM WmsFunctional w WHERE w.l2 = :l2")  
+    @Query("SELECT w.l1, w.l2 FROM RetailNonFunctional w WHERE w.l2 = :l2")  
     List<Object[]> findPathsByL2(@Param("l2") String l2);
     }

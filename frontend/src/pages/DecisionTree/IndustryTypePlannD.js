@@ -49,7 +49,7 @@ function IndustryTypePlannD() {
           navigationRoute = '/decision-tree/retail-functional-scope';
           break;
         case 'Consumer Goods Industry Specific':
-          navigationRoute = '/decision-tree/consumer-functional-scope';
+          navigationRoute = '/decision-tree/customer-functional-scope';
           break;
         default:
           setError('Invalid industry type selected.');

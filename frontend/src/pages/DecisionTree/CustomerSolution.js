@@ -16,7 +16,7 @@ const CustomerSolution = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await apiGet('api/decision-tree/functional-scope/solution/all');
+        const data = await apiGet(`api/decision-tree/functional-scope/solution/all?industryType=${encodeURIComponent('Consumer Goods Industry Specific')}`);
         setCustomerSolutionData(data);
       } catch (err) {
         setError('Failed to fetch customer solutions.');

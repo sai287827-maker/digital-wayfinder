@@ -94,20 +94,28 @@ public class FunctionalScopeService {
         }
     }
 
-    public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
-        log.info("Fetching all functional scope levels");
-        try {
-            List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
-            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
-            return functionalScopes.stream()
-                    .map(this::convertToDto)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to fetch functional scopes", e);
+public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
+    log.info("Fetching all functional scope levels");
+    try {
+        List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
+        log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+        
+        // DEBUG: Log first few records to see the actual data structure
+        if (!functionalScopes.isEmpty()) {
+            for (int i = 0; i < Math.min(5, functionalScopes.size()); i++) {
+                Object[] record = functionalScopes.get(i);
+                log.info("IndAgnoustic Record {}: Length={}, Content={}", i, record.length, Arrays.toString(record));
+            }
         }
+        
+        return functionalScopes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    } catch (Exception e) {
+        log.error("Error fetching functional scopes: {}", e.getMessage(), e);
+        throw new RuntimeException("Failed to fetch functional scopes", e);
     }
+}
 
     public List<FunctionalScopeDto> getAllFunctionalScopesRetail() {
         log.info("Fetching all functional scope levels");
@@ -198,6 +206,10 @@ public class FunctionalScopeService {
         List<String> l4List = levelSelections.getL4() != null ? levelSelections.getL4() : new ArrayList<>();
         
         String functionalArea = determineFunctionalAreaForRepository(previousProcess);
+
+            if ("IND-AGNOUSTIC".equals(functionalArea.toUpperCase())) {
+        debugIndAgnousticRepository();
+    }
         
         log.info("Processing selections for functionalArea: {} - L1: {}, L2: {}, L3: {}, L4: {}", 
                  functionalArea, l1List.size(), l2List.size(), l3List.size(), l4List.size());
@@ -398,95 +410,100 @@ public class FunctionalScopeService {
      * Determines which repository to use based on the combination of functionalArea, 
      * industryType, and functionalSubArea
      */
-    private String determineFunctionalAreaForRepository(FunctionalAreaDT previousProcess) {
-        String functionalArea = previousProcess.getFunctionalArea();
-        String industryType = previousProcess.getIndustryType();
-        String functionalSubArea = previousProcess.getFunctionalSubArea();
+private String determineFunctionalAreaForRepository(FunctionalAreaDT previousProcess) {
+    String functionalArea = previousProcess.getFunctionalArea();
+    String industryType = previousProcess.getIndustryType();
+    String functionalSubArea = previousProcess.getFunctionalSubArea();
+    
+    log.info("Determining repository for - functionalArea: {}, industryType: {}, functionalSubArea: {}", 
+             functionalArea, industryType, functionalSubArea);
+    
+    // Priority 1: Check industryType first (most specific)
+    if (industryType != null) {
+        String industryUpper = industryType.toUpperCase();
         
-        log.info("Determining repository for - functionalArea: {}, industryType: {}, functionalSubArea: {}", 
-                 functionalArea, industryType, functionalSubArea);
-        
-        // Priority logic - check functionalSubArea first as it's more specific
-        if (functionalSubArea != null) {
-            String subAreaUpper = functionalSubArea.toUpperCase();
-            if (subAreaUpper.contains("WAREHOUSE") || subAreaUpper.contains("WMS")) {
-                log.info("Using WMS repository based on functionalSubArea: {}", functionalSubArea);
-                return "WMS";
-            }
-            if (subAreaUpper.contains("TRANSPORTATION") || subAreaUpper.contains("TMS")) {
-                log.info("Using TMS repository based on functionalSubArea: {}", functionalSubArea);
-                return "TRANSPORTATION-MANAGEMENT";
-            }
-            if (subAreaUpper.contains("ORDER") || subAreaUpper.contains("OMS")) {
-                log.info("Using OMS repository based on functionalSubArea: {}", functionalSubArea);
-                return "OMS";
-            }
-            if (subAreaUpper.contains("RETAIL")) {
-                log.info("Using RETAIL repository based on functionalSubArea: {}", functionalSubArea);
-                return "RETAIL";
-            }
-            if (subAreaUpper.contains("CGS")) {
-                log.info("Using CGS repository based on functionalSubArea: {}", functionalSubArea);
-                return "CGS";
-            }
+        if (industryUpper.contains("WAREHOUSE-MANAGEMENT") || industryUpper.contains("WAREHOUSE MANAGEMENT")) {
+            log.info("Using WMS repository based on industryType: {}", industryType);
+            return "WMS";
         }
         
-        // Fall back to industryType
-        if (industryType != null) {
-            String industryUpper = industryType.toUpperCase();
-            if (industryUpper.contains("TRANSPORTATION") || industryUpper.contains("TMS")) {
-                log.info("Using TMS repository based on industryType: {}", industryType);
-                return "TRANSPORTATION-MANAGEMENT";
-            }
-            if (industryUpper.contains("WAREHOUSE") || industryUpper.contains("WMS")) {
-                log.info("Using WMS repository based on industryType: {}", industryType);
-                return "WMS";
-            }
-            if (industryUpper.contains("ORDER") || industryUpper.contains("OMS")) {
-                log.info("Using OMS repository based on industryType: {}", industryType);
-                return "OMS";
-            }
-            if (industryUpper.contains("RETAIL")) {
-                log.info("Using RETAIL repository based on industryType: {}", industryType);
-                return "RETAIL";
-            }
-            if (industryUpper.contains("CGS")) {
-                log.info("Using CGS repository based on industryType: {}", industryType);
-                return "CGS";
-            }
+        if (industryUpper.contains("TRANSPORTATION-MANAGEMENT") || industryUpper.contains("TRANSPORTATION MANAGEMENT")) {
+            log.info("Using TMS repository based on industryType: {}", industryType);
+            return "TRANSPORTATION-MANAGEMENT";
         }
         
-        // Finally fall back to functionalArea
-        if (functionalArea != null) {
-            String areaUpper = functionalArea.toUpperCase();
-            if (areaUpper.contains("SUPPLY-CHAIN") || areaUpper.contains("WAREHOUSE") || areaUpper.contains("WMS")) {
-                log.info("Using WMS repository based on functionalArea: {}", functionalArea);
-                return "WMS";
-            }
-            if (areaUpper.contains("TRANSPORTATION") || areaUpper.contains("TMS")) {
-                log.info("Using TMS repository based on functionalArea: {}", functionalArea);
-                return "TRANSPORTATION-MANAGEMENT";
-            }
-            if (areaUpper.contains("ORDER") || areaUpper.contains("OMS")) {
-                log.info("Using OMS repository based on functionalArea: {}", functionalArea);
-                return "OMS";
-            }
-            if (areaUpper.contains("RETAIL")) {
-                log.info("Using RETAIL repository based on functionalArea: {}", functionalArea);
-                return "RETAIL";
-            }
-            if (areaUpper.contains("CGS")) {
-                log.info("Using CGS repository based on functionalArea: {}", functionalArea);
-                return "CGS";
-            }
+        if (industryUpper.contains("INDUSTRY AGNOSTIC") || industryUpper.contains("AGNOSTIC")) {
+            log.info("Using IND-AGNOUSTIC repository based on industryType: {}", industryType);
+            return "IND-AGNOUSTIC";
         }
         
-        // Default fallback to IND-AGNOUSTIC
-        log.warn("Could not determine specific repository, falling back to IND-AGNOUSTIC. functionalArea: {}, industryType: {}, functionalSubArea: {}", 
-                 functionalArea, industryType, functionalSubArea);
-        return "IND-AGNOUSTIC";
+        if (industryUpper.contains("CONSUMER GOODS") || industryUpper.contains("CGS")) {
+            log.info("Using CGS repository based on industryType: {}", industryType);
+            return "CGS";
+        }
+        
+        if (industryUpper.contains("RETAIL") && industryUpper.contains("SPECIFIC")) {
+            log.info("Using RETAIL repository based on industryType: {}", industryType);
+            return "RETAIL";
+        }
     }
-
+    
+    // Priority 2: Check functionalSubArea
+    if (functionalSubArea != null) {
+        String subAreaUpper = functionalSubArea.toUpperCase();
+        
+        if (subAreaUpper.contains("WAREHOUSE") || subAreaUpper.contains("WMS")) {
+            log.info("Using WMS repository based on functionalSubArea: {}", functionalSubArea);
+            return "WMS";
+        }
+        
+        if (subAreaUpper.contains("TRANSPORTATION") || subAreaUpper.contains("TMS")) {
+            log.info("Using TMS repository based on functionalSubArea: {}", functionalSubArea);
+            return "TRANSPORTATION-MANAGEMENT";
+        }
+        
+        if (subAreaUpper.contains("ORDER") || subAreaUpper.contains("OMS")) {
+            log.info("Using OMS repository based on functionalSubArea: {}", functionalSubArea);
+            return "OMS";
+        }
+        
+        if (subAreaUpper.contains("RETAIL")) {
+            log.info("Using RETAIL repository based on functionalSubArea: {}", functionalSubArea);
+            return "RETAIL";
+        }
+        
+        if (subAreaUpper.contains("CGS") || subAreaUpper.contains("CONSUMER")) {
+            log.info("Using CGS repository based on functionalSubArea: {}", functionalSubArea);
+            return "CGS";
+        }
+    }
+    
+    // Priority 3: Check functionalArea (least specific, only for very clear cases)
+    if (functionalArea != null) {
+        String areaUpper = functionalArea.toUpperCase();
+        
+        // Only match very specific functional area names
+        if (areaUpper.equals("WAREHOUSE-MANAGEMENT") || areaUpper.equals("WMS")) {
+            log.info("Using WMS repository based on functionalArea: {}", functionalArea);
+            return "WMS";
+        }
+        
+        if (areaUpper.equals("TRANSPORTATION-MANAGEMENT") || areaUpper.equals("TMS")) {
+            log.info("Using TMS repository based on functionalArea: {}", functionalArea);
+            return "TRANSPORTATION-MANAGEMENT";
+        }
+        
+        if (areaUpper.equals("ORDER-MANAGEMENT") || areaUpper.equals("OMS")) {
+            log.info("Using OMS repository based on functionalArea: {}", functionalArea);
+            return "OMS";
+        }
+    }
+    
+    // Default: Fall back to IND-AGNOUSTIC for ambiguous cases
+    log.info("Using IND-AGNOUSTIC repository as default for: functionalArea={}, industryType={}, functionalSubArea={}", 
+             functionalArea, industryType, functionalSubArea);
+    return "IND-AGNOUSTIC";
+}
     // Safe wrapper methods with better error handling and logging
     private List<String> findAllL2ByL1Safe(String l1, String functionalArea) {
         try {
@@ -515,43 +532,43 @@ public class FunctionalScopeService {
         }
     }
 
-    private UserFunctionalProcess createRecordSafe(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
-        try {
-            if (path == null || path.length == 0) {
-                log.warn("Path is null or empty");
-                return null;
-            }
-            
-            log.info("Creating record from path: {}", Arrays.toString(path));
-            
-            // Handle nested array structure
-            Object[] actualPath = path;
-            if (path.length == 1 && path[0] instanceof Object[]) {
-                actualPath = (Object[]) path[0];
-                log.info("Extracted nested array: {}", Arrays.toString(actualPath));
-            }
-            
-            UserFunctionalProcess record = UserFunctionalProcess.builder()
-                .userId(userId)
-                .sessionId(sessionId)
-                .functionalArea(previousProcess.getFunctionalArea())
-                .industryType(previousProcess.getIndustryType())
-                .functionalSubArea(previousProcess.getFunctionalSubArea())
-                .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-                .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-                .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
-                .l4(actualPath.length > 3 && actualPath[3] != null ? actualPath[3].toString() : null)
-                .l5(null)
-                .build();
-            
-            log.info("Created record: L1={}, L2={}, L3={}, L4={}", record.getL1(), record.getL2(), record.getL3(), record.getL4());
-            return record;
-            
-        } catch (Exception e) {
-            log.error("Error creating record from path: {}", e.getMessage(), e);
+private UserFunctionalProcess createRecordSafe(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+    try {
+        if (path == null || path.length == 0) {
+            log.warn("Path is null or empty");
             return null;
         }
+        
+        log.info("Creating record from path: {}", Arrays.toString(path));
+        
+        // Handle nested array structure
+        Object[] actualPath = path;
+        if (path.length == 1 && path[0] instanceof Object[]) {
+            actualPath = (Object[]) path[0];
+            log.info("Extracted nested array: {}", Arrays.toString(actualPath));
+        }
+        
+        UserFunctionalProcess record = UserFunctionalProcess.builder()
+            .userId(userId)
+            .sessionId(sessionId)
+            .functionalArea(previousProcess.getFunctionalArea())
+            .industryType(previousProcess.getIndustryType())
+            .functionalSubArea(previousProcess.getFunctionalSubArea())
+            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+            .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
+            .l4(actualPath.length > 3 && actualPath[3] != null ? actualPath[3].toString() : null)
+            .l5(actualPath.length > 4 && actualPath[4] != null ? actualPath[4].toString() : null) // Add L5 support
+            .build();
+        
+        log.info("Created record: L1={}, L2={}, L3={}, L4={}, L5={}", record.getL1(), record.getL2(), record.getL3(), record.getL4(), record.getL5());
+        return record;
+        
+    } catch (Exception e) {
+        log.error("Error creating record from path: {}", e.getMessage(), e);
+        return null;
     }
+}
 
     private UserFunctionalProcess createRecordForL1(String l1, String userId, String sessionId, FunctionalAreaDT previousProcess) {
         return UserFunctionalProcess.builder()
@@ -959,4 +976,32 @@ public class FunctionalScopeService {
             return Collections.emptyList();
         }
     }
+
+    private void debugIndAgnousticRepository() {
+    log.info("=== DEBUG: Testing IndAgnoustic repository methods ===");
+    
+    try {
+        // Test the basic query
+        List<Object[]> allRecords = indagnousticFunctionalRepository.findAllLevelsAsArray();
+        log.info("IndAgnoustic total records: {}", allRecords.size());
+        
+        if (!allRecords.isEmpty()) {
+            Object[] firstRecord = allRecords.get(0);
+            log.info("First record structure: {}", Arrays.toString(firstRecord));
+        }
+        
+        // Test specific path lookups with your actual selections
+        List<Object[]> pathsForL3 = indagnousticFunctionalRepository.findPathsByL3("Define Segmentation Approach");
+        log.info("Paths found for L3 'Define Segmentation Approach': {}", pathsForL3.size());
+        if (!pathsForL3.isEmpty()) {
+            log.info("First path: {}", Arrays.toString(pathsForL3.get(0)));
+        }
+        
+        List<Object[]> pathsForL2 = indagnousticFunctionalRepository.findPathsByL2("Define Demand Segment & Approach");
+        log.info("Paths found for L2 'Define Demand Segment & Approach': {}", pathsForL2.size());
+        
+    } catch (Exception e) {
+        log.error("Error in IndAgnoustic debug: {}", e.getMessage(), e);
+    }
+}
 }

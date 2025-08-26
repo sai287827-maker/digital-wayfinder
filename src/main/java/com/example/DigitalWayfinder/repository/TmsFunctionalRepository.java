@@ -5,13 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.DigitalWayfinder.entity.WmsFunctional;
+import com.example.DigitalWayfinder.entity.TmsFunctional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TmsFunctionalRepository extends JpaRepository<WmsFunctional, Long> {
+public interface TmsFunctionalRepository extends JpaRepository<TmsFunctional, Long> {
     
     @Query(value = "SELECT L1, L2, L3, L4 FROM Platform_Functional", nativeQuery = true)
     List<Object[]> findAllLevelsAsArray();
