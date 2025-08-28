@@ -54,10 +54,6 @@ import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
  
 import './App.css';
 
-
-
- 
- 
 function App() {
   return (
     <Router>
