@@ -73,7 +73,7 @@ const TmsOperational = ({ onNavigateBack }) => {
   const fetchDataCloudAnswers = async () => {
     try {
       console.log('Fetching Data & Cloud answers...');
-      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?industryType=${encodeURIComponent('Transportation Management System')}`);
       console.log('Data & Cloud answers response:', response);
       
       if (response && response.answers) {
