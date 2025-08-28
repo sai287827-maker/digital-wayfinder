@@ -104,7 +104,7 @@ function WmsSystem() {
   };
  
    const handleProceed = () => {
-    navigate('/digital-wayfinder/industry-data-and-cloud');
+    navigate('/digital-wayfinder/data-and-cloud');
   };
  
   return (
