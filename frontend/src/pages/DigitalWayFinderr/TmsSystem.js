@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import './WmsSystem.css';
+import './TmsSystem.css';
 // import DataAndCloud from './DataAndCloud';
  
 // Import dashboard image
@@ -17,7 +17,7 @@ import FluentCommerce from "../../assets/fluentcommerce.png";
 import IBMSterling from "../../assets/ibmsterling.png";
 // import VisibilityProactive from './VisibilityProactive';
  
-function WmsSystem() {
+function TmsSystem() {
   const [selectedPlatform, setSelectedPlatform] = useState(null); // Changed to single selection
   const [showDataAndCloud, setShowDataAndCloud] = useState(false);
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ function WmsSystem() {
   };
  
    const handleProceed = () => {
-    navigate('/digital-wayfinder/industry-data-and-cloud');
+    navigate('/digital-wayfinder/tms-data-and-cloud');
   };
  
   return (
@@ -179,4 +179,4 @@ function WmsSystem() {
   );
 }
  
-export default WmsSystem;
+export default TmsSystem;

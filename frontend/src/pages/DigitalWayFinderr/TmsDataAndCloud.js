@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './DataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import Operational from './Operational';
-import WmsSystem from './WmsSystem'; // Add import for WmsSystem
+import TmsSystem from './TmsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -33,7 +33,7 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management')}`);
+          const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?industryType=${encodeURIComponent('Transportation Management System')}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -213,7 +213,7 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
   // Early return for navigation to WmsSystem
   if (showWmsSystem) {
     console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
-    return <WmsSystem />;
+    return <TmsSystem />;
   }
 
   if (showVisibilityProactive) {
