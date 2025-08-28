@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './DataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import Operational from './Operational';
-import TmsSystem from './TmsSystem'; // Add import for WmsSystem
+import TmsSystem from './TmsSystem'; // Add import for TmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -19,7 +19,7 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showWmsSystem, setShowWmsSystem] = useState(false);
+  const [showTmsSystem, setShowTmsSystem] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
   // New state for API response data
@@ -67,10 +67,10 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
           if (!area && response.functionalSubArea) {
             // Map functional sub-areas to functional areas
             const areaMapping = {
+              'Transportation Management System': 'Supply Chain Fulfillment',
               'Warehouse Management System': 'Supply Chain Fulfillment',
               'Inventory Management': 'Supply Chain Fulfillment',
               'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
               'Customer Relationship Management': 'Customer Experience',
               'Sales Management': 'Customer Experience',
               'Marketing Automation': 'Customer Experience',
@@ -80,14 +80,20 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
             };
             area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
           }
+          if (!area) {
+            area = 'Supply Chain Fulfillment';
+          }
           setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
+          setFunctionalSubArea(response.functionalSubArea || 'Transportation Management System');
         } else {
           // Fallback for old response structure
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setFunctionalSubArea('Transportation Management System');
+          setFunctionalArea('Supply Chain Fulfillment');
         }
       } catch (err) {
+        console.error('Error fetching TMS Data and Cloud questions:', err);
         setError('Failed to load questions.');
       } finally {
         setLoading(false);
@@ -115,10 +121,10 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
         let area = functionalArea;
         if (!area && functionalSubArea) {
           const areaMapping = {
+            'Transportation Management System': 'Supply Chain Fulfillment',
             'Warehouse Management System': 'Supply Chain Fulfillment',
             'Inventory Management': 'Supply Chain Fulfillment',
             'Order Management': 'Supply Chain Fulfillment',
-            'Transportation Management': 'Supply Chain Fulfillment',
             'Customer Relationship Management': 'Customer Experience',
             'Sales Management': 'Customer Experience',
             'Marketing Automation': 'Customer Experience',
@@ -144,12 +150,12 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
+            functionalSubArea: functionalSubArea || 'Transportation Management System',
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
           
-          console.log('Saving partial Data and Cloud progress before navigation:', payload);
+          console.log('Saving partial TMS Data and Cloud progress before navigation:', payload);
           
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
@@ -163,44 +169,73 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
       }
     }
     
-    // Navigate back to WmsSystem
+    // Navigate back to TmsSystem
     if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to WmsSystem using onNavigateBack callback');
+      console.log('Navigating back to TmsSystem using onNavigateBack callback');
       onNavigateBack();
     } else {
-      // Fallback: Navigate directly to WmsSystem component
-      console.log('Using fallback navigation to WmsSystem');
-      setShowWmsSystem(true);
+      // Fallback: Navigate directly to TmsSystem component
+      console.log('Using fallback navigation to TmsSystem');
+      setShowTmsSystem(true);
     }
     
     setNavigatingBack(false);
   };
 
   const handleSaveAndProceed = async () => {
+    if (!allQuestionsAnswered) {
+      setError('Please answer all questions before proceeding.');
+      return;
+    }
+
     try {
       setSaving(true);
+      setError(null);
+      
+      // Ensure functional area is set with fallback
+      let area = functionalArea;
+      if (!area && functionalSubArea) {
+        // Map functional sub-areas to functional areas
+        const areaMapping = {
+          'Transportation Management System': 'Supply Chain Fulfillment',
+          'Warehouse Management System': 'Supply Chain Fulfillment',
+          'Inventory Management': 'Supply Chain Fulfillment',
+          'Order Management': 'Supply Chain Fulfillment',
+          'Customer Relationship Management': 'Customer Experience',
+          'Sales Management': 'Customer Experience',
+          'Marketing Automation': 'Customer Experience',
+          'Financial Management': 'Financial Operations',
+          'Accounting': 'Financial Operations',
+          'Procurement': 'Financial Operations'
+        };
+        area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
+      }
+      // Default fallback if still empty
+      if (!area) {
+        area = 'Supply Chain Fulfillment';
+      }
       
       // Call API to save answers
       const payload = {
-        functionalArea: functionalArea,
-        functionalSubArea: functionalSubArea,
+        functionalArea: area,
+        functionalSubArea: functionalSubArea || 'Transportation Management System',
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
       
-      console.log('Sending payload:', payload);
+      console.log('Sending TMS Data and Cloud payload:', payload);
       
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
-      console.log('Answers saved successfully:', response);
+      console.log('TMS Data and Cloud answers saved successfully:', response);
       
       // Navigate to next component
       setShowVisibilityProactive(true);
       
     } catch (err) {
-      console.error('Error saving answers:', err);
+      console.error('Error saving TMS Data and Cloud answers:', err);
       setError('Failed to save answers. Please try again.');
     } finally {
       setSaving(false);
@@ -208,11 +243,11 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
   };
 
   const completedCount = answers.filter(Boolean).length;
-  const allQuestionsAnswered = completedCount === questions.length;
+  const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
 
-  // Early return for navigation to WmsSystem
-  if (showWmsSystem) {
-    console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
+  // Early return for navigation to TmsSystem
+  if (showTmsSystem) {
+    console.log('Navigating to TmsSystem component, showTmsSystem:', showTmsSystem);
     return <TmsSystem />;
   }
 
