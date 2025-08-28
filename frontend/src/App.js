@@ -53,8 +53,7 @@ import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
 // import FinalPage from './pages/DigitalWayFinderr/FinalPage';
  
 import './App.css';
-import IndustryDataandCloud from './pages/DigitalWayFinderr/IndustryDataandCloud';
-import TmsAgenticAI from './pages/DigitalWayFinderr/TmsAgenticAI';
+
 
 
  
