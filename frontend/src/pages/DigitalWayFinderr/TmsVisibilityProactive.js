@@ -74,7 +74,7 @@ const TmsVisibilityProactive = ({ onNavigateBack }) => {
         setError(null);
         console.log('Fetching VisibilityProactive questions and existing answers...');
 
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?industryType=${encodeURIComponent('Transportation Management System')}`);
 
         console.log('VisibilityProactive API Response:', response);
 
