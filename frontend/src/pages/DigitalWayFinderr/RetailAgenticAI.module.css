@@ -1,0 +1,510 @@
+/* Container for side-by-side layout */
+
+.container {
+
+  display: flex;
+
+  min-height: 100vh;
+
+  background-color: #f8f9fa;
+
+}
+ 
+/* Sidebar styling - fixed width on the left */
+
+.sidebar {
+
+  width: 300px;
+
+  background-color: #ffffff;
+
+  padding: 24px;
+
+  border-right: 1px solid #e9ecef;
+
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+
+  flex-shrink: 0; /* Prevents sidebar from shrinking */
+
+  position: fixed;
+
+  height: 100vh;
+
+  overflow-y: auto;
+
+}
+ 
+/* Main content area - takes remaining space */
+
+.mainContent {
+
+  flex: 1;
+
+  padding: 24px;
+
+  margin-left: 300px; /* Same as sidebar width */
+
+  overflow-y: auto;
+
+}
+ 
+/* Button row with proper alignment */
+
+.buttonRow {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-top: 32px;
+
+  padding-top: 24px;
+
+  border-top: 1px solid #e9ecef;
+
+}
+ 
+/* Previous button (left side) */
+
+.prevBtn {
+
+  padding: 12px 24px;
+
+  background-color: #6c757d;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  transition: background-color 0.2s;
+
+}
+ 
+.prevBtn:hover:not(:disabled) {
+
+  background-color: #5a6268;
+
+}
+ 
+.prevBtn:disabled {
+
+  background-color: #adb5bd;
+
+  cursor: not-allowed;
+
+}
+ 
+/* Save button (right side) */
+
+.saveBtn {
+
+  padding: 12px 24px;
+
+  background-color: #007bff;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  transition: background-color 0.2s;
+
+}
+ 
+.saveBtn:hover:not(:disabled) {
+
+  background-color: #0056b3;
+
+}
+ 
+.saveBtn:disabled {
+
+  background-color: #adb5bd;
+
+  cursor: not-allowed;
+
+}
+ 
+/* Progress row styling */
+
+.progressRow {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+
+}
+ 
+.progressLabel {
+
+  font-size: 14px;
+
+  color: #6c757d;
+
+  min-width: 180px;
+
+}
+ 
+.progressBarBg {
+
+  flex: 1;
+
+  height: 8px;
+
+  background-color: #e9ecef;
+
+  border-radius: 4px;
+
+  overflow: hidden;
+
+}
+ 
+.progressBarFill {
+
+  height: 100%;
+
+  background-color: #007bff;
+
+  border-radius: 4px;
+
+  transition: width 0.3s ease;
+
+}
+ 
+/* Questions list styling */
+
+.questionsList {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+}
+ 
+.questionBlock {
+
+  background-color: white;
+
+  padding: 20px;
+
+  border-radius: 8px;
+
+  border: 1px solid #e9ecef;
+
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+}
+ 
+.questionText {
+
+  font-size: 16px;
+
+  font-weight: 500;
+
+  color: #212529;
+
+  margin-bottom: 16px;
+
+  line-height: 1.5;
+
+}
+ 
+.optionsRow {
+
+  display: flex;
+
+  gap: 24px;
+
+}
+ 
+.optionLabel {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  color: #495057;
+
+}
+ 
+.radio {
+
+  width: 16px;
+
+  height: 16px;
+
+  cursor: pointer;
+
+}
+ 
+/* Title styling */
+
+.title {
+
+  font-size: 24px;
+
+  font-weight: 600;
+
+  color: #212529;
+
+  margin-bottom: 24px;
+
+}
+ 
+/* Breadcrumb styling */
+
+.breadcrumb {
+
+  font-size: 14px;
+
+  color: #6c757d;
+
+  margin-bottom: 16px;
+
+}
+ 
+.breadcrumbLink {
+
+  color: #007bff;
+
+  cursor: pointer;
+
+}
+ 
+.breadcrumbCurrent {
+
+  color: #6c757d;
+
+}
+ 
+/* Sidebar specific styles */
+
+.sidebarTitle {
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  color: #212529;
+
+  margin-bottom: 16px;
+
+}
+ 
+.sidebarDesc {
+
+  font-size: 14px;
+
+  color: #6c757d;
+
+  line-height: 1.5;
+
+  margin-bottom: 32px;
+
+}
+ 
+.steps {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+
+}
+ 
+.stepItem {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+}
+ 
+.stepCircleActive,
+
+.stepCircleCompleted,
+
+.stepCircleInactive {
+
+  width: 32px;
+
+  height: 32px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  flex-shrink: 0;
+
+}
+ 
+.stepCircleActive {
+
+  background-color: #007bff;
+
+  color: white;
+
+}
+ 
+.stepCircleCompleted {
+
+  background-color: #28a745;
+
+  color: white;
+
+}
+ 
+.stepCircleInactive {
+
+  background-color: #e9ecef;
+
+  color: #6c757d;
+
+}
+ 
+.stepTextActive {
+
+  font-weight: 500;
+
+  color: #007bff;
+
+}
+ 
+.stepTextCompleted {
+
+  font-weight: 500;
+
+  color: #28a745;
+
+}
+ 
+.stepTextInactive {
+
+  color: #6c757d;
+
+}
+ 
+/* Loading and error states */
+
+.loadingContainer,
+
+.errorContainer {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 200px;
+
+  text-align: center;
+
+}
+ 
+.loadingSpinner {
+
+  width: 40px;
+
+  height: 40px;
+
+  border: 4px solid #e9ecef;
+
+  border-left: 4px solid #007bff;
+
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+
+  margin-bottom: 16px;
+
+}
+ 
+@keyframes spin {
+
+  0% { transform: rotate(0deg); }
+
+  100% { transform: rotate(360deg); }
+
+}
+ 
+.errorMessage {
+
+  color: #dc3545;
+
+  font-size: 16px;
+
+  margin-bottom: 16px;
+
+}
+ 
+/* Responsive design */
+
+@media (max-width: 768px) {
+
+  .container {
+
+    flex-direction: column;
+
+  }
+
+  .sidebar {
+
+    position: relative;
+
+    width: 100%;
+
+    height: auto;
+
+  }
+
+  .mainContent {
+
+    margin-left: 0;
+
+  }
+
+}
+ 
