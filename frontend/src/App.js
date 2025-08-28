@@ -18,6 +18,8 @@ import TmsDataAndCloud from './pages/DigitalWayFinderr/TmsDataAndCloud';
 import TmsOperational from './pages/DigitalWayFinderr/TmsOperational';
 import TmsVisibilityProactive from './pages/DigitalWayFinderr/TmsVisibilityProactive';
 import TmsAgenticAI from './pages/DigitalWayFinderr/TmsAgenticAI';
+import TmsSystem from './pages/DigitalWayFinderr/TmsSystem';
+
 
 
 
@@ -73,11 +75,13 @@ function App() {
           <Route path="/digital-wayfinder/operational" element={<Operational />} />
           <Route path="/digital-wayfinder/visibility-proactive" element={<VisibilityProactive />} />
           <Route path="/digital-wayfinder/agentic-ai" element={<AgenticAI />} />
-          <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} />
+          {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
           <Route path="/digital-wayfinder/tms-data-and-cloud" element={<TmsDataAndCloud />} />
           <Route path="/digital-wayfinder/tms-operational" element={<TmsOperational />} />
           <Route path="/digital-wayfinder/tms-visibility-proactive" element={<TmsVisibilityProactive />} />
           <Route path="/digital-wayfinder/tms-agentic-ai" element={<TmsAgenticAI />} />
+          <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
+
 
           <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
