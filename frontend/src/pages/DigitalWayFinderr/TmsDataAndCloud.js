@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styles from './DataAndCloud.module.css';
+import styles from './TmsDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
-import Operational from './Operational';
+import TmsOperational from './TmsOperational';
 import TmsSystem from './TmsSystem'; // Add import for TmsSystem
 import { apiGet, apiPost } from '../../api';
 
@@ -314,7 +314,7 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
   }
 
   if (showVisibilityProactive) {
-    return <Operational />;
+    return <TmsOperational/>;
   }
  
   return (

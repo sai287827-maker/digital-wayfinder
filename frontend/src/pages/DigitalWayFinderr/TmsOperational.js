@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Operational.module.css';
-import VisibilityProactive from './VisibilityProactive';
-import DataAndCloud from './DataAndCloud';
+import TmsVisibilityProactive from './TmsVisibilityProactive';
+import TmsDataAndCloud from './TmsDataAndCloudDataAndCloud';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -388,14 +388,14 @@ const TmsOperational = ({ onNavigateBack }) => {
   // Early return for navigation to VisibilityProactive
   if (showVisibilityProactive) {
     console.log('Navigating to VisibilityProactive component');
-    return <VisibilityProactive />;
+    return <TmsVisibilityProactive />;
   }
 
   // Early return for navigation to DataAndCloud (Previous button)
   if (showDataAndCloud) {
     console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
     // Pass the retained Data & Cloud answers to the component
-    return <DataAndCloud initialAnswers={dataCloudAnswers} />;
+    return <TmsDataAndCloud initialAnswers={dataCloudAnswers} />;
   }
  
   return (
