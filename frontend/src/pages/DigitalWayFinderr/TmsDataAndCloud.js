@@ -15,6 +15,8 @@ const steps = [
 const TmsDataAndCloud = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]);
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -28,6 +30,39 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
+  // Function to determine answer options from API response
+  const determineAnswerOptions = (apiResponse) => {
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
+    }
+    
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => 
+        ['yes', 'no'].includes(answer)
+      );
+      const hasHighMediumLow = existingAnswers.some(answer => 
+        ['high', 'medium', 'low'].includes(answer)
+      );
+      
+      if (hasYesNo) {
+        return ['Yes', 'No'];
+      } else if (hasHighMediumLow) {
+        return ['High', 'Medium', 'Low'];
+      }
+    }
+    
+    return ['High', 'Medium', 'Low'];
+  };
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
@@ -37,26 +72,51 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
+          // Extract questions and their answer types from the response
           const questionTexts = response.questions.map(q => q.question);
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low']; // Default fallback
+          });
+          
           setQuestions(questionTexts);
+          setQuestionAnswerTypes(answerTypes);
+          
+          // For backward compatibility, set answerOptions to the most common type
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
+          console.log('Determined answer options for TMS Data and Cloud:', options);
           
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
           
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
+            console.log('Loading existing TMS Data and Cloud answers:', response.answers);
             response.answers.forEach(answerObj => {
               const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
+                console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
+              } else {
+                console.warn('Could not find matching question for answer:', answerObj);
               }
             });
+          } else {
+            console.log('No existing answers found in response');
           }
           
           setAnswers(initialAnswers);
+          console.log('Final TMS Data and Cloud answers array:', initialAnswers);
           
           // Set other response data
           setUserId(response.userId || '');
@@ -89,6 +149,8 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
           // Fallback for old response structure
           setQuestions(response.questions || []);
           setAnswers(Array((response.questions || []).length).fill(null));
+          setAnswerOptions(['High', 'Medium', 'Low']);
+          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
           setFunctionalSubArea('Transportation Management System');
           setFunctionalArea('Supply Chain Fulfillment');
         }
@@ -295,29 +357,34 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
               </div>
             </div>
             <div className={styles.questionsList}>
-              {questions.map((q, idx) => (
-                <div key={idx} className={styles.questionBlock}>
-                  <div className={styles.questionText}>{idx + 1}. {q}</div>
-                  <div className={styles.optionsRow}>
-                    {['High', 'Medium', 'Low'].map(opt => (
-                      <label
-                        key={opt}
-                        className={styles.optionLabel}
-                      >
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.radio}
-                        />
-                        <span>{opt}</span>
-                      </label>
-                    ))}
+              {questions.map((q, idx) => {
+                // Get the specific answer options for this question
+                const questionOptions = questionAnswerTypes[idx] || answerOptions;
+                
+                return (
+                  <div key={idx} className={styles.questionBlock}>
+                    <div className={styles.questionText}>{idx + 1}. {q}</div>
+                    <div className={styles.optionsRow}>
+                      {questionOptions.map(opt => (
+                        <label
+                          key={opt}
+                          className={styles.optionLabel}
+                        >
+                          <input
+                            type="radio"
+                            name={`q${idx}`}
+                            value={opt}
+                            checked={answers[idx] === opt}
+                            onChange={() => handleAnswer(idx, opt)}
+                            className={styles.radio}
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className={styles.buttonRow}>
               <button 
