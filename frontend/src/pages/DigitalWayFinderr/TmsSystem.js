@@ -103,9 +103,28 @@ function TmsSystem() {
     });
   };
  
-   const handleProceed = () => {
-    navigate('/digital-wayfinder/tms-data-and-cloud');
-  };
+const handleProceed = () => {
+  console.log('handleProceed called from TmsSystem');
+  console.log('Current location:', location.pathname);
+  console.log('Selected platform:', selectedPlatform);
+  console.log('Target route: /digital-wayfinder/tms-data-and-cloud');
+  
+  // Check if we're actually in the right component
+  console.log('Component name: TmsSystem');
+  
+  navigate('/digital-wayfinder/tms-data-and-cloud', {
+    state: {
+      selectedArea: selectedFunctionalArea,
+      selectedSystem: selectedSystem,
+      selectedPlatform: selectedPlatform
+    }
+  });
+  
+  // Add a small delay to check if navigation happened
+  setTimeout(() => {
+    console.log('After navigation, current location:', window.location.pathname);
+  }, 100);
+};
  
   return (
     <div className="wms-system-page">

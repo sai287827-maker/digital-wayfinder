@@ -89,10 +89,13 @@ function App() {
           <Route path="/digital-wayfinder/operational" element={<Operational />} />
           <Route path="/digital-wayfinder/visibility-proactive" element={<VisibilityProactive />} />
           <Route path="/digital-wayfinder/agentic-ai" element={<AgenticAI />} />
+          {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
           <Route path="/digital-wayfinder/tms-data-and-cloud" element={<TmsDataAndCloud />} />
           <Route path="/digital-wayfinder/tms-operational" element={<TmsOperational />} />
           <Route path="/digital-wayfinder/tms-visibility-proactive" element={<TmsVisibilityProactive />} />
           <Route path="/digital-wayfinder/tms-agentic-ai" element={<TmsAgenticAI />} />
+          <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
+          <Route path="/digital-wayfinder/tms-report" element={<TmsReport />} />
           <Route path="/digital-wayfinder/retail-data-and-cloud" element={<RetailDataAndCloud />} />
           <Route path="/digital-wayfinder/retail-operational" element={<RetailOperational />} />
           <Route path="/digital-wayfinder/retail-visibility-proactive" element={<RetailVisibilityProactive />} />
@@ -109,8 +112,8 @@ function App() {
           <Route path="/digital-wayfinder/cgs-operational" element={<CgsOperational />} />
           <Route path="/digital-wayfinder/cgs-visibility-proactive" element={<CgsVisibilityProactive />} />
           <Route path="/digital-wayfinder/cgs-agentic-ai" element={<CgsAgenticAI />} />
-          <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
-          <Route path="/digital-wayfinder/tms-report" element={<TmsReport />} />
+          
+
 
           <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
