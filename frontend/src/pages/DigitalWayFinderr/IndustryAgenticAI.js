@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './IndustryAgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
-import WmsReport from './WmsReport';
+import IndustryReport from './IndustryReport';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },

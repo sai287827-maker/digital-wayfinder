@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './CgsDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import CgsOperational from './CgsOperational';
-import CgssSystem from './CgsSystem'; // Add import for WmsSystem
+import CgsSystem from './CgsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [

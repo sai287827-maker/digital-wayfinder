@@ -1,82 +1,83 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import './CgsSystem.css';
-// import DataAndCloud from './DataAndCloud';
- 
+import './IndustryTypePlanParts.css';
+
 // Import dashboard image
 import dashboardImage from "../../assets/dashboard.png";
- 
+
 // Import existing logos
 import BlueYonder from "../../assets/Blueyonder.png";
-import Korber from "../../assets/Korber.png";
-import Manhattan from "../../assets/Manhattan.png";
 import SAP from "../../assets/SAP.jpg";
 import Oracle from "../../assets/Oracle.png";
-import E2Open from "../../assets/e2open.png";
-import FluentCommerce from "../../assets/fluentcommerce.png";
-import IBMSterling from "../../assets/ibmsterling.png";
-// import VisibilityProactive from './VisibilityProactive';
- 
+import Anaplan from "../../assets/Anaplan.png";
+import O9 from "../../assets/O9.png";
+import OMP from "../../assets/OMP.png";
+import Kinaxis from "../../assets/Kinaxis.jpg";
+import relex from "../../assets/relex.png";
+
 function CgsSystem() {
-  const [selectedPlatform, setSelectedPlatform] = useState(null); // Changed to single selection
-  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
+  const [selectedPlatforms, setSelectedPlatforms] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
- 
+  
   // Get the selected data from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   const selectedSystem = location.state?.selectedSystem || null;
- 
+
   // Define platform data based on system type
   const getPlatformData = () => {
     switch(selectedSystem) {
-      case 'warehouse-management':
+      case 'industry-agnostic-system':
         return [
-          { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
-          { id: 'korber', name: 'KORBER', logo: Korber },
-          { id: 'manhattan', name: 'Manhattan', logo: Manhattan },
-          { id: 'sap', name: 'SAP', logo: SAP },
-          { id: 'oracle', name: 'ORACLE', logo: Oracle }
-        ];
-      case 'transportation-management':
-        return [
-          { id: 'oracle', name: 'ORACLE', logo: Oracle },
-          { id: 'sap', name: 'SAP', logo: SAP },
-          { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
-          { id: 'manhattan', name: 'Manhattan', logo: Manhattan },
-          { id: 'e2open', name: 'E2Open', logo: E2Open }
-        ];
-      case 'order-management':
-        return [
-          { id: 'manhattan', name: 'Manhattan', logo: Manhattan },
-          { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
-          { id: 'fluentcommerce', name: 'Fluent Commerce', logo: FluentCommerce },
           { id: 'sap', name: 'SAP', logo: SAP },
           { id: 'oracle', name: 'ORACLE', logo: Oracle },
-          { id: 'ibmsterling', name: 'IBM Sterling Commerce', logo: IBMSterling }
+          { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
+          { id: 'o9', name: 'O9', logo: O9 },
+          { id: 'OMP', name: 'OMP', logo: OMP },
+          { id: 'Kinaxis', name: 'Kinaxis', logo: Kinaxis },
+          { id: 'anaplan', name: 'Anaplan', logo: Anaplan }
+        ];
+      case 'retail-industry-specific-system':
+        return [
+          { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
+          { id: 'sap', name: 'SAP', logo: SAP },
+          { id: 'oracle', name: 'ORACLE', logo: Oracle },
+          { id: 'relex', name: 'Relex', logo: relex },
+          { id: 'anaplan', name: 'Anaplan', logo: Anaplan }
+        ];
+      case 'consumer-goods-industry-specific-system':
+        return [
+          { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
+          { id: 'sap', name: 'SAP', logo: SAP },
+          { id: 'oracle', name: 'ORACLE', logo: Oracle },
+          { id: 'o9', name: 'O9', logo: O9 },
+          { id: 'OMP', name: 'OMP', logo: OMP },
+          { id: 'relex', name: 'Relex', logo: relex },
+          { id: 'Kinaxis', name: 'Kinaxis', logo: Kinaxis }
         ];
       default:
         return [];
     }
   };
- 
+
   // Get system title and description
   const getSystemInfo = () => {
     switch(selectedSystem) {
-      case 'warehouse-management':
+      case 'industry-agnostic-system':
         return {
-          title: 'Select the WMS Platform',
-          description: 'Choose your Warehouse Management System platform'
+          title: 'Select the Industry Platform',
+          description: 'Choose your Industry Agnostic Platform'
         };
-      case 'transportation-management':
+      case 'retail-industry-specific-system':
         return {
-          title: 'Select the TMS Platform',
-          description: 'Choose your Transportation Management System platform'
+          title: 'Select the Retail Industry Platform',
+          description: 'Choose your Retail Industry Specific System Platform'
         };
-      case 'order-management':
+      case 'consumer-goods-industry-specific-system':
         return {
-          title: 'Select the OMS Platform',
-          description: 'Choose your Order Management System platform'
+          title: 'Select the Consumer Goods Platform',
+          description: 'Choose your Consumer Goods Industry Specific System Platform'
         };
       default:
         return {
@@ -85,57 +86,96 @@ function CgsSystem() {
         };
     }
   };
- 
+
   const platformData = getPlatformData();
   const systemInfo = getSystemInfo();
- 
+
   const handlePlatformSelect = (platformId) => {
-    // Set selected platform to the clicked one, or null if clicking the same one
-    setSelectedPlatform(selectedPlatform === platformId ? null : platformId);
+    setSelectedPlatforms(prev => {
+      if (prev.includes(platformId)) {
+        const newSelection = prev.filter(id => id !== platformId);
+        if (newSelection.length === 0) {
+          setSelectAll(false);
+        }
+        return newSelection;
+      } else {
+        const newSelection = [...prev, platformId];
+        if (newSelection.length === platformData.length) {
+          setSelectAll(true);
+        }
+        return newSelection;
+      }
+    });
   };
- 
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedPlatforms([]);
+      setSelectAll(false);
+    } else {
+      setSelectedPlatforms(platformData.map(platform => platform.id));
+      setSelectAll(true);
+    }
+  };
+
   const handlePrevious = () => {
     // Navigate back to IndustryTypeFullfillment component
-    navigate('/digital-wayfinder/industry-type-fullfillment', {
+    navigate('/digital-wayfinder/industry-type-planning', {
       state: {
         selectedArea: selectedFunctionalArea
       }
     });
   };
- 
-   const handleProceed = () => {
-    navigate('/digital-wayfinder/cgs-data-and-cloud');
+
+  const handleFinish = () => {
+    console.log('Selected platforms:', selectedPlatforms);
+    // Navigate to final page or next step
+    navigate('/digital-wayfinder/cgs-data-and-cloud', {
+      state: {
+        selectedArea: selectedFunctionalArea,
+        selectedSystem: selectedSystem,
+        selectedPlatforms: selectedPlatforms
+      }
+    });
   };
- 
+
   return (
     <div className="wms-system-page">
       <div className="breadcrumb">
         <Link to="/">Home</Link> &gt; <span>Digital Wayfinder</span>
       </div>
- 
+
       <div className="tabs">
         <div className="tab">Functional Area</div>
-        <div className="tab">Sub Functional Area</div>
+        <div className="tab">Industry Type</div>
         <div className="tab active">System</div>
       </div>
- 
+
       <div className="content-area">
         <div className="content-left">
           <h1>{systemInfo.title}</h1>
           <p className="subtitle">{systemInfo.description}</p>
- 
+
+          <div className="select-all-container">
+            <button 
+              className="select-all-button"
+              onClick={handleSelectAll}
+            >
+              {selectAll ? 'Deselect all' : 'Select all'}
+            </button>
+          </div>
+
           <div className="platform-cards">
             {platformData.map((platform) => (
               <div
                 key={platform.id}
-                className={`platform-card ${selectedPlatform === platform.id ? 'selected' : ''}`}
+                className={`platform-card ${selectedPlatforms.includes(platform.id) ? 'selected' : ''}`}
                 onClick={() => handlePlatformSelect(platform.id)}
               >
                 <div className="card-content">
                   <input
-                    type="radio"
-                    name="platform"
-                    checked={selectedPlatform === platform.id}
+                    type="checkbox"
+                    checked={selectedPlatforms.includes(platform.id)}
                     onChange={() => {}}
                     className="platform-checkbox"
                   />
@@ -146,31 +186,31 @@ function CgsSystem() {
               </div>
             ))}
           </div>
- 
+
           <div className="progress-footer">
-            <button
+            <button 
               className="previous-button"
               onClick={handlePrevious}
             >
               Previous
             </button>
             <div className="progress-text">Completed step 3 of 4</div>
-            <button
+            <button 
               className="finish-button"
-              disabled={!selectedPlatform}
-              onClick={handleProceed}
+              disabled={selectedPlatforms.length === 0}
+              onClick={handleFinish}
             >
-              Proceed
+              Finish
             </button>
           </div>
         </div>
- 
+
         <div className="content-right">
           <div className="preview-container">
-            <img
-              src={dashboardImage}
-              alt="Dashboard Preview"
-              className="dashboard-preview"
+            <img 
+              src={dashboardImage} 
+              alt="Dashboard Preview" 
+              className="dashboard-preview" 
             />
           </div>
         </div>
@@ -178,5 +218,5 @@ function CgsSystem() {
     </div>
   );
 }
- 
+
 export default CgsSystem;

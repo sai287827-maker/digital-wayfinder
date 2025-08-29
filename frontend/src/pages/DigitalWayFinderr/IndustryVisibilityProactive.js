@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './IndustryVisibilityProactive.module.css';
 import IndustryOperational from './IndustryOperational';
-import AgenticAI from './AgenticAI';
+import IndustryAgenticAI from './IndustryAgenticAI';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -290,7 +290,7 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
   // Early return for navigation to AgenticAI
   if (showAgenticAI) {
     console.log('Navigating to AgenticAI component');
-    return <AgenticAI />;
+    return <IndustryAgenticAI />;
   }
 
   // Early return for navigation to IndustryOperational (Previous button)
