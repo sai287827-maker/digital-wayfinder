@@ -130,7 +130,7 @@ function IndustryTypePlanParts() {
   const handleFinish = () => {
     console.log('Selected platforms:', selectedPlatforms);
     // Navigate to final page or next step
-    navigate('/digital-wayfinder/final', {
+    navigate('/digital-wayfinder/industry-data-and-cloud', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: selectedSystem,

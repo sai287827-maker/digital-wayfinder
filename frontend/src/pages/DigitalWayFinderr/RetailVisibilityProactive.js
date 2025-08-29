@@ -74,7 +74,7 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
         setError(null);
         console.log('Fetching VisibilityProactive questions and existing answers...');
 
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Retail Industry Specific')}`);
 
         console.log('VisibilityProactive API Response:', response);
 

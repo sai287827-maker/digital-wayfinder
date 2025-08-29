@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './CgsDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import CgsOperational from './CgsOperational';
-import CgssSystem from './CgsSystem'; // Add import for WmsSystem
+import CgsSystem from './CgsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -72,7 +72,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Consumer Goods Industry Specific')}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {

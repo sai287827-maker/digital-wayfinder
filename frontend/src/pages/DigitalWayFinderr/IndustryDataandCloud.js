@@ -33,7 +33,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?industryType=${encodeURIComponent('Industry Agnostic')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {

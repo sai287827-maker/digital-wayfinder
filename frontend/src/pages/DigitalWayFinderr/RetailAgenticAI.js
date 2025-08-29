@@ -66,7 +66,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
       setError(null);
       try {
         console.log('Fetching Agentic AI questions...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Retail Industry Specific')}`);
 
         console.log('Agentic AI API Response:', response);
 

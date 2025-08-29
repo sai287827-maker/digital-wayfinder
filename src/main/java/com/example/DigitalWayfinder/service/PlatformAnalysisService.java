@@ -24,68 +24,68 @@ public class PlatformAnalysisService {
     private final PlatformAnalysisRepository platformAnalysisRepository;
     private final ProjectTypeRepository projectTypeRepository;
     
-    public PlatformAnalysisResponse getAllPlatformAnalysis(String userId, String sessionId) {
-        log.info("Fetching all platform analysis records for user: {}, session: {}", userId, sessionId);
-        
-        try {
-            // Get the actual userId and sessionId to use from latest ProjectType
-            UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
-            
-            // Fetch records based on resolved UserID and SessionID (including null handling)
-            List<PlatformAnalysis> records = platformAnalysisRepository
-                    .findByUserIDAndSessionIDIncludingNulls(sessionInfo.getUserId(), sessionInfo.getSessionId());
-            
-            // Remove duplicates before grouping
-            List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
-            
-            List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
-            
-            log.info("Successfully fetched {} platform analysis records (after deduplication: {}) grouped into {} categories for user: {}, session: {}", 
-                    records.size(), uniqueRecords.size(), categories.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
-            
-            return PlatformAnalysisResponse.builder()
-                    .userId(sessionInfo.getUserId())
-                    .sessionId(sessionInfo.getSessionId())
-                    .categories(categories)
-                    .build();
-                    
-        } catch (Exception e) {
-            log.error("Error fetching platform analysis records", e);
-            throw new RuntimeException("Failed to fetch platform analysis records: " + e.getMessage());
-        }
-    }
+public PlatformAnalysisResponse getAllPlatformAnalysis(String userId, String sessionId) {
+    log.info("Fetching all platform analysis records for user: {}, session: {}", userId, sessionId);
     
-    public PlatformAnalysisResponse getPlatformAnalysisByCategory(String category, String userId, String sessionId) {
-        log.info("Fetching platform analysis records for category: {} with user: {}, session: {}", 
-                category, userId, sessionId);
+    try {
+        // Get the actual userId and sessionId to use from latest ProjectType
+        UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
         
-        try {
-            // Get the actual userId and sessionId to use from latest ProjectType
-            UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
-            
-            // Filter by category, UserID and SessionID (including null handling)
-            List<PlatformAnalysis> records = platformAnalysisRepository
-                    .findByCategoryAndUserIDAndSessionIDIncludingNulls(category, sessionInfo.getUserId(), sessionInfo.getSessionId());
-            
-            // Remove duplicates before grouping
-            List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
-            
-            List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
-            
-            log.info("Successfully fetched {} records (after deduplication: {}) for category: {} with user: {}, session: {}", 
-                    records.size(), uniqueRecords.size(), category, sessionInfo.getUserId(), sessionInfo.getSessionId());
-            
-            return PlatformAnalysisResponse.builder()
-                    .userId(sessionInfo.getUserId())
-                    .sessionId(sessionInfo.getSessionId())
-                    .categories(categories)
-                    .build();
-                    
-        } catch (Exception e) {
-            log.error("Error fetching platform analysis records for category: {}", category, e);
-            throw new RuntimeException("Failed to fetch records: " + e.getMessage());
-        }
+        // CHANGE: Use exact match instead of including nulls
+        List<PlatformAnalysis> records = platformAnalysisRepository
+                .findByUserIDAndSessionID(sessionInfo.getUserId(), sessionInfo.getSessionId());
+        
+        // Remove duplicates before grouping
+        List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
+        
+        List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} platform analysis records (after deduplication: {}) grouped into {} categories for user: {}, session: {}", 
+                records.size(), uniqueRecords.size(), categories.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
+        
+        return PlatformAnalysisResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
+                
+    } catch (Exception e) {
+        log.error("Error fetching platform analysis records", e);
+        throw new RuntimeException("Failed to fetch platform analysis records: " + e.getMessage());
     }
+}
+
+public PlatformAnalysisResponse getPlatformAnalysisByCategory(String category, String userId, String sessionId) {
+    log.info("Fetching platform analysis records for category: {} with user: {}, session: {}", 
+            category, userId, sessionId);
+    
+    try {
+        // Get the actual userId and sessionId to use from latest ProjectType
+        UserSessionInfo sessionInfo = resolveUserSession(userId, sessionId);
+        
+        // CHANGE: Use exact match instead of including nulls
+        List<PlatformAnalysis> records = platformAnalysisRepository
+                .findByCategoryAndUserIDAndSessionID(category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+        
+        // Remove duplicates before grouping
+        List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
+        
+        List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} records (after deduplication: {}) for category: {} with user: {}, session: {}", 
+                records.size(), uniqueRecords.size(), category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+        
+        return PlatformAnalysisResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
+                
+    } catch (Exception e) {
+        log.error("Error fetching platform analysis records for category: {}", category, e);
+        throw new RuntimeException("Failed to fetch records: " + e.getMessage());
+    }
+}
     
     /**
      * Removes duplicate records and filters out records with null asset names.

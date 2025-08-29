@@ -40,7 +40,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
           "Does the WMS systems allows seamless integration to all relevant external data such as traffic, weather, shipment tracking etc."
         ];
         
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
 
         console.log('Agentic AI API Response:', response);
 
