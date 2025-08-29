@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './RetailOperational.module.css';
-import VisibilityProactive from './VisibilityProactive';
-import DataAndCloud from './DataAndCloud';
+import RetailVisibilityProactive from './RetailVisibilityProactive';
+import RetailDataAndCloud from './RetailDataAndCloud';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -359,14 +359,14 @@ const RetailOperational = ({ onNavigateBack }) => {
   // Early return for navigation to VisibilityProactive
   if (showVisibilityProactive) {
     console.log('Navigating to VisibilityProactive component');
-    return <VisibilityProactive />;
+    return <RetailVisibilityProactive />;
   }
 
   // Early return for navigation to DataAndCloud (Previous button)
   if (showDataAndCloud) {
     console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
     // Pass the retained Data & Cloud answers to the component
-    return <DataAndCloud initialAnswers={dataCloudAnswers} />;
+    return <RetailDataAndCloud initialAnswers={dataCloudAnswers} />;
   }
  
   return (
