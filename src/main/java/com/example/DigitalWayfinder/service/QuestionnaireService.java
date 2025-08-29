@@ -68,7 +68,7 @@ public class QuestionnaireService {
                 log.info("Successfully fetched {} WMS questions for category: {}", questionItems.size(), category);
                 
             } else if (normalizedArea.equals("transfer management system") || 
-                      normalizedArea.equals("transport management system") || 
+                      normalizedArea.equals("transportation management system") || 
                       normalizedArea.equals("tms")) {
                 log.info("Fetching questions from TMS table for category: {}", category);
                 List<TmsQuestions> tmsQuestions = tmsQuestionsRepository.findByCategory(category);
@@ -299,7 +299,7 @@ private String deriveFunctionalArea(String functionalSubArea) {
     
     if (normalized.contains("warehouse")) {
         return "WMS";
-    } else if (normalized.contains("transfer") || normalized.contains("transport")) {
+    } else if (normalized.contains("transfer") || normalized.contains("transportation")) {
         return "TMS";
     } else if (normalized.contains("order")) {
         return "OMS";

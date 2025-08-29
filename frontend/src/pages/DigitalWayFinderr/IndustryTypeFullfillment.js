@@ -40,14 +40,14 @@ function IndustryTypeFullfillment() {
       }
     });
   } else if (selectedSystem === 'order-management') {
-    navigate('/digital-wayfinder/wms-system', {
+    navigate('/digital-wayfinder/oms-system', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: selectedSystem
       }
     });
   } else if(selectedSystem === 'transportation-management') {
-    navigate('/digital-wayfinder/wms-system', {
+    navigate('/digital-wayfinder/tms-system', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: selectedSystem
