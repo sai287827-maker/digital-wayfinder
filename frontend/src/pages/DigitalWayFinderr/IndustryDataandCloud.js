@@ -4,7 +4,6 @@ import styles from './IndustryDataandCloud.module.css';
 import IndustryOperational from './IndustryOperational';
 import IndustryTypePlanParts from './IndustryTypePlanParts'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
-import IndustryOperational from './IndustryOperational';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },

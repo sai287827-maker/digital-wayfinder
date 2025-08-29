@@ -293,7 +293,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
   // Early return for navigation to WmsReport
   if (showWmsReport) {
     console.log('Navigating to WmsReport component, showWmsReport:', showWmsReport);
-    return <WmsReport />;
+    return <IndustryReport />;
   }
 
   if (loading) {
