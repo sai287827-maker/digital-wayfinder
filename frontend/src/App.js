@@ -13,14 +13,28 @@ import DataAndCloud from './pages/DigitalWayFinderr/DataAndCloud';
 import Operational from './pages/DigitalWayFinderr/Operational';
 import VisibilityProactive from './pages/DigitalWayFinderr/VisibilityProactive';
 import AgenticAI from './pages/DigitalWayFinderr/AgenticAI';
-import IndustryDataandCloud from './pages/DigitalWayFinderr/IndustryDataandCloud';
 import TmsDataAndCloud from './pages/DigitalWayFinderr/TmsDataAndCloud';
 import TmsOperational from './pages/DigitalWayFinderr/TmsOperational';
 import TmsVisibilityProactive from './pages/DigitalWayFinderr/TmsVisibilityProactive';
 import TmsAgenticAI from './pages/DigitalWayFinderr/TmsAgenticAI';
+import RetailDataAndCloud from './pages/DigitalWayFinderr/RetailDataAndCloud';
+import RetailOperational from './pages/DigitalWayFinderr/RetailOperational';
+import RetailVisibilityProactive from './pages/DigitalWayFinderr/RetailVisibilityProactive';
+import RetailAgenticAI from './pages/DigitalWayFinderr/RetailAgenticAI';
+import RetailSystem from './pages/DigitalWayFinderr/RetailSystem';
+import RetailReport from './pages/DigitalWayFinderr/RetailReport';
+import IndustryDataandCloud from './pages/DigitalWayFinderr/IndustryDataandCloud';
+import IndustryOperational from './pages/DigitalWayFinderr/IndustryOperational';
+import IndustryVisibilityProactive from './pages/DigitalWayFinderr/IndustryVisibilityProactive';
+import IndustryAgenticAI from './pages/DigitalWayFinderr/IndustryAgenticAI';
+import CgsSystem from './pages/DigitalWayFinderr/CgsSystem';
+import CgsReport from './pages/DigitalWayFinderr/CgsReport';
 import TmsSystem from './pages/DigitalWayFinderr/TmsSystem';
-
-
+import TmsReport from './pages/DigitalWayFinderr/TmsReport';
+import CgsDataAndCloud from './pages/DigitalWayFinderr/CgsDataAndCloud';
+import CgsOperational from './pages/DigitalWayFinderr/CgsOperational';
+import CgsVisibilityProactive from './pages/DigitalWayFinderr/CgsVisibilityProactive';
+import CgsAgenticAI from './pages/DigitalWayFinderr/CgsAgenticAI';
 
 
 //Decision Tree imports
@@ -81,6 +95,24 @@ function App() {
           <Route path="/digital-wayfinder/tms-visibility-proactive" element={<TmsVisibilityProactive />} />
           <Route path="/digital-wayfinder/tms-agentic-ai" element={<TmsAgenticAI />} />
           <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
+          <Route path="/digital-wayfinder/tms-report" element={<TmsReport />} />
+          <Route path="/digital-wayfinder/retail-data-and-cloud" element={<RetailDataAndCloud />} />
+          <Route path="/digital-wayfinder/retail-operational" element={<RetailOperational />} />
+          <Route path="/digital-wayfinder/retail-visibility-proactive" element={<RetailVisibilityProactive />} />
+          <Route path="/digital-wayfinder/retail-agentic-ai" element={<RetailAgenticAI />} />
+          <Route path="/digital-wayfinder/retail-system" element={<RetailSystem />} />
+          <Route path="/digital-wayfinder/retail-report" element={<RetailReport />} />
+          <Route path="/digital-wayfinder/industry-data-and-cloud" element={<IndustryDataandCloud />} />
+          <Route path="/digital-wayfinder/industry-operational" element={<IndustryOperational />} />
+          <Route path="/digital-wayfinder/industry-visibility-proactive" element={<IndustryVisibilityProactive />} />
+          <Route path="/digital-wayfinder/industry-agentic-ai" element={<IndustryAgenticAI />} />
+          <Route path="/digital-wayfinder/cgs-system" element={<CgsSystem />} />
+          <Route path="/digital-wayfinder/cgs-report" element={<CgsReport />} />
+          <Route path="/digital-wayfinder/cgs-data-and-cloud" element={<CgsDataAndCloud />} />
+          <Route path="/digital-wayfinder/cgs-operational" element={<CgsOperational />} />
+          <Route path="/digital-wayfinder/cgs-visibility-proactive" element={<CgsVisibilityProactive />} />
+          <Route path="/digital-wayfinder/cgs-agentic-ai" element={<CgsAgenticAI />} />
+          
 
 
           <Route path="/decision-tree" element={<ProjectInfo />} />
