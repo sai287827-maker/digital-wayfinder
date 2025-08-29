@@ -28,6 +28,20 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
+  // Helper function to get answer options based on answerType
+  const getAnswerOptions = (answerType) => {
+    switch(answerType?.toLowerCase()) {
+      case 'yes/no':
+      case 'yesno':
+        return ['Yes', 'No'];
+      case 'priority':
+      case 'high/medium/low':
+        return ['High', 'Medium', 'Low'];
+      default:
+        return ['High', 'Medium', 'Low']; // Default fallback
+    }
+  };
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
@@ -37,17 +51,16 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
-          const questionTexts = response.questions.map(q => q.question);
-          setQuestions(questionTexts);
+          // Store full question objects with answerType
+          setQuestions(response.questions);
           
           // Initialize answers array
-          const initialAnswers = Array(questionTexts.length).fill(null);
+          const initialAnswers = Array(response.questions.length).fill(null);
           
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             response.answers.forEach(answerObj => {
-              const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+              const questionIndex = response.questions.findIndex(q => q.question === answerObj.question);
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
@@ -84,8 +97,12 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
           setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for old response structure
-          setQuestions(response.questions || []);
-          setAnswers(Array((response.questions || []).length).fill(null));
+          const questionObjects = (response.questions || []).map(q => ({
+            question: typeof q === 'string' ? q : q.question || '',
+            answerType: typeof q === 'object' ? q.answerType || 'priority' : 'priority'
+          }));
+          setQuestions(questionObjects);
+          setAnswers(Array(questionObjects.length).fill(null));
         }
       } catch (err) {
         setError('Failed to load questions.');
@@ -135,8 +152,8 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
         
         // Create payload with only answered questions
         const answeredQuestions = questions
-          .map((question, index) => ({
-            question: question,
+          .map((questionObj, index) => ({
+            question: questionObj.question || questionObj,
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
@@ -184,8 +201,8 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       const payload = {
         functionalArea: functionalArea,
         functionalSubArea: functionalSubArea,
-        answers: questions.map((question, index) => ({
-          question: question,
+        answers: questions.map((questionObj, index) => ({
+          question: questionObj.question || questionObj,
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
@@ -261,29 +278,35 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
               </div>
             </div>
             <div className={styles.industryDataCloudQuestionsList}>
-              {questions.map((q, idx) => (
-                <div key={idx} className={styles.industryDataCloudQuestionBlock}>
-                  <div className={styles.industryDataCloudQuestionText}>{idx + 1}. {q}</div>
-                  <div className={styles.industryDataCloudOptionsRow}>
-                    {['High', 'Medium', 'Low'].map(opt => (
-                      <label
-                        key={opt}
-                        className={styles.industryDataCloudOptionLabel}
-                      >
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.industryDataCloudRadio}
-                        />
-                        <span>{opt}</span>
-                      </label>
-                    ))}
+              {questions.map((questionObj, idx) => {
+                const questionText = questionObj.question || questionObj;
+                const answerType = questionObj.answerType || 'priority';
+                const options = getAnswerOptions(answerType);
+                
+                return (
+                  <div key={idx} className={styles.industryDataCloudQuestionBlock}>
+                    <div className={styles.industryDataCloudQuestionText}>{idx + 1}. {questionText}</div>
+                    <div className={styles.industryDataCloudOptionsRow}>
+                      {options.map(opt => (
+                        <label
+                          key={opt}
+                          className={styles.industryDataCloudOptionLabel}
+                        >
+                          <input
+                            type="radio"
+                            name={`q${idx}`}
+                            value={opt}
+                            checked={answers[idx] === opt}
+                            onChange={() => handleAnswer(idx, opt)}
+                            className={styles.industryDataCloudRadio}
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className={styles.industryDataCloudButtonRow}>
               <button 
@@ -306,6 +329,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
         </div>
       </div>
     </div>
-  )};
+  );
+};
  
 export default IndustryDataandCloud;
