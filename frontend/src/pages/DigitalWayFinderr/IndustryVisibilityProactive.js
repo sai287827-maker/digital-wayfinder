@@ -26,6 +26,20 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
+
+  // Helper function to get answer options based on answerType
+  const getAnswerOptions = (answerType) => {
+    switch(answerType?.toLowerCase()) {
+      case 'yes/no':
+      case 'yesno':
+        return ['Yes', 'No'];
+      case 'priority':
+      case 'high/medium/low':
+        return ['High', 'Medium', 'Low'];
+      default:
+        return ['High', 'Medium', 'Low']; // Default fallback
+    }
+  };
  
   useEffect(() => {
     async function fetchQuestions() {
@@ -39,18 +53,17 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
-          // Extract questions from the response
-          const questionTexts = response.questions.map(q => q.question);
-          setQuestions(questionTexts);
+          // Store full question objects with answerType
+          setQuestions(response.questions);
           
           // Initialize answers array
-          const initialAnswers = Array(questionTexts.length).fill(null);
+          const initialAnswers = Array(response.questions.length).fill(null);
           
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             console.log('Loading existing answers:', response.answers);
             response.answers.forEach(answerObj => {
-              const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+              const questionIndex = response.questions.findIndex(q => q.question === answerObj.question);
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
@@ -67,12 +80,12 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
                 answersResponse.answers.forEach(answerObj => {
-                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+                  const questionIndex = response.questions.findIndex(q => q.question === answerObj.question);
                   if (questionIndex !== -1) {
                     const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                     initialAnswers[questionIndex] = answerValue;
@@ -119,8 +132,12 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
         } else {
           // Fallback for old response structure
           console.log('Using fallback structure for questions');
-          setQuestions(response.questions || []);
-          setAnswers(Array((response.questions || []).length).fill(null));
+          const questionObjects = (response.questions || []).map(q => ({
+            question: typeof q === 'string' ? q : q.question || '',
+            answerType: typeof q === 'object' ? q.answerType || 'priority' : 'priority'
+          }));
+          setQuestions(questionObjects);
+          setAnswers(Array(questionObjects.length).fill(null));
         }
       } catch (err) {
         console.error('Error fetching Visibility and Proactive questions:', err);
@@ -171,8 +188,8 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
         
         // Create payload with only answered questions
         const answeredQuestions = questions
-          .map((question, index) => ({
-            question: question,
+          .map((questionObj, index) => ({
+            question: questionObj.question || questionObj,
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
@@ -250,8 +267,8 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
       const payload = {
         functionalArea: area,
         functionalSubArea: functionalSubArea || '',
-        answers: questions.map((question, index) => ({
-          question: question,
+        answers: questions.map((questionObj, index) => ({
+          question: questionObj.question || questionObj,
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
@@ -367,36 +384,42 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
                 </div>
               </div>
               <div className={styles.industryVisibilityProactiveQuestionsList}>
-                {questions.map((q, idx) => (
-                  <div key={idx} className={styles.industryVisibilityProactiveQuestionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                    <div className={styles.industryVisibilityProactiveQuestionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
-                    <div className={styles.industryVisibilityProactiveOptionsRow}>
-                      {['High', 'Medium', 'Low'].map(opt => (
-                        <label
-                          key={opt}
-                          className={styles.industryVisibilityProactiveOptionLabel}
-                          style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
-                        >
-                          <input
-                            type="radio"
-                            name={`q${idx}`}
-                            value={opt}
-                            checked={answers[idx] === opt}
-                            onChange={() => handleAnswer(idx, opt)}
-                            className={styles.industryVisibilityProactiveRadio}
-                            style={{
-                              accentColor: '#9C27B0',
-                              marginRight: '8px',
-                              width: '18px',
-                              height: '18px'
-                            }}
-                          />
-                          <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
-                        </label>
-                      ))}
+                {questions.map((questionObj, idx) => {
+                  const questionText = questionObj.question || questionObj;
+                  const answerType = questionObj.answerType || 'priority';
+                  const options = getAnswerOptions(answerType);
+                  
+                  return (
+                    <div key={idx} className={styles.industryVisibilityProactiveQuestionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
+                      <div className={styles.industryVisibilityProactiveQuestionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {questionText}</div>
+                      <div className={styles.industryVisibilityProactiveOptionsRow}>
+                        {options.map(opt => (
+                          <label
+                            key={opt}
+                            className={styles.industryVisibilityProactiveOptionLabel}
+                            style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
+                          >
+                            <input
+                              type="radio"
+                              name={`q${idx}`}
+                              value={opt}
+                              checked={answers[idx] === opt}
+                              onChange={() => handleAnswer(idx, opt)}
+                              className={styles.industryVisibilityProactiveRadio}
+                              style={{
+                                accentColor: '#9C27B0',
+                                marginRight: '8px',
+                                width: '18px',
+                                height: '18px'
+                              }}
+                            />
+                            <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
               <div className={styles.industryVisibilityProactiveButtonRow}>
                 <button 
