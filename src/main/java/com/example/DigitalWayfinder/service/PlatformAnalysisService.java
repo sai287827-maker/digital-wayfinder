@@ -55,8 +55,8 @@ public class PlatformAnalysisService {
             List<PlatformAnalysisResponse.CategoryItem> categories;
             
             if ("TMS".equals(systemType)) {
-                // Fetch from TmsReport
-                List<TmsReport> records = tmsReportRepository.findByUserIDAndSessionID(
+                // Fetch from TmsReport (including NULL session records)
+                List<TmsReport> records = tmsReportRepository.findByUserIDAndSessionIDIncludingNulls(
                     sessionInfo.getUserId(), sessionInfo.getSessionId());
                 List<TmsReport> uniqueRecords = removeTmsDuplicates(records);
                 categories = groupTmsRecordsByCategory(uniqueRecords);
@@ -64,8 +64,8 @@ public class PlatformAnalysisService {
                         records.size(), uniqueRecords.size(), categories.size());
                 
             } else if ("PLANNING".equals(systemType)) {
-                // Fetch from PlanningReport
-                List<PlanningReport> records = planningReportRepository.findByUserIDAndSessionID(
+                // Fetch from PlanningReport (including NULL session records)
+                List<PlanningReport> records = planningReportRepository.findByUserIDAndSessionIDIncludingNulls(
                     sessionInfo.getUserId(), sessionInfo.getSessionId());
                 List<PlanningReport> uniqueRecords = removePlanningDuplicates(records);
                 categories = groupPlanningRecordsByCategory(uniqueRecords);
@@ -73,8 +73,8 @@ public class PlatformAnalysisService {
                         records.size(), uniqueRecords.size(), categories.size());
                 
             } else {
-                // Default to WMS - Fetch from PlatformAnalysis
-                List<PlatformAnalysis> records = platformAnalysisRepository.findByUserIDAndSessionID(
+                // Default to WMS - Fetch from PlatformAnalysis (including NULL session records)
+                List<PlatformAnalysis> records = platformAnalysisRepository.findByUserIDAndSessionIDIncludingNulls(
                     sessionInfo.getUserId(), sessionInfo.getSessionId());
                 List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
                 categories = groupRecordsByCategory(uniqueRecords);
@@ -115,8 +115,8 @@ public class PlatformAnalysisService {
             List<PlatformAnalysisResponse.CategoryItem> categories;
             
             if ("TMS".equals(systemType)) {
-                // Fetch from TmsReport by category
-                List<TmsReport> records = tmsReportRepository.findByCategoryAndUserIDAndSessionID(
+                // Fetch from TmsReport by category (including NULL session records)
+                List<TmsReport> records = tmsReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
                     category, sessionInfo.getUserId(), sessionInfo.getSessionId());
                 List<TmsReport> uniqueRecords = removeTmsDuplicates(records);
                 categories = groupTmsRecordsByCategory(uniqueRecords);
@@ -124,8 +124,8 @@ public class PlatformAnalysisService {
                         records.size(), uniqueRecords.size(), category);
                 
             } else if ("PLANNING".equals(systemType)) {
-                // Fetch from PlanningReport by category
-                List<PlanningReport> records = planningReportRepository.findByCategoryAndUserIDAndSessionID(
+                // Fetch from PlanningReport by category (including NULL session records)
+                List<PlanningReport> records = planningReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
                     category, sessionInfo.getUserId(), sessionInfo.getSessionId());
                 List<PlanningReport> uniqueRecords = removePlanningDuplicates(records);
                 categories = groupPlanningRecordsByCategory(uniqueRecords);
@@ -133,8 +133,8 @@ public class PlatformAnalysisService {
                         records.size(), uniqueRecords.size(), category);
                 
             } else {
-                // Default to WMS - Fetch from PlatformAnalysis by category
-                List<PlatformAnalysis> records = platformAnalysisRepository.findByCategoryAndUserIDAndSessionID(
+                // Default to WMS - Fetch from PlatformAnalysis by category (including NULL session records)
+                List<PlatformAnalysis> records = platformAnalysisRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
                     category, sessionInfo.getUserId(), sessionInfo.getSessionId());
                 List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
                 categories = groupRecordsByCategory(uniqueRecords);
