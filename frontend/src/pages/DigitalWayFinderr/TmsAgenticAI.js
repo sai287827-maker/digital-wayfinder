@@ -66,7 +66,7 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
       setError(null);
       try {
         console.log('Fetching Agentic AI questions...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?industryType=${encodeURIComponent('Transportation Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
 
         console.log('Agentic AI API Response:', response);
 
