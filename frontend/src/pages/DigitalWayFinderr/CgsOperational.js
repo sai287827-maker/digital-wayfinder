@@ -73,7 +73,7 @@ const CgsOperational = ({ onNavigateBack }) => {
   const fetchDataCloudAnswers = async () => {
     try {
       console.log('Fetching Data & Cloud answers...');
-      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Consumer Goods Industry Specific')}`);
       console.log('Data & Cloud answers response:', response);
       
       if (response && response.answers) {
@@ -93,7 +93,7 @@ const CgsOperational = ({ onNavigateBack }) => {
       setError(null);
       try {
         console.log('Fetching Operational questions and existing answers...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent('Consumer Goods Industry Specific')}`);
         
         console.log('Operational API Response:', response);
         

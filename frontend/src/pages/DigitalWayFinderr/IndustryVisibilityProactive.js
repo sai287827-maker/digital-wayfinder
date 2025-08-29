@@ -47,7 +47,7 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
       setError(null);
       try {
         console.log('Fetching Visibility and Proactive questions and existing answers...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
         
         console.log('Visibility and Proactive API Response:', response);
         
@@ -80,7 +80,7 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
