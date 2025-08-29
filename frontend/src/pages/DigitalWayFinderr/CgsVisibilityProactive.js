@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styles from './VisibilityProactive.module.css';
-import AgenticAI from './AgenticAI';
-import Operational from './Operational';
+import styles from './CgsVisibilityProactive.module.css';
+import CgsAgenticAI from './CgsAgenticAI';
+import CgsOperational from './CgsOperational';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -363,13 +363,13 @@ const CgsVisibilityProactive = ({ onNavigateBack }) => {
   // Early return for navigation to AgenticAI
   if (showAgenticAI) {
     console.log('Navigating to AgenticAI component, showAgenticAI:', showAgenticAI);
-    return <AgenticAI />;
+    return <CgsAgenticAI />;
   }
 
   // Early return for navigation to Operational (Previous button)
   if (showOperational) {
     console.log('Navigating back to Operational component, showOperational:', showOperational);
-    return <Operational />;
+    return <CgsOperational />;
   }
 
   return (

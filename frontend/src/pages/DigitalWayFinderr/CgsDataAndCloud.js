@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import styles from './DataAndCloud.module.css';
+import styles from './CgsDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
-import Operational from './Operational';
-import WmsSystem from './WmsSystem'; // Add import for WmsSystem
+import CgsOperational from './CgsOperational';
+import CgssSystem from './CgsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -271,11 +271,11 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   // Early return for navigation to WmsSystem
   if (showWmsSystem) {
     console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
-    return <WmsSystem />;
+    return <CgsSystem />;
   }
 
   if (showVisibilityProactive) {
-    return <Operational />;
+    return <CgsOperational />;
   }
  
   return (
