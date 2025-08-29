@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styles from './AgenticAI.module.css';
+import styles from './CgsAgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
-import WmsReport from './WmsReport';
+import CgsReport from './CgsReport';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -326,7 +326,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
 
   if (showWmsReport) {
     console.log('Navigating to WmsReport component, showWmsReport:', showWmsReport);
-    return <WmsReport />;
+    return <CgsReport />;
   }
 
   if (loading) {

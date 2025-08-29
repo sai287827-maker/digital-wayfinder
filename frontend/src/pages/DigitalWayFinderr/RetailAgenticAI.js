@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './RetailAgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
-import WmsReport from './WmsReport';
+import RetailReport from './RetailReport';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -326,7 +326,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
 
   if (showWmsReport) {
     console.log('Navigating to WmsReport component, showWmsReport:', showWmsReport);
-    return <WmsReport />;
+    return <RetailReport />;
   }
 
   if (loading) {

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './RetailDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
-import Operational from './Operational';
-import WmsSystem from './WmsSystem'; // Add import for WmsSystem
+import RetailOperational from './RetailOperational';
+import RetailSystem from './RetailSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 
 const steps = [
@@ -271,11 +271,11 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
   // Early return for navigation to WmsSystem
   if (showWmsSystem) {
     console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
-    return <WmsSystem />;
+    return <RetailSystem />;
   }
 
   if (showVisibilityProactive) {
-    return <Operational />;
+    return <RetailOperational />;
   }
  
   return (
