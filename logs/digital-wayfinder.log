@@ -20248,3 +20248,278 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
         UserID=? 
     where
         id=?
+2025-08-29 18:46:19 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:19 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        DWQuestions 
+    set
+        Category=?,
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        Question=?,
+        ResponseType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 18:46:20 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:21 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:22 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Successfully saved 10 answers for category: Visibility & Proactive Planning with session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:22 [http-nio-8080-exec-7] INFO  c.e.D.c.QuestionnaireController - Successfully saved 10 Visibility & Proactive Planning answers
+2025-08-29 18:46:22 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 18:46:22 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [SaveAnswersResponse(userId=USER-0B90C55C, sessionId=1977234FF6B3EEA7EFBF3662F0B0188C, functionalArea (truncated)...]
+2025-08-29 18:46:22 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-29 18:46:22 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=Transportation%20Management%20System", parameters={masked}
+2025-08-29 18:46:22 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getGenAIQuestions(String, UserSession)
+2025-08-29 18:46:22 [http-nio-8080-exec-5] INFO  c.e.D.c.QuestionnaireController - Received request for Agentic AI questions - functionalSubArea: Transportation Management System, user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:22 [http-nio-8080-exec-5] INFO  c.e.D.service.QuestionnaireService - Fetching questions for functionalSubArea: Transportation Management System, category: Agentic AI, userId: USER-0B90C55C, sessionId: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:22 [http-nio-8080-exec-5] INFO  c.e.D.service.QuestionnaireService - Fetching questions from TMS table for category: Agentic AI
+2025-08-29 18:46:22 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        tq1_0.category,
+        tq1_0.question,
+        tq1_0.[Answer Type] 
+    from
+        TMS_Questionnaire tq1_0 
+    where
+        tq1_0.category=?
+2025-08-29 18:46:23 [http-nio-8080-exec-5] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 5 TMS questions for category: Agentic AI
+2025-08-29 18:46:23 [http-nio-8080-exec-5] INFO  c.e.D.c.QuestionnaireController - Successfully returning questions for functionalSubArea: Transportation Management System
+2025-08-29 18:46:23 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 18:46:23 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [QuestionnaireResponse(userId=USER-0B90C55C, sessionId=1977234FF6B3EEA7EFBF3662F0B0188C, functionalSu (truncated)...]
+2025-08-29 18:46:23 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 18:46:23 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=Transportation%20Management%20System", parameters={masked}
+2025-08-29 18:46:23 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getVisibilityProactiveAnswers(UserSession)
+2025-08-29 18:46:23 [http-nio-8080-exec-3] INFO  c.e.D.c.QuestionnaireController - Received request for Visibility & Proactive Planning answers - user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:23 [http-nio-8080-exec-3] INFO  c.e.D.service.QuestionnaireService - Fetching answers for category: Visibility & Proactive Planning, userId: USER-0B90C55C, sessionId: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:23 [http-nio-8080-exec-3] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-0B90C55C, Session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:23 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.Category=? 
+        and (
+            d1_0.UserID=? 
+            or d1_0.UserID is null
+        ) 
+        and (
+            d1_0.SessionID=? 
+            or d1_0.SessionID is null
+        )
+2025-08-29 18:46:23 [http-nio-8080-exec-3] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 10 saved answers for category: Visibility & Proactive Planning with session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:23 [http-nio-8080-exec-3] INFO  c.e.D.c.QuestionnaireController - Successfully returning 10 Visibility & Proactive Planning answers
+2025-08-29 18:46:23 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 18:46:23 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [GetAnswersResponse(userId=USER-0B90C55C, sessionId=1977234FF6B3EEA7EFBF3662F0B0188C, functionalSubAr (truncated)...]
+2025-08-29 18:46:23 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 18:46:29 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/digital-wayfinder/questionnaire/genai/save-answers", parameters={}
+2025-08-29 18:46:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#saveGenAIAnswers(SaveAnswersRequest, UserSession)
+2025-08-29 18:46:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SaveAnswersRequest(functionalArea=Supply Chain Fulfillment, functionalSubArea=Transportation Managem (truncated)...]
+2025-08-29 18:46:29 [http-nio-8080-exec-1] INFO  c.e.D.c.QuestionnaireController - Received request to save Agentic AI answers - user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:29 [http-nio-8080-exec-1] INFO  c.e.D.service.QuestionnaireService - Saving answers for category: Agentic AI, userId: USER-0B90C55C, sessionId: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:29 [http-nio-8080-exec-1] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-0B90C55C, Session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:29 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:30 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:31 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:32 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:33 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 18:46:34 [http-nio-8080-exec-1] INFO  c.e.D.service.QuestionnaireService - Successfully saved 5 answers for category: Agentic AI with session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:34 [http-nio-8080-exec-1] INFO  c.e.D.c.QuestionnaireController - Successfully saved 5 Agentic AI answers
+2025-08-29 18:46:34 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 18:46:34 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [SaveAnswersResponse(userId=USER-0B90C55C, sessionId=1977234FF6B3EEA7EFBF3662F0B0188C, functionalArea (truncated)...]
+2025-08-29 18:46:34 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-29 18:46:34 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/report", parameters={}
+2025-08-29 18:46:34 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.PlatformAnalysisController#getAllPlatformAnalysis(UserSession, String, String)
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.c.PlatformAnalysisController - Received request to fetch all platform analysis records - user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C, functionalSubArea: null, industryType: null
+2025-08-29 18:46:34 [http-nio-8080-exec-2] WARN  c.e.D.c.PlatformAnalysisController - Could not determine system type from functionalSubArea: null, industryType: null, defaulting to WMS
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.c.PlatformAnalysisController - Determined system type: WMS for user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.s.PlatformAnalysisService - Fetching all platform analysis records for user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C, systemType: WMS
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.s.PlatformAnalysisService - Using provided session - User: USER-0B90C55C, Session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.s.PlatformAnalysisService - Using system type: WMS for user: USER-0B90C55C, session: 1977234FF6B3EEA7EFBF3662F0B0188C
+2025-08-29 18:46:34 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        pa1_0.ID,
+        pa1_0.[Asset Name],
+        pa1_0.Category,
+        pa1_0.Gaps,
+        pa1_0.L2,
+        pa1_0.SessionID,
+        pa1_0.UserID 
+    from
+        vw_Fnl_FunctionScore_WMS pa1_0 
+    where
+        (
+            pa1_0.UserID=? 
+            or pa1_0.UserID is null
+        ) 
+        and (
+            pa1_0.SessionID=? 
+            or pa1_0.SessionID is null
+        )
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.s.PlatformAnalysisService - Successfully fetched 45 WMS records (after deduplication: 8) grouped into 2 categories
+2025-08-29 18:46:34 [http-nio-8080-exec-2] INFO  c.e.D.c.PlatformAnalysisController - Successfully returning 8 platform analysis records across 2 categories using WMS system
+2025-08-29 18:46:34 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 18:46:34 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [PlatformAnalysisResponse(userId=USER-0B90C55C, sessionId=1977234FF6B3EEA7EFBF3662F0B0188C, categorie (truncated)...]
+2025-08-29 18:46:34 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 18:46:34 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/Operations.afb8cfbb20d033f75cd9.jpg", parameters={}
+2025-08-29 18:46:34 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 18:46:34 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/planning-crop.06f3745b530ca71d1357.png", parameters={}
+2025-08-29 18:46:34 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 18:46:34 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 18:46:34 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 18:46:34 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/planning-crop.06f3745b530ca71d1357.png", parameters={}
+2025-08-29 18:46:34 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 18:46:34 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
