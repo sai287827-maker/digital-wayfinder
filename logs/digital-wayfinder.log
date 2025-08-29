@@ -1863,3 +1863,1365 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2025-08-29 13:02:47 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-08-29 13:02:48 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
 2025-08-29 13:02:48 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-08-29 13:20:02 [restartedMain] INFO  c.e.D.DigitalWayfinderApplication - Starting DigitalWayfinderApplication using Java 22.0.2 with PID 14096 (C:\Users\sai.k.nallapati\digital-wayfinder\target\classes started by sai.k.nallapati in C:\Users\sai.k.nallapati\digital-wayfinder)
+2025-08-29 13:20:02 [restartedMain] INFO  c.e.D.DigitalWayfinderApplication - No active profile set, falling back to 1 default profile: "default"
+2025-08-29 13:20:02 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-08-29 13:20:02 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-08-29 13:20:04 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-29 13:20:05 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 216 ms. Found 24 JPA repository interfaces.
+2025-08-29 13:20:08 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-08-29 13:20:08 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-08-29 13:20:08 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.20]
+2025-08-29 13:20:08 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-08-29 13:20:08 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 6292 ms
+2025-08-29 13:20:09 [restartedMain] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2025-08-29 13:20:09 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-29 13:20:09 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.4.Final
+2025-08-29 13:20:09 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-08-29 13:20:10 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-29 13:20:10 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-08-29 13:20:12 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 575a0904-3725-4622-9737-06414ab36922
+2025-08-29 13:20:12 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-08-29 13:20:12 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: SQLServerDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-08-29 13:20:14 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-29 13:20:14 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-29 13:20:15 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-08-29 13:20:17 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-29 13:20:17 [restartedMain] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2025-08-29 13:20:17 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 64 mappings in 'requestMappingHandlerMapping'
+2025-08-29 13:20:17 [restartedMain] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2025-08-29 13:20:17 [restartedMain] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 1 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-08-29 13:20:18 [restartedMain] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-08-29 13:20:18 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-08-29 13:20:18 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-08-29 13:20:19 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-08-29 13:20:19 [restartedMain] INFO  c.e.D.DigitalWayfinderApplication - Started DigitalWayfinderApplication in 17.416 seconds (process running for 18.657)
+2025-08-29 13:20:31 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-29 13:20:31 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@5ac9e440
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@350f55f5
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2025-08-29 13:20:31 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 5 ms
+2025-08-29 13:20:31 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/digital-wayfinder/tms-data-and-cloud", parameters={}
+2025-08-29 13:20:32 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:32 [http-nio-8080-exec-1] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:20:32 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:20:32 [http-nio-8080-exec-1] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource digital-wayfinder/tms-data-and-cloud.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource digital-wayfinder/tms-data-and-cloud.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:20:32 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/html', given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:20:32 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:20:32 [http-nio-8080-exec-1] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource digital-wayfinder/tms-data-and-cloud.]
+2025-08-29 13:20:32 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:20:32 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/favicon.ico", parameters={}
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/.well-known/appspecific/com.chrome.devtools.json", parameters={}
+2025-08-29 13:20:32 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:20:32 [http-nio-8080-exec-2] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource .well-known/appspecific/com.chrome.devtools.json.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:20:32 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:20:32 [http-nio-8080-exec-2] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.]
+2025-08-29 13:20:32 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/digital-wayfinder", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.WebController#redirect(String)
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.view.InternalResourceView - View name 'forward:', model {userSession=UserSession{userId='USER-49E7F07A', sessionId='6FB15EFECE5D6C7414B671052810F410'}, org.springframework.validation.BindingResult.userSession=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.view.InternalResourceView - Forwarding to [/]
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - "FORWARD" dispatch for GET "/", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.view.InternalResourceView - View name 'forward:', model {}
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.view.InternalResourceView - Forwarding to [index.html]
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - "FORWARD" dispatch for GET "/index.html", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "FORWARD" dispatch, status 200
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "FORWARD" dispatch, status 200
+2025-08-29 13:20:37 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/.well-known/appspecific/com.chrome.devtools.json", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/js/main.75fe6acc.js", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/css/main.2dadb2f2.css", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:37 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:37 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:20:37 [http-nio-8080-exec-4] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource .well-known/appspecific/com.chrome.devtools.json.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:20:37 [http-nio-8080-exec-4] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.]
+2025-08-29 13:20:37 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:20:37 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:37 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:37 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/css/main.2dadb2f2.css.map", parameters={}
+2025-08-29 13:20:37 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:38 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/js/main.75fe6acc.js.map", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/logo.2dfd99a2aed3f920a263.png", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/favicon.ico", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:38 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:38 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/manifest.json", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/project-info/get", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:20:38 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/logo192.png", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:20:38 [http-nio-8080-exec-3] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/project-info/get.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:20:38 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:20:38 [http-nio-8080-exec-3] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.]
+2025-08-29 13:20:38 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:20:38 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:38 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:20:38 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:38 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:39 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/Row8-Stocksy_txpaa54b8f6L2q300_OriginalDelivery_4364319.d22bd690ca4ef70ee85c.jpg", parameters={}
+2025-08-29 13:20:39 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:40 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.w.s.v.ContentNegotiatingViewResolver - Selected 'text/html' given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8, application/signed-exchange;v=b3;q=0.7]
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.w.s.view.InternalResourceView - View name 'forward:', model {}
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.w.s.view.InternalResourceView - Forwarding to [index.html]
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - "FORWARD" dispatch for GET "/index.html", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Exiting from "FORWARD" dispatch, status 200
+2025-08-29 13:20:41 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:41 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/js/main.75fe6acc.js", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/css/main.2dadb2f2.css", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/.well-known/appspecific/com.chrome.devtools.json", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:41 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:20:41 [http-nio-8080-exec-9] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource .well-known/appspecific/com.chrome.devtools.json.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:20:41 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:20:41 [http-nio-8080-exec-9] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource .well-known/appspecific/com.chrome.devtools.json.]
+2025-08-29 13:20:41 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:20:41 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:41 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/css/main.2dadb2f2.css.map", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:41 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:41 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/js/main.75fe6acc.js.map", parameters={}
+2025-08-29 13:20:41 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:42 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/logo.2dfd99a2aed3f920a263.png", parameters={}
+2025-08-29 13:20:42 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:42 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/favicon.ico", parameters={}
+2025-08-29 13:20:42 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:42 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/manifest.json", parameters={}
+2025-08-29 13:20:42 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/Row8-Stocksy_txpaa54b8f6L2q300_OriginalDelivery_4364319.d22bd690ca4ef70ee85c.jpg", parameters={}
+2025-08-29 13:20:42 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:42 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:42 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:42 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:42 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:42 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:42 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/logo192.png", parameters={}
+2025-08-29 13:20:42 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:42 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:42 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:44 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/Row8-Stocksy_txpaa54b8f6L2q300_OriginalDelivery_4364319.d22bd690ca4ef70ee85c.jpg", parameters={}
+2025-08-29 13:20:44 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:44 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/project-info/get", parameters={}
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:20:45 [http-nio-8080-exec-9] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/project-info/get.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:20:45 [http-nio-8080-exec-9] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.]
+2025-08-29 13:20:45 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:20:45 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:20:45 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:45 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:52 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/project-info/save", parameters={}
+2025-08-29 13:20:52 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.ProjectInfoController#saveProjectInfo(ProjectInfoRequest, UserSession)
+2025-08-29 13:20:52 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [ProjectInfoRequest(projectType=internal, requestID=1234, clientName=werwe, clientDescription=, proje (truncated)...]
+2025-08-29 13:20:52 [http-nio-8080-exec-2] INFO  c.e.D.c.ProjectInfoController - Received request to save project info: 1234 for user: USER-49E7F07A in session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:20:53 [http-nio-8080-exec-2] INFO  c.e.D.service.ProjectInfoService - Processing project info for request ID: 1234 by user: USER-49E7F07A in session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:20:53 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        pt1_0.id,
+        pt1_0.ClientDescription,
+        pt1_0.ClientName,
+        pt1_0.CreatedDate,
+        pt1_0.ProjectScope,
+        pt1_0.ProjectType,
+        pt1_0.RequestID,
+        pt1_0.SessionID,
+        pt1_0.UserID 
+    from
+        ProjectType pt1_0 
+    where
+        pt1_0.UserID=? 
+        and pt1_0.SessionID=?
+2025-08-29 13:20:53 [http-nio-8080-exec-2] INFO  c.e.D.service.ProjectInfoService - Updating existing project with ID: 179
+2025-08-29 13:20:53 [http-nio-8080-exec-2] INFO  c.e.D.service.ProjectInfoService - Project information updated successfully with ID: 179
+2025-08-29 13:20:53 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    update
+        ProjectType 
+    set
+        ClientDescription=?,
+        ClientName=?,
+        CreatedDate=?,
+        ProjectScope=?,
+        ProjectType=?,
+        RequestID=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 13:20:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:20:54 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ProjectInfoResponse(id=179, userID=USER-49E7F07A, projectType=internal, requestID=1234, clientName=w (truncated)...]
+2025-08-29 13:20:54 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:54 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:20:54 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:54 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-29 13:20:54 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:54 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:54 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-29 13:20:54 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:54 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:54 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:54 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-29 13:20:54 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:54 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:55 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-29 13:20:55 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:55 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:56 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:20:56 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:20:56 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:56 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:20:56 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:20:56 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:56 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:56 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:56 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:56 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:56 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:57 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:20:57 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:57 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:57 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:20:57 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:57 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:59 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:59 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:20:59 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/Blueyonder.58d4f4950656f6f8b79e.png", parameters={}
+2025-08-29 13:20:59 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/SAP.85bae5998550b4e2f11a.jpg", parameters={}
+2025-08-29 13:20:59 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:59 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:59 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:20:59 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:59 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:20:59 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:00 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:21:00 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:21:01 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:02 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=Transportation%20Management%20System", parameters={masked}
+2025-08-29 13:21:02 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getDataCloudQuestions(String, UserSession)
+2025-08-29 13:21:02 [http-nio-8080-exec-4] INFO  c.e.D.c.QuestionnaireController - Received request for Data & Cloud questions - functionalSubArea: Transportation Management System, user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:02 [http-nio-8080-exec-4] INFO  c.e.D.service.QuestionnaireService - Fetching questions for functionalSubArea: Transportation Management System, category: Data & Cloud, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:02 [http-nio-8080-exec-4] INFO  c.e.D.service.QuestionnaireService - Fetching questions from TMS table for category: Data & Cloud
+2025-08-29 13:21:02 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        tq1_0.category,
+        tq1_0.question,
+        tq1_0.[Answer Type] 
+    from
+        TMS_Questionnaire tq1_0 
+    where
+        tq1_0.category=?
+2025-08-29 13:21:02 [http-nio-8080-exec-4] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 4 TMS questions for category: Data & Cloud
+2025-08-29 13:21:02 [http-nio-8080-exec-4] INFO  c.e.D.c.QuestionnaireController - Successfully returning questions for functionalSubArea: Transportation Management System
+2025-08-29 13:21:02 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:21:02 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [QuestionnaireResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalSu (truncated)...]
+2025-08-29 13:21:02 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:07 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/digital-wayfinder/questionnaire/data-cloud/save-answers", parameters={}
+2025-08-29 13:21:07 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#saveDataCloudAnswers(SaveAnswersRequest, UserSession)
+2025-08-29 13:21:07 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SaveAnswersRequest(functionalArea=Supply Chain Fulfillment, functionalSubArea=Transportation Managem (truncated)...]
+2025-08-29 13:21:07 [http-nio-8080-exec-7] INFO  c.e.D.c.QuestionnaireController - Received request to save Data & Cloud answers - user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:07 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Saving answers for category: Data & Cloud, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:07 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-49E7F07A, Session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:07 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:21:08 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        DWQuestions 
+    set
+        Category=?,
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        Question=?,
+        ResponseType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 13:21:09 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:21:09 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        DWQuestions 
+    set
+        Category=?,
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        Question=?,
+        ResponseType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 13:21:10 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:21:11 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:21:11 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Successfully saved 4 answers for category: Data & Cloud with session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:11 [http-nio-8080-exec-7] INFO  c.e.D.c.QuestionnaireController - Successfully saved 4 Data & Cloud answers
+2025-08-29 13:21:11 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:21:11 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [SaveAnswersResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalArea (truncated)...]
+2025-08-29 13:21:11 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-29 13:21:11 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=Warehouse%20Management%20System", parameters={masked}
+2025-08-29 13:21:11 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getOperationalInnovationsQuestions(String, UserSession)
+2025-08-29 13:21:11 [http-nio-8080-exec-8] INFO  c.e.D.c.QuestionnaireController - Received request for Operational Innovations questions - functionalSubArea: Warehouse Management System, user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:11 [http-nio-8080-exec-8] INFO  c.e.D.service.QuestionnaireService - Fetching questions for functionalSubArea: Warehouse Management System, category: Operational Innovations, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:11 [http-nio-8080-exec-8] INFO  c.e.D.service.QuestionnaireService - Fetching questions from WMS table for category: Operational Innovations
+2025-08-29 13:21:11 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        wq1_0.category,
+        wq1_0.question,
+        wq1_0.[Answer Type] 
+    from
+        WMS_Questionnaire wq1_0 
+    where
+        wq1_0.category=?
+2025-08-29 13:21:12 [http-nio-8080-exec-8] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 6 WMS questions for category: Operational Innovations
+2025-08-29 13:21:12 [http-nio-8080-exec-8] INFO  c.e.D.c.QuestionnaireController - Successfully returning questions for functionalSubArea: Warehouse Management System
+2025-08-29 13:21:12 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:21:12 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [QuestionnaireResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalSu (truncated)...]
+2025-08-29 13:21:12 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:12 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=Warehouse%20Management%20System", parameters={masked}
+2025-08-29 13:21:12 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getOperationalInnovationsAnswers(UserSession)
+2025-08-29 13:21:12 [http-nio-8080-exec-2] INFO  c.e.D.c.QuestionnaireController - Received request for Operational Innovations answers - user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-2] INFO  c.e.D.service.QuestionnaireService - Fetching answers for category: Operational Innovations, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-2] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-49E7F07A, Session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.Category=? 
+        and (
+            d1_0.UserID=? 
+            or d1_0.UserID is null
+        ) 
+        and (
+            d1_0.SessionID=? 
+            or d1_0.SessionID is null
+        )
+2025-08-29 13:21:12 [http-nio-8080-exec-2] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 6 saved answers for category: Operational Innovations with session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-2] INFO  c.e.D.c.QuestionnaireController - Successfully returning 6 Operational Innovations answers
+2025-08-29 13:21:12 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:21:12 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [GetAnswersResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalSubAr (truncated)...]
+2025-08-29 13:21:12 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:12 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=Transportation%20Management%20System", parameters={masked}
+2025-08-29 13:21:12 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getDataCloudAnswers(UserSession)
+2025-08-29 13:21:12 [http-nio-8080-exec-1] INFO  c.e.D.c.QuestionnaireController - Received request for Data & Cloud answers - user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-1] INFO  c.e.D.service.QuestionnaireService - Fetching answers for category: Data & Cloud, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-1] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-49E7F07A, Session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.Category=? 
+        and (
+            d1_0.UserID=? 
+            or d1_0.UserID is null
+        ) 
+        and (
+            d1_0.SessionID=? 
+            or d1_0.SessionID is null
+        )
+2025-08-29 13:21:12 [http-nio-8080-exec-1] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 4 saved answers for category: Data & Cloud with session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:21:12 [http-nio-8080-exec-1] INFO  c.e.D.c.QuestionnaireController - Successfully returning 4 Data & Cloud answers
+2025-08-29 13:21:12 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:21:12 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [GetAnswersResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalSubAr (truncated)...]
+2025-08-29 13:21:12 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:17 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-29 13:21:17 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-29 13:21:17 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:21:17 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:21:17 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:21:17 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:21:17 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:21:17 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:21:17 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:21:17 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:21:17 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:17 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:17 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:17 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:21:17 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:22:54 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/digital-wayfinder/questionnaire/operational-innovations/save-answers", parameters={}
+2025-08-29 13:22:54 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#saveOperationalInnovationsAnswers(SaveAnswersRequest, UserSession)
+2025-08-29 13:22:54 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SaveAnswersRequest(functionalArea=Supply Chain Fulfillment, functionalSubArea=Warehouse Management S (truncated)...]
+2025-08-29 13:22:54 [http-nio-8080-exec-4] INFO  c.e.D.c.QuestionnaireController - Received request to save Operational Innovations answers - user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:22:54 [http-nio-8080-exec-4] INFO  c.e.D.service.QuestionnaireService - Saving answers for category: Operational Innovations, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:22:54 [http-nio-8080-exec-4] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-49E7F07A, Session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:22:54 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:22:55 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:22:56 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:22:57 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:22:58 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:22:58 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.UserID=? 
+        and d1_0.SessionID=? 
+        and d1_0.Category=? 
+        and d1_0.Question=?
+2025-08-29 13:22:59 [http-nio-8080-exec-4] INFO  c.e.D.service.QuestionnaireService - Successfully saved 6 answers for category: Operational Innovations with session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:22:59 [http-nio-8080-exec-4] INFO  c.e.D.c.QuestionnaireController - Successfully saved 6 Operational Innovations answers
+2025-08-29 13:22:59 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:22:59 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [SaveAnswersResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalArea (truncated)...]
+2025-08-29 13:22:59 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-29 13:22:59 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=Transportation%20Management%20System", parameters={masked}
+2025-08-29 13:22:59 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getVisibilityProactiveQuestions(String, UserSession)
+2025-08-29 13:22:59 [http-nio-8080-exec-7] INFO  c.e.D.c.QuestionnaireController - Received request for Visibility & Proactive Planning questions - functionalSubArea: Transportation Management System, user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:22:59 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Fetching questions for functionalSubArea: Transportation Management System, category: Visibility & Proactive Planning, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:22:59 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Fetching questions from TMS table for category: Visibility & Proactive Planning
+2025-08-29 13:22:59 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        tq1_0.category,
+        tq1_0.question,
+        tq1_0.[Answer Type] 
+    from
+        TMS_Questionnaire tq1_0 
+    where
+        tq1_0.category=?
+2025-08-29 13:23:00 [http-nio-8080-exec-7] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 0 TMS questions for category: Visibility & Proactive Planning
+2025-08-29 13:23:00 [http-nio-8080-exec-7] INFO  c.e.D.c.QuestionnaireController - Successfully returning questions for functionalSubArea: Transportation Management System
+2025-08-29 13:23:00 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:23:00 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [QuestionnaireResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalSu (truncated)...]
+2025-08-29 13:23:00 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:23:00 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=Transportation%20Management%20System", parameters={masked}
+2025-08-29 13:23:00 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.QuestionnaireController#getVisibilityProactiveAnswers(UserSession)
+2025-08-29 13:23:00 [http-nio-8080-exec-2] INFO  c.e.D.c.QuestionnaireController - Received request for Visibility & Proactive Planning answers - user: USER-49E7F07A, session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:23:00 [http-nio-8080-exec-2] INFO  c.e.D.service.QuestionnaireService - Fetching answers for category: Visibility & Proactive Planning, userId: USER-49E7F07A, sessionId: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:23:00 [http-nio-8080-exec-2] INFO  c.e.D.service.QuestionnaireService - Using provided session - User: USER-49E7F07A, Session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:23:00 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        d1_0.id,
+        d1_0.Category,
+        d1_0.FunctionalArea,
+        d1_0.FunctionalSubArea,
+        d1_0.Question,
+        d1_0.ResponseType,
+        d1_0.SessionID,
+        d1_0.UserID 
+    from
+        DWQuestions d1_0 
+    where
+        d1_0.Category=? 
+        and (
+            d1_0.UserID=? 
+            or d1_0.UserID is null
+        ) 
+        and (
+            d1_0.SessionID=? 
+            or d1_0.SessionID is null
+        )
+2025-08-29 13:23:00 [http-nio-8080-exec-2] INFO  c.e.D.service.QuestionnaireService - Successfully fetched 0 saved answers for category: Visibility & Proactive Planning with session: 6FB15EFECE5D6C7414B671052810F410
+2025-08-29 13:23:00 [http-nio-8080-exec-2] INFO  c.e.D.c.QuestionnaireController - Successfully returning 0 Visibility & Proactive Planning answers
+2025-08-29 13:23:00 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:23:00 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [GetAnswersResponse(userId=USER-49E7F07A, sessionId=6FB15EFECE5D6C7414B671052810F410, functionalSubAr (truncated)...]
+2025-08-29 13:23:00 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/project-info/get", parameters={}
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:40:29 [http-nio-8080-exec-1] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/project-info/get.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:40:29 [http-nio-8080-exec-1] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/project-info/get.]
+2025-08-29 13:40:29 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:40:29 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:40:29 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:29 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:37 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/project-info/save", parameters={}
+2025-08-29 13:40:37 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.ProjectInfoController#saveProjectInfo(ProjectInfoRequest, UserSession)
+2025-08-29 13:40:37 [http-nio-8080-exec-10] INFO  c.e.D.config.SessionAdvice - Generated anonymous user ID: USER-B22AF193 for session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:37 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [ProjectInfoRequest(projectType=internal, requestID=1234, clientName=rqwer, clientDescription=, proje (truncated)...]
+2025-08-29 13:40:37 [http-nio-8080-exec-10] INFO  c.e.D.c.ProjectInfoController - Received request to save project info: 1234 for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:38 [http-nio-8080-exec-10] INFO  c.e.D.service.ProjectInfoService - Processing project info for request ID: 1234 by user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:38 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        pt1_0.id,
+        pt1_0.ClientDescription,
+        pt1_0.ClientName,
+        pt1_0.CreatedDate,
+        pt1_0.ProjectScope,
+        pt1_0.ProjectType,
+        pt1_0.RequestID,
+        pt1_0.SessionID,
+        pt1_0.UserID 
+    from
+        ProjectType pt1_0 
+    where
+        pt1_0.UserID=? 
+        and pt1_0.SessionID=?
+2025-08-29 13:40:38 [http-nio-8080-exec-10] INFO  c.e.D.service.ProjectInfoService - Creating new project record
+2025-08-29 13:40:38 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        ProjectType
+        (ClientDescription, ClientName, CreatedDate, ProjectScope, ProjectType, RequestID, SessionID, UserID) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2025-08-29 13:40:38 [http-nio-8080-exec-10] INFO  c.e.D.service.ProjectInfoService - Project information saved successfully with ID: 180
+2025-08-29 13:40:39 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:40:39 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ProjectInfoResponse(id=180, userID=USER-B22AF193, projectType=internal, requestID=1234, clientName=r (truncated)...]
+2025-08-29 13:40:39 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2025-08-29 13:40:39 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:40:39 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:39 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-29 13:40:39 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-29 13:40:39 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:39 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-area/get", parameters={}
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:39 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.w.s.r.ResourceHttpRequestHandler - Resource not found
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.example.DigitalWayfinder.exception.GlobalExceptionHandler#handleGenericException(Exception)
+2025-08-29 13:40:39 [http-nio-8080-exec-4] ERROR c.e.D.e.GlobalExceptionHandler - Unexpected exception occurred: No static resource api/decision-tree/functional-area/get.
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/functional-area/get.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:206)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:175)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:150)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1736)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1570)
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'text/plain', given [*/*] and supported [text/plain, */*, application/json, application/*+json]
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing ["An unexpected error occurred"]
+2025-08-29 13:40:39 [http-nio-8080-exec-4] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/decision-tree/functional-area/get.]
+2025-08-29 13:40:39 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2025-08-29 13:40:39 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:39 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:39 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-fulfillment.6dc3aaa89826c6c2506e.png", parameters={}
+2025-08-29 13:40:39 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:39 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:39 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/supply-chain-planning.e00cda5f9f556d0f2f7b.png", parameters={}
+2025-08-29 13:40:39 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:39 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:42 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/functional-area/save", parameters={}
+2025-08-29 13:40:42 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalAreaDTController#saveFunctionalArea(FunctionalAreaRequest, UserSession)
+2025-08-29 13:40:42 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [FunctionalAreaRequest(functionalArea=supply-chain-planning)]
+2025-08-29 13:40:42 [http-nio-8080-exec-8] INFO  c.e.D.c.FunctionalAreaDTController - Saving functional area 'supply-chain-planning' for userId: USER-B22AF193, sessionId: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:42 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-29 13:40:43 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        UserFunctionalArea
+        (FunctionalArea, FunctionalSubArea, IndustryType, SessionID, UserID) 
+    values
+        (?, ?, ?, ?, ?)
+2025-08-29 13:40:43 [http-nio-8080-exec-8] INFO  c.e.D.s.FunctionalAreaDTService - Saved new functionalArea for userId: USER-B22AF193, sessionId: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:43 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:40:43 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [FunctionalAreaResponse(id=125, userId=USER-B22AF193, sessionId=28B2DF3D0E4B4C97431DEEA041EA87DC, fun (truncated)...]
+2025-08-29 13:40:43 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:43 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:40:43 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:40:43 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:43 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:40:43 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:40:43 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:43 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:43 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:43 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:43 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:43 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:44 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:40:44 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:44 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:40:44 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:44 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:44 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:44 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:45 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:40:45 [http-nio-8080-exec-9] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:40:45 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:47 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/industry-type/supply-chain-planning/save", parameters={}
+2025-08-29 13:40:47 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.IndustryTypeDTController#saveIndustryType(IndustryTypeRequestDTO, UserSession)
+2025-08-29 13:40:47 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [IndustryTypeRequestDTO(industryType=Industry Agnostic)]
+2025-08-29 13:40:47 [http-nio-8080-exec-7] INFO  c.e.D.c.IndustryTypeDTController - Received request to save industry type: Industry Agnostic for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:47 [http-nio-8080-exec-7] INFO  c.e.D.service.IndustryTypeDTService - Processing industry type: Industry Agnostic for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:47 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-29 13:40:48 [http-nio-8080-exec-7] INFO  c.e.D.service.IndustryTypeDTService - Updating industry type for existing functional area: supply-chain-planning for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:40:48 [http-nio-8080-exec-7] INFO  c.e.D.service.IndustryTypeDTService - Updating existing functional area ID: 125 with industry type: Industry Agnostic
+2025-08-29 13:40:48 [http-nio-8080-exec-7] INFO  c.e.D.service.IndustryTypeDTService - Setting industry type for the first time for functional area ID: 125
+2025-08-29 13:40:48 [http-nio-8080-exec-7] INFO  c.e.D.service.IndustryTypeDTService - Successfully updated functional area ID: 125 with industry type: Industry Agnostic
+2025-08-29 13:40:48 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        UserFunctionalArea 
+    set
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        IndustryType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 13:40:48 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:40:48 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [IndustryTypeResponseDTO(id=125, userId=USER-B22AF193, sessionId=28B2DF3D0E4B4C97431DEEA041EA87DC, fu (truncated)...]
+2025-08-29 13:40:48 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:40:48 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/ind-agnoustic/all", parameters={}
+2025-08-29 13:40:48 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalScopeController#getAllFunctionalScopesIndAgnoustic()
+2025-08-29 13:40:48 [http-nio-8080-exec-2] INFO  c.e.D.c.FunctionalScopeController - Received request to fetch all functional scopes
+2025-08-29 13:40:48 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - Fetching all functional scope levels
+2025-08-29 13:40:48 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    SELECT
+        L1,
+        L2,
+        L3,
+        L4 
+    FROM
+        Functional
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - Successfully fetched 557 functional scope records
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - IndAgnoustic Record 0: Length=4, Content=[Forecast Analytics, Define Demand Segment & Approach , Define Segmentation Approach, Ability to provide a built-in segmentation framework for demand and supply variability, supporting forecast stratification and inventory classification (ABC, XYZ, VED, FSN).]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - IndAgnoustic Record 1: Length=4, Content=[Forecast Analytics, Define Demand Segment & Approach , Gather Segmentation Based Input Data, Ability to segment data and identify key factors for optimizing demand planning policies.]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - IndAgnoustic Record 2: Length=4, Content=[Forecast Analytics, Define Demand Segment & Approach , Conduct Segmentation Analysis & Planning Approach, Ability to customize segmentation definitions and weighting factors based on demand variability, profitability, sales volume, and product relevance.]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - IndAgnoustic Record 3: Length=4, Content=[Forecast Analytics, Define Demand Segment & Approach , Finalize Outcomes With Commercial Teams, Ability to share the  Segmentation Report with other key stakeholders]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.service.FunctionalScopeService - IndAgnoustic Record 4: Length=4, Content=[Forecast Analytics, Define Demand Segment & Approach , Implement Segmentation Approach, Ability to interface Segmentation details from external system and implement them.
+]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] INFO  c.e.D.c.FunctionalScopeController - Successfully returning 557 functional scope records
+2025-08-29 13:40:49 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[FunctionalScopeDto(l1=Forecast Analytics, l2=Define Demand Segment & Approach , l3=Define Segmentat (truncated)...]
+2025-08-29 13:40:49 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:03 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:41:03 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:03 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:41:03 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:03 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:41:03 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:03 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:41:03 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:03 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:03 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:03 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:03 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:41:03 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:03 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:41:03 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:03 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:03 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:04 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:04 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:41:04 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:05 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:06 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/industry-type/supply-chain-planning/save", parameters={}
+2025-08-29 13:41:06 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.IndustryTypeDTController#saveIndustryType(IndustryTypeRequestDTO, UserSession)
+2025-08-29 13:41:06 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [IndustryTypeRequestDTO(industryType=Retail Industry Specific)]
+2025-08-29 13:41:06 [http-nio-8080-exec-9] INFO  c.e.D.c.IndustryTypeDTController - Received request to save industry type: Retail Industry Specific for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:41:07 [http-nio-8080-exec-9] INFO  c.e.D.service.IndustryTypeDTService - Processing industry type: Retail Industry Specific for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:41:07 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-29 13:41:07 [http-nio-8080-exec-9] INFO  c.e.D.service.IndustryTypeDTService - Updating industry type for existing functional area: supply-chain-planning for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:41:07 [http-nio-8080-exec-9] INFO  c.e.D.service.IndustryTypeDTService - Updating existing functional area ID: 125 with industry type: Retail Industry Specific
+2025-08-29 13:41:07 [http-nio-8080-exec-9] INFO  c.e.D.service.IndustryTypeDTService - Updating existing industry type from 'Industry Agnostic' to 'Retail Industry Specific' for functional area ID: 125
+2025-08-29 13:41:07 [http-nio-8080-exec-9] INFO  c.e.D.service.IndustryTypeDTService - Successfully updated functional area ID: 125 with industry type: Retail Industry Specific
+2025-08-29 13:41:07 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    update
+        UserFunctionalArea 
+    set
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        IndustryType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 13:41:08 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:41:08 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [IndustryTypeResponseDTO(id=125, userId=USER-B22AF193, sessionId=28B2DF3D0E4B4C97431DEEA041EA87DC, fu (truncated)...]
+2025-08-29 13:41:08 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:08 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/retail/all", parameters={}
+2025-08-29 13:41:08 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalScopeController#getAllFunctionalScopesRetail()
+2025-08-29 13:41:08 [http-nio-8080-exec-7] INFO  c.e.D.c.FunctionalScopeController - Received request to fetch all functional scopes
+2025-08-29 13:41:08 [http-nio-8080-exec-7] INFO  c.e.D.service.FunctionalScopeService - Fetching all functional scope levels
+2025-08-29 13:41:08 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    SELECT
+        L1,
+        L2,
+        L3,
+        L4,
+        L5 
+    FROM
+        Retail
+2025-08-29 13:41:09 [http-nio-8080-exec-7] INFO  c.e.D.service.FunctionalScopeService - Successfully fetched 508 functional scope records
+2025-08-29 13:41:09 [http-nio-8080-exec-7] INFO  c.e.D.c.FunctionalScopeController - Successfully returning 508 functional scope records
+2025-08-29 13:41:09 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:41:09 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[FunctionalScopeDto(l1=Retail-Specific Analytics & AI/ML, l2=Define Demand Segment & Approach , l3=C (truncated)...]
+2025-08-29 13:41:09 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:21 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/dashboard.fc64719693ae8c17e7c5.png", parameters={}
+2025-08-29 13:41:21 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:41:21 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:41:21 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:41:21 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:21 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:21 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:21 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:21 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:21 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:21 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:21 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/order-management.f7bd9a2446beb26e5bc1.png", parameters={}
+2025-08-29 13:41:21 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:21 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:21 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/warehouse-management.0fed6bc421ff6a0d0bb2.png", parameters={}
+2025-08-29 13:41:21 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:22 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:22 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:23 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/static/media/transportation-management.441e7de72d119d4043ce.png", parameters={}
+2025-08-29 13:41:23 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]
+2025-08-29 13:41:23 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:25 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/decision-tree/industry-type/supply-chain-planning/save", parameters={}
+2025-08-29 13:41:25 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.IndustryTypeDTController#saveIndustryType(IndustryTypeRequestDTO, UserSession)
+2025-08-29 13:41:25 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [IndustryTypeRequestDTO(industryType=Consumer Goods Industry Specific)]
+2025-08-29 13:41:25 [http-nio-8080-exec-10] INFO  c.e.D.c.IndustryTypeDTController - Received request to save industry type: Consumer Goods Industry Specific for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:41:25 [http-nio-8080-exec-10] INFO  c.e.D.service.IndustryTypeDTService - Processing industry type: Consumer Goods Industry Specific for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:41:25 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        fad1_0.id,
+        fad1_0.FunctionalArea,
+        fad1_0.FunctionalSubArea,
+        fad1_0.IndustryType,
+        fad1_0.SessionID,
+        fad1_0.UserID 
+    from
+        UserFunctionalArea fad1_0 
+    where
+        fad1_0.UserID=? 
+        and fad1_0.SessionID=?
+2025-08-29 13:41:25 [http-nio-8080-exec-10] INFO  c.e.D.service.IndustryTypeDTService - Updating industry type for existing functional area: supply-chain-planning for user: USER-B22AF193 in session: 28B2DF3D0E4B4C97431DEEA041EA87DC
+2025-08-29 13:41:25 [http-nio-8080-exec-10] INFO  c.e.D.service.IndustryTypeDTService - Updating existing functional area ID: 125 with industry type: Consumer Goods Industry Specific
+2025-08-29 13:41:25 [http-nio-8080-exec-10] INFO  c.e.D.service.IndustryTypeDTService - Updating existing industry type from 'Retail Industry Specific' to 'Consumer Goods Industry Specific' for functional area ID: 125
+2025-08-29 13:41:25 [http-nio-8080-exec-10] INFO  c.e.D.service.IndustryTypeDTService - Successfully updated functional area ID: 125 with industry type: Consumer Goods Industry Specific
+2025-08-29 13:41:25 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    update
+        UserFunctionalArea 
+    set
+        FunctionalArea=?,
+        FunctionalSubArea=?,
+        IndustryType=?,
+        SessionID=?,
+        UserID=? 
+    where
+        id=?
+2025-08-29 13:41:26 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:41:26 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [IndustryTypeResponseDTO(id=125, userId=USER-B22AF193, sessionId=28B2DF3D0E4B4C97431DEEA041EA87DC, fu (truncated)...]
+2025-08-29 13:41:26 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:41:26 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/decision-tree/functional-scope/cgs/all", parameters={}
+2025-08-29 13:41:26 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.example.DigitalWayfinder.controller.FunctionalScopeController#getAllFunctionalScopesCGS()
+2025-08-29 13:41:26 [http-nio-8080-exec-9] INFO  c.e.D.c.FunctionalScopeController - Received request to fetch all functional scopes
+2025-08-29 13:41:26 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Fetching all functional scope levels
+2025-08-29 13:41:26 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    SELECT
+        L1,
+        L2,
+        L3,
+        L4,
+        L5 
+    FROM
+        [CG&S]
+2025-08-29 13:41:27 [http-nio-8080-exec-9] INFO  c.e.D.service.FunctionalScopeService - Successfully fetched 793 functional scope records
+2025-08-29 13:41:27 [http-nio-8080-exec-9] INFO  c.e.D.c.FunctionalScopeController - Successfully returning 793 functional scope records
+2025-08-29 13:41:27 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2025-08-29 13:41:27 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [[FunctionalScopeDto(l1=Analytics, l2=Product & Service Analytics, l3=Marketing Analytics, l4=Ability (truncated)...]
+2025-08-29 13:41:27 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2025-08-29 13:47:16 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-29 13:47:16 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-08-29 13:47:16 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
