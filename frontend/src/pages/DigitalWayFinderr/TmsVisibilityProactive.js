@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './VisibilityProactive.module.css';
 import TmsAgenticAI from './TmsAgenticAI';
-import TmsOperational from './TmsOperationalOperational';
+import TmsOperational from './TmsOperational';
 import { apiGet, apiPost } from '../../api';
 
 const steps = [

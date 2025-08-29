@@ -13,9 +13,11 @@ import com.example.DigitalWayfinder.entity.DWQuestions;
 import com.example.DigitalWayfinder.entity.ProjectType;
 import com.example.DigitalWayfinder.entity.TmsQuestions;
 import com.example.DigitalWayfinder.entity.WmsQuestions;
+import com.example.DigitalWayfinder.entity.PlanningQuestions;
 import com.example.DigitalWayfinder.repository.DWQuestionsRepository;
 import com.example.DigitalWayfinder.repository.ProjectTypeRepository;
 import com.example.DigitalWayfinder.repository.TmsQuestionsRepository;
+import com.example.DigitalWayfinder.repository.PlanningQuestionsRepository;
 import com.example.DigitalWayfinder.repository.WmsQuestionsWithTypeRepository;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ public class QuestionnaireService {
     
     private final WmsQuestionsWithTypeRepository wmsQuestionsRepository;
     private final TmsQuestionsRepository tmsQuestionsRepository;
+    private final PlanningQuestionsRepository planningQuestionsRepository;
     private final DWQuestionsRepository dwQuestionsRepository;
     private final ProjectTypeRepository projectTypeRepository;
     
@@ -38,6 +41,11 @@ public class QuestionnaireService {
     private static final String CATEGORY_OPERATIONAL = "Operational Innovations";
     private static final String CATEGORY_VISIBILITY = "Visibility & Proactive Planning";
     private static final String CATEGORY_AGENTIC_AI = "Agentic AI";
+    
+    // Industry Type constants
+    private static final String INDUSTRY_AGNOSTIC = "Industry Agnostic";
+    private static final String RETAIL_INDUSTRY = "Retail Industry Specific";
+    private static final String CONSUMER_GOODS_INDUSTRY = "Consumer Goods Industry Specific";
     
     // =================== GET QUESTIONS METHODS ===================
     
@@ -79,9 +87,19 @@ public class QuestionnaireService {
                 
                 log.info("Successfully fetched {} TMS questions for category: {}", questionItems.size(), category);
                 
+            } else if (isIndustryType(normalizedArea)) {
+                log.info("Fetching questions from Planning table for industry type: {} and category: {}", functionalSubArea, category);
+                List<PlanningQuestions> planningQuestions = planningQuestionsRepository.findByCategory(category);
+                
+                questionItems = planningQuestions.stream()
+                        .map(this::convertPlanningToQuestionItem)
+                        .collect(Collectors.toList());
+                
+                log.info("Successfully fetched {} Planning questions for industry type: {} and category: {}", questionItems.size(), functionalSubArea, category);
+                
             } else {
-                log.warn("Unknown functional sub area: {}", functionalSubArea);
-                throw new IllegalArgumentException("Invalid functional sub area. Please specify 'Warehouse Management System' or 'Transfer Management System'");
+                log.warn("Unknown functional sub area or industry type: {}", functionalSubArea);
+                throw new IllegalArgumentException("Invalid functional sub area or industry type. Please specify 'Warehouse Management System', 'Transfer Management System', 'Industry Agnostic', 'Retail Industry Specific', or 'Consumer Goods Industry Specific'");
             }
             
             response.setQuestions(questionItems);
@@ -253,97 +271,126 @@ public class QuestionnaireService {
      * Gets the latest session from ProjectType table using createdDate.
      */
     private UserSessionInfo resolveUserSession(String userId, String sessionId) {
-    // If both userId and sessionId are provided, use them directly
-    if (isValidString(userId) && isValidString(sessionId)) {
-        log.info("Using provided session - User: {}, Session: {}", userId, sessionId);
-        return new UserSessionInfo(userId, sessionId, true);
-    }
-    
-    // Try to get the latest session from ProjectType table using createdDate
-    try {
-        Optional<ProjectType> latestProject = projectTypeRepository.findLatestSession();
-        
-        if (latestProject.isPresent()) {
-            ProjectType project = latestProject.get();
-            String resolvedUserId = project.getUserID();
-            String resolvedSessionId = project.getSessionID();
-            
-            log.info("Resolved session from latest project (createdDate: {}) - User: {}, Session: {}", 
-                project.getCreatedDate(), resolvedUserId, resolvedSessionId);
-            
-            return new UserSessionInfo(resolvedUserId, resolvedSessionId, true);
-        } else {
-            log.warn("No project records found to resolve session, will use null values");
-            return new UserSessionInfo(null, null, true);
+        // If both userId and sessionId are provided, use them directly
+        if (isValidString(userId) && isValidString(sessionId)) {
+            log.info("Using provided session - User: {}, Session: {}", userId, sessionId);
+            return new UserSessionInfo(userId, sessionId, true);
         }
         
-    } catch (Exception e) {
-        log.error("Error resolving latest session from ProjectType table", e);
-        return new UserSessionInfo(null, null, true);
+        // Try to get the latest session from ProjectType table using createdDate
+        try {
+            Optional<ProjectType> latestProject = projectTypeRepository.findLatestSession();
+            
+            if (latestProject.isPresent()) {
+                ProjectType project = latestProject.get();
+                String resolvedUserId = project.getUserID();
+                String resolvedSessionId = project.getSessionID();
+                
+                log.info("Resolved session from latest project (createdDate: {}) - User: {}, Session: {}", 
+                    project.getCreatedDate(), resolvedUserId, resolvedSessionId);
+                
+                return new UserSessionInfo(resolvedUserId, resolvedSessionId, true);
+            } else {
+                log.warn("No project records found to resolve session, will use null values");
+                return new UserSessionInfo(null, null, true);
+            }
+            
+        } catch (Exception e) {
+            log.error("Error resolving latest session from ProjectType table", e);
+            return new UserSessionInfo(null, null, true);
+        }
     }
-}
 
-private boolean isValidString(String str) {
-    return str != null && !str.trim().isEmpty();
-}
-
-private String normalizeQuery(String query) {
-    if (query == null) {
-        return "";
+    private boolean isValidString(String str) {
+        return str != null && !str.trim().isEmpty();
     }
-    return query.toLowerCase().trim();
-}
 
-private String deriveFunctionalArea(String functionalSubArea) {
-    String normalized = normalizeQuery(functionalSubArea);
-    
-    if (normalized.contains("warehouse")) {
+    private String normalizeQuery(String query) {
+        if (query == null) {
+            return "";
+        }
+        return query.toLowerCase().trim();
+    }
+
+    /**
+     * Checks if the given string is one of the industry types
+     */
+    private boolean isIndustryType(String value) {
+        if (value == null) {
+            return false;
+        }
+        
+        String normalized = value.toLowerCase();
+        return normalized.contains("industry agnostic") || 
+               normalized.contains("retail industry specific") || 
+               normalized.contains("consumer goods industry specific") ||
+               normalized.equals("industry agnostic") ||
+               normalized.equals("retail industry specific") ||
+               normalized.equals("consumer goods industry specific");
+    }
+
+    private String deriveFunctionalArea(String functionalSubArea) {
+        String normalized = normalizeQuery(functionalSubArea);
+        
+        if (normalized.contains("warehouse")) {
+            return "WMS";
+        } else if (normalized.contains("transfer") || normalized.contains("transportation")) {
+            return "TMS";
+        } else if (normalized.contains("order")) {
+            return "OMS";
+        } else if (isIndustryType(normalized)) {
+            return "PLANNING";
+        }
+        
+        // Default fallback
         return "WMS";
-    } else if (normalized.contains("transfer") || normalized.contains("transportation")) {
-        return "TMS";
-    } else if (normalized.contains("order")) {
-        return "OMS";
     }
-    
-    // Default fallback
-    return "WMS";
-}
 
-private QuestionnaireResponse.QuestionItem convertWmsToQuestionItem(WmsQuestions wms) {
-    return QuestionnaireResponse.QuestionItem.builder()
-            .question(wms.getQuestion())
-            .answerType(wms.getAnswer())
-            .build();
-}
-
-private QuestionnaireResponse.QuestionItem convertTmsToQuestionItem(TmsQuestions tms) {
-    return QuestionnaireResponse.QuestionItem.builder()
-            .question(tms.getQuestion())
-            .answerType(tms.getAnswer())
-            .build();
-}
-
-private GetAnswersResponse.AnswerItem convertDWQuestionToAnswerItem(DWQuestions dwQuestion) {
-    return GetAnswersResponse.AnswerItem.builder()
-            .question(dwQuestion.getQuestion())
-            .answer(dwQuestion.getResponseType())  // The user's saved response (low, medium, high)
-            .build();
-}
-
-// Helper class to hold session resolution result
-private static class UserSessionInfo {
-    private final String userId;
-    private final String sessionId;
-    private final boolean valid;
-    
-    public UserSessionInfo(String userId, String sessionId, boolean valid) {
-        this.userId = userId;
-        this.sessionId = sessionId;
-        this.valid = valid;
+    private QuestionnaireResponse.QuestionItem convertWmsToQuestionItem(WmsQuestions wms) {
+        return QuestionnaireResponse.QuestionItem.builder()
+                .question(wms.getQuestion())
+                .answerType(wms.getAnswer())
+                .build();
     }
-    
-    public String getUserId() { return userId; }
-    public String getSessionId() { return sessionId; }
-    public boolean isValid() { return valid; }
-}
+
+    private QuestionnaireResponse.QuestionItem convertTmsToQuestionItem(TmsQuestions tms) {
+        return QuestionnaireResponse.QuestionItem.builder()
+                .question(tms.getQuestion())
+                .answerType(tms.getAnswer())
+                .build();
+    }
+
+    /**
+     * Converts PlanningQuestions entity to QuestionItem DTO
+     */
+    private QuestionnaireResponse.QuestionItem convertPlanningToQuestionItem(PlanningQuestions planning) {
+        return QuestionnaireResponse.QuestionItem.builder()
+                .question(planning.getQuestion())
+                .answerType(planning.getAnswer())
+                .build();
+    }
+
+    private GetAnswersResponse.AnswerItem convertDWQuestionToAnswerItem(DWQuestions dwQuestion) {
+        return GetAnswersResponse.AnswerItem.builder()
+                .question(dwQuestion.getQuestion())
+                .answer(dwQuestion.getResponseType())  // The user's saved response (low, medium, high)
+                .build();
+    }
+
+    // Helper class to hold session resolution result
+    private static class UserSessionInfo {
+        private final String userId;
+        private final String sessionId;
+        private final boolean valid;
+        
+        public UserSessionInfo(String userId, String sessionId, boolean valid) {
+            this.userId = userId;
+            this.sessionId = sessionId;
+            this.valid = valid;
+        }
+        
+        public String getUserId() { return userId; }
+        public String getSessionId() { return sessionId; }
+        public boolean isValid() { return valid; }
+    }
 }
