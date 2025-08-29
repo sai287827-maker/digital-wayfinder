@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './IndustryDataandCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
-import Operational from './Operational';
-import WmsSystem from './WmsSystem'; // Add import for WmsSystem
+import IndustryOperational from './IndustryOperational';
+import IndustryTypePlanParts from './IndustryTypePlanParts'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
+import IndustryOperational from './IndustryOperational';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
@@ -213,11 +214,11 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   // Early return for navigation to WmsSystem
   if (showWmsSystem) {
     console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
-    return <WmsSystem />;
+    return <IndustryTypePlanParts />;
   }
 
   if (showVisibilityProactive) {
-    return <Operational />;
+    return <IndustryOperational />;
   }
  
   return (
