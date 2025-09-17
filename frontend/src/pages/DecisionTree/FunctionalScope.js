@@ -420,7 +420,7 @@ const FunctionalScope = () => {
            
             <div className="step-item">
               <div className="step-circle inactive">3</div>
-              <span className="step-text inactive">Decision Criteria</span>
+              <span className="step-text inactive">Reviews</span>
             </div>
            
             <div className="step-item">

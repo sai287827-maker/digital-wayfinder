@@ -5,13 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.example.DigitalWayfinder.dto.PlatformAnalysisResponse;
+import com.example.DigitalWayfinder.dto.TmsReportResponse;
+import com.example.DigitalWayfinder.dto.CgsReportResponse;
+import com.example.DigitalWayfinder.dto.IndustryAgnosticReportResponse;
+import com.example.DigitalWayfinder.dto.RetailReportResponse;
 import com.example.DigitalWayfinder.entity.PlatformAnalysis;
 import com.example.DigitalWayfinder.entity.TmsReport;
-import com.example.DigitalWayfinder.entity.PlanningReport;
+import com.example.DigitalWayfinder.entity.CgsReport;
+import com.example.DigitalWayfinder.entity.IndustryAgnosticReport;
+import com.example.DigitalWayfinder.entity.RetailReport;
 import com.example.DigitalWayfinder.entity.ProjectType;
 import com.example.DigitalWayfinder.repository.PlatformAnalysisRepository;
 import com.example.DigitalWayfinder.repository.TmsReportRepository;
-import com.example.DigitalWayfinder.repository.PlanningReportRepository;
+import com.example.DigitalWayfinder.repository.CgsReportRepository;
+import com.example.DigitalWayfinder.repository.IndustryAgnosticReportRepository;
+import com.example.DigitalWayfinder.repository.RetailReportRepository;
 import com.example.DigitalWayfinder.repository.ProjectTypeRepository;
 
 import java.util.List;
@@ -27,19 +35,23 @@ public class PlatformAnalysisService {
     
     private final PlatformAnalysisRepository platformAnalysisRepository;
     private final TmsReportRepository tmsReportRepository;
-    private final PlanningReportRepository planningReportRepository;
+    private final CgsReportRepository cgsReportRepository;
+    private final IndustryAgnosticReportRepository industryAgnosticReportRepository;
+    private final RetailReportRepository retailReportRepository;
     private final ProjectTypeRepository projectTypeRepository;
     
-    // Industry Type constants
-    private static final String INDUSTRY_AGNOSTIC = "Industry Agnostic";
-    private static final String RETAIL_INDUSTRY = "Retail Industry Specific";
-    private static final String CONSUMER_GOODS_INDUSTRY = "Consumer Goods Industry Specific";
+    // System Type constants
+    private static final String WMS_SYSTEM = "WMS";
+    private static final String TMS_SYSTEM = "TMS";
+    private static final String CGS_SYSTEM = "CGS";
+    private static final String INDUSTRY_AGNOSTIC_SYSTEM = "INDUSTRYAGNOSTIC";
+    private static final String RETAIL_SYSTEM = "RETAIL";
     
-    public PlatformAnalysisResponse getAllPlatformAnalysis(String userId, String sessionId) {
+    public Object getAllPlatformAnalysis(String userId, String sessionId) {
         return getAllPlatformAnalysis(userId, sessionId, null);
     }
     
-    public PlatformAnalysisResponse getAllPlatformAnalysis(String userId, String sessionId, String systemType) {
+    public Object getAllPlatformAnalysis(String userId, String sessionId, String systemType) {
         log.info("Fetching all platform analysis records for user: {}, session: {}, systemType: {}", userId, sessionId, systemType);
         
         try {
@@ -48,45 +60,24 @@ public class PlatformAnalysisService {
             
             // Use provided systemType or default to WMS
             if (systemType == null || systemType.trim().isEmpty()) {
-                systemType = "WMS";
+                systemType = WMS_SYSTEM;
             }
+            systemType = systemType.toUpperCase();
             log.info("Using system type: {} for user: {}, session: {}", systemType, sessionInfo.getUserId(), sessionInfo.getSessionId());
             
-            List<PlatformAnalysisResponse.CategoryItem> categories;
-            
-            if ("TMS".equals(systemType)) {
-                // Fetch from TmsReport (including NULL session records)
-                List<TmsReport> records = tmsReportRepository.findByUserIDAndSessionIDIncludingNulls(
-                    sessionInfo.getUserId(), sessionInfo.getSessionId());
-                List<TmsReport> uniqueRecords = removeTmsDuplicates(records);
-                categories = groupTmsRecordsByCategory(uniqueRecords);
-                log.info("Successfully fetched {} TMS records (after deduplication: {}) grouped into {} categories", 
-                        records.size(), uniqueRecords.size(), categories.size());
-                
-            } else if ("PLANNING".equals(systemType)) {
-                // Fetch from PlanningReport (including NULL session records)
-                List<PlanningReport> records = planningReportRepository.findByUserIDAndSessionIDIncludingNulls(
-                    sessionInfo.getUserId(), sessionInfo.getSessionId());
-                List<PlanningReport> uniqueRecords = removePlanningDuplicates(records);
-                categories = groupPlanningRecordsByCategory(uniqueRecords);
-                log.info("Successfully fetched {} Planning records (after deduplication: {}) grouped into {} categories", 
-                        records.size(), uniqueRecords.size(), categories.size());
-                
-            } else {
-                // Default to WMS - Fetch from PlatformAnalysis (including NULL session records)
-                List<PlatformAnalysis> records = platformAnalysisRepository.findByUserIDAndSessionIDIncludingNulls(
-                    sessionInfo.getUserId(), sessionInfo.getSessionId());
-                List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
-                categories = groupRecordsByCategory(uniqueRecords);
-                log.info("Successfully fetched {} WMS records (after deduplication: {}) grouped into {} categories", 
-                        records.size(), uniqueRecords.size(), categories.size());
+            switch (systemType) {
+                case TMS_SYSTEM:
+                    return getTmsAnalysis(sessionInfo, null);
+                case CGS_SYSTEM:
+                    return getCgsAnalysis(sessionInfo, null);
+                case INDUSTRY_AGNOSTIC_SYSTEM:
+                    return getIndustryAgnosticAnalysis(sessionInfo, null);
+                case RETAIL_SYSTEM:
+                    return getRetailAnalysis(sessionInfo, null);
+                case WMS_SYSTEM:
+                default:
+                    return getWmsAnalysis(sessionInfo, null);
             }
-            
-            return PlatformAnalysisResponse.builder()
-                    .userId(sessionInfo.getUserId())
-                    .sessionId(sessionInfo.getSessionId())
-                    .categories(categories)
-                    .build();
                     
         } catch (Exception e) {
             log.error("Error fetching platform analysis records", e);
@@ -94,11 +85,11 @@ public class PlatformAnalysisService {
         }
     }
 
-    public PlatformAnalysisResponse getPlatformAnalysisByCategory(String category, String userId, String sessionId) {
+    public Object getPlatformAnalysisByCategory(String category, String userId, String sessionId) {
         return getPlatformAnalysisByCategory(category, userId, sessionId, null);
     }
     
-    public PlatformAnalysisResponse getPlatformAnalysisByCategory(String category, String userId, String sessionId, String systemType) {
+    public Object getPlatformAnalysisByCategory(String category, String userId, String sessionId, String systemType) {
         log.info("Fetching platform analysis records for category: {} with user: {}, session: {}, systemType: {}", 
                 category, userId, sessionId, systemType);
         
@@ -108,45 +99,24 @@ public class PlatformAnalysisService {
             
             // Use provided systemType or default to WMS
             if (systemType == null || systemType.trim().isEmpty()) {
-                systemType = "WMS";
+                systemType = WMS_SYSTEM;
             }
+            systemType = systemType.toUpperCase();
             log.info("Using system type: {} for category: {}", systemType, category);
             
-            List<PlatformAnalysisResponse.CategoryItem> categories;
-            
-            if ("TMS".equals(systemType)) {
-                // Fetch from TmsReport by category (including NULL session records)
-                List<TmsReport> records = tmsReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
-                    category, sessionInfo.getUserId(), sessionInfo.getSessionId());
-                List<TmsReport> uniqueRecords = removeTmsDuplicates(records);
-                categories = groupTmsRecordsByCategory(uniqueRecords);
-                log.info("Successfully fetched {} TMS records (after deduplication: {}) for category: {}", 
-                        records.size(), uniqueRecords.size(), category);
-                
-            } else if ("PLANNING".equals(systemType)) {
-                // Fetch from PlanningReport by category (including NULL session records)
-                List<PlanningReport> records = planningReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
-                    category, sessionInfo.getUserId(), sessionInfo.getSessionId());
-                List<PlanningReport> uniqueRecords = removePlanningDuplicates(records);
-                categories = groupPlanningRecordsByCategory(uniqueRecords);
-                log.info("Successfully fetched {} Planning records (after deduplication: {}) for category: {}", 
-                        records.size(), uniqueRecords.size(), category);
-                
-            } else {
-                // Default to WMS - Fetch from PlatformAnalysis by category (including NULL session records)
-                List<PlatformAnalysis> records = platformAnalysisRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
-                    category, sessionInfo.getUserId(), sessionInfo.getSessionId());
-                List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
-                categories = groupRecordsByCategory(uniqueRecords);
-                log.info("Successfully fetched {} WMS records (after deduplication: {}) for category: {}", 
-                        records.size(), uniqueRecords.size(), category);
+            switch (systemType) {
+                case TMS_SYSTEM:
+                    return getTmsAnalysis(sessionInfo, category);
+                case CGS_SYSTEM:
+                    return getCgsAnalysis(sessionInfo, category);
+                case INDUSTRY_AGNOSTIC_SYSTEM:
+                    return getIndustryAgnosticAnalysis(sessionInfo, category);
+                case RETAIL_SYSTEM:
+                    return getRetailAnalysis(sessionInfo, category);
+                case WMS_SYSTEM:
+                default:
+                    return getWmsAnalysis(sessionInfo, category);
             }
-            
-            return PlatformAnalysisResponse.builder()
-                    .userId(sessionInfo.getUserId())
-                    .sessionId(sessionInfo.getSessionId())
-                    .categories(categories)
-                    .build();
                     
         } catch (Exception e) {
             log.error("Error fetching platform analysis records for category: {}", category, e);
@@ -154,45 +124,31 @@ public class PlatformAnalysisService {
         }
     }
     
-    /**
-     * Determines system type based on functionalSubArea or industryType from UI
-     */
-    private String determineSystemType(String functionalSubArea, String industryType) {
-        // Check if it's one of the planning industry types
-        if (isIndustryType(industryType)) {
-            return "PLANNING";
-        }
-        
-        // Check functional sub area
-        if (functionalSubArea != null) {
-            String normalized = functionalSubArea.toLowerCase().trim();
-            if (normalized.contains("warehouse") || normalized.contains("wms")) {
-                return "WMS";
-            } else if (normalized.contains("transport") || normalized.contains("tms") || 
-                      normalized.contains("transfer")) {
-                return "TMS";
-            }
-        }
-        
-        log.warn("Could not determine system type from functionalSubArea: {}, industryType: {}, defaulting to WMS", 
-                functionalSubArea, industryType);
-        return "WMS";
-    }
+    // =================== WMS METHODS ===================
     
-    /**
-     * Checks if the given string is one of the industry types
-     */
-    private boolean isIndustryType(String value) {
-        if (value == null) {
-            return false;
+    private PlatformAnalysisResponse getWmsAnalysis(UserSessionInfo sessionInfo, String category) {
+        List<PlatformAnalysis> records;
+        
+        if (category != null) {
+            records = platformAnalysisRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
+                category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+        } else {
+            records = platformAnalysisRepository.findByUserIDAndSessionIDIncludingNulls(
+                sessionInfo.getUserId(), sessionInfo.getSessionId());
         }
         
-        return INDUSTRY_AGNOSTIC.equals(value) || 
-               RETAIL_INDUSTRY.equals(value) || 
-               CONSUMER_GOODS_INDUSTRY.equals(value);
+        List<PlatformAnalysis> uniqueRecords = removeDuplicates(records);
+        List<PlatformAnalysisResponse.CategoryItem> categories = groupRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} WMS records (after deduplication: {}) grouped into {} categories", 
+                records.size(), uniqueRecords.size(), categories.size());
+        
+        return PlatformAnalysisResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
     }
-    
-    // =================== WMS METHODS (Original) ===================
     
     private List<PlatformAnalysis> removeDuplicates(List<PlatformAnalysis> records) {
         return records.stream()
@@ -235,6 +191,67 @@ public class PlatformAnalysisService {
     
     // =================== TMS METHODS ===================
     
+    private TmsReportResponse getTmsAnalysis(UserSessionInfo sessionInfo, String category) {
+        List<TmsReport> records;
+        
+        if (category != null) {
+            records = tmsReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
+                category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+            log.info("DEBUG: Found {} TMS records for specific category: {}", records.size(), category);
+        } else {
+            records = tmsReportRepository.findByUserIDAndSessionIDIncludingNulls(
+                sessionInfo.getUserId(), sessionInfo.getSessionId());
+            log.info("DEBUG: Found {} total TMS records for user: {}, session: {}", 
+                    records.size(), sessionInfo.getUserId(), sessionInfo.getSessionId());
+        }
+        
+        // Debug: Log all records before deduplication
+        log.info("DEBUG: TMS Records before deduplication:");
+        records.forEach(record -> {
+            log.info("  - Asset: {}, Category: {}, UserID: {}, SessionID: {}", 
+                    record.getAssetName(), record.getCategory(), 
+                    record.getUserID(), record.getSessionID());
+        });
+        
+        // Debug: Check for null or empty asset names
+        long emptyAssetNames = records.stream()
+                .filter(record -> record.getAssetName() == null || record.getAssetName().trim().isEmpty())
+                .count();
+        log.info("DEBUG: Found {} records with null/empty asset names that will be filtered out", emptyAssetNames);
+        
+        List<TmsReport> uniqueRecords = removeTmsDuplicates(records);
+        log.info("DEBUG: After deduplication: {} unique TMS records", uniqueRecords.size());
+        
+        // Debug: Log unique records after deduplication
+        log.info("DEBUG: TMS Records after deduplication:");
+        uniqueRecords.forEach(record -> {
+            log.info("  - Asset: {}, Category: {}", record.getAssetName(), record.getCategory());
+        });
+        
+        // Debug: Group by category and log the grouping
+        Map<String, List<TmsReport>> groupedRecords = uniqueRecords.stream()
+                .collect(Collectors.groupingBy(TmsReport::getCategory));
+        
+        log.info("DEBUG: TMS Records grouped by category:");
+        groupedRecords.forEach((cat, recordList) -> {
+            log.info("  - Category: {} has {} records", cat, recordList.size());
+            recordList.forEach(record -> {
+                log.info("    * Asset: {}, Gaps: {}", record.getAssetName(), record.getGaps());
+            });
+        });
+        
+        List<TmsReportResponse.CategoryItem> categories = groupTmsRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} TMS records (after deduplication: {}) grouped into {} categories", 
+                records.size(), uniqueRecords.size(), categories.size());
+        
+        return TmsReportResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
+    }
+    
     private List<TmsReport> removeTmsDuplicates(List<TmsReport> records) {
         return records.stream()
                 .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
@@ -248,18 +265,18 @@ public class PlatformAnalysisService {
                 .collect(Collectors.toList());
     }
     
-    private List<PlatformAnalysisResponse.CategoryItem> groupTmsRecordsByCategory(List<TmsReport> records) {
+    private List<TmsReportResponse.CategoryItem> groupTmsRecordsByCategory(List<TmsReport> records) {
         Map<String, List<TmsReport>> groupedRecords = records.stream()
                 .collect(Collectors.groupingBy(TmsReport::getCategory));
         
         return groupedRecords.entrySet().stream()
                 .map(entry -> {
                     String categoryName = entry.getKey();
-                    List<PlatformAnalysisResponse.AssetItem> assets = entry.getValue().stream()
+                    List<TmsReportResponse.AssetItem> assets = entry.getValue().stream()
                             .map(this::convertTmsToAssetItem)
                             .collect(Collectors.toList());
                     
-                    return PlatformAnalysisResponse.CategoryItem.builder()
+                    return TmsReportResponse.CategoryItem.builder()
                             .categoryName(categoryName)
                             .assets(assets)
                             .build();
@@ -267,20 +284,44 @@ public class PlatformAnalysisService {
                 .collect(Collectors.toList());
     }
     
-    private PlatformAnalysisResponse.AssetItem convertTmsToAssetItem(TmsReport entity) {
-        return PlatformAnalysisResponse.AssetItem.builder()
+    private TmsReportResponse.AssetItem convertTmsToAssetItem(TmsReport entity) {
+        return TmsReportResponse.AssetItem.builder()
                 .assetName(entity.getAssetName())
                 .gaps(entity.getGaps())
                 .build();
     }
     
-    // =================== PLANNING METHODS ===================
+    // =================== CGS METHODS ===================
     
-    private List<PlanningReport> removePlanningDuplicates(List<PlanningReport> records) {
+    private CgsReportResponse getCgsAnalysis(UserSessionInfo sessionInfo, String category) {
+        List<CgsReport> records;
+        
+        if (category != null) {
+            records = cgsReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
+                category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+        } else {
+            records = cgsReportRepository.findByUserIDAndSessionIDIncludingNulls(
+                sessionInfo.getUserId(), sessionInfo.getSessionId());
+        }
+        
+        List<CgsReport> uniqueRecords = removeCgsDuplicates(records);
+        List<CgsReportResponse.CategoryItem> categories = groupCgsRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} CGS records (after deduplication: {}) grouped into {} categories", 
+                records.size(), uniqueRecords.size(), categories.size());
+        
+        return CgsReportResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
+    }
+    
+    private List<CgsReport> removeCgsDuplicates(List<CgsReport> records) {
         return records.stream()
                 .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
                 .collect(Collectors.toMap(
-                    PlanningReport::getAssetName,
+                    CgsReport::getAssetName,
                     record -> record,
                     (existing, replacement) -> existing
                 ))
@@ -289,18 +330,18 @@ public class PlatformAnalysisService {
                 .collect(Collectors.toList());
     }
     
-    private List<PlatformAnalysisResponse.CategoryItem> groupPlanningRecordsByCategory(List<PlanningReport> records) {
-        Map<String, List<PlanningReport>> groupedRecords = records.stream()
-                .collect(Collectors.groupingBy(PlanningReport::getCategory));
+    private List<CgsReportResponse.CategoryItem> groupCgsRecordsByCategory(List<CgsReport> records) {
+        Map<String, List<CgsReport>> groupedRecords = records.stream()
+                .collect(Collectors.groupingBy(CgsReport::getCategory));
         
         return groupedRecords.entrySet().stream()
                 .map(entry -> {
                     String categoryName = entry.getKey();
-                    List<PlatformAnalysisResponse.AssetItem> assets = entry.getValue().stream()
-                            .map(this::convertPlanningToAssetItem)
+                    List<CgsReportResponse.AssetItem> assets = entry.getValue().stream()
+                            .map(this::convertCgsToAssetItem)
                             .collect(Collectors.toList());
                     
-                    return PlatformAnalysisResponse.CategoryItem.builder()
+                    return CgsReportResponse.CategoryItem.builder()
                             .categoryName(categoryName)
                             .assets(assets)
                             .build();
@@ -308,14 +349,180 @@ public class PlatformAnalysisService {
                 .collect(Collectors.toList());
     }
     
-    private PlatformAnalysisResponse.AssetItem convertPlanningToAssetItem(PlanningReport entity) {
-        return PlatformAnalysisResponse.AssetItem.builder()
+    private CgsReportResponse.AssetItem convertCgsToAssetItem(CgsReport entity) {
+        return CgsReportResponse.AssetItem.builder()
+                .assetName(entity.getAssetName())
+                .gaps(entity.getGaps())
+                .build();
+    }
+    
+    // =================== INDUSTRY AGNOSTIC METHODS ===================
+    
+    private IndustryAgnosticReportResponse getIndustryAgnosticAnalysis(UserSessionInfo sessionInfo, String category) {
+        List<IndustryAgnosticReport> records;
+        
+        if (category != null) {
+            records = industryAgnosticReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
+                category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+        } else {
+            records = industryAgnosticReportRepository.findByUserIDAndSessionIDIncludingNulls(
+                sessionInfo.getUserId(), sessionInfo.getSessionId());
+        }
+        
+        List<IndustryAgnosticReport> uniqueRecords = removeIndustryAgnosticDuplicates(records);
+        List<IndustryAgnosticReportResponse.CategoryItem> categories = groupIndustryAgnosticRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} Industry Agnostic records (after deduplication: {}) grouped into {} categories", 
+                records.size(), uniqueRecords.size(), categories.size());
+        
+        return IndustryAgnosticReportResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
+    }
+    
+    private List<IndustryAgnosticReport> removeIndustryAgnosticDuplicates(List<IndustryAgnosticReport> records) {
+        return records.stream()
+                .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
+                .collect(Collectors.toMap(
+                    IndustryAgnosticReport::getAssetName,
+                    record -> record,
+                    (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+    }
+    
+    private List<IndustryAgnosticReportResponse.CategoryItem> groupIndustryAgnosticRecordsByCategory(List<IndustryAgnosticReport> records) {
+        Map<String, List<IndustryAgnosticReport>> groupedRecords = records.stream()
+                .collect(Collectors.groupingBy(IndustryAgnosticReport::getCategory));
+        
+        return groupedRecords.entrySet().stream()
+                .map(entry -> {
+                    String categoryName = entry.getKey();
+                    List<IndustryAgnosticReportResponse.AssetItem> assets = entry.getValue().stream()
+                            .map(this::convertIndustryAgnosticToAssetItem)
+                            .collect(Collectors.toList());
+                    
+                    return IndustryAgnosticReportResponse.CategoryItem.builder()
+                            .categoryName(categoryName)
+                            .assets(assets)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+    
+    private IndustryAgnosticReportResponse.AssetItem convertIndustryAgnosticToAssetItem(IndustryAgnosticReport entity) {
+        return IndustryAgnosticReportResponse.AssetItem.builder()
+                .assetName(entity.getAssetName())
+                .gaps(entity.getGaps())
+                .build();
+    }
+    
+    // =================== RETAIL METHODS ===================
+    
+    private RetailReportResponse getRetailAnalysis(UserSessionInfo sessionInfo, String category) {
+        List<RetailReport> records;
+        
+        if (category != null) {
+            records = retailReportRepository.findByCategoryAndUserIDAndSessionIDIncludingNulls(
+                category, sessionInfo.getUserId(), sessionInfo.getSessionId());
+        } else {
+            records = retailReportRepository.findByUserIDAndSessionIDIncludingNulls(
+                sessionInfo.getUserId(), sessionInfo.getSessionId());
+        }
+        
+        List<RetailReport> uniqueRecords = removeRetailDuplicates(records);
+        List<RetailReportResponse.CategoryItem> categories = groupRetailRecordsByCategory(uniqueRecords);
+        
+        log.info("Successfully fetched {} Retail records (after deduplication: {}) grouped into {} categories", 
+                records.size(), uniqueRecords.size(), categories.size());
+        
+        return RetailReportResponse.builder()
+                .userId(sessionInfo.getUserId())
+                .sessionId(sessionInfo.getSessionId())
+                .categories(categories)
+                .build();
+    }
+    
+    private List<RetailReport> removeRetailDuplicates(List<RetailReport> records) {
+        return records.stream()
+                .filter(record -> record.getAssetName() != null && !record.getAssetName().trim().isEmpty())
+                .collect(Collectors.toMap(
+                    RetailReport::getAssetName,
+                    record -> record,
+                    (existing, replacement) -> existing
+                ))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
+    }
+    
+    private List<RetailReportResponse.CategoryItem> groupRetailRecordsByCategory(List<RetailReport> records) {
+        Map<String, List<RetailReport>> groupedRecords = records.stream()
+                .collect(Collectors.groupingBy(RetailReport::getCategory));
+        
+        return groupedRecords.entrySet().stream()
+                .map(entry -> {
+                    String categoryName = entry.getKey();
+                    List<RetailReportResponse.AssetItem> assets = entry.getValue().stream()
+                            .map(this::convertRetailToAssetItem)
+                            .collect(Collectors.toList());
+                    
+                    return RetailReportResponse.CategoryItem.builder()
+                            .categoryName(categoryName)
+                            .assets(assets)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+    
+    private RetailReportResponse.AssetItem convertRetailToAssetItem(RetailReport entity) {
+        return RetailReportResponse.AssetItem.builder()
                 .assetName(entity.getAssetName())
                 .gaps(entity.getGaps())
                 .build();
     }
     
     // =================== HELPER METHODS ===================
+    
+    /**
+     * Determines system type based on functionalSubArea or industryType from UI
+     */
+    private String determineSystemType(String functionalSubArea, String industryType) {
+        // Check if it's one of the specific system types
+        if (industryType != null) {
+            String normalized = industryType.toUpperCase().trim();
+            switch (normalized) {
+                case "CONSUMER GOODS INDUSTRY SPECIFIC":
+                case "CGS":
+                    return CGS_SYSTEM;
+                case "INDUSTRY AGNOSTIC":
+                case "INDUSTRYAGNOSTIC":
+                    return INDUSTRY_AGNOSTIC_SYSTEM;
+                case "RETAIL INDUSTRY SPECIFIC":
+                case "RETAIL":
+                    return RETAIL_SYSTEM;
+            }
+        }
+        
+        // Check functional sub area
+        if (functionalSubArea != null) {
+            String normalized = functionalSubArea.toLowerCase().trim();
+            if (normalized.contains("warehouse") || normalized.contains("wms")) {
+                return WMS_SYSTEM;
+            } else if (normalized.contains("transport") || normalized.contains("tms") || 
+                      normalized.contains("transfer")) {
+                return TMS_SYSTEM;
+            }
+        }
+        
+        log.warn("Could not determine system type from functionalSubArea: {}, industryType: {}, defaulting to WMS", 
+                functionalSubArea, industryType);
+        return WMS_SYSTEM;
+    }
     
     /**
      * Resolves the actual userId and sessionId to use.

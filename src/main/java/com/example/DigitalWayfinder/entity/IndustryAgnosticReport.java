@@ -12,11 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "vw_Fnl_FunctionScore_Planning")
+@Table(name = "vw_Fnl_FunctionScore_Industryagnostic")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlanningReport {
+public class IndustryAgnosticReport {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
