@@ -81,6 +81,16 @@
   white-space: nowrap;
 }
 
+.logout-button {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
 .nav-item:hover {
   color: #8B5CF6;
 }

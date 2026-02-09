@@ -3,13 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 import UserProfilePopover from './UserProfilePopover';
-import HelpDocPopover from './HelpDocPopover';
-
+import HelpDocPopover from './HelpDocPopover';import { useAuth } from "../contexts/AuthContext";
 function Navbar() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const { user, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,22 +24,22 @@ function Navbar() {
     if (path === '/') {
       return location.pathname === '/';
     }
-    
+
     // For digital-wayfinder, check if current path starts with /digital-wayfinder
     if (path === '/digital-wayfinder') {
       return location.pathname.startsWith('/digital-wayfinder');
     }
-    
+
     // For decision-tree, check if current path starts with /decision-tree
     if (path === '/decision-tree') {
       return location.pathname.startsWith('/decision-tree');
     }
-    
+
     // For report, check if current path starts with /report
     if (path === '/report') {
       return location.pathname.startsWith('/report');
     }
-    
+
     return location.pathname === path;
   };
 
@@ -52,8 +52,8 @@ function Navbar() {
         </Link>
 
         {/* Mobile Menu Toggle Button */}
-        <button 
-          className={`mobile-menu-toggle ${isMenuOpen ? 'active' : ''}`}
+        <button
+          className={`mobile-menu-toggle ${isMenuOpen ? "active" : ""}`}
           onClick={toggleMenu}
           aria-label="Toggle navigation menu"
         >
@@ -64,34 +64,49 @@ function Navbar() {
 
         {/* Navigation Menu */}
         <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className={`nav-item ${isNavItemActive('/') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             Home
           </Link>
-          <Link 
-            to="/digital-wayfinder" 
+
+          {user ? (
+            <>
+              <Link
+                to="/digital-wayfinder"
             className={`nav-item ${isNavItemActive('/digital-wayfinder') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            Digital Wayfinder
-          </Link>
-          <Link 
-            to="/decision-tree" 
+                onClick={closeMenu}
+              >
+                Digital Wayfinder
+              </Link>
+              <Link
+                to="/decision-tree"
             className={`nav-item ${isNavItemActive('/decision-tree') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            Decision Tree
-          </Link>
-          <Link 
-            to="/report" 
+                onClick={closeMenu}
+              >
+                Decision Tree
+              </Link>
+              <Link
+                to="/report"
             className={`nav-item ${isNavItemActive('/report') ? 'active' : ''}`}
-            onClick={closeMenu}
-          >
-            Report
-          </Link>
+                onClick={closeMenu}
+              >
+                Report
+              </Link>
+              <button onClick={logout} className="nav-item logout-button">
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className={`nav-item ${isNavItemActive("/login") ? "active" : ""}`}
+            >
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Icon Buttons */}
@@ -117,20 +132,22 @@ function Navbar() {
             </button>
             {showHelp && <HelpDocPopover />}
           </div>
-          <div
-            className="profile-icon-wrapper"
-            onMouseEnter={() => setShowProfile(true)}
-            onMouseLeave={() => setShowProfile(false)}
+          {user ? (
+            <div
+              className="profile-icon-wrapper"
+              onMouseEnter={() => setShowProfile(true)}
+              onMouseLeave={() => setShowProfile(false)}
             style={{ position: 'relative', display: 'inline-block' }}
-          >
-            <button className="icon-button" aria-label="User profile">
+            >
+              <button className="icon-button" aria-label="User profile">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                 <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37 C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37 A7 7 0 0 0 8 1"/>
-              </svg>
-            </button>
-            {showProfile && <UserProfilePopover />}
-          </div>
+                </svg>
+              </button>
+              {showProfile && <UserProfilePopover />}
+            </div>
+          ) : null}
         </div>
 
         {/* Mobile Menu Overlay */}

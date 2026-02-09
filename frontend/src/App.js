@@ -64,20 +64,26 @@ import CustomerDecisionCriteria from './pages/DecisionTree/CustomerDecisionCrite
 import CustomerSolution from './pages/DecisionTree/CustomerSolution';
 import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
  
- 
- 
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
+
 // import FinalPage from './pages/DigitalWayFinderr/FinalPage';
- 
-import './App.css';
+
+import "./App.css";
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/report" element={<ReportPage />} />
-          <Route path="/" element={<HomePage />} />
+      <AuthProvider>
+        <div className="App">
+          <Navbar />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/report" element={<ReportPage />} />
+              <Route path="/" element={<HomePage />} />
           <Route path="/digital-wayfinder" element={<WayFinderProjectInfo />} />
           <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} />
           <Route path="/digital-wayfinder/functional-area" element={<FunctionalAreaPage />} />
@@ -89,7 +95,7 @@ function App() {
           <Route path="/digital-wayfinder/operational" element={<Operational />} />
           <Route path="/digital-wayfinder/visibility-proactive" element={<VisibilityProactive />} />
           <Route path="/digital-wayfinder/agentic-ai" element={<AgenticAI />} />
-          {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
+              {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
           <Route path="/digital-wayfinder/tms-data-and-cloud" element={<TmsDataAndCloud />} />
           <Route path="/digital-wayfinder/tms-operational" element={<TmsOperational />} />
           <Route path="/digital-wayfinder/tms-visibility-proactive" element={<TmsVisibilityProactive />} />
@@ -115,13 +121,13 @@ function App() {
           
 
 
-          <Route path="/decision-tree" element={<ProjectInfo />} />
+              <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
           <Route path="/decision-tree/industry-type-func" element={<IndustryTypeFunc />} />
           <Route path="/decision-tree/industry-type-plannd" element={<IndustryTypePlannD />} />
           <Route path="/decision-tree/functional-scope" element={<FunctionalScope />} />
           <Route path="/decision-tree/non-functional-scope" element={<NonFunctionalScope />} />
-          <Route path="/decision-tree/solution" element={<Solution />} />
+              <Route path="/decision-tree/solution" element={<Solution />} />
           <Route path="/decision-tree/dashboard" element={<Dashboard/>} />
           <Route path="/decision-tree/decision-criteria" element={<DecisionCriteria/>} />
           <Route path="/decision-tree/transportation-functional-scope" element={<TransportationFunctionalScope />} />
@@ -141,13 +147,16 @@ function App() {
           <Route path="/decision-tree/customer-solution" element={<CustomerSolution />} />
           <Route path="/decision-tree/customer-dashboard" element={<CustomerDashboard/>} />
           
-          
- 
-          {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
-        </Routes>
-      </div>
+          </Route>
+            
+            {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
+            {/* Fallback route */}
+            <Route path="*" element={<h2>404 Not Found</h2>} />
+          </Routes>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }
- 
+
 export default App;

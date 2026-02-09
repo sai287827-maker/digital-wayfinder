@@ -1,19 +1,24 @@
 import React from 'react';
 import './UserProfilePopover.css';
+import { useAuth } from '../contexts/AuthContext';
 
 const UserProfilePopover = () => {
+  const { user, logout } = useAuth();
+
   return (
     <div className="user-profile-popover">
       <div className="user-profile-header">
-        <div className="user-avatar">RM</div>
+        <div className="user-avatar">TU</div>
         <div>
-          <div className="user-name">Rashmi Math</div>
-          <div className="user-email">rashmi.k.g.math@email.com</div>
+          <div className="user-name">Test User</div>
+          <div className="user-email">{user ? user.email : null}</div>
         </div>
       </div>
-      <button className="logout-btn">Logout</button>
+      <button className="logout-btn" onClick={logout}>
+        Logout
+      </button>
     </div>
   );
 };
 
-export default UserProfilePopover; 
+export default UserProfilePopover;
