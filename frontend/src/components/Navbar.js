@@ -3,13 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/logo.png';
 import UserProfilePopover from './UserProfilePopover';
-import HelpDocPopover from './HelpDocPopover';import { useAuth } from "../contexts/AuthContext";
+import HelpDocPopover from './HelpDocPopover';
+// import { useAuth } from "../contexts/AuthContext";
 function Navbar() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const { user, logout } = useAuth();
+  //const { user, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -72,8 +73,8 @@ function Navbar() {
             Home
           </Link>
 
-          {user ? (
-            <>
+          {/* {user ? (
+            <> */}
               <Link
                 to="/digital-wayfinder"
             className={`nav-item ${isNavItemActive('/digital-wayfinder') ? 'active' : ''}`}
@@ -95,7 +96,7 @@ function Navbar() {
               >
                 Report
               </Link>
-              <button onClick={logout} className="nav-item logout-button">
+              {/* <button onClick={logout} className="nav-item logout-button">
                 Logout
               </button>
             </>
@@ -106,7 +107,7 @@ function Navbar() {
             >
               Login
             </Link>
-          )}
+          )} */}
         </div>
 
         {/* Icon Buttons */}
@@ -132,7 +133,7 @@ function Navbar() {
             </button>
             {showHelp && <HelpDocPopover />}
           </div>
-          {user ? (
+          {/* {user ? ( */}
             <div
               className="profile-icon-wrapper"
               onMouseEnter={() => setShowProfile(true)}
@@ -147,7 +148,7 @@ function Navbar() {
               </button>
               {showProfile && <UserProfilePopover />}
             </div>
-          ) : null}
+          {/* ) : null} */}
         </div>
 
         {/* Mobile Menu Overlay */}

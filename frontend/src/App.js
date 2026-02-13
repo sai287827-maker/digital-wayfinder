@@ -64,9 +64,9 @@ import CustomerDecisionCriteria from './pages/DecisionTree/CustomerDecisionCrite
 import CustomerSolution from './pages/DecisionTree/CustomerSolution';
 import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
  
-import Login from "./pages/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
-import { AuthProvider } from "./contexts/AuthContext";
+// import Login from "./pages/Login";
+// import ProtectedRoute from "./components/ProtectedRoute";
+// import { AuthProvider } from "./contexts/AuthContext";
 
 // import FinalPage from './pages/DigitalWayFinderr/FinalPage';
 
@@ -75,13 +75,13 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <div className="App">
           <Navbar />
           <Routes>
-            <Route path="/login" element={<Login />} />
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
+            {/* <Route path="/login" element={<Login />} /> */}
+            
+            {/* <Route element={<ProtectedRoute />}> */}
               <Route path="/report" element={<ReportPage />} />
               <Route path="/" element={<HomePage />} />
           <Route path="/digital-wayfinder" element={<WayFinderProjectInfo />} />
@@ -147,14 +147,14 @@ function App() {
           <Route path="/decision-tree/customer-solution" element={<CustomerSolution />} />
           <Route path="/decision-tree/customer-dashboard" element={<CustomerDashboard/>} />
           
-          </Route>
+          {/* </Route> */}
             
             {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
             {/* Fallback route */}
             <Route path="*" element={<h2>404 Not Found</h2>} />
           </Routes>
         </div>
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </Router>
   );
 }

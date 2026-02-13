@@ -1,9 +1,9 @@
 import React from 'react';
 import './UserProfilePopover.css';
-import { useAuth } from '../contexts/AuthContext';
+//import { useAuth } from '../contexts/AuthContext';
 
 const UserProfilePopover = () => {
-  const { user, logout } = useAuth();
+ // const { user, logout } = useAuth();
 
   return (
     <div className="user-profile-popover">
@@ -11,12 +11,13 @@ const UserProfilePopover = () => {
         <div className="user-avatar">TU</div>
         <div>
           <div className="user-name">Test User</div>
-          <div className="user-email">{user ? user.email : null}</div>
+          <div className="user-email">test@example.com</div>
         </div>
       </div>
-      <button className="logout-btn" onClick={logout}>
+      {/* <button className="logout-btn" onClick={logout}>
         Logout
-      </button>
+      </button> */}
+      <button className="logout-btn">Logout</button>
     </div>
   );
 };
