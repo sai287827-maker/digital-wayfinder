@@ -1,60 +1,73 @@
-import { useState, useEffect } from 'react';
-import './ProjectInfo.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from "react";
+import "./ProjectInfo.css";
+import { Link, useNavigate } from "react-router-dom";
 import dashboardImage from "../../assets/dashboard.png";
-import { apiPost, apiGet } from '../../api';
+import { apiPost } from "../../api";
 
 const ProjectInfo = () => {
-  const [projectType, setProjectType] = useState('internal');
+  const [projectType, setProjectType] = useState("internal");
   const [formData, setFormData] = useState({
-    requestId: '',
-    mmsId: '', // <-- Add MMSID field
-    clientName: '',
-    description: '',
-    projectScope: ''
+    requestId: "",
+    mmsId: "", // <-- Add MMSID field
+    clientName: "",
+    description: "",
+    projectScope: "",
   });
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
+
+  // Create refs for mandatory input field
+  const requestIdRef = useRef(null);
+  const clientNameRef = useRef(null);
+  const mmsIdRef = useRef(null);
 
   const navigate = useNavigate();
 
+  // Scroll to top only once on initial mount
   useEffect(() => {
-    // Fetch project info from API on mount
-    const fetchProjectInfo = async () => {
-      setFetching(true);
-      setError(null);
-      try {
-        const data = await apiGet('api/decision-tree/project-info/get');
-        setFormData({
-          requestId: data.requestID || '',
-          mmsId: data.mmsID || '', // <-- Add MMSID field from API
-          clientName: data.clientName || '',
-          description: data.clientDescription || '',
-          projectScope: data.projectScope || ''
-        });
-        setProjectType(data.projectType || 'internal');
-      } catch (err) {
-        // If error, keep fields empty
-        setFormData({
-          requestId: '',
-          mmsId: '', // <-- Reset MMSID field
-          clientName: '',
-          description: '',
-          projectScope: ''
-        });
-        setProjectType('internal');
-      } finally {
-        setFetching(false);
-      }
-    };
-    fetchProjectInfo();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    /*
+    Previously the component fetched project info from the backend on mount
+    using `apiGet('api/decision-tree/project-info/get')`. There is currently
+    no requirement to fetch ProjectInfo from the backend, so the fetch logic
+    has been commented out. If fetching is required in the future, restore
+    the code below and re-import `apiGet`.
+    
+        const fetchProjectInfo = async () => {
+          setFetching(true);
+          setError(null);
+          try {
+            const data = await apiGet('api/decision-tree/project-info/get');
+            setFormData({
+              requestId: data.requestID || '',
+              mmsId: data.mmsID || '', // <-- Add MMSID field from API
+              clientName: data.clientName || '',
+              description: data.clientDescription || '',
+              projectScope: data.projectScope || ''
+            });
+            setProjectType(data.projectType || 'internal');
+          } catch (err) {
+            // If error, keep fields empty
+            setFormData({
+              requestId: '',
+              mmsId: '', // <-- Reset MMSID field
+              clientName: '',
+              description: '',
+              projectScope: ''
+            });
+            setProjectType('internal');
+          } finally {
+            setFetching(false);
+          }
+        };
+        fetchProjectInfo();
+         */
   }, []);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -62,54 +75,94 @@ const ProjectInfo = () => {
     setProjectType(type);
     // Reset form data based on project type
     setFormData({
-      requestId: '',
-      mmsId: '', // <-- Reset MMSID field
-      clientName: '',
-      description: '',
-      projectScope: ''
+      requestId: "",
+      mmsId: "", // <-- Reset MMSID field
+      clientName: "",
+      description: "",
+      projectScope: "",
     });
   };
 
-  const handleProceed = async () => {
-    if (!formData.requestId.trim() || !formData.clientName.trim()) {
-      alert('Please fill in all required fields (Request ID and Client/Project Name)');
-      return;
+  const validateForm = () => {
+    let newErrors = {};
+    // Check which fields are empty
+    if (!formData.requestId.trim()) {
+      newErrors.requestId = "Request ID is required.";
     }
-    setLoading(true);
-    setError(null);
-    try {
-      await apiPost('api/decision-tree/project-info/save', {
-        requestID: formData.requestId,
-        mmsID: formData.mmsId, // <-- Send MMSID to API
-        clientName: formData.clientName,
-        clientDescription: formData.description,
-        projectScope: formData.projectScope,
-        projectType: projectType
-      });
-      navigate('/decision-tree/functional-area', {
-        state: {
-          projectData: formData,
-          projectType: projectType
-        }
-      });
-    } catch (err) {
-      setError('Failed to save project info. Please try again.');
-    } finally {
-      setLoading(false);
+    // MMSID is only mandatory for client projects
+    if (projectType === "client" && !formData.mmsId.trim()) {
+      newErrors.mmsId = "MMS ID is required for client projects.";
+    }
+    if (!formData.clientName.trim()) {
+      newErrors.clientName = "Client/Project Name is required.";
+    }
+    return newErrors;
+  };
+
+  const handleProceed = async () => {
+    const findErrors = validateForm();
+
+    if (Object.keys(findErrors).length > 0) {
+      setErrors(findErrors);
+
+      // 1. Identify first error field
+      const firstErrorField = Object.keys(findErrors)[0];
+
+      // 2. Map field names to refs so we can focus and scroll to the correct one
+      const refMap = {
+        requestId: requestIdRef,
+        mmsId: mmsIdRef,
+        clientName: clientNameRef,
+      };
+      const fieldRef = refMap[firstErrorField];
+      const element = fieldRef && fieldRef.current ? fieldRef.current : null;
+      if (element) {
+        element.focus(); // Focus the input field with error
+        const rect = element.getBoundingClientRect();
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const navbarHeight = 70; // Fixed navbar height from Navbar.css
+        const padding = 20; // Extra padding for better visibility
+        const targetY = rect.top + scrollTop - navbarHeight - padding;
+        window.scrollTo({ top: targetY, behavior: "smooth" });
+      }
+    } else {
+      setErrors({});
+      setLoading(true);
+      try {
+        await apiPost("api/decision-tree/project-info/save", {
+          requestID: formData.requestId,
+          mmsID: formData.mmsId,
+          clientName: formData.clientName,
+          clientDescription: formData.description,
+          projectScope: formData.projectScope,
+          projectType: projectType,
+        });
+        console.log("Project Info submitted successfully:", formData);
+        navigate("/decision-tree/functional-area", {
+          state: {
+            projectData: formData,
+            projectType: projectType,
+          },
+        });
+      } catch (err) {
+        setErrors({ save: "Failed to save project info. Please try again." });
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
-  if (fetching) {
-    return <div className="project-info-container"><div className="main-content"><p>Loading project information...</p></div></div>;
-  }
-console.log("formData",formData);
+  // if (fetching) {
+  //   return <div className="project-info-container"><div className="main-content"><p>Loading project information...</p></div></div>;
+  // }
   return (
     <div className="project-info-container">
       {/* Main Content */}
       <div className="main-content">
         {/* Breadcrumb */}
         <div className="breadcrumb">
-           <Link to="/">Home</Link> &gt; 
+          <Link to="/">Home</Link> &gt;
           <span>Decision Tree</span>
         </div>
         {/* Navigation Tabs */}
@@ -132,8 +185,8 @@ console.log("formData",formData);
                     type="radio"
                     name="projectType"
                     value="internal"
-                    checked={projectType === 'internal'}
-                    onChange={() => handleProjectTypeChange('internal')}
+                    checked={projectType === "internal"}
+                    onChange={() => handleProjectTypeChange("internal")}
                   />
                   <span className="radio-text">Internal Project</span>
                 </label>
@@ -142,8 +195,8 @@ console.log("formData",formData);
                     type="radio"
                     name="projectType"
                     value="client"
-                    checked={projectType === 'client'}
-                    onChange={() => handleProjectTypeChange('client')}
+                    checked={projectType === "client"}
+                    onChange={() => handleProjectTypeChange("client")}
                   />
                   <span className="radio-text">Client Project</span>
                 </label>
@@ -151,61 +204,105 @@ console.log("formData",formData);
             </div>
             {/* Form Fields */}
             <div className="form-fields">
-              <p className="form-instruction">Enter the information to proceed</p>
+              <p className="form-instruction">
+                Enter the information to proceed
+              </p>
               <div className="field-group">
                 <label className="field-label">Request ID*</label>
                 <input
+                  ref={requestIdRef}
                   type="text"
                   value={formData.requestId}
-                  onChange={(e) => handleInputChange('requestId', e.target.value)}
-                  className="field-input"
-                  placeholder={projectType === 'internal' ? 'Enter Project ID' : 'Enter Request ID'}
+                  onChange={(e) =>
+                    handleInputChange("requestId", e.target.value)
+                  }
+                  className={`field-input ${errors.requestId ? "input-error" : ""}`}
+                  placeholder={
+                    projectType === "internal"
+                      ? "Enter Project ID"
+                      : "Enter Request ID"
+                  }
                 />
+                {/* Render error only if it exists */}
+                {errors.requestId && (
+                  <span style={{ color: "red" }}>{errors.requestId}</span>
+                )}
               </div>
-              <div className="field-group">
-                <label className="field-label">MMSID</label>
-                <input
-                  type="text"
-                  value={formData.mmsId}
-                  onChange={(e) => {
-                    // Only allow alphanumeric input
-                    const val = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
-                    handleInputChange('mmsId', val);
-                  }}
-                  className="field-input"
-                  placeholder="Enter MMSID (alphanumeric)"
-                  maxLength={20}
-                />
-              </div>
+              {/* Show MMS ID only for client projects. For internal projects it's hidden. */}
+              {projectType === "client" && (
+                <div className="field-group">
+                  <label className="field-label">
+                    MMS ID{projectType === "client" ? "*" : ""}
+                  </label>
+                  <input
+                    ref={mmsIdRef}
+                    type="text"
+                    value={formData.mmsId}
+                    onChange={(e) => {
+                      // Only allow alphanumeric input
+                      const val = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+                      handleInputChange("mmsId", val);
+                    }}
+                    className={`field-input ${errors.mmsId ? "input-error" : ""}`}
+                    placeholder="Enter MMSID (alphanumeric)"
+                    maxLength={20}
+                  />
+                  {errors.mmsId && (
+                    <span style={{ color: "red" }}>{errors.mmsId}</span>
+                  )}
+                </div>
+              )}
               <div className="field-group">
                 <label className="field-label">
-                  {projectType === 'internal' ? 'Project Name*' : 'Client Name*'}
+                  {projectType === "internal"
+                    ? "Project Name*"
+                    : "Client Name*"}
                 </label>
                 <input
+                  ref={clientNameRef}
                   type="text"
                   value={formData.clientName}
-                  onChange={(e) => handleInputChange('clientName', e.target.value)}
-                  className="field-input"
-                  placeholder={projectType === 'internal' ? 'Enter Project Name' : 'Enter Client Name'}
+                  onChange={(e) =>
+                    handleInputChange("clientName", e.target.value)
+                  }
+                  className={`field-input ${errors.clientName ? "input-error" : ""}`}
+                  placeholder={
+                    projectType === "internal"
+                      ? "Enter Project Name"
+                      : "Enter Client Name"
+                  }
                 />
+                {errors.clientName && (
+                  <span style={{ color: "red" }}>{errors.clientName}</span>
+                )}
               </div>
               <div className="field-group">
                 <label className="field-label">
-                  {projectType === 'internal' ? 'Project Description' : 'Client Description'}
+                  {projectType === "internal"
+                    ? "Project Description"
+                    : "Client Description"}
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   rows={4}
                   className="field-textarea"
-                  placeholder={projectType === 'internal' ? 'Enter project description' : 'Enter client description'}
+                  placeholder={
+                    projectType === "internal"
+                      ? "Enter project description"
+                      : "Enter client description"
+                  }
                 />
               </div>
               <div className="field-group">
                 <label className="field-label">Project Scope</label>
                 <textarea
                   value={formData.projectScope}
-                  onChange={(e) => handleInputChange('projectScope', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("projectScope", e.target.value)
+                  }
                   rows={4}
                   className="field-textarea"
                   placeholder="Enter project scope"
@@ -215,18 +312,22 @@ console.log("formData",formData);
             {/* Footer */}
             <div className="form-footer">
               <span className="step-indicator">Completed step 0 of 3</span>
-              <button className="proceed-button" onClick={handleProceed} disabled={loading}>
-                {loading ? 'Saving...' : 'Proceed'}
+              <button
+                className="proceed-button"
+                onClick={handleProceed}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Proceed"}
               </button>
-              {error && <div className="form-error">{error}</div>}
+              {errors && <div className="form-error">{errors.save}</div>}
             </div>
           </div>
           {/* Right Side - Dashboard Preview */}
           <div className="dashboard-section">
             <div className="dashboard-preview">
-              <img 
-                src={dashboardImage} 
-                alt="Dashboard Preview" 
+              <img
+                src={dashboardImage}
+                alt="Dashboard Preview"
                 className="dashboard-image"
               />
             </div>

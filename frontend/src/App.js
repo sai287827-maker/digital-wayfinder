@@ -82,10 +82,10 @@ function App() {
             {/* <Route path="/login" element={<Login />} /> */}
             
             {/* <Route element={<ProtectedRoute />}> */}
-              <Route path="/report" element={<ReportPage />} />
-              <Route path="/" element={<HomePage />} />
-          <Route path="/digital-wayfinder" element={<WayFinderProjectInfo />} />
-          <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} />
+            <Route path="/report" element={<ReportPage />} />
+            <Route path="/" element={<HomePage />} />
+          <Route path="/digital-wayfinder" element={<ProjectInfo />} />
+          {/* <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} /> */}
           <Route path="/digital-wayfinder/functional-area" element={<FunctionalAreaPage />} />
           <Route path="/digital-wayfinder/industry-type-fullfillment" element={<IndustryTypeFullfillment />} />
           <Route path="/digital-wayfinder/industry-type-planning" element={<IndustryTypePlanning />} />
@@ -121,7 +121,7 @@ function App() {
           
 
 
-              <Route path="/decision-tree" element={<ProjectInfo />} />
+          <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
           <Route path="/decision-tree/industry-type-func" element={<IndustryTypeFunc />} />
           <Route path="/decision-tree/industry-type-plannd" element={<IndustryTypePlannD />} />

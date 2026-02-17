@@ -264,6 +264,13 @@
   display: block;
 }
 
+ .input-error {
+  border: 2px solid red !important;
+}
+.error-message {
+  color: red;
+}
+
 /* Responsive Design */
 
 /* Large tablets and small desktops */
@@ -504,5 +511,5 @@
   .proceed-button:active {
     background: #6d28d9;
     transform: scale(0.98);
-  }
+  }  
 }
