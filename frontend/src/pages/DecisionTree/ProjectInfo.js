@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "./ProjectInfo.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import dashboardImage from "../../assets/dashboard.png";
 import { apiPost } from "../../api";
 
@@ -22,9 +22,18 @@ const ProjectInfo = () => {
   const mmsIdRef = useRef(null);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Scroll to top only once on initial mount
+  // Determine the route context (decision-tree or digital-wayfinder)
+  const isDecisionTreeRoute = location.pathname.includes("decision-tree");
+  const isDigitalWayfinderRoute =
+    location.pathname.includes("digital-wayfinder");
+  const breadcrumbText = isDigitalWayfinderRoute
+    ? "Digital Wayfinder"
+    : "Decision Tree";
+
   useEffect(() => {
+     // Scroll to top only once on initial mount
     window.scrollTo({ top: 0, behavior: "smooth" });
     /*
     Previously the component fetched project info from the backend on mount
@@ -139,12 +148,21 @@ const ProjectInfo = () => {
           projectType: projectType,
         });
         console.log("Project Info submitted successfully:", formData);
-        navigate("/decision-tree/functional-area", {
-          state: {
-            projectData: formData,
-            projectType: projectType,
-          },
-        });
+        if (isDecisionTreeRoute) {
+          navigate("/decision-tree/functional-area", {
+            state: {
+              projectData: formData,
+              projectType: projectType,
+            },
+          });
+        } else if (isDigitalWayfinderRoute) {
+          navigate("/digital-wayfinder/functional-area", {
+            state: {
+              projectData: formData,
+              projectType: projectType,
+            },
+          });
+        }
       } catch (err) {
         setErrors({ save: "Failed to save project info. Please try again." });
       } finally {
@@ -163,13 +181,11 @@ const ProjectInfo = () => {
         {/* Breadcrumb */}
         <div className="breadcrumb">
           <Link to="/">Home</Link> &gt;
-          <span>Decision Tree</span>
+          <span>{breadcrumbText}</span>
         </div>
         {/* Navigation Tabs */}
-        <div className="nav-tabs">
+         <div className="nav-tabs">
           <button className="nav-tab active">Project Information</button>
-          <button className="nav-tab">Functional Area</button>
-          <button className="nav-tab">Industry Type</button>
         </div>
         {/* Content Grid */}
         <div className="content-grid">
@@ -311,7 +327,7 @@ const ProjectInfo = () => {
             </div>
             {/* Footer */}
             <div className="form-footer">
-              <span className="step-indicator">Completed step 0 of 3</span>
+              {isDecisionTreeRoute ? <span className="step-indicator">Completed step 0 of 3</span>: <span className="step-indicator">Completed step 0 of 4</span>}
               <button
                 className="proceed-button"
                 onClick={handleProceed}

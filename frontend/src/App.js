@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
-import WayFinderProjectInfo from './pages/DigitalWayFinderr/WayFinderProjectInfo';
 import FunctionalAreaPage from './pages/DigitalWayFinderr/FunctionalAreaPage';
 import ReportPage from './pages/ReportPage';
 import IndustryTypeFullfillment from './pages/DigitalWayFinderr/IndustryTypeFullfillment';
