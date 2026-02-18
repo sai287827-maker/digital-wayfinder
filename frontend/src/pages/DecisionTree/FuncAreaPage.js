@@ -124,8 +124,7 @@ function FuncAreaPage() {
       </div>
  
       <div className="tabs">
-        <div className="tab">Project Information</div>
-        <div className="tab active">Sub-Functional Area</div>
+        <div className="tab active">Functional Area</div>
         <div className="tab">Industry Type</div>
       </div>
  

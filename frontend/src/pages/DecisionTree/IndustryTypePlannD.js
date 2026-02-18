@@ -115,7 +115,6 @@ function IndustryTypePlannD() {
       </div>
  
       <div className="tabs">
-        <div className="tab">Project Information</div>
         <div className="tab">Functional Area</div>
         <div className="tab active">Industry Type</div>
       </div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState,useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './FunctionalAreaPage.css';
 
 // Import icons
@@ -10,7 +10,21 @@ import dashboardImage from "../../assets/dashboard.png";
 function FunctionalAreaPage() {
   const [selectedArea, setSelectedArea] = useState(null);
   const [tooltipVisible, setTooltipVisible] = useState(null);
+  const [projectData, setProjectData] = useState(null);
+  const [projectType, setProjectType] = useState(null);
+  //const [isMobile, setIsMobile] = useState(false);
+  //const [loading, setLoading] = useState(false);
+  //const [error, setError] = useState(null);
+  
   const navigate = useNavigate();
+  const location = useLocation();
+  // Get project data from navigation state
+  useEffect(() => {
+    if (location.state) { 
+      setProjectData(location.state.projectData);
+      setProjectType(location.state.projectType);
+    }
+  }, [location.state]);
 
   const handleAreaSelect = (area) => {
     setSelectedArea(area);
@@ -61,6 +75,13 @@ function FunctionalAreaPage() {
         <div className="content-left">
           <h1>Select a Functional Area</h1>
           <p className="subtitle">Begin by choosing a key area</p>
+          
+          {/* Display project information if available */}
+          {projectData && (
+            <div className="project-summary">
+              <p><strong>Project:</strong> {projectData.clientName} ({projectType})</p>
+            </div>
+          )}
 
           <div className="area-cards">
             <div 

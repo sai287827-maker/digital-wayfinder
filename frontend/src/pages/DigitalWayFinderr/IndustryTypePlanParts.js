@@ -16,8 +16,8 @@ import Kinaxis from "../../assets/Kinaxis.jpg";
 import relex from "../../assets/relex.png";
 
 function IndustryTypePlanParts() {
-  const [selectedPlatforms, setSelectedPlatforms] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
+  //const [selectAll, setSelectAll] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -89,34 +89,39 @@ function IndustryTypePlanParts() {
 
   const platformData = getPlatformData();
   const systemInfo = getSystemInfo();
-
+  
   const handlePlatformSelect = (platformId) => {
-    setSelectedPlatforms(prev => {
-      if (prev.includes(platformId)) {
-        const newSelection = prev.filter(id => id !== platformId);
-        if (newSelection.length === 0) {
-          setSelectAll(false);
-        }
-        return newSelection;
-      } else {
-        const newSelection = [...prev, platformId];
-        if (newSelection.length === platformData.length) {
-          setSelectAll(true);
-        }
-        return newSelection;
-      }
-    });
+    // Set selected platform to the clicked one, or null if clicking the same one
+    setSelectedPlatform(selectedPlatform === platformId ? null : platformId);
   };
 
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedPlatforms([]);
-      setSelectAll(false);
-    } else {
-      setSelectedPlatforms(platformData.map(platform => platform.id));
-      setSelectAll(true);
-    }
-  };
+  // const handlePlatformSelect = (platformId) => {
+  //   setSelectedPlatforms(prev => {
+  //     if (prev.includes(platformId)) {
+  //       const newSelection = prev.filter(id => id !== platformId);
+  //       if (newSelection.length === 0) {
+  //         setSelectAll(false);
+  //       }
+  //       return newSelection;
+  //     } else {
+  //       const newSelection = [...prev, platformId];
+  //       if (newSelection.length === platformData.length) {
+  //         setSelectAll(true);
+  //       }
+  //       return newSelection;
+  //     }
+  //   });
+  // };
+
+  // const handleSelectAll = () => {
+  //   if (selectAll) {
+  //     setSelectedPlatforms([]);
+  //     setSelectAll(false);
+  //   } else {
+  //     setSelectedPlatforms(platformData.map(platform => platform.id));
+  //     setSelectAll(true);
+  //   }
+  // };
 
   const handlePrevious = () => {
     // Navigate back to IndustryTypeFullfillment component
@@ -128,13 +133,11 @@ function IndustryTypePlanParts() {
   };
 
   const handleFinish = () => {
-    console.log('Selected platforms:', selectedPlatforms);
-    // Navigate to final page or next step
     navigate('/digital-wayfinder/industry-data-and-cloud', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: selectedSystem,
-        selectedPlatforms: selectedPlatforms
+        selectedPlatform: selectedPlatform
       }
     });
   };
@@ -156,26 +159,19 @@ function IndustryTypePlanParts() {
           <h1>{systemInfo.title}</h1>
           <p className="subtitle">{systemInfo.description}</p>
 
-          <div className="select-all-container">
-            <button 
-              className="select-all-button"
-              onClick={handleSelectAll}
-            >
-              {selectAll ? 'Deselect all' : 'Select all'}
-            </button>
-          </div>
-
+        
           <div className="platform-cards">
             {platformData.map((platform) => (
               <div
                 key={platform.id}
-                className={`platform-card ${selectedPlatforms.includes(platform.id) ? 'selected' : ''}`}
+                className={`platform-card ${selectedPlatform === platform.id ? 'selected' : ''}`}
                 onClick={() => handlePlatformSelect(platform.id)}
               >
-                <div className="card-content">
+                 <div className="card-content">
                   <input
-                    type="checkbox"
-                    checked={selectedPlatforms.includes(platform.id)}
+                    type="radio"
+                    name="platform"
+                    checked={selectedPlatform === platform.id}
                     onChange={() => {}}
                     className="platform-checkbox"
                   />
@@ -197,10 +193,10 @@ function IndustryTypePlanParts() {
             <div className="progress-text">Completed step 3 of 4</div>
             <button 
               className="finish-button"
-              disabled={selectedPlatforms.length === 0}
+              disabled={!selectedPlatform}
               onClick={handleFinish}
             >
-              Finish
+              Proceed
             </button>
           </div>
         </div>

@@ -32,21 +32,21 @@ function IndustryTypePlanning() {
 
   const handleProceed = () => {
   if (selectedSystem === 'Industry Agnostic') {
-    navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
+    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: 'industry-agnostic-system'
       }
     });
   } else if (selectedSystem === 'Retail Industry Specific') {
-    navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
+    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: 'retail-industry-specific-system'
       }
     });
   } else if (selectedSystem === 'Consumer Goods Industry Specific') {
-    navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
+    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
         selectedSystem: 'consumer-goods-industry-specific-system'
