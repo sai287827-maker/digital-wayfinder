@@ -277,7 +277,8 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
       console.log('Agentic AI answers saved successfully:', response);
       
       // Handle completion - could navigate to results page or show success message
-      alert('Questionnaire completed successfully!');
+      //alert('Questionnaire completed successfully!');
+      setShowWmsReport(true);
       
     } catch (err) {
       console.error('Error saving Agentic AI answers:', err);
