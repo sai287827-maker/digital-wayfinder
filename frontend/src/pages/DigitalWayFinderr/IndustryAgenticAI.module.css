@@ -101,7 +101,7 @@
 /* Save button (right side) */
 .industryAgenticSaveBtn {
   padding: 12px 24px;
-  background-color: #007bff;
+  background-color: #9C27B0;
   color: white;
   border: none;
   border-radius: 6px;
@@ -144,7 +144,7 @@
 
 .industryAgenticProgressBarFill {
   height: 100%;
-  background-color: #007bff;
+  background: #a020f0;
   border-radius: 4px;
   transition: width 0.3s ease;
 }

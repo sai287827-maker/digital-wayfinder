@@ -13,10 +13,12 @@ const steps = [
 const IndustryAgenticAI = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
+  const [answerOptions, setAnswerOptions] = useState([]);                  // added
+  const [questionAnswerTypes, setQuestionAnswerTypes] = useState([]);      // added
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showWmsReport, setShowWmsReport] = useState(false);
+  const [showIndustryReport, setShowIndustryReport] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
   // State for API response data
@@ -25,13 +27,36 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
 
+  // helper to derive options from response structure or existing answers
+  const determineAnswerOptions = (apiResponse) => {
+    if (apiResponse.questions && Array.isArray(apiResponse.questions)) {
+      const firstQuestion = apiResponse.questions[0];
+      if (firstQuestion && firstQuestion.answerType) {
+        const answerType = firstQuestion.answerType.toLowerCase();
+        if (answerType.includes('yes') && answerType.includes('no')) {
+          return ['Yes', 'No'];
+        } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+          return ['High', 'Medium', 'Low'];
+        }
+      }
+    }
+    if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
+      const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
+      const hasYesNo = existingAnswers.some(answer => ['yes','no'].includes(answer));
+      const hasHighMediumLow = existingAnswers.some(answer => ['high','medium','low'].includes(answer));
+      if (hasYesNo) return ['Yes','No'];
+      if (hasHighMediumLow) return ['High','Medium','Low'];
+    }
+    return ['High','Medium','Low'];
+  };
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
       setError(null);
       try {
         console.log('Fetching Agentic AI questions...');
-        
+
         // For testing purposes, let's add some fallback questions if API fails
         const mockQuestions = [
           "Do you use cloud services (Any cloud service provider) to augment WMS capabilities ?",
@@ -39,7 +64,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
           "Do you have a unified data model as a single source of truth for analytics/AI-ML use cases ?",
           "Does the WMS systems allows seamless integration to all relevant external data such as traffic, weather, shipment tracking etc."
         ];
-        
+
         const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
 
         console.log('Agentic AI API Response:', response);
@@ -48,29 +73,69 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
         if (response && response.questions && Array.isArray(response.questions) && response.questions.length > 0) {
           // Extract questions from the response
           const questionTexts = response.questions.map(q => q.question || q);
+
+          // derive answer types per question if provided
+          const answerTypes = response.questions.map(q => {
+            if (q.answerType) {
+              const answerType = q.answerType.toLowerCase();
+              if (answerType.includes('yes') && answerType.includes('no')) {
+                return ['Yes', 'No'];
+              } else if (answerType.includes('high') && answerType.includes('medium') && answerType.includes('low')) {
+                return ['High', 'Medium', 'Low'];
+              }
+            }
+            return ['High', 'Medium', 'Low'];
+          });
+
           setQuestions(questionTexts);
-          
-          // Initialize answers array
+          setQuestionAnswerTypes(answerTypes);
+
+          const options = determineAnswerOptions(response);
+          setAnswerOptions(options);
+          console.log('Determined answer options for IndustryAgenticAI:', options);
+
           const initialAnswers = Array(questionTexts.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             response.answers.forEach(answerObj => {
               const questionIndex = questionTexts.findIndex(q => q === (answerObj.question || answerObj));
               if (questionIndex !== -1) {
-                // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer ? answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1) : answerObj;
                 initialAnswers[questionIndex] = answerValue;
               }
             });
+          } else {
+            // try secondary endpoint for previous answers, like supply chain component does
+            try {
+              console.log('Attempting to fetch existing answers separately...');
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
+              if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
+                console.log('Found existing answers in separate call:', answersResponse.answers);
+                if (!response.questions || !response.questions[0]?.answerType) {
+                  const separateOptions = determineAnswerOptions(answersResponse);
+                  setAnswerOptions(separateOptions);
+                  console.log('Updated answer options from separate call:', separateOptions);
+                }
+                answersResponse.answers.forEach(answerObj => {
+                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+                  if (questionIndex !== -1) {
+                    const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                    initialAnswers[questionIndex] = answerValue;
+                  }
+                });
+              }
+            } catch (separateErr) {
+              console.log('Separate answers fetch failed (expected if endpoint doesn\'t exist):', separateErr.message);
+            }
           }
-          
+
           setAnswers(initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Set functional area - if not provided, determine from functionalSubArea
           let area = response.functionalArea || '';
           if (!area && response.functionalSubArea) {
@@ -94,14 +159,16 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
             area = 'Supply Chain Fulfillment';
           }
           setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || 'Warehouse Management System');
+          setFunctionalSubArea(response.functionalSubArea || 'Industry Agnostic');
         } else {
           // Use mock questions as fallback
           console.log('Using mock questions as fallback');
           setQuestions(mockQuestions);
           setAnswers(Array(mockQuestions.length).fill(null));
+          setAnswerOptions(['High','Medium','Low']);
+          setQuestionAnswerTypes(Array(mockQuestions.length).fill(['High','Medium','Low']));
           setFunctionalArea('Supply Chain Fulfillment');
-          setFunctionalSubArea('Warehouse Management System');
+          setFunctionalSubArea('Industry Agnostic');
         }
       } catch (err) {
         console.error('Error fetching Agentic AI questions:', err);
@@ -117,8 +184,10 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
         
         setQuestions(mockQuestions);
         setAnswers(Array(mockQuestions.length).fill(null));
+        setAnswerOptions(['High','Medium','Low']);
+        setQuestionAnswerTypes(Array(mockQuestions.length).fill(['High','Medium','Low']));
         setFunctionalArea('Supply Chain Fulfillment');
-        setFunctionalSubArea('Warehouse Management System');
+        setFunctionalSubArea('Industry Agnostic');
         
         // Don't set error state, just use fallback data
         // setError('Failed to load questions.');
@@ -276,9 +345,8 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
       console.log('Agentic AI answers saved successfully:', response);
       
-      // Handle completion - could navigate to results page or show success message
       //alert('Questionnaire completed successfully!');
-      setShowWmsReport(true);
+      setShowIndustryReport(true);
       
     } catch (err) {
       console.error('Error saving Agentic AI answers:', err);
@@ -290,10 +358,20 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
+  const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
 
-  // Early return for navigation to WmsReport
-  if (showWmsReport) {
-    console.log('Navigating to WmsReport component, showWmsReport:', showWmsReport);
+  console.log('IndustryAgenticAI Progress Debug:', {
+    completedCount,
+    totalQuestions: questions.length,
+    progressPercentage,
+    answers,
+    answerOptions,
+    questionAnswerTypes
+  });
+
+  // Early return for navigation to report component
+  if (showIndustryReport) {
+    console.log('Navigating to IndustryReport component, showIndustryReport:', showIndustryReport);
     return <IndustryReport />;
   }
 
@@ -343,13 +421,13 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
   return (
     <div className={styles.industryAgenticWrapper}>
-      <div className={styles.industryAgenticBreadcrumbRow}>
+      {/* <div className={styles.industryAgenticBreadcrumbRow}>
         <div className={styles.industryAgenticBreadcrumb}>
           <span className={styles.industryAgenticBreadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.industryAgenticBreadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
           <span className={styles.industryAgenticBreadcrumbCurrent}>Questionnaire</span>
         </div>
-      </div>
+      </div> */}
       <div className={styles.industryAgenticContainer}>
         <div className={styles.industryAgenticSidebar}>
           <div className={styles.industryAgenticSidebarTitle}>Questionnaire</div>
@@ -386,26 +464,29 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
             </div>
           </div>
           <div className={styles.industryAgenticQuestionsList}>
-            {questions.map((q, idx) => (
-              <div key={idx} className={styles.industryAgenticQuestionBlock}>
-                <div className={styles.industryAgenticQuestionText}>{idx + 1}. {q}</div>
-                <div className={styles.industryAgenticOptionsRow}>
-                  {['High', 'Medium', 'Low'].map(opt => (
-                    <label key={opt} className={styles.industryAgenticOptionLabel}>
-                      <input
-                        type="radio"
-                        name={`q${idx}`}
-                        value={opt}
-                        checked={answers[idx] === opt}
-                        onChange={() => handleAnswer(idx, opt)}
-                        className={styles.industryAgenticRadio}
-                      />
-                      <span>{opt}</span>
-                    </label>
-                  ))}
+            {questions.map((q, idx) => {
+              const questionOptions = questionAnswerTypes[idx] || answerOptions;
+              return (
+                <div key={idx} className={styles.industryAgenticQuestionBlock}>
+                  <div className={styles.industryAgenticQuestionText}>{idx + 1}. {q}</div>
+                  <div className={styles.industryAgenticOptionsRow}>
+                    {questionOptions.map(opt => (
+                      <label key={opt} className={styles.industryAgenticOptionLabel}>
+                        <input
+                          type="radio"
+                          name={`q${idx}`}
+                          value={opt}
+                          checked={answers[idx] === opt}
+                          onChange={() => handleAnswer(idx, opt)}
+                          className={styles.industryAgenticRadio}
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className={styles.industryAgenticButtonRow}>
             <button 
@@ -420,7 +501,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
               disabled={!allQuestionsAnswered || saving || navigatingBack}
               onClick={handleSaveAndProceed}
             >
-              {saving ? 'Saving...' : 'Save & Proceed'}
+              {saving ? 'Saving...' : 'Generate Report'}
             </button>
           </div>
         </div>
