@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './IndustryDataandCloud.module.css';
+import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 // import VisibilityProactive from './VisibilityProactive';
 import IndustryOperational from './IndustryOperational';
 import IndustryTypePlanParts from './IndustryTypePlanParts'; // Add import for WmsSystem
@@ -13,27 +14,34 @@ const steps = [
 ];
  
 const IndustryDataandCloud = ({ onNavigateBack }) => {
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState([]);     
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showWmsSystem, setShowWmsSystem] = useState(false);
+  const [showIndustryTypePlanParts, setShowIndustryTypePlanParts] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
-  const [functionalArea, setFunctionalArea] = useState('');
-  const [functionalSubArea, setFunctionalSubArea] = useState('');
+  // Use shared hook for functional area/sub–area
+  const {
+    functionalArea,
+    functionalSubArea,
+    setFunctionalArea,
+    setFunctionalSubArea,
+    deriveArea,
+    effectiveSubArea
+  } = useFunctionalArea();
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
     switch(answerType?.toLowerCase()) {
       case 'yes/no':
       case 'yesno':
-        return ['Yes', 'No'];
+        return ['Yes', 'No']; 
       case 'priority':
       case 'high/medium/low':
         return ['High', 'Medium', 'Low'];
@@ -47,7 +55,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -75,26 +83,13 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
           
-          // Set functional area - if not provided, determine from functionalSubArea
-          let area = response.functionalArea || '';
-          if (!area && response.functionalSubArea) {
-            // Map functional sub-areas to functional areas
-            const areaMapping = {
-              'Warehouse Management System': 'Supply Chain Fulfillment',
-              'Inventory Management': 'Supply Chain Fulfillment',
-              'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
-              'Customer Relationship Management': 'Customer Experience',
-              'Sales Management': 'Customer Experience',
-              'Marketing Automation': 'Customer Experience',
-              'Financial Management': 'Financial Operations',
-              'Accounting': 'Financial Operations',
-              'Procurement': 'Financial Operations'
-            };
-            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          // Push API response into hook state; deriveArea effect will sync functional area
+          if (response.functionalSubArea) {
+            setFunctionalSubArea(response.functionalSubArea);
           }
-          setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
+          if (response.functionalArea) {
+            setFunctionalArea(response.functionalArea);
+          }
         } else {
           // Fallback for old response structure
           const questionObjects = (response.questions || []).map(q => ({
@@ -129,26 +124,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
         setError(null);
         
         // Save current progress before navigating back
-        let area = functionalArea;
-        if (!area && functionalSubArea) {
-          const areaMapping = {
-            'Warehouse Management System': 'Supply Chain Fulfillment',
-            'Inventory Management': 'Supply Chain Fulfillment',
-            'Order Management': 'Supply Chain Fulfillment',
-            'Transportation Management': 'Supply Chain Fulfillment',
-            'Customer Relationship Management': 'Customer Experience',
-            'Sales Management': 'Customer Experience',
-            'Marketing Automation': 'Customer Experience',
-            'Financial Management': 'Financial Operations',
-            'Accounting': 'Financial Operations',
-            'Procurement': 'Financial Operations'
-          };
-          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-        }
-        // Default fallback if still empty
-        if (!area) {
-          area = 'Supply Chain Fulfillment';
-        }
+        const area = deriveArea();
         
         // Create payload with only answered questions
         const answeredQuestions = questions
@@ -185,9 +161,9 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       console.log('Navigating back to WmsSystem using onNavigateBack callback');
       onNavigateBack();
     } else {
-      // Fallback: Navigate directly to WmsSystem component
-      console.log('Using fallback navigation to WmsSystem');
-      setShowWmsSystem(true);
+      // Fallback: Navigate directly to IndustryTypePlanParts component
+      console.log('Using fallback navigation to IndustryTypePlanParts');
+      setShowIndustryTypePlanParts(true);
     }
     
     setNavigatingBack(false);
@@ -198,8 +174,9 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       setSaving(true);
       
       // Call API to save answers
+      const area = deriveArea();
       const payload = {
-        functionalArea: functionalArea,
+        functionalArea: area,
         functionalSubArea: functionalSubArea,
         answers: questions.map((questionObj, index) => ({
           question: questionObj.question || questionObj,
@@ -227,9 +204,9 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
 
-  // Early return for navigation to WmsSystem
-  if (showWmsSystem) {
-    console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
+  // Early return for navigation to IndustryTypePlanParts
+  if (showIndustryTypePlanParts) {
+    console.log('Navigating to IndustryTypePlanParts component, showIndustryTypePlanParts:', showIndustryTypePlanParts);
     return <IndustryTypePlanParts />;
   }
 

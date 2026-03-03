@@ -7,33 +7,44 @@ import ReportPage from './pages/ReportPage';
 import IndustryTypeFullfillment from './pages/DigitalWayFinderr/IndustryTypeFullfillment';
 import IndustryTypePlanning from './pages/DigitalWayFinderr/IndustryTypePlanning';
 import IndustryTypePlanParts from './pages/DigitalWayFinderr/IndustryTypePlanParts';
+
+import IndustryDataandCloud from './pages/DigitalWayFinderr/IndustryDataandCloud';
+import IndustryOperational from './pages/DigitalWayFinderr/IndustryOperational';
+import IndustryVisibilityProactive from './pages/DigitalWayFinderr/IndustryVisibilityProactive';
+import IndustryAgenticAI from './pages/DigitalWayFinderr/IndustryAgenticAI';
+
+import RetailDataAndCloud from './pages/DigitalWayFinderr/RetailDataAndCloud';
+import RetailOperational from './pages/DigitalWayFinderr/RetailOperational';
+import RetailVisibilityProactive from './pages/DigitalWayFinderr/RetailVisibilityProactive';
+import RetailAgenticAI from './pages/DigitalWayFinderr/RetailAgenticAI';
+
+import RetailSystem from './pages/DigitalWayFinderr/RetailSystem';
+import RetailReport from './pages/DigitalWayFinderr/RetailReport';
+
+
+import CgsDataAndCloud from './pages/DigitalWayFinderr/CgsDataAndCloud';
+import CgsOperational from './pages/DigitalWayFinderr/CgsOperational';
+import CgsVisibilityProactive from './pages/DigitalWayFinderr/CgsVisibilityProactive';
+import CgsAgenticAI from './pages/DigitalWayFinderr/CgsAgenticAI';
+
+import CgsSystem from './pages/DigitalWayFinderr/CgsSystem';
+import CgsReport from './pages/DigitalWayFinderr/CgsReport';
+
+
 import WmsSystem from './pages/DigitalWayFinderr/WmsSystem';
 import DataAndCloud from './pages/DigitalWayFinderr/DataAndCloud';
 import Operational from './pages/DigitalWayFinderr/Operational';
 import VisibilityProactive from './pages/DigitalWayFinderr/VisibilityProactive';
 import AgenticAI from './pages/DigitalWayFinderr/AgenticAI';
+
 import TmsDataAndCloud from './pages/DigitalWayFinderr/TmsDataAndCloud';
 import TmsOperational from './pages/DigitalWayFinderr/TmsOperational';
 import TmsVisibilityProactive from './pages/DigitalWayFinderr/TmsVisibilityProactive';
 import TmsAgenticAI from './pages/DigitalWayFinderr/TmsAgenticAI';
-import RetailDataAndCloud from './pages/DigitalWayFinderr/RetailDataAndCloud';
-import RetailOperational from './pages/DigitalWayFinderr/RetailOperational';
-import RetailVisibilityProactive from './pages/DigitalWayFinderr/RetailVisibilityProactive';
-import RetailAgenticAI from './pages/DigitalWayFinderr/RetailAgenticAI';
-import RetailSystem from './pages/DigitalWayFinderr/RetailSystem';
-import RetailReport from './pages/DigitalWayFinderr/RetailReport';
-import IndustryDataandCloud from './pages/DigitalWayFinderr/IndustryDataandCloud';
-import IndustryOperational from './pages/DigitalWayFinderr/IndustryOperational';
-import IndustryVisibilityProactive from './pages/DigitalWayFinderr/IndustryVisibilityProactive';
-import IndustryAgenticAI from './pages/DigitalWayFinderr/IndustryAgenticAI';
-import CgsSystem from './pages/DigitalWayFinderr/CgsSystem';
-import CgsReport from './pages/DigitalWayFinderr/CgsReport';
+
 import TmsSystem from './pages/DigitalWayFinderr/TmsSystem';
 import TmsReport from './pages/DigitalWayFinderr/TmsReport';
-import CgsDataAndCloud from './pages/DigitalWayFinderr/CgsDataAndCloud';
-import CgsOperational from './pages/DigitalWayFinderr/CgsOperational';
-import CgsVisibilityProactive from './pages/DigitalWayFinderr/CgsVisibilityProactive';
-import CgsAgenticAI from './pages/DigitalWayFinderr/CgsAgenticAI';
+
 
 
 //Decision Tree imports
@@ -87,30 +98,36 @@ function App() {
           {/* <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} /> */}
           <Route path="/digital-wayfinder/functional-area" element={<FunctionalAreaPage />} />
           <Route path="/digital-wayfinder/industry-type-fullfillment" element={<IndustryTypeFullfillment />} />
-          <Route path="/digital-wayfinder/industry-type-planning" element={<IndustryTypePlanning />} />
-          <Route path="/digital-wayfinder/industry-type-plan-parts" element={<IndustryTypePlanParts />} />
           <Route path="/digital-wayfinder/wms-system" element={<WmsSystem />} />
           <Route path="/digital-wayfinder/data-and-cloud" element={<DataAndCloud />} />
           <Route path="/digital-wayfinder/operational" element={<Operational />} />
           <Route path="/digital-wayfinder/visibility-proactive" element={<VisibilityProactive />} />
           <Route path="/digital-wayfinder/agentic-ai" element={<AgenticAI />} />
-              {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
+          
+          <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
           <Route path="/digital-wayfinder/tms-data-and-cloud" element={<TmsDataAndCloud />} />
           <Route path="/digital-wayfinder/tms-operational" element={<TmsOperational />} />
           <Route path="/digital-wayfinder/tms-visibility-proactive" element={<TmsVisibilityProactive />} />
           <Route path="/digital-wayfinder/tms-agentic-ai" element={<TmsAgenticAI />} />
-          <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
           <Route path="/digital-wayfinder/tms-report" element={<TmsReport />} />
+          
+          <Route path="/digital-wayfinder/industry-type-planning" element={<IndustryTypePlanning />} />
+          <Route path="/digital-wayfinder/industry-type-plan-parts" element={<IndustryTypePlanParts />} />
+  
+          <Route path="/digital-wayfinder/industry-data-and-cloud" element={<IndustryDataandCloud />} />
+          <Route path="/digital-wayfinder/industry-operational" element={<IndustryOperational />} />
+          <Route path="/digital-wayfinder/industry-visibility-proactive" element={<IndustryVisibilityProactive />} />
+          <Route path="/digital-wayfinder/industry-agentic-ai" element={<IndustryAgenticAI />} />
+          
+          {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
+          
           <Route path="/digital-wayfinder/retail-data-and-cloud" element={<RetailDataAndCloud />} />
           <Route path="/digital-wayfinder/retail-operational" element={<RetailOperational />} />
           <Route path="/digital-wayfinder/retail-visibility-proactive" element={<RetailVisibilityProactive />} />
           <Route path="/digital-wayfinder/retail-agentic-ai" element={<RetailAgenticAI />} />
           <Route path="/digital-wayfinder/retail-system" element={<RetailSystem />} />
           <Route path="/digital-wayfinder/retail-report" element={<RetailReport />} />
-          <Route path="/digital-wayfinder/industry-data-and-cloud" element={<IndustryDataandCloud />} />
-          <Route path="/digital-wayfinder/industry-operational" element={<IndustryOperational />} />
-          <Route path="/digital-wayfinder/industry-visibility-proactive" element={<IndustryVisibilityProactive />} />
-          <Route path="/digital-wayfinder/industry-agentic-ai" element={<IndustryAgenticAI />} />
+          
           <Route path="/digital-wayfinder/cgs-system" element={<CgsSystem />} />
           <Route path="/digital-wayfinder/cgs-report" element={<CgsReport />} />
           <Route path="/digital-wayfinder/cgs-data-and-cloud" element={<CgsDataAndCloud />} />

@@ -31,25 +31,29 @@ function IndustryTypePlanning() {
   };
 
   const handleProceed = () => {
+    // Navigate to the appropriate system page or final page
   if (selectedSystem === 'Industry Agnostic') {
     navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
-        selectedSystem: 'industry-agnostic-system'
+        selectedSystem: selectedSystem
+        //selectedSystem: 'industry-agnostic-system'
       }
     });
   } else if (selectedSystem === 'Retail Industry Specific') {
     navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
-        selectedSystem: 'retail-industry-specific-system'
+        selectedSystem: selectedSystem
+        //selectedSystem: 'retail-industry-specific-system'
       }
     });
   } else if (selectedSystem === 'Consumer Goods Industry Specific') {
     navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
-        selectedSystem: 'consumer-goods-industry-specific-system'
+        selectedSystem: selectedSystem
+        //selectedSystem: 'consumer-goods-industry-specific-system'
       }
     });
   }
