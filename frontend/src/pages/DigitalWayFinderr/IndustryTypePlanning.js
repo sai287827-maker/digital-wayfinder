@@ -114,13 +114,13 @@ function IndustryTypePlanning() {
     },
     {
       id: 'Retail Industry Specific',  
-      title: 'Retail Industry Specific System',
+      title: 'Retail Industry System',
       description: 'The process of forecasting demand, managing inventory, and ensuring timely product availability to meet customer needs in retail.',
       image: orderManagementImg
     },
     {
       id: 'Consumer Goods Industry Specific',
-      title: 'Consumer Goods Industry Specific System', 
+      title: 'Consumer Goods Industry System', 
       description: 'The process of forecasting demand, optimizing inventory and distribution for timely delivery of consumer goods.',
       image: transportationManagementImg
     }

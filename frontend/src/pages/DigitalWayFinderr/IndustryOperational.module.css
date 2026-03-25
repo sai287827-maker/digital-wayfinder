@@ -126,8 +126,11 @@
 /* Main Content */
 .industryOperationalMainContent {
   flex: 1;
-  padding: 24px;
+  padding: 40px 48px;
   overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
 }
 
 /* Title */
