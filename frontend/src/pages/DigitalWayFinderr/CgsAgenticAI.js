@@ -72,7 +72,6 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
         const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
 
         console.log('Agentic AI API Response:', response);
-
         if (response.questions && Array.isArray(response.questions)) {
           const questionTexts = response.questions.map(q => q.question);
           const answerTypes = response.questions.map(q => {
@@ -141,7 +140,9 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
           setAnswers(initialAnswers);
           console.log('Final AgenticAI answers array:', initialAnswers);
           
-          setFunctionalSubArea(response.functionalSubArea || '');
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
+            setFunctionalSubArea(response.functionalSubArea);
+          }
         } else {
           console.log('Using fallback structure for AgenticAI questions');
           setQuestions(response.questions || []);
@@ -157,7 +158,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, [effectiveSubArea, setFunctionalSubArea, deriveArea]);
+  }, [effectiveSubArea]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];

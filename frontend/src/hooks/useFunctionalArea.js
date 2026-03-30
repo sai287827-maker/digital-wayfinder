@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // shared mapping of sub‑areas -> areas (same as seen in multiple components)
@@ -37,10 +37,13 @@ export function useFunctionalArea() {
   );
 
   // helper used by components when they receive an API response
-  const deriveArea = (subArea = functionalSubArea) => {
-    if (functionalArea) return functionalArea;
-    return AREA_MAPPING[subArea] || DEFAULT_AREA;
-  };
+  const deriveArea = useCallback(
+    (subArea = functionalSubArea) => {
+      if (functionalArea) return functionalArea;
+      return AREA_MAPPING[subArea] || DEFAULT_AREA;
+    },
+    [functionalArea, functionalSubArea]
+  );
 
   // whenever sub‑area is updated from outside (e.g. after fetching),
   // recompute area if it was empty.
