@@ -3,9 +3,9 @@ import { useLocation } from 'react-router-dom';
 
 // shared mapping of sub‑areas -> areas (same as seen in multiple components)
 const AREA_MAPPING = {
-  'Industry Agnostic System': 'Supply Chain Planning',
-  'Retail Industry Specific System': 'Supply Chain Planning',
-  'Consumer Goods Industry Specific System': 'Supply Chain Planning'
+  'Industry Agnostic': 'Supply Chain Planning',
+  'Retail Industry Specific': 'Supply Chain Planning',
+  'Consumer Goods Industry Specific': 'Supply Chain Planning'
 };
 
 // default fallbacks used across the wizard

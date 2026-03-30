@@ -94,7 +94,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
     const load = async () => {
       setLoading(true);
       setError(null);
-
+      console.log('IndustryAgenticAI component mounted with effectiveSubArea:', effectiveSubArea);
       try {
         const response = await apiGet(
           `api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent(

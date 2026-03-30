@@ -148,24 +148,24 @@ function IndustryTypePlanParts() {
   if (selectedSystem === 'Industry Agnostic') {
     navigate('/digital-wayfinder/industry-data-and-cloud', {
       state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem,
+        functionalArea: selectedFunctionalArea,
+        functionalSubArea: selectedSystem,
         selectedPlatform: selectedPlatform
       }
     });
   } else if (selectedSystem === 'Retail Industry Specific') {
     navigate('/digital-wayfinder/retail-data-and-cloud', {
       state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem,
+        functionalArea: selectedFunctionalArea,
+        functionalSubArea: selectedSystem,
         selectedPlatform: selectedPlatform
       }
     });
   } else if (selectedSystem === 'Consumer Goods Industry Specific') {
     navigate('/digital-wayfinder/cgs-data-and-cloud', {
       state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem,
+        functionalArea: selectedFunctionalArea,
+        functionalSubArea: selectedSystem,
         selectedPlatform: selectedPlatform
       }
     });

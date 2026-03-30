@@ -19,7 +19,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
+  const [showIndustryOperational, setShowIndustryOperational] = useState(false);
   const [showIndustryTypePlanParts, setShowIndustryTypePlanParts] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
@@ -35,6 +35,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
     deriveArea,
     effectiveSubArea
   } = useFunctionalArea();
+  
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
@@ -52,8 +53,12 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
 
   useEffect(() => {
     async function fetchQuestions() {
+      
+      console.log('IndustryDataandCloud rendered with functionalArea:', functionalArea, 'functionalSubArea:', functionalSubArea, 'effectiveSubArea:', effectiveSubArea);
+      
       setLoading(true);
       setError(null);
+      
       try {
         const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
         
@@ -191,7 +196,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       console.log('Answers saved successfully:', response);
       
       // Navigate to next component
-      setShowVisibilityProactive(true);
+      setShowIndustryOperational(true);
       
     } catch (err) {
       console.error('Error saving answers:', err);
@@ -210,7 +215,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
     return <IndustryTypePlanParts />;
   }
 
-  if (showVisibilityProactive) {
+  if (showIndustryOperational) {
     return <IndustryOperational />;
   }
  

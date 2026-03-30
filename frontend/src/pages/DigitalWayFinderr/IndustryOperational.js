@@ -34,6 +34,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
     deriveArea,
     effectiveSubArea
   } = useFunctionalArea();
+  
+  console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
@@ -50,7 +52,9 @@ const IndustryOperational = ({ onNavigateBack }) => {
   };
  
   useEffect(() => {
-    async function fetchQuestions() {
+    async function fetchQuestions() {      
+      console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
+      
       setLoading(true);
       setError(null);
       try {
@@ -88,7 +92,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);

@@ -51,6 +51,7 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
  
   useEffect(() => {
     async function fetchQuestions() {
+      console.log('IndustryVisibilityProactive component mounted with effectiveSubArea:', effectiveSubArea);
       setLoading(true);
       setError(null);
       try {
@@ -88,7 +89,7 @@ const IndustryVisibilityProactive = ({ onNavigateBack }) => {
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
