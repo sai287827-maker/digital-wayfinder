@@ -89,10 +89,10 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
           setSessionId(response.sessionId || '');
           
           // Push API response into hook state; deriveArea effect will sync functional area
-          if (response.functionalSubArea) {
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
             setFunctionalSubArea(response.functionalSubArea);
           }
-          if (response.functionalArea) {
+          if (response.functionalArea && response.functionalArea !== functionalArea) {
             setFunctionalArea(response.functionalArea);
           }
         } else {
@@ -111,7 +111,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, []);
+  }, [effectiveSubArea]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];

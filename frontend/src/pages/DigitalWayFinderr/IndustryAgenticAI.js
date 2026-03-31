@@ -148,10 +148,10 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
         setUserId(response?.userId || '');
         setSessionId(response?.sessionId || '');
-        if (response?.functionalSubArea) {
+        if (response?.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
           setFunctionalSubArea(response.functionalSubArea);
         }
-        if (response?.functionalArea) {
+        if (response?.functionalArea && response.functionalArea !== functionalArea) {
           setFunctionalArea(response.functionalArea);
         }
       } catch (err) {

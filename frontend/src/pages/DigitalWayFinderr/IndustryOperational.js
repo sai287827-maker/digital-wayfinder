@@ -119,10 +119,10 @@ const IndustryOperational = ({ onNavigateBack }) => {
           
           // Set functional area - if not provided, determine from functionalSubArea
           // push values into hook state; deriveArea will compute a fallback
-          if (response.functionalSubArea) {
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
             setFunctionalSubArea(response.functionalSubArea);
           }
-          if (response.functionalArea) {
+          if (response.functionalArea && response.functionalArea !== functionalArea) {
             setFunctionalArea(response.functionalArea);
           }
 
