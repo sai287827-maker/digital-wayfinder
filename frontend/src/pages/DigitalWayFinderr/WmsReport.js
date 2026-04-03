@@ -314,7 +314,7 @@ const WmsReport = () => {
         <div className="header-section">
           <h1 className="main-title">Assessment Report</h1>
           <p className="main-description">
-            We have analyzed capabilities in your current ERP system and recommend following solutions based on the questionnaire inputs and gaps identified in the current solution
+            We have analyzed capabilities in your current Warehouse Management system and recommend following solutions based on the questionnaire inputs and gaps identified in the current solution
           </p>
           {error && (
             <div className="error-message" style={{color: 'red', marginTop: '1rem'}}>
