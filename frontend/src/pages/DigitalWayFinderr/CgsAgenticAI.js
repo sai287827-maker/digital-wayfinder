@@ -340,8 +340,19 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
       <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.title}>Agentic AI</div>
         <div className={styles.progressRow}>
-          <span className={styles.progressLabel}>Progress: {completedCount} of {questions.length} questions completed</span>
-          <span style={{color: '#666', fontSize: '14px'}}>{Math.round(progressPercentage)}%</span>
+          <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
+          <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+            <div 
+              className={styles.progressBarFill} 
+              style={{ 
+                width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
+                height: '100%',
+                backgroundColor: '#9C27B0',
+                borderRadius: '4px',
+                transition: 'width 0.3s ease'
+              }} 
+            />
+          </div>
         </div>
         <div className={styles.questionsList}>
           {questions.map((q, idx) => {
