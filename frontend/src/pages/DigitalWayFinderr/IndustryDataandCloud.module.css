@@ -71,7 +71,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #9C27B0;
   color: #fff;
   display: flex;
   align-items: center;
@@ -92,7 +92,7 @@
   margin-right: 12px;
 }
 .industryDataCloudStepTextActive {
-  color: #22c55e;
+  color: #9C27B0;
   font-weight: 600;
 }
 .industryDataCloudStepTextInactive {
@@ -123,23 +123,29 @@
   margin-right: 18px;
 }
 .industryDataCloudProgressBarBg {
-  width: 180px;
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 3px;
+  width: 100%;
+  max-width: 300px;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
   overflow: hidden;
 }
 .industryDataCloudProgressBarFill {
   height: 100%;
-  background: #a020f0;
-  border-radius: 3px;
-  transition: width 0.3s;
+  background-color: #9C27B0;
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 .industryDataCloudQuestionsList {
   margin-bottom: 36px;
 }
 .industryDataCloudQuestionBlock {
-  margin-bottom: 26px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: none;
+  box-shadow: none;
 }
 .industryDataCloudQuestionText {
   font-size: 16px;
@@ -149,7 +155,7 @@
 .industryDataCloudOptionsRow {
   display: flex;
   gap: 36px;
-  margin-left:14px;
+  margin-left: 14px;
 }
 .industryDataCloudOptionLabel {
   font-size: 14px;
@@ -159,8 +165,22 @@
   gap: 8px;
 }
 .industryDataCloudRadio {
-  accent-color: #a020f0;
-  margin-right: 4px;
+  accent-color: #9C27B0;
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Option Text States */
+.industryDataCloudOptionText {
+  color: #333;
+  font-weight: 400;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+.industryDataCloudOptionTextSelected {
+  color: #9C27B0;
+  font-weight: 600;
 }
 .industryDataCloudButtonRow {
   display: flex;
@@ -168,32 +188,53 @@
   gap: 18px;
 }
 .industryDataCloudPrevBtn {
-  background: #f3f4f6;
-  color: #888;
-  border: none;
+  background-color: #f5f5f5;
+  border: 2px solid #9C27B0;
+  color: #9C27B0;
+  padding: 12px 24px;
   border-radius: 6px;
-  padding: 10px 24px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.industryDataCloudPrevBtn:hover {
-  background: #e5e7eb;
-}
-.industryDataCloudSaveBtn {
-  background: #a020f0;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 32px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  opacity: 1;
 }
-.industryDataCloudSaveBtn:disabled {
-  background: #e5e7eb;
+
+.industryDataCloudPrevBtn:hover:not(:disabled) {
+  background-color: #9C27B0;
+  color: #fff;
+}
+
+.industryDataCloudPrevBtn:disabled {
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
   color: #aaa;
   cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.industryDataCloudSaveBtn {
+  background-color: #9C27B0;
+  border: 2px solid #9C27B0;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.industryDataCloudSaveBtn:hover:not(:disabled) {
+  background-color: #7B1FA2;
+  border-color: #7B1FA2;
+}
+
+.industryDataCloudSaveBtn:disabled {
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 .industryDataCloudLoading {
   font-size: 16px;
@@ -209,74 +250,4 @@
   background: #fef2f2;
   border-radius: 8px;
   border: 1px solid #fecaca;
-}
-.industryDataCloudOptionHigh {
-  background: #e6f9ed;
-  color: #15803d;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-weight: 500;
-  border: 1px solid #b6e4c7;
-}
-.industryDataCloudOptionHigh input[type="radio"]:checked + span,
-.industryDataCloudOptionHigh input[type="radio"]:focus + span {
-  background: #16a34a;
-}
-.industryDataCloudOptionMedium {
-  background: #fff7e6;
-  color: #b45309;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-weight: 500;
-  border: 1px solid #ffe0b2;
-}
-.industryDataCloudOptionMedium input[type="radio"]:checked + span,
-.industryDataCloudOptionMedium input[type="radio"]:focus + span {
-  background: #ea580c;
-}
-.industryDataCloudOptionLow {
-  background: #fbeaea;
-  color: #b91c1c;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-weight: 500;
-  border: 1px solid #fbcaca;
-}
-.industryDataCloudOptionLow input[type="radio"]:checked + span,
-.industryDataCloudOptionLow input[type="radio"]:focus + span {
-  background: #b91c1c;
-}
-.industryDataCloudOptionHigh, .industryDataCloudOptionMedium, .industryDataCloudOptionLow {
-  transition: box-shadow 0.2s, border 0.2s, background 0.25s, color 0.25s;
-}
-.industryDataCloudOptionHigh.selected, .industryDataCloudOptionMedium.selected, .industryDataCloudOptionLow.selected {
-  box-shadow: 0 2px 8px 0 rgba(80, 160, 80, 0.10);
-  border-width: 2px;
-  border-color: #a020f0;
-  z-index: 1;
-}
-/* Fallback for browsers that support :has() */
-.industryDataCloudOptionsRow label:has(input[type="radio"]:checked) {
-  box-shadow: 0 2px 8px 0 rgba(80, 160, 80, 0.10);
-  border-width: 2px;
-  border-color: #a020f0;
-  z-index: 1;
-}
-.industryDataCloudSelected {
-  animation: industryDataCloudOptionSelectAnim 0.25s cubic-bezier(0.4,0,0.2,1);
-}
-@keyframes industryDataCloudOptionSelectAnim {
-  0% {
-    box-shadow: 0 0 0 0 rgba(80,160,80,0.00);
-    background-color: #fff;
-    border-color: #e5e7eb;
-  }
-  60% {
-    box-shadow: 0 4px 16px 0 rgba(80,160,80,0.15);
-    background-color: #f3e8ff;
-    border-color: #a020f0;
-  }
-  100% {
-    box-shadow: 0 2px 8px 0 rgba(80,160,80,0.10);
-  }
 }

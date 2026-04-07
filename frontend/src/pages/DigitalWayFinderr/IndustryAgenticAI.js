@@ -335,7 +335,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
                           onChange={() => handleAnswer(idx, opt)}
                           className={styles.industryAgenticRadio}
                         />
-                        <span>{opt}</span>
+                        <span className={answers[idx] === opt ? styles.industryAgenticOptionTextSelected : styles.industryAgenticOptionText}>{opt}</span>
                       </label>
                     ))}
                   </div>

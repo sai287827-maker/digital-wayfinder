@@ -282,7 +282,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
                             onChange={() => handleAnswer(idx, opt)}
                             className={styles.industryDataCloudRadio}
                           />
-                          <span>{opt}</span>
+                          <span className={answers[idx] === opt ? styles.industryDataCloudOptionTextSelected : styles.industryDataCloudOptionText}>{opt}</span>
                         </label>
                       ))}
                     </div>

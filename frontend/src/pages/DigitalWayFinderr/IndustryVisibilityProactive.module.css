@@ -81,7 +81,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #9C27B0;
   color: #fff;
   display: flex;
   align-items: center;
@@ -94,7 +94,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #4CAF50;
   color: #fff;
   display: flex;
   align-items: center;
@@ -118,12 +118,12 @@
 
 /* Step Text Styles */
 .industryVisibilityProactiveStepTextActive {
-  color: #22c55e;
+  color: #9C27B0;
   font-weight: 600;
 }
 
 .industryVisibilityProactiveStepTextCompleted {
-  color: #22c55e;
+  color: #4CAF50;
   font-weight: 600;
 }
 
@@ -163,19 +163,20 @@
 }
 
 .industryVisibilityProactiveProgressBarBg {
-  width: 180px;
-  height: 6px;
-  background: #e5e7eb;
-  border-radius: 3px;
+  width: 100%;
+  max-width: 300px;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 /* Progress Bar Fill */
 .industryVisibilityProactiveProgressBarFill {
   height: 100%;
-  background: #a020f0;
-  border-radius: 3px;
-  transition: width 0.3s;
+  background-color: #9C27B0;
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 
 /* Questions List */
@@ -184,13 +185,19 @@
 }
 
 .industryVisibilityProactiveQuestionBlock {
-  margin-bottom: 26px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: none;
+  box-shadow: none;
 }
 
 .industryVisibilityProactiveQuestionText {
+  margin-bottom: 12px;
   font-size: 16px;
   font-weight: 500;
-  margin-bottom: 12px;
+  color: #333;
 }
 
 .industryVisibilityProactiveOptionsRow {
@@ -205,13 +212,28 @@
   color: #444;
   display: flex;
   align-items: center;
-  gap: 8px;
+  margin-right: 20px;
+  cursor: pointer;
 }
 
 /* Radio Buttons */
 .industryVisibilityProactiveRadio {
-  accent-color: #a020f0;
-  margin-right: 4px;
+  accent-color: #9C27B0;
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Option Text States */
+.industryVisibilityProactiveOptionText {
+  color: #333;
+  font-weight: 400;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+.industryVisibilityProactiveOptionTextSelected {
+  color: #9C27B0;
+  font-weight: 600;
 }
 
 /* Button Row */
@@ -223,36 +245,54 @@
 
 /* Previous Button */
 .industryVisibilityProactivePrevBtn {
-  background: #f3f4f6;
-  color: #888;
-  border: none;
+  background-color: #f5f5f5;
+  border: 2px solid #9C27B0;
+  color: #9C27B0;
+  padding: 12px 24px;
   border-radius: 6px;
-  padding: 10px 24px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  opacity: 1;
 }
 
-.industryVisibilityProactivePrevBtn:hover {
-  background: #e5e7eb;
+.industryVisibilityProactivePrevBtn:hover:not(:disabled) {
+  background-color: #9C27B0;
+  color: #fff;
+}
+
+.industryVisibilityProactivePrevBtn:disabled {
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Save Button */
 .industryVisibilityProactiveSaveBtn {
-  background: #a020f0;
+  background-color: #9C27B0;
+  border: 2px solid #9C27B0;
   color: #fff;
-  border: none;
+  padding: 12px 24px;
   border-radius: 6px;
-  padding: 10px 32px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.industryVisibilityProactiveSaveBtn:hover:not(:disabled) {
+  background-color: #7B1FA2;
+  border-color: #7B1FA2;
 }
 
 .industryVisibilityProactiveSaveBtn:disabled {
-  background: #e5e7eb;
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
   color: #aaa;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Loading and Error States */
