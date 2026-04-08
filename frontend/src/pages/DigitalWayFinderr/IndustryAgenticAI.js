@@ -238,26 +238,6 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
   // render shortcuts
   if (showIndustryReport) return <IndustryReport />;
-  if (loading)
-    return (
-      <div className={styles.industryAgenticContainer}>
-        <div className={styles.industryAgenticLoadingContainer}>
-          <div className={styles.industryAgenticLoadingSpinner}></div>
-          <p>Loading questions...</p>
-        </div>
-      </div>
-    );
-  if (error || (!loading && questions.length === 0))
-    return (
-      <div className={styles.industryAgenticContainer}>
-        <div className={styles.industryAgenticErrorContainer}>
-          <p className={styles.industryAgenticErrorMessage}>{error || 'No questions available.'}</p>
-          <button className={styles.industryAgenticSaveBtn} onClick={() => window.location.reload()}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
 
   return (
     <div className={styles.industryAgenticWrapper}>
@@ -305,60 +285,68 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
         </div>
         <div className={styles.industryAgenticMainContent}>
           <div className={styles.industryAgenticTitle}>Agentic AI</div>
-          <div className={styles.industryAgenticProgressRow}>
-            <span className={styles.industryAgenticProgressLabel}>
-              Completed question {completedCount}/{questions.length}
-            </span>
-            <div className={styles.industryAgenticProgressBarBg}>
-              <div
-                className={styles.industryAgenticProgressBarFill}
-                style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }}
-              />
-            </div>
-          </div>
-          <div className={styles.industryAgenticQuestionsList}>
-            {questions.map((q, idx) => {
-              const opts = questionAnswerTypes[idx] || answerOptions;
-              return (
-                <div key={idx} className={styles.industryAgenticQuestionBlock}>
-                  <div className={styles.industryAgenticQuestionText}>
-                    {idx + 1}. {q}
-                  </div>
-                  <div className={styles.industryAgenticOptionsRow}>
-                    {opts.map(opt => (
-                      <label key={opt} className={styles.industryAgenticOptionLabel}>
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.industryAgenticRadio}
-                        />
-                        <span className={answers[idx] === opt ? styles.industryAgenticOptionTextSelected : styles.industryAgenticOptionText}>{opt}</span>
-                      </label>
-                    ))}
-                  </div>
+          {loading ? (
+            <div className={styles.industryAgenticLoading}>Loading questions...</div>
+          ) : error ? (
+            <div className={styles.industryAgenticError}>{error}</div>
+          ) : (
+            <>
+              <div className={styles.industryAgenticProgressRow}>
+                <span className={styles.industryAgenticProgressLabel}>
+                  Completed question {completedCount}/{questions.length}
+                </span>
+                <div className={styles.industryAgenticProgressBarBg}>
+                  <div
+                    className={styles.industryAgenticProgressBarFill}
+                    style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }}
+                  />
                 </div>
-              );
-            })}
-          </div>
-          <div className={styles.industryAgenticButtonRow}>
-            <button
-              className={styles.industryAgenticPrevBtn}
-              disabled={saving || navigatingBack}
-              onClick={handlePrevious}
-            >
-              {navigatingBack ? 'Saving...' : 'Previous'}
-            </button>
-            <button
-              className={styles.industryAgenticSaveBtn}
-              disabled={!allQuestionsAnswered || saving || navigatingBack}
-              onClick={handleSaveAndProceed}
-            >
-              {saving ? 'Saving...' : 'Generate Report'}
-            </button>
-          </div>
+              </div>
+              <div className={styles.industryAgenticQuestionsList}>
+                {questions.map((q, idx) => {
+                  const opts = questionAnswerTypes[idx] || answerOptions;
+                  return (
+                    <div key={idx} className={styles.industryAgenticQuestionBlock}>
+                      <div className={styles.industryAgenticQuestionText}>
+                        {idx + 1}. {q}
+                      </div>
+                      <div className={styles.industryAgenticOptionsRow}>
+                        {opts.map(opt => (
+                          <label key={opt} className={styles.industryAgenticOptionLabel}>
+                            <input
+                              type="radio"
+                              name={`q${idx}`}
+                              value={opt}
+                              checked={answers[idx] === opt}
+                              onChange={() => handleAnswer(idx, opt)}
+                              className={styles.industryAgenticRadio}
+                            />
+                            <span className={answers[idx] === opt ? styles.industryAgenticOptionTextSelected : styles.industryAgenticOptionText}>{opt}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className={styles.industryAgenticButtonRow}>
+                <button
+                  className={styles.industryAgenticPrevBtn}
+                  disabled={saving || navigatingBack}
+                  onClick={handlePrevious}
+                >
+                  {navigatingBack ? 'Saving...' : 'Previous'}
+                </button>
+                <button
+                  className={styles.industryAgenticSaveBtn}
+                  disabled={!allQuestionsAnswered || saving || navigatingBack}
+                  onClick={handleSaveAndProceed}
+                >
+                  {saving ? 'Saving...' : 'Generate Report'}
+                </button>
+              </div>
+              </>)
+          }   
         </div>
       </div>
     </div>
