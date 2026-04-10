@@ -296,6 +296,7 @@ const RetailOperational = ({ onNavigateBack }) => {
   
   // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
+  const progressWidthClass = styles[`progressWidth${Math.min(100, Math.max(0, Math.round(progressPercentage / 10) * 10))}`];
   
   // Debug logging for progress bar
   console.log('Progress Debug:', {
@@ -332,29 +333,19 @@ const RetailOperational = ({ onNavigateBack }) => {
             <div key={step.label} className={styles.stepItem}>
               <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
                               step.status === 'active' ? styles.stepCircleActive : 
-                              styles.stepCircleInactive}
-                   style={{
-                     backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
-                     color: step.status === 'inactive' ? '#666' : 'white'
-                   }}>
+                              styles.stepCircleInactive}>
                 {step.status === 'completed' ? '✓' : idx + 1}
               </div>
               <span className={step.status === 'completed' ? styles.stepTextCompleted :
                               step.status === 'active' ? styles.stepTextActive : 
-                              styles.stepTextInactive}
-                    style={{
-                      color: step.status === 'completed' ? '#4CAF50' : 
-                             step.status === 'active' ? '#9C27B0' : '#666',
-                      fontWeight: step.status === 'active' ? '600' : '400'
-                    }}>
+                              styles.stepTextInactive}>
                 {step.label}
               </span>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
+      <div className={styles.mainContent}>
         <div className={styles.breadcrumb}>
           <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
           <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
@@ -369,17 +360,8 @@ const RetailOperational = ({ onNavigateBack }) => {
           <>
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-              <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                <div 
-                  className={styles.progressBarFill} 
-                  style={{ 
-                    width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
-                    height: '100%',
-                    backgroundColor: '#9C27B0',
-                    borderRadius: '4px',
-                    transition: 'width 0.3s ease'
-                  }} 
-                />
+              <div className={styles.progressBarBg}>
+                <div className={`${styles.progressBarFill} ${progressWidthClass}`} />
               </div>
             </div>
             <div className={styles.questionsList}>
@@ -388,14 +370,13 @@ const RetailOperational = ({ onNavigateBack }) => {
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
                 
                 return (
-                  <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
-                    <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
+                  <div key={idx} className={styles.questionBlock}>
+                    <div className={styles.questionText}>{idx + 1}. {q}</div>
                     <div className={styles.optionsRow}>
                       {questionOptions.map(opt => (
                         <label
                           key={opt}
                           className={styles.optionLabel}
-                          style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
                         >
                           <input
                             type="radio"
@@ -404,14 +385,8 @@ const RetailOperational = ({ onNavigateBack }) => {
                             checked={answers[idx] === opt}
                             onChange={() => handleAnswer(idx, opt)}
                             className={styles.radio}
-                            style={{
-                              accentColor: '#9C27B0',
-                              marginRight: '8px',
-                              width: '18px',
-                              height: '18px'
-                            }}
                           />
-                          <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
+                          <span>{opt}</span>
                         </label>
                       ))}
                     </div>
@@ -424,29 +399,6 @@ const RetailOperational = ({ onNavigateBack }) => {
                 className={styles.prevBtn} 
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
-                style={{
-                  backgroundColor: '#f5f5f5',
-                  border: '2px solid #9C27B0',
-                  color: '#9C27B0',
-                  padding: '12px 24px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
-                  opacity: (saving || navigatingBack) ? 0.6 : 1,
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (!saving && !navigatingBack) {
-                    e.target.style.backgroundColor = '#9C27B0';
-                    e.target.style.color = 'white';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!saving && !navigatingBack) {
-                    e.target.style.backgroundColor = '#f5f5f5';
-                    e.target.style.color = '#9C27B0';
-                  }
-                }}
               >
                 {navigatingBack ? 'Saving...' : 'Previous'}
               </button>
@@ -454,29 +406,6 @@ const RetailOperational = ({ onNavigateBack }) => {
                 className={styles.saveBtn}
                 disabled={!allQuestionsAnswered || saving || navigatingBack}
                 onClick={handleSaveAndProceed}
-                style={{
-                  backgroundColor: '#9C27B0',
-                  border: '2px solid #9C27B0',
-                  color: 'white',
-                  padding: '12px 24px',
-                  borderRadius: '6px',
-                  fontWeight: '600',
-                  cursor: (!allQuestionsAnswered || saving || navigatingBack) ? 'not-allowed' : 'pointer',
-                  opacity: (!allQuestionsAnswered || saving || navigatingBack) ? 0.6 : 1,
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  if (allQuestionsAnswered && !saving && !navigatingBack) {
-                    e.target.style.backgroundColor = '#7B1FA2';
-                    e.target.style.borderColor = '#7B1FA2';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (allQuestionsAnswered && !saving && !navigatingBack) {
-                    e.target.style.backgroundColor = '#9C27B0';
-                    e.target.style.borderColor = '#9C27B0';
-                  }
-                }}
               >
                 {saving ? 'Saving...' : 'Save & Proceed'}
               </button>

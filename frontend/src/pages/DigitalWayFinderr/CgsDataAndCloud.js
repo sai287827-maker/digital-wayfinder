@@ -245,6 +245,8 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
+  const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
+  const progressWidthClass = styles[`progressWidth${Math.min(100, Math.max(0, Math.round(progressPercentage / 10) * 10))}`];
 
   // Early return for navigation to WmsSystem
   if (showWmsSystem) {
@@ -292,7 +294,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
               <div className={styles.progressBarBg}>
-                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+                <div className={`${styles.progressBarFill} ${progressWidthClass}`} />
               </div>
             </div>
             <div className={styles.questionsList}>

@@ -259,6 +259,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
+  const progressWidthClass = styles[`progressWidth${Math.min(100, Math.max(0, Math.round(progressPercentage / 10) * 10))}`];
   
   console.log('AgenticAI Progress Debug:', {
     completedCount,
@@ -266,7 +267,8 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
     progressPercentage,
     answers,
     answerOptions,
-    questionAnswerTypes
+    questionAnswerTypes,
+    progressWidthClass
   });
 
   if (showWmsReport) {
@@ -315,43 +317,26 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
                 step.status === 'completed' ? styles.stepCircleCompleted :
                 step.status === 'active' ? styles.stepCircleActive :
                 styles.stepCircleInactive
-              } style={{
-                backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                               step.status === 'active' ? '#9C27B0' : '#e0e0e0',
-                color: step.status === 'inactive' ? '#666' : 'white'
-              }}>
+              }>
                 {step.status === 'completed' ? <span>&#10003;</span> : idx + 1}
               </div>
               <span className={
                 step.status === 'active' ? styles.stepTextActive :
                 step.status === 'completed' ? styles.stepTextCompleted :
                 styles.stepTextInactive
-              } style={{
-                color: step.status === 'completed' ? '#4CAF50' : 
-                       step.status === 'active' ? '#9C27B0' : '#666',
-                fontWeight: step.status === 'active' ? '600' : '400'
-              }}>
+              }>
                 {step.label}
               </span>
             </div>
           ))}
         </div>
       </div>
-      <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
+      <div className={styles.mainContent}>
         <div className={styles.title}>Agentic AI</div>
         <div className={styles.progressRow}>
           <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-          <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-            <div 
-              className={styles.progressBarFill} 
-              style={{ 
-                width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
-                height: '100%',
-                backgroundColor: '#9C27B0',
-                borderRadius: '4px',
-                transition: 'width 0.3s ease'
-              }} 
-            />
+          <div className={styles.progressBarBg}>
+            <div className={`${styles.progressBarFill} ${progressWidthClass}`} />
           </div>
         </div>
         <div className={styles.questionsList}>
@@ -359,30 +344,22 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
             const questionOptions = questionAnswerTypes[idx] || answerOptions;
             
             return (
-              <div key={idx} style={{ marginBottom: '24px' }}>
-                <div style={{ marginBottom: '12px', fontSize: '16px', color: '#333', fontWeight: 'normal' }}>
+              <div key={idx} className={styles.questionBlock}>
+                <div className={styles.questionText}>
                   <strong>{idx + 1}. {q}</strong>
                 </div>
-                <div style={{ display: 'flex', gap: '16px', marginLeft: '0px' }}>
+                <div className={styles.optionsRow}>
                   {questionOptions.map(opt => (
-                    <label key={opt} style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      cursor: 'pointer',
-                      fontSize: '14px'
-                    }}>
+                    <label key={opt} className={styles.optionLabel}>
                       <input
                         type="radio"
                         name={`q${idx}`}
                         value={opt}
                         checked={answers[idx] === opt}
                         onChange={() => handleAnswer(idx, opt)}
-                        style={{
-                          marginRight: '8px',
-                          accentColor: '#9C27B0'
-                        }}
+                        className={styles.radio}
                       />
-                      <span style={{ color: '#333' }}>{opt}</span>
+                      <span>{opt}</span>
                     </label>
                   ))}
                 </div>
@@ -390,21 +367,11 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
             );
           })}
         </div>
-        <div className={styles.buttonRow} style={{ marginTop: '32px', display: 'flex', gap: '16px' }}>
+        <div className={styles.buttonRow}>
           <button 
             className={styles.prevBtn} 
             disabled={saving || navigatingBack}
             onClick={handlePrevious}
-            style={{
-              backgroundColor: 'white',
-              border: '1px solid #ccc',
-              color: '#333',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
-              opacity: (saving || navigatingBack) ? 0.6 : 1,
-              fontSize: '14px'
-            }}
           >
             {navigatingBack ? 'Saving...' : 'Previous'}
           </button>
@@ -413,30 +380,13 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
             className={styles.saveBtn} 
             disabled={!allQuestionsAnswered || saving || navigatingBack}
             onClick={handleSaveAndProceed}
-            style={{
-              backgroundColor: (!allQuestionsAnswered || saving || navigatingBack) ? '#ccc' : '#9C27B0',
-              border: 'none',
-              color: 'white',
-              padding: '8px 16px',
-              borderRadius: '4px',
-              cursor: (!allQuestionsAnswered || saving || navigatingBack) ? 'not-allowed' : 'pointer',
-              fontSize: '14px'
-            }}
           >
             {saving ? 'Saving...' : 'Generate Report'}
           </button>
         </div>
         {error && (
-          <div style={{ 
-            marginTop: '16px', 
-            padding: '12px', 
-            backgroundColor: '#fff3cd', 
-            border: '1px solid #ffeaa7', 
-            borderRadius: '4px',
-            color: '#856404',
-            fontSize: '14px'
-          }}>
-            {error}
+          <div className={styles.inlineErrorBox}>
+            <p className={styles.errorMessage}>{error}</p>
           </div>
         )}
       </div>

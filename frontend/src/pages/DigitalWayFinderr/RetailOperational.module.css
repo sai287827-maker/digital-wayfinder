@@ -146,6 +146,17 @@
   border-radius: 4px;
   transition: width 0.3s ease;
 }
+.progressWidth0 { width: 0%; }
+.progressWidth10 { width: 10%; }
+.progressWidth20 { width: 20%; }
+.progressWidth30 { width: 30%; }
+.progressWidth40 { width: 40%; }
+.progressWidth50 { width: 50%; }
+.progressWidth60 { width: 60%; }
+.progressWidth70 { width: 70%; }
+.progressWidth80 { width: 80%; }
+.progressWidth90 { width: 90%; }
+.progressWidth100 { width: 100%; }
 
 /* Questions List */
 .questionsList {
