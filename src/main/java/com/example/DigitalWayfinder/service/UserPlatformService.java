@@ -32,7 +32,7 @@ public class UserPlatformService {
         
         try {
             // Clear existing selections for this user session
-            userPlatformRepository.deleteByUserIdAndSessionId(userId, sessionId);
+           userPlatformRepository.deleteAllByUserIdAndSessionId(userId, sessionId);
             log.debug("Cleared existing platform selections for user: {} session: {}", 
                     userId, sessionId);
 
@@ -99,7 +99,7 @@ public class UserPlatformService {
     public void clearUserSelection(String userId, String sessionId) {
         log.info("Clearing selection for user: {} session: {}", userId, sessionId);
         
-        userPlatformRepository.deleteByUserIdAndSessionId(userId, sessionId);
+        userPlatformRepository.deleteAllByUserIdAndSessionId(userId, sessionId);
         
         log.info("Successfully cleared platforms for user: {} session: {}", userId, sessionId);
     }

@@ -7,18 +7,25 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.DigitalWayfinder.entity.UserNonFuncProcess;
 
 @Repository
 public interface UserNonFuncProcessRepository extends JpaRepository<UserNonFuncProcess, Long> {
-    
+
     List<UserNonFuncProcess> findByUserIdAndSessionId(String userId, String sessionId);
-    
+
     @Query("SELECT unfp FROM UserNonFuncProcess unfp WHERE unfp.userId = :userId AND unfp.sessionId = :sessionId")
-    Optional<UserNonFuncProcess> findByUserIdAndSessionIdWithQuery(@Param("userId") String userId, @Param("sessionId") String sessionId);
-    
+    Optional<UserNonFuncProcess> findByUserIdAndSessionIdWithQuery(@Param("userId") String userId,
+            @Param("sessionId") String sessionId);
+
     boolean existsByUserIdAndSessionId(String userId, String sessionId);
-    
-    void deleteByUserIdAndSessionId(String userId, String sessionId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM UserNonFuncProcess u WHERE u.userId = :userId AND u.sessionId = :sessionId")
+    void deleteAllByUserIdAndSessionId(@Param("userId") String userId,
+            @Param("sessionId") String sessionId);
 }
