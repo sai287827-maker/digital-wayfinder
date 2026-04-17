@@ -10,6 +10,7 @@ const AgnosticSolution = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const getSolutionKey = (solution) => solution.platformName;
 
   useEffect(() => {
     async function fetchAgnosticSolutions() {
@@ -51,9 +52,9 @@ const AgnosticSolution = () => {
   // Handle select all
   const handleSelectAll = () => {
     const filteredSolutions = getFilteredSolutions();
-    const allFilteredIds = filteredSolutions.map(solution => solution.id || solution.platformName);
+    const allFilteredIds = filteredSolutions.map(getSolutionKey);
     const allSelected = allFilteredIds.every(id => selectedSolutions.includes(id));
-    
+
     if (allSelected) {
       // Deselect all filtered solutions
       setSelectedSolutions(prev => prev.filter(id => !allFilteredIds.includes(id)));
@@ -77,21 +78,26 @@ const AgnosticSolution = () => {
         return;
       }
       setLoading(true);
-      await apiPost('api/decision-tree/agnostic-solution/save', {
-        selectedSolutions,
+      const response = await apiPost('api/decision-tree/agnostic-solution/save', {
+        selectedPlatforms: selectedSolutions,
         searchQuery,
         timestamp: new Date().toISOString()
       });
-      navigate('/decision-tree/agnostic-daashboard', {
-        state: {
-          fromAgnosticSolution: true,
-          selectedData: {
-            selectedSolutions,
-            searchQuery,
-            timestamp: new Date().toISOString()
+      if (response.message) {
+        navigate('/decision-tree/agnostic-daashboard', {
+          state: {
+            fromAgnosticSolution: true,
+            selectedData: {
+              selectedSolutions,
+              searchQuery,
+              timestamp: new Date().toISOString()
+            }
           }
-        }
-      });
+        });
+      } else {
+        setError(response.selectedPlatforms || 'Failed to save solutions.');
+        setTimeout(() => setError(null), 3000);
+      }
     } catch (error) {
       setError('Failed to generate agnostic report. Please try again.');
       setTimeout(() => setError(null), 3000);
@@ -102,8 +108,8 @@ const AgnosticSolution = () => {
 
   // Check if all filtered solutions are selected
   const filteredSolutions = getFilteredSolutions();
-  const allFilteredSelected = filteredSolutions.length > 0 && 
-    filteredSolutions.every(solution => selectedSolutions.includes(solution.id || solution.platformName));
+  const allFilteredSelected = filteredSolutions.length > 0 &&
+    filteredSolutions.every(solution => selectedSolutions.includes(getSolutionKey(solution)));
 
   return (
     <div className="agnostic-solution-container">
@@ -117,7 +123,7 @@ const AgnosticSolution = () => {
           <span className="breadcrumb-link">Solution</span>
         </div>
       </div>
-      
+
       <div className="main-layout">
         {/* Left Sidebar */}
         <div className="left-sidebar">
@@ -133,7 +139,7 @@ const AgnosticSolution = () => {
             <div className="step-item">
               <div className="step-circle completed">
                 <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="step-text completed">Functional Scope</span>
@@ -141,7 +147,7 @@ const AgnosticSolution = () => {
             <div className="step-item">
               <div className="step-circle completed">
                 <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="step-text completed">Non Functional Scope</span>
@@ -149,7 +155,7 @@ const AgnosticSolution = () => {
             <div className="step-item">
               <div className="step-circle completed">
                 <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="step-text completed">Review</span>
@@ -227,15 +233,15 @@ const AgnosticSolution = () => {
                 </div>
               ) : getFilteredSolutions().map((solution, index) => (
                 <div
-                  key={solution.id || solution.platformName || index}
+                  key={getSolutionKey(solution)}
                   className={`agnostic-solution-row ${selectedSolutions.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
-                  onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
+                  onClick={() => handleSolutionSelect(getSolutionKey(solution))}
                 >
                   <div className="agnostic-solution-checkbox-container">
                     <input
                       type="checkbox"
-                      checked={selectedSolutions.includes(solution.id || solution.platformName)}
-                      onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
+                      checked={selectedSolutions.includes(getSolutionKey(solution))}
+                      onChange={() => handleSolutionSelect(getSolutionKey(solution))}
                       className="agnostic-solution-checkbox"
                     />
                   </div>

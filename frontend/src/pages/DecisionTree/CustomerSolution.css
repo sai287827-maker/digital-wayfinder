@@ -408,8 +408,9 @@
  
 .customer-footer-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 12px;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -457,6 +458,31 @@
 }
  
 .customer-generate-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.customer-save-button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.customer-save-button:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+}
+
+.customer-save-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
