@@ -73,7 +73,9 @@ function FuncAreaPage() {
       setTooltipVisible(tooltipVisible === area ? null : area);
     }
   };
- 
+  const handlePrevious = () => {
+    navigate('/decision-tree/functional-area');
+  }; 
   const handleProceed = async () => {
     if (!selectedArea) return;
     setLoading(true);
@@ -219,6 +221,12 @@ function FuncAreaPage() {
           </div>
  
           <div className="progress-footer">
+            <button 
+              className="previous-button"
+              onClick={handlePrevious}
+            >
+              Previous
+            </button>
             <div className="progress-text">Completed step 1 of 3</div>
             <button
               className="finish-button"

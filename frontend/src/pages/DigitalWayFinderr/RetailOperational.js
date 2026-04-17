@@ -3,6 +3,7 @@ import styles from './RetailOperational.module.css';
 import RetailVisibilityProactive from './RetailVisibilityProactive';
 import RetailDataAndCloud from './RetailDataAndCloud';
 import { apiGet, apiPost } from '../../api';
+import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -26,8 +27,15 @@ const RetailOperational = ({ onNavigateBack }) => {
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
-  const [functionalArea, setFunctionalArea] = useState('');
-  const [functionalSubArea, setFunctionalSubArea] = useState('');
+  // Use shared hook for functional area/sub–area
+  const {
+    functionalArea,
+    functionalSubArea,
+    setFunctionalArea,
+    setFunctionalSubArea,
+    deriveArea,
+    effectiveSubArea
+  } = useFunctionalArea();
   
   // State to store Data & Cloud answers for passing back
   const [dataCloudAnswers, setDataCloudAnswers] = useState(null);
@@ -73,7 +81,7 @@ const RetailOperational = ({ onNavigateBack }) => {
   const fetchDataCloudAnswers = async () => {
     try {
       console.log('Fetching Data & Cloud answers...');
-      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
       console.log('Data & Cloud answers response:', response);
       
       if (response && response.answers) {
@@ -89,11 +97,12 @@ const RetailOperational = ({ onNavigateBack }) => {
  
   useEffect(() => {
     async function fetchQuestions() {
+      console.log('RetailOperational component mounted with effectiveSubArea:', effectiveSubArea);
       setLoading(true);
       setError(null);
       try {
         console.log('Fetching Operational questions and existing answers...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent('Retail Industry Specific')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
         
         console.log('Operational API Response:', response);
         
@@ -149,30 +158,13 @@ const RetailOperational = ({ onNavigateBack }) => {
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
           
-          // Set functional area - if not provided, determine from functionalSubArea
-          let area = response.functionalArea || '';
-          if (!area && response.functionalSubArea) {
-            // Map functional sub-areas to functional areas
-            const areaMapping = {
-              'Warehouse Management System': 'Supply Chain Fulfillment',
-              'Inventory Management': 'Supply Chain Fulfillment',
-              'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
-              'Customer Relationship Management': 'Customer Experience',
-              'Sales Management': 'Customer Experience',
-              'Marketing Automation': 'Customer Experience',
-              'Financial Management': 'Financial Operations',
-              'Accounting': 'Financial Operations',
-              'Procurement': 'Financial Operations'
-            };
-            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          // Push API response into hook state; deriveArea effect will sync functional area
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
+            setFunctionalSubArea(response.functionalSubArea);
           }
-          // Default fallback if still empty
-          if (!area) {
-            area = 'Supply Chain Fulfillment';
+          if (response.functionalArea && response.functionalArea !== functionalArea) {
+            setFunctionalArea(response.functionalArea);
           }
-          setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           // Fallback for old response structure
           console.log('Using fallback structure for questions');
@@ -193,7 +185,7 @@ const RetailOperational = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, []);
+  }, [effectiveSubArea]);
  
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -211,26 +203,7 @@ const RetailOperational = ({ onNavigateBack }) => {
       
       if (hasAnswers) {
         // Save current progress before navigating back
-        let area = functionalArea;
-        if (!area && functionalSubArea) {
-          const areaMapping = {
-            'Warehouse Management System': 'Supply Chain Fulfillment',
-            'Inventory Management': 'Supply Chain Fulfillment',
-            'Order Management': 'Supply Chain Fulfillment',
-            'Transportation Management': 'Supply Chain Fulfillment',
-            'Customer Relationship Management': 'Customer Experience',
-            'Sales Management': 'Customer Experience',
-            'Marketing Automation': 'Customer Experience',
-            'Financial Management': 'Financial Operations',
-            'Accounting': 'Financial Operations',
-            'Procurement': 'Financial Operations'
-          };
-          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-        }
-        // Default fallback if still empty
-        if (!area) {
-          area = 'Supply Chain Fulfillment';
-        }
+        const area = deriveArea();
         
         // Create payload with only answered questions
         const answeredQuestions = questions
@@ -290,30 +263,8 @@ const RetailOperational = ({ onNavigateBack }) => {
       setSaving(true);
       setError(null); // Clear any previous errors
       
-      // Ensure functional area is set with fallback
-      let area = functionalArea;
-      if (!area && functionalSubArea) {
-        // Map functional sub-areas to functional areas
-        const areaMapping = {
-          'Warehouse Management System': 'Supply Chain Fulfillment',
-          'Inventory Management': 'Supply Chain Fulfillment',
-          'Order Management': 'Supply Chain Fulfillment',
-          'Transportation Management': 'Supply Chain Fulfillment',
-          'Customer Relationship Management': 'Customer Experience',
-          'Sales Management': 'Customer Experience',
-          'Marketing Automation': 'Customer Experience',
-          'Financial Management': 'Financial Operations',
-          'Accounting': 'Financial Operations',
-          'Procurement': 'Financial Operations'
-        };
-        area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-      }
-      // Default fallback if still empty
-      if (!area) {
-        area = 'Supply Chain Fulfillment';
-      }
-      
       // Call API to save answers
+      const area = deriveArea();
       const payload = {
         functionalArea: area,
         functionalSubArea: functionalSubArea || '',
@@ -323,11 +274,11 @@ const RetailOperational = ({ onNavigateBack }) => {
         }))
       };
       
-      console.log('Sending payload:', payload);
+      console.log('RetailOperational component sending payload:', payload);
       
       const response = await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
  
-      console.log('Answers saved successfully:', response);
+      console.log('RetailOperational component answers saved successfully:', response);
       
       // Navigate to VisibilityProactive component
       setShowVisibilityProactive(true);

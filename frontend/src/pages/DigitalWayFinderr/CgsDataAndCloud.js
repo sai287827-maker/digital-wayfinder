@@ -4,6 +4,7 @@ import styles from './CgsDataAndCloud.module.css';
 import CgsOperational from './CgsOperational';
 import CgsSystem from './CgsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
+import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
@@ -27,8 +28,15 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
-  const [functionalArea, setFunctionalArea] = useState('');
-  const [functionalSubArea, setFunctionalSubArea] = useState('');
+  // Use shared hook for functional area/sub–area
+  const {
+    functionalArea,
+    functionalSubArea,
+    setFunctionalArea,
+    setFunctionalSubArea,
+    deriveArea,
+    effectiveSubArea
+  } = useFunctionalArea();
 
   // Function to determine answer options from API response
   const determineAnswerOptions = (apiResponse) => {
@@ -72,7 +80,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Consumer Goods Industry Specific')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
         
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -118,26 +126,13 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
           
-          // Set functional area - if not provided, determine from functionalSubArea
-          let area = response.functionalArea || '';
-          if (!area && response.functionalSubArea) {
-            // Map functional sub-areas to functional areas
-            const areaMapping = {
-              'Warehouse Management System': 'Supply Chain Fulfillment',
-              'Inventory Management': 'Supply Chain Fulfillment',
-              'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
-              'Customer Relationship Management': 'Customer Experience',
-              'Sales Management': 'Customer Experience',
-              'Marketing Automation': 'Customer Experience',
-              'Financial Management': 'Financial Operations',
-              'Accounting': 'Financial Operations',
-              'Procurement': 'Financial Operations'
-            };
-            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          // Push API response into hook state; deriveArea effect will sync functional area
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
+            setFunctionalSubArea(response.functionalSubArea);
           }
-          setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
+          if (response.functionalArea && response.functionalArea !== functionalArea) {
+            setFunctionalArea(response.functionalArea);
+          }
         } else {
           // Fallback for old response structure
           setQuestions(response.questions || []);
@@ -152,7 +147,8 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [effectiveSubArea]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -170,26 +166,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
         setError(null);
         
         // Save current progress before navigating back
-        let area = functionalArea;
-        if (!area && functionalSubArea) {
-          const areaMapping = {
-            'Warehouse Management System': 'Supply Chain Fulfillment',
-            'Inventory Management': 'Supply Chain Fulfillment',
-            'Order Management': 'Supply Chain Fulfillment',
-            'Transportation Management': 'Supply Chain Fulfillment',
-            'Customer Relationship Management': 'Customer Experience',
-            'Sales Management': 'Customer Experience',
-            'Marketing Automation': 'Customer Experience',
-            'Financial Management': 'Financial Operations',
-            'Accounting': 'Financial Operations',
-            'Procurement': 'Financial Operations'
-          };
-          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-        }
-        // Default fallback if still empty
-        if (!area) {
-          area = 'Supply Chain Fulfillment';
-        }
+        const area = deriveArea();
         
         // Create payload with only answered questions
         const answeredQuestions = questions
@@ -239,8 +216,9 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
       setSaving(true);
       
       // Call API to save answers
+      const area = deriveArea();
       const payload = {
-        functionalArea: functionalArea,
+        functionalArea: area,
         functionalSubArea: functionalSubArea,
         answers: questions.map((question, index) => ({
           question: question,

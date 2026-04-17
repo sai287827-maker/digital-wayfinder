@@ -31,25 +31,29 @@ function IndustryTypePlanning() {
   };
 
   const handleProceed = () => {
+    // Navigate to the appropriate system page or final page
   if (selectedSystem === 'Industry Agnostic') {
     navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
-        selectedSystem: 'industry-agnostic-system'
+        selectedSystem: selectedSystem
+        //selectedSystem: 'industry-agnostic-system'
       }
     });
   } else if (selectedSystem === 'Retail Industry Specific') {
     navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
-        selectedSystem: 'retail-industry-specific-system'
+        selectedSystem: selectedSystem
+        //selectedSystem: 'retail-industry-specific-system'
       }
     });
   } else if (selectedSystem === 'Consumer Goods Industry Specific') {
     navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
       state: {
         selectedArea: selectedFunctionalArea,
-        selectedSystem: 'consumer-goods-industry-specific-system'
+        selectedSystem: selectedSystem
+        //selectedSystem: 'consumer-goods-industry-specific-system'
       }
     });
   }
@@ -110,13 +114,13 @@ function IndustryTypePlanning() {
     },
     {
       id: 'Retail Industry Specific',  
-      title: 'Retail Industry Specific System',
+      title: 'Retail Industry System',
       description: 'The process of forecasting demand, managing inventory, and ensuring timely product availability to meet customer needs in retail.',
       image: orderManagementImg
     },
     {
       id: 'Consumer Goods Industry Specific',
-      title: 'Consumer Goods Industry Specific System', 
+      title: 'Consumer Goods Industry System', 
       description: 'The process of forecasting demand, optimizing inventory and distribution for timely delivery of consumer goods.',
       image: transportationManagementImg
     }

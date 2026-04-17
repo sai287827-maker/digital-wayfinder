@@ -28,7 +28,7 @@ function IndustryTypePlanParts() {
   // Define platform data based on system type
   const getPlatformData = () => {
     switch(selectedSystem) {
-      case 'industry-agnostic-system':
+      case 'Industry Agnostic':
         return [
           { id: 'sap', name: 'SAP', logo: SAP },
           { id: 'oracle', name: 'ORACLE', logo: Oracle },
@@ -38,7 +38,8 @@ function IndustryTypePlanParts() {
           { id: 'Kinaxis', name: 'Kinaxis', logo: Kinaxis },
           { id: 'anaplan', name: 'Anaplan', logo: Anaplan }
         ];
-      case 'retail-industry-specific-system':
+      case 'Retail Industry Specific':
+
         return [
           { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
           { id: 'sap', name: 'SAP', logo: SAP },
@@ -46,7 +47,7 @@ function IndustryTypePlanParts() {
           { id: 'relex', name: 'Relex', logo: relex },
           { id: 'anaplan', name: 'Anaplan', logo: Anaplan }
         ];
-      case 'consumer-goods-industry-specific-system':
+      case 'Consumer Goods Industry Specific':
         return [
           { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
           { id: 'sap', name: 'SAP', logo: SAP },
@@ -64,17 +65,17 @@ function IndustryTypePlanParts() {
   // Get system title and description
   const getSystemInfo = () => {
     switch(selectedSystem) {
-      case 'industry-agnostic-system':
+      case 'Industry Agnostic':
         return {
           title: 'Select the Industry Platform',
           description: 'Choose your Industry Agnostic Platform'
         };
-      case 'retail-industry-specific-system':
+      case 'Retail Industry Specific':
         return {
           title: 'Select the Retail Industry Platform',
           description: 'Choose your Retail Industry Specific System Platform'
         };
-      case 'consumer-goods-industry-specific-system':
+      case 'Consumer Goods Industry Specific':
         return {
           title: 'Select the Consumer Goods Platform',
           description: 'Choose your Consumer Goods Industry Specific System Platform'
@@ -132,15 +133,44 @@ function IndustryTypePlanParts() {
     });
   };
 
+  // const handleFinish = () => {
+  //   navigate('/digital-wayfinder/industry-data-and-cloud', {
+  //     state: {
+  //       selectedArea: selectedFunctionalArea,
+  //       selectedSystem: selectedSystem,
+  //       selectedPlatform: selectedPlatform
+  //     }
+  //   });
+  // };
+  
   const handleFinish = () => {
+    // Navigate to the appropriate system page or final page
+  if (selectedSystem === 'Industry Agnostic') {
     navigate('/digital-wayfinder/industry-data-and-cloud', {
       state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem,
+        functionalArea: selectedFunctionalArea,
+        functionalSubArea: selectedSystem,
         selectedPlatform: selectedPlatform
       }
     });
-  };
+  } else if (selectedSystem === 'Retail Industry Specific') {
+    navigate('/digital-wayfinder/retail-data-and-cloud', {
+      state: {
+        functionalArea: selectedFunctionalArea,
+        functionalSubArea: selectedSystem,
+        selectedPlatform: selectedPlatform
+      }
+    });
+  } else if (selectedSystem === 'Consumer Goods Industry Specific') {
+    navigate('/digital-wayfinder/cgs-data-and-cloud', {
+      state: {
+        functionalArea: selectedFunctionalArea,
+        functionalSubArea: selectedSystem,
+        selectedPlatform: selectedPlatform
+      }
+    });
+  }
+}
 
   return (
     <div className="wms-system-page">

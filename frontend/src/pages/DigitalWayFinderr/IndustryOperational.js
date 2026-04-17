@@ -3,6 +3,7 @@ import styles from './IndustryOperational.module.css';
 import IndustryVisibilityProactive from './IndustryVisibilityProactive';
 import IndustryDataandCloud from './IndustryDataandCloud';
 import { apiGet, apiPost } from '../../api';
+import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -24,8 +25,17 @@ const IndustryOperational = ({ onNavigateBack }) => {
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
-  const [functionalArea, setFunctionalArea] = useState('');
-  const [functionalSubArea, setFunctionalSubArea] = useState('');
+  // use shared hook for functional area/sub‑area
+  const {
+    functionalArea,
+    functionalSubArea,
+    setFunctionalArea,
+    setFunctionalSubArea,
+    deriveArea,
+    effectiveSubArea
+  } = useFunctionalArea();
+  
+  console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
@@ -42,12 +52,14 @@ const IndustryOperational = ({ onNavigateBack }) => {
   };
  
   useEffect(() => {
-    async function fetchQuestions() {
+    async function fetchQuestions() {      
+      console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
+      
       setLoading(true);
       setError(null);
       try {
         console.log('Fetching Industry Operational questions and existing answers...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
         
         console.log('Industry Operational API Response:', response);
         
@@ -80,7 +92,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Industry Agnostic')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
@@ -106,29 +118,14 @@ const IndustryOperational = ({ onNavigateBack }) => {
           setSessionId(response.sessionId || '');
           
           // Set functional area - if not provided, determine from functionalSubArea
-          let area = response.functionalArea || '';
-          if (!area && response.functionalSubArea) {
-            // Map functional sub-areas to functional areas
-            const areaMapping = {
-              'Warehouse Management System': 'Supply Chain Fulfillment',
-              'Inventory Management': 'Supply Chain Fulfillment',
-              'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
-              'Customer Relationship Management': 'Customer Experience',
-              'Sales Management': 'Customer Experience',
-              'Marketing Automation': 'Customer Experience',
-              'Financial Management': 'Financial Operations',
-              'Accounting': 'Financial Operations',
-              'Procurement': 'Financial Operations'
-            };
-            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          // push values into hook state; deriveArea will compute a fallback
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
+            setFunctionalSubArea(response.functionalSubArea);
           }
-          // Default fallback if still empty
-          if (!area) {
-            area = 'Supply Chain Fulfillment';
+          if (response.functionalArea && response.functionalArea !== functionalArea) {
+            setFunctionalArea(response.functionalArea);
           }
-          setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
+
         } else {
           // Fallback for old response structure
           console.log('Using fallback structure for questions');
@@ -147,7 +144,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, []);
+  }, [effectiveSubArea]);
  
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -165,26 +162,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
         setError(null);
         
         // Save current progress before navigating back
-        let area = functionalArea;
-        if (!area && functionalSubArea) {
-          const areaMapping = {
-            'Warehouse Management System': 'Supply Chain Fulfillment',
-            'Inventory Management': 'Supply Chain Fulfillment',
-            'Order Management': 'Supply Chain Fulfillment',
-            'Transportation Management': 'Supply Chain Fulfillment',
-            'Customer Relationship Management': 'Customer Experience',
-            'Sales Management': 'Customer Experience',
-            'Marketing Automation': 'Customer Experience',
-            'Financial Management': 'Financial Operations',
-            'Accounting': 'Financial Operations',
-            'Procurement': 'Financial Operations'
-          };
-          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-        }
-        // Default fallback if still empty
-        if (!area) {
-          area = 'Supply Chain Fulfillment';
-        }
+        // the hook already keeps functionalArea up to date via deriveArea
+        const area = deriveArea();
         
         // Create payload with only answered questions
         const answeredQuestions = questions
@@ -242,26 +221,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
       
       // Ensure functional area is set with fallback
       let area = functionalArea;
-      if (!area && functionalSubArea) {
-        // Map functional sub-areas to functional areas
-        const areaMapping = {
-          'Warehouse Management System': 'Supply Chain Fulfillment',
-          'Inventory Management': 'Supply Chain Fulfillment',
-          'Order Management': 'Supply Chain Fulfillment',
-          'Transportation Management': 'Supply Chain Fulfillment',
-          'Customer Relationship Management': 'Customer Experience',
-          'Sales Management': 'Customer Experience',
-          'Marketing Automation': 'Customer Experience',
-          'Financial Management': 'Financial Operations',
-          'Accounting': 'Financial Operations',
-          'Procurement': 'Financial Operations'
-        };
-        area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-      }
-      // Default fallback if still empty
-      if (!area) {
-        area = 'Supply Chain Fulfillment';
-      }
+// area is derived by the shared hook (deriveArea) if not explicitly set
       
       // Call API to save answers
       const payload = {
@@ -370,16 +330,10 @@ const IndustryOperational = ({ onNavigateBack }) => {
             <>
               <div className={styles.industryOperationalProgressRow}>
                 <span className={styles.industryOperationalProgressLabel}>Completed question {completedCount}/{questions.length}</span>
-                <div className={styles.industryOperationalProgressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+                <div className={styles.industryOperationalProgressBarBg}>
                   <div 
                     className={styles.industryOperationalProgressBarFill} 
-                    style={{ 
-                      width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
-                      height: '100%',
-                      backgroundColor: '#9C27B0',
-                      borderRadius: '4px',
-                      transition: 'width 0.3s ease'
-                    }} 
+                    style={{ width: `${Math.min(Math.max(progressPercentage, 0), 100)}%` }}
                   />
                 </div>
               </div>
@@ -390,14 +344,13 @@ const IndustryOperational = ({ onNavigateBack }) => {
                   const options = getAnswerOptions(answerType);
                   
                   return (
-                    <div key={idx} className={styles.industryOperationalQuestionBlock} style={{ marginBottom: '24px', padding: '20px', backgroundColor: 'white', border: 'none', boxShadow: 'none', borderRadius: '8px' }}>
-                      <div className={styles.industryOperationalQuestionText} style={{ marginBottom: '12px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {questionText}</div>
+                    <div key={idx} className={styles.industryOperationalQuestionBlock}>
+                      <div className={styles.industryOperationalQuestionText}>{idx + 1}. {questionText}</div>
                       <div className={styles.industryOperationalOptionsRow}>
                         {options.map(opt => (
                           <label
                             key={opt}
                             className={styles.industryOperationalOptionLabel}
-                            style={{ display: 'flex', alignItems: 'center', marginRight: '20px', cursor: 'pointer' }}
                           >
                             <input
                               type="radio"
@@ -406,14 +359,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
                               checked={answers[idx] === opt}
                               onChange={() => handleAnswer(idx, opt)}
                               className={styles.industryOperationalRadio}
-                              style={{
-                                accentColor: '#9C27B0',
-                                marginRight: '8px',
-                                width: '18px',
-                                height: '18px'
-                              }}
                             />
-                            <span style={{ color: answers[idx] === opt ? '#9C27B0' : '#333', fontWeight: answers[idx] === opt ? '600' : '400' }}>{opt}</span>
+                            <span className={answers[idx] === opt ? styles.industryOperationalOptionTextSelected : styles.industryOperationalOptionText}>{opt}</span>
                           </label>
                         ))}
                       </div>
@@ -426,29 +373,6 @@ const IndustryOperational = ({ onNavigateBack }) => {
                   className={styles.industryOperationalPrevBtn} 
                   disabled={saving || navigatingBack}
                   onClick={handlePrevious}
-                  style={{
-                    backgroundColor: '#f5f5f5',
-                    border: '2px solid #9C27B0',
-                    color: '#9C27B0',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: (saving || navigatingBack) ? 'not-allowed' : 'pointer',
-                    opacity: (saving || navigatingBack) ? 0.6 : 1,
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!saving && !navigatingBack) {
-                      e.target.style.backgroundColor = '#9C27B0';
-                      e.target.style.color = 'white';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!saving && !navigatingBack) {
-                      e.target.style.backgroundColor = '#f5f5f5';
-                      e.target.style.color = '#9C27B0';
-                    }
-                  }}
                 >
                   {navigatingBack ? 'Saving...' : 'Previous'}
                 </button>
@@ -456,29 +380,6 @@ const IndustryOperational = ({ onNavigateBack }) => {
                   className={styles.industryOperationalSaveBtn}
                   disabled={!allQuestionsAnswered || saving || navigatingBack}
                   onClick={handleSaveAndProceed}
-                  style={{
-                    backgroundColor: '#9C27B0',
-                    border: '2px solid #9C27B0',
-                    color: 'white',
-                    padding: '12px 24px',
-                    borderRadius: '6px',
-                    fontWeight: '600',
-                    cursor: (!allQuestionsAnswered || saving || navigatingBack) ? 'not-allowed' : 'pointer',
-                    opacity: (!allQuestionsAnswered || saving || navigatingBack) ? 0.6 : 1,
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (allQuestionsAnswered && !saving && !navigatingBack) {
-                      e.target.style.backgroundColor = '#7B1FA2';
-                      e.target.style.borderColor = '#7B1FA2';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (allQuestionsAnswered && !saving && !navigatingBack) {
-                      e.target.style.backgroundColor = '#9C27B0';
-                      e.target.style.borderColor = '#9C27B0';
-                    }
-                  }}
                 >
                   {saving ? 'Saving...' : 'Save & Proceed'}
                 </button>

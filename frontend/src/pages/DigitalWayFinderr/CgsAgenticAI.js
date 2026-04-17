@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './CgsAgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
 import CgsReport from './CgsReport';
+import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -21,11 +22,13 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
   const [showWmsReport, setShowWmsReport] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
-  // State for API response data
-  const [userId, setUserId] = useState('');
-  const [sessionId, setSessionId] = useState('');
-  const [functionalArea, setFunctionalArea] = useState('');
-  const [functionalSubArea, setFunctionalSubArea] = useState('');
+  // Use shared hook for functional area/sub–area
+  const {
+    functionalSubArea,
+    setFunctionalSubArea,
+    deriveArea,
+    effectiveSubArea
+  } = useFunctionalArea();
 
   // Function to determine answer options from API response
   const determineAnswerOptions = (apiResponse) => {
@@ -66,10 +69,9 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
       setError(null);
       try {
         console.log('Fetching Agentic AI questions...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent('Consumer Goods Industry Specific')}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
 
         console.log('Agentic AI API Response:', response);
-
         if (response.questions && Array.isArray(response.questions)) {
           const questionTexts = response.questions.map(q => q.question);
           const answerTypes = response.questions.map(q => {
@@ -110,7 +112,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
             
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
@@ -138,30 +140,9 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
           setAnswers(initialAnswers);
           console.log('Final AgenticAI answers array:', initialAnswers);
           
-          setUserId(response.userId || '');
-          setSessionId(response.sessionId || '');
-          
-          let area = response.functionalArea || '';
-          if (!area && response.functionalSubArea) {
-            const areaMapping = {
-              'Warehouse Management System': 'Supply Chain Fulfillment',
-              'Inventory Management': 'Supply Chain Fulfillment',
-              'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
-              'Customer Relationship Management': 'Customer Experience',
-              'Sales Management': 'Customer Experience',
-              'Marketing Automation': 'Customer Experience',
-              'Financial Management': 'Financial Operations',
-              'Accounting': 'Financial Operations',
-              'Procurement': 'Financial Operations'
-            };
-            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
+          if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
+            setFunctionalSubArea(response.functionalSubArea);
           }
-          if (!area) {
-            area = 'Supply Chain Fulfillment';
-          }
-          setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
         } else {
           console.log('Using fallback structure for AgenticAI questions');
           setQuestions(response.questions || []);
@@ -177,7 +158,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, []);
+  }, [effectiveSubArea]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -193,25 +174,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
         setNavigatingBack(true);
         setError(null);
         
-        let area = functionalArea;
-        if (!area && functionalSubArea) {
-          const areaMapping = {
-            'Warehouse Management System': 'Supply Chain Fulfillment',
-            'Inventory Management': 'Supply Chain Fulfillment',
-            'Order Management': 'Supply Chain Fulfillment',
-            'Transportation Management': 'Supply Chain Fulfillment',
-            'Customer Relationship Management': 'Customer Experience',
-            'Sales Management': 'Customer Experience',
-            'Marketing Automation': 'Customer Experience',
-            'Financial Management': 'Financial Operations',
-            'Accounting': 'Financial Operations',
-            'Procurement': 'Financial Operations'
-          };
-          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-        }
-        if (!area) {
-          area = 'Supply Chain Fulfillment';
-        }
+        const area = deriveArea(functionalSubArea || '');
         
         const answeredQuestions = questions
           .map((question, index) => ({
@@ -266,25 +229,7 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
       setSaving(true);
       setError(null);
       
-      let area = functionalArea;
-      if (!area && functionalSubArea) {
-        const areaMapping = {
-          'Warehouse Management System': 'Supply Chain Fulfillment',
-          'Inventory Management': 'Supply Chain Fulfillment',
-          'Order Management': 'Supply Chain Fulfillment',
-          'Transportation Management': 'Supply Chain Fulfillment',
-          'Customer Relationship Management': 'Customer Experience',
-          'Sales Management': 'Customer Experience',
-          'Marketing Automation': 'Customer Experience',
-          'Financial Management': 'Financial Operations',
-          'Accounting': 'Financial Operations',
-          'Procurement': 'Financial Operations'
-        };
-        area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
-      }
-      if (!area) {
-        area = 'Supply Chain Fulfillment';
-      }
+      const area = deriveArea(functionalSubArea || '');
       
       const payload = {
         functionalArea: area,
@@ -395,8 +340,19 @@ const CgsAgenticAI = ({ onNavigateBack }) => {
       <div className={styles.mainContent} style={{ backgroundColor: 'white' }}>
         <div className={styles.title}>Agentic AI</div>
         <div className={styles.progressRow}>
-          <span className={styles.progressLabel}>Progress: {completedCount} of {questions.length} questions completed</span>
-          <span style={{color: '#666', fontSize: '14px'}}>{Math.round(progressPercentage)}%</span>
+          <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
+          <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+            <div 
+              className={styles.progressBarFill} 
+              style={{ 
+                width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
+                height: '100%',
+                backgroundColor: '#9C27B0',
+                borderRadius: '4px',
+                transition: 'width 0.3s ease'
+              }} 
+            />
+          </div>
         </div>
         <div className={styles.questionsList}>
           {questions.map((q, idx) => {

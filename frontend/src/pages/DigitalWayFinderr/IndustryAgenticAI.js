@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './IndustryAgenticAI.module.css';
+import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 import { apiGet, apiPost } from '../../api';
 import IndustryReport from './IndustryReport';
 
@@ -11,8 +12,6 @@ const STEP_ITEMS = [
   { label: 'Agentic AI', status: 'active' }
 ];
 
-const DEFAULT_SUBAREA = 'Industry Agnostic';
-const DEFAULT_AREA = 'Supply Chain Planning';
 const FALLBACK_QUESTIONS = [
   'Do you use cloud services (Any cloud service provider) to augment WMS capabilities ?',
   'How would you rate existing capability in integrating real-time data to cloud for various use cases ?',
@@ -20,18 +19,7 @@ const FALLBACK_QUESTIONS = [
   'Does the WMS systems allows seamless integration to all relevant external data such as traffic, weather, shipment tracking etc.'
 ];
 
-const AREA_MAPPING = {
-  'Industry Agnostic': DEFAULT_AREA,
-  'Retail Industry Specific': DEFAULT_AREA,
-  'Consumer Goods Industry Specific': DEFAULT_AREA
-};
-
 // --- helpers ------------------------------------------------------------------
-const mapFunctionalArea = (subArea = '', explicitArea = '') => {
-  if (explicitArea) return explicitArea;
-  return AREA_MAPPING[subArea] || DEFAULT_AREA;
-};
-
 const deriveOptions = (answerTypeString = '') => {
   const at = answerTypeString.toLowerCase();
   if (at.includes('yes') && at.includes('no')) return ['Yes', 'No'];
@@ -92,18 +80,25 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
   // response metadata
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
-  const [functionalArea, setFunctionalArea] = useState('');
-  const [functionalSubArea, setFunctionalSubArea] = useState('');
+  // Use shared hook for functional area/sub–area
+  const {
+    functionalArea,
+    functionalSubArea,
+    setFunctionalArea,
+    setFunctionalSubArea,
+    deriveArea,
+    effectiveSubArea
+  } = useFunctionalArea();
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       setError(null);
-
+      console.log('IndustryAgenticAI component mounted with effectiveSubArea:', effectiveSubArea);
       try {
         const response = await apiGet(
           `api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent(
-            DEFAULT_SUBAREA
+            effectiveSubArea
           )}`
         );
 
@@ -135,7 +130,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
           try {
             const alt = await apiGet(
               `api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent(
-                DEFAULT_SUBAREA
+                effectiveSubArea
               )}`
             );
             if (alt && Array.isArray(alt.answers)) {
@@ -153,16 +148,18 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
         setUserId(response?.userId || '');
         setSessionId(response?.sessionId || '');
-        setFunctionalArea(mapFunctionalArea(response?.functionalSubArea, response?.functionalArea));
-        setFunctionalSubArea(response?.functionalSubArea || DEFAULT_SUBAREA);
+        if (response?.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
+          setFunctionalSubArea(response.functionalSubArea);
+        }
+        if (response?.functionalArea && response.functionalArea !== functionalArea) {
+          setFunctionalArea(response.functionalArea);
+        }
       } catch (err) {
         console.error('Failed to load questions', err);
         setQuestions([...FALLBACK_QUESTIONS]);
         setAnswers(Array(FALLBACK_QUESTIONS.length).fill(null));
         setAnswerOptions(['High', 'Medium', 'Low']);
         setQuestionAnswerTypes(Array(FALLBACK_QUESTIONS.length).fill(['High', 'Medium', 'Low']));
-        setFunctionalArea(DEFAULT_AREA);
-        setFunctionalSubArea(DEFAULT_SUBAREA);
         // do not set error; we quietly fall back
       } finally {
         setLoading(false);
@@ -179,7 +176,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
   };
 
   const saveProgress = async (partial = false) => {
-    const area = mapFunctionalArea(functionalSubArea, functionalArea);
+    const area = deriveArea();
     const answeredQuestions = questions
       .map((q, i) => ({ question: q, answer: answers[i]?.toLowerCase() || '' }))
       .filter(a => a.answer !== '');
@@ -241,26 +238,6 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
   // render shortcuts
   if (showIndustryReport) return <IndustryReport />;
-  if (loading)
-    return (
-      <div className={styles.industryAgenticContainer}>
-        <div className={styles.industryAgenticLoadingContainer}>
-          <div className={styles.industryAgenticLoadingSpinner}></div>
-          <p>Loading questions...</p>
-        </div>
-      </div>
-    );
-  if (error || (!loading && questions.length === 0))
-    return (
-      <div className={styles.industryAgenticContainer}>
-        <div className={styles.industryAgenticErrorContainer}>
-          <p className={styles.industryAgenticErrorMessage}>{error || 'No questions available.'}</p>
-          <button className={styles.industryAgenticSaveBtn} onClick={() => window.location.reload()}>
-            Retry
-          </button>
-        </div>
-      </div>
-    );
 
   return (
     <div className={styles.industryAgenticWrapper}>
@@ -308,60 +285,68 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
         </div>
         <div className={styles.industryAgenticMainContent}>
           <div className={styles.industryAgenticTitle}>Agentic AI</div>
-          <div className={styles.industryAgenticProgressRow}>
-            <span className={styles.industryAgenticProgressLabel}>
-              Completed question {completedCount}/{questions.length}
-            </span>
-            <div className={styles.industryAgenticProgressBarBg}>
-              <div
-                className={styles.industryAgenticProgressBarFill}
-                style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }}
-              />
-            </div>
-          </div>
-          <div className={styles.industryAgenticQuestionsList}>
-            {questions.map((q, idx) => {
-              const opts = questionAnswerTypes[idx] || answerOptions;
-              return (
-                <div key={idx} className={styles.industryAgenticQuestionBlock}>
-                  <div className={styles.industryAgenticQuestionText}>
-                    {idx + 1}. {q}
-                  </div>
-                  <div className={styles.industryAgenticOptionsRow}>
-                    {opts.map(opt => (
-                      <label key={opt} className={styles.industryAgenticOptionLabel}>
-                        <input
-                          type="radio"
-                          name={`q${idx}`}
-                          value={opt}
-                          checked={answers[idx] === opt}
-                          onChange={() => handleAnswer(idx, opt)}
-                          className={styles.industryAgenticRadio}
-                        />
-                        <span>{opt}</span>
-                      </label>
-                    ))}
-                  </div>
+          {loading ? (
+            <div className={styles.industryAgenticLoading}>Loading questions...</div>
+          ) : error ? (
+            <div className={styles.industryAgenticError}>{error}</div>
+          ) : (
+            <>
+              <div className={styles.industryAgenticProgressRow}>
+                <span className={styles.industryAgenticProgressLabel}>
+                  Completed question {completedCount}/{questions.length}
+                </span>
+                <div className={styles.industryAgenticProgressBarBg}>
+                  <div
+                    className={styles.industryAgenticProgressBarFill}
+                    style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }}
+                  />
                 </div>
-              );
-            })}
-          </div>
-          <div className={styles.industryAgenticButtonRow}>
-            <button
-              className={styles.industryAgenticPrevBtn}
-              disabled={saving || navigatingBack}
-              onClick={handlePrevious}
-            >
-              {navigatingBack ? 'Saving...' : 'Previous'}
-            </button>
-            <button
-              className={styles.industryAgenticSaveBtn}
-              disabled={!allQuestionsAnswered || saving || navigatingBack}
-              onClick={handleSaveAndProceed}
-            >
-              {saving ? 'Saving...' : 'Generate Report'}
-            </button>
-          </div>
+              </div>
+              <div className={styles.industryAgenticQuestionsList}>
+                {questions.map((q, idx) => {
+                  const opts = questionAnswerTypes[idx] || answerOptions;
+                  return (
+                    <div key={idx} className={styles.industryAgenticQuestionBlock}>
+                      <div className={styles.industryAgenticQuestionText}>
+                        {idx + 1}. {q}
+                      </div>
+                      <div className={styles.industryAgenticOptionsRow}>
+                        {opts.map(opt => (
+                          <label key={opt} className={styles.industryAgenticOptionLabel}>
+                            <input
+                              type="radio"
+                              name={`q${idx}`}
+                              value={opt}
+                              checked={answers[idx] === opt}
+                              onChange={() => handleAnswer(idx, opt)}
+                              className={styles.industryAgenticRadio}
+                            />
+                            <span className={answers[idx] === opt ? styles.industryAgenticOptionTextSelected : styles.industryAgenticOptionText}>{opt}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className={styles.industryAgenticButtonRow}>
+                <button
+                  className={styles.industryAgenticPrevBtn}
+                  disabled={saving || navigatingBack}
+                  onClick={handlePrevious}
+                >
+                  {navigatingBack ? 'Saving...' : 'Previous'}
+                </button>
+                <button
+                  className={styles.industryAgenticSaveBtn}
+                  disabled={!allQuestionsAnswered || saving || navigatingBack}
+                  onClick={handleSaveAndProceed}
+                >
+                  {saving ? 'Saving...' : 'Generate Report'}
+                </button>
+              </div>
+              </>)
+          }   
         </div>
       </div>
     </div>

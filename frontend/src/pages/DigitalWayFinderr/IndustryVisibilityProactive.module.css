@@ -1,328 +1,314 @@
 /* Main Container */
 .industryVisibilityProactiveContainer {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background: #f8fafc;
 }
 
 /* Breadcrumb Row with Background */
 .industryVisibilityProactiveBreadcrumbRow {
-  width: 100%;
-  background-color: #A100FF08; /* Light purple background with transparency */
-  padding: 16px 0;
-  border-bottom: 1px solid #e9ecef;
+  font-size: 13px;
+  color: #6b6b6b;
+  background: #A100FF08;
+  padding: 20px 40px;
+  margin-bottom: 20px;
 }
 
 .industryVisibilityProactiveBreadcrumbContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  font-size: 14px;
-  color: #6c757d;
+  display: inline;
 }
 
 .industryVisibilityProactiveBreadcrumbLink {
-  color: #8b5cf6; /* Purple */
+  color: #6b6b6b;
+  text-decoration: none;
+  margin-right: 4px;
   cursor: pointer;
-  transition: color 0.2s;
 }
 
 .industryVisibilityProactiveBreadcrumbLink:hover {
-  color: #7c3aed;
+  color: #a020f0;
 }
 
 .industryVisibilityProactiveBreadcrumbCurrent {
-  color: #6c757d;
+  color: #a020f0;
+  font-weight: 500;
 }
 
 /* Main Wrapper for Sidebar and Content */
 .industryVisibilityProactiveMainWrapper {
+  width: 100%;
   display: flex;
-  flex: 1;
+  align-items: flex-start;
+  gap: 32px;
+  padding: 0 40px 40px 40px;
 }
 
 /* Sidebar styling */
 .industryVisibilityProactiveSidebar {
-  width: 300px;
-  background-color: #ffffff;
-  padding: 24px;
-  border-right: 1px solid #e9ecef;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
+  padding: 32px 24px;
+  height: fit-content;
   flex-shrink: 0;
 }
 
 .industryVisibilityProactiveSidebarTitle {
-  font-size: 20px;
-  font-weight: 600;
-  color: #212529;
-  margin-bottom: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
 .industryVisibilityProactiveSidebarDesc {
-  font-size: 14px;
-  color: #6c757d;
-  line-height: 1.5;
-  margin-bottom: 32px;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 28px;
 }
 
 .industryVisibilityProactiveSteps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  margin-top: 18px;
 }
 
 .industryVisibilityProactiveStepItem {
   display: flex;
   align-items: center;
-  gap: 12px;
+  margin-bottom: 20px;
 }
 
-/* Step Circle Styles - Updated to Purple */
-.industryVisibilityProactiveStepCircleActive,
-.industryVisibilityProactiveStepCircleCompleted,
-.industryVisibilityProactiveStepCircleInactive {
-  width: 32px;
-  height: 32px;
+/* Step Circle Styles */
+.industryVisibilityProactiveStepCircleActive {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
+  background: #9C27B0;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.industryVisibilityProactiveStepCircleActive {
-  background-color: #8b5cf6;
-  color: white;
+  font-weight: 700;
+  margin-right: 12px;
 }
 
 .industryVisibilityProactiveStepCircleCompleted {
-  background-color: #22c55e; /* Keep green for completed */
-  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #4CAF50;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-right: 12px;
 }
 
 .industryVisibilityProactiveStepCircleInactive {
-  background-color: #e9ecef;
-  color: #6c757d;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-right: 12px;
 }
 
-/* Step Text Styles - Updated to Purple */
+/* Step Text Styles */
 .industryVisibilityProactiveStepTextActive {
+  color: #9C27B0;
   font-weight: 600;
-  color: #8b5cf6; /* Purple */
 }
 
 .industryVisibilityProactiveStepTextCompleted {
-  font-weight: 500;
-  color: #22c55e; /* Keep green for completed */
+  color: #4CAF50;
+  font-weight: 600;
 }
 
 .industryVisibilityProactiveStepTextInactive {
-  color: #6c757d;
+  color: #888;
+  font-weight: 400;
 }
 
 /* Main Content */
 .industryVisibilityProactiveMainContent {
   flex: 1;
-  padding: 24px;
-  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
+  padding: 40px 48px;
+  min-width: 0;
 }
 
 /* Title */
 .industryVisibilityProactiveTitle {
   font-size: 24px;
-  font-weight: 600;
-  color: #212529;
-  margin-bottom: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
 
 /* Progress Row */
 .industryVisibilityProactiveProgressRow {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .industryVisibilityProactiveProgressLabel {
-  font-size: 14px;
-  color: #6c757d;
-  min-width: 180px;
+  font-size: 13px;
+  color: #888;
+  margin-right: 18px;
 }
 
 .industryVisibilityProactiveProgressBarBg {
-  flex: 1;
+  width: 100%;
+  max-width: 300px;
   height: 8px;
-  background-color: #e9ecef;
+  background-color: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
 }
 
-/* Progress Bar Fill - Updated to Purple */
+/* Progress Bar Fill */
 .industryVisibilityProactiveProgressBarFill {
   height: 100%;
-  background-color: #8b5cf6; /* Purple */
+  background-color: #9C27B0;
   border-radius: 4px;
   transition: width 0.3s ease;
 }
 
 /* Questions List */
 .industryVisibilityProactiveQuestionsList {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 
 .industryVisibilityProactiveQuestionBlock {
-  background-color: white;
+  margin-bottom: 8px;
   padding: 20px;
+  background-color: #fff;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: none;
+  box-shadow: none;
 }
 
 .industryVisibilityProactiveQuestionText {
+  margin-bottom: 12px;
   font-size: 16px;
   font-weight: 500;
-  color: #212529;
-  margin-bottom: 16px;
-  line-height: 1.5;
+  color: #333;
 }
 
 .industryVisibilityProactiveOptionsRow {
   display: flex;
-  gap: 24px;
+  gap: 36px;
+  margin-left: 14px;
 }
 
-/* Option Labels - Updated to Purple on Hover */
+/* Option Labels */
 .industryVisibilityProactiveOptionLabel {
+  font-size: 14px;
+  color: #444;
   display: flex;
   align-items: center;
-  gap: 8px;
+  margin-right: 20px;
   cursor: pointer;
-  font-size: 14px;
-  color: #495057;
-  transition: color 0.2s;
 }
 
-.industryVisibilityProactiveOptionLabel:hover {
-  color: #8b5cf6; /* Purple */
-}
-
-/* Radio Buttons - Updated to Purple */
+/* Radio Buttons */
 .industryVisibilityProactiveRadio {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-  accent-color: #8b5cf6; /* Purple */
+  accent-color: #9C27B0;
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+}
+
+/* Option Text States */
+.industryVisibilityProactiveOptionText {
+  color: #333;
+  font-weight: 400;
+  transition: color 0.2s, font-weight 0.2s;
+}
+
+.industryVisibilityProactiveOptionTextSelected {
+  color: #9C27B0;
+  font-weight: 600;
 }
 
 /* Button Row */
 .industryVisibilityProactiveButtonRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #e9ecef;
+  gap: 18px;
 }
 
-/* Previous Button (Left Side) - Updated to Purple */
+/* Previous Button */
 .industryVisibilityProactivePrevBtn {
+  background-color: #f5f5f5;
+  border: 2px solid #9C27B0;
+  color: #9C27B0;
   padding: 12px 24px;
-  background-color: #6c757d; /* Keep gray for previous */
-  color: white;
-  border: none;
   border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  opacity: 1;
 }
 
 .industryVisibilityProactivePrevBtn:hover:not(:disabled) {
-  background-color: #5a6268;
+  background-color: #9C27B0;
+  color: #fff;
 }
 
 .industryVisibilityProactivePrevBtn:disabled {
-  background-color: #adb5bd;
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #aaa;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
-/* Save Button (Right Side) - Updated to Purple */
+/* Save Button */
 .industryVisibilityProactiveSaveBtn {
+  background-color: #9C27B0;
+  border: 2px solid #9C27B0;
+  color: #fff;
   padding: 12px 24px;
-  background-color: #8b5cf6; /* Purple */
-  color: white;
-  border: none;
   border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  opacity: 1;
 }
 
 .industryVisibilityProactiveSaveBtn:hover:not(:disabled) {
-  background-color: #7c3aed; /* Darker purple on hover */
+  background-color: #7B1FA2;
+  border-color: #7B1FA2;
 }
 
 .industryVisibilityProactiveSaveBtn:disabled {
-  background-color: #adb5bd;
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #aaa;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Loading and Error States */
-.industryVisibilityProactiveLoading, .industryVisibilityProactiveError {
-  text-align: center;
-  padding: 32px;
-  font-size: 16px;
-}
-
 .industryVisibilityProactiveLoading {
-  color: #6c757d;
-}
-
-.industryVisibilityProactiveerror {
-    color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-}
-
-
-
-
-/* Loading Container */
-.industryVisibilityProactiveloadingContainer,
-.industryVisibilityProactiveerrorContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  text-align: center;
-}
-
-.industryVisibilityProactiveloadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #e9ecef;
-  border-left: 4px solid #8b5cf6; /* Purple */
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 16px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.industryVisibilityProactiveerrorMessage {
-  color: #dc3545;
   font-size: 16px;
-  margin-bottom: 16px;
+  color: #888;
+  text-align: center;
+  padding: 40px;
+}
+
+.industryVisibilityProactiveError {
+  font-size: 16px;
+  color: #dc2626;
+  text-align: center;
+  padding: 40px;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
 }
