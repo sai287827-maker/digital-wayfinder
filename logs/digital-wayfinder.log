@@ -573,3 +573,9 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2026-04-27 11:14:07 [http-nio-8080-exec-8] INFO  c.e.D.c.DecisionCriteriaController - Successfully retrieved decision criteria for user: USER-C41E0097 and session: 961D09B9F6B96DC223F533F92F5F622D
 2026-04-27 11:38:54 [http-nio-8080-exec-5] INFO  c.e.D.config.SessionAdvice - Generated anonymous user ID: USER-55F8216E for session: BFF0D24217D7FFEE772026CEE1250609
 2026-04-27 11:38:55 [ForkJoinPool.commonPool-worker-5] WARN  c.m.a.m.ConfidentialClientApplication - [Correlation ID: 7b7044f7-0813-480c-9941-4211f5b2b403] Execution of class com.microsoft.aad.msal4j.AcquireTokenSilentSupplier failed: Token not found in the cache
+2026-04-27 14:33:51 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-04-27 14:33:51 [Thread-5] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-27 14:33:51 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-04-27 14:33:51 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-04-27 14:33:51 [restartedMain] INFO  c.e.D.DigitalWayfinderApplication - Starting DigitalWayfinderApplication using Java 17.0.18 with PID 2520 (C:\Users\manpreet.bo.kaur\Downloads\digital-wayfinder\digital-wayfinder-main\target\classes started by manpreet.bo.kaur in C:\Users\manpreet.bo.kaur\Downloads\digital-wayfinder\digital-wayfinder-main)
+2026-04-27 14:33:51 [restartedMain] INFO  c.e.D.DigitalWayfinderApplication - No active profile set, falling back to 1 default profile: "default"
