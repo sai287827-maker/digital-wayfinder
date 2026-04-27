@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Home, ChevronRight, Info, BarChart3, GitCompare, Target, TrendingUp} from 'lucide-react';
+import { Home, ChevronRight, Info, BarChart3, GitCompare, Target, TrendingUp } from 'lucide-react';
 import styles from './Dashboard.module.css';
 import DecisionSummaryModal from './DecisionSummaryModal';
 import { apiGet } from '../../api';
- 
+import { PowerBIEmbed } from "powerbi-client-react";
+import { models } from "powerbi-client";
+
 const ExecutiveDashboard = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -11,31 +13,71 @@ const ExecutiveDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
- 
+  const [embedConfig, setEmbedConfig] = useState(null);
+
   useEffect(() => {
     async function fetchDashboardData() {
       setLoading(true);
       setError(null);
+
       try {
-        const [projectInfo, solutions, criteria] = await Promise.all([
-          apiGet('api/decision-tree/project-info'),
-          apiGet('api/decision-tree/functional-scope/solution/get-all'),
-          apiGet('api/decision-tree/functional-scope/decision-criteria/get-details')
+        const solutionsPromise = apiGet('api/decision-tree/functional-scope/solution/get-all');
+        const criteriaPromise = apiGet('api/decision-tree/functional-scope/decision-criteria/get-details');
+        const projectInfoPromise = apiGet('api/decision-tree/project-info'); // may fail
+
+        const [solutions, criteria] = await Promise.all([
+          solutionsPromise,
+          criteriaPromise
         ]);
+
+        let projectInfo = null;
+
+        try {
+          projectInfo = await projectInfoPromise; // try separately
+        } catch (e) {
+          console.warn("project-info failed, ignoring");
+        }
+
         setDashboardData({ projectInfo, solutions, criteria });
-        // Auto-show Power BI report when dashboard loads
         setShowPowerBI(true);
+
       } catch (err) {
+        console.error("Critical API failed:", err);
         setError('Failed to fetch dashboard data.');
-        // Even if API fails, show Power BI report
         setShowPowerBI(true);
       } finally {
         setLoading(false);
       }
     }
+
     fetchDashboardData();
   }, []);
- 
+
+  useEffect(() => {
+    async function fetchEmbedConfig() {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/api/powerbi/embed-config?reportId=99eaf858-dcae-4792-93ca-c0e2456e7b23"
+        );
+
+        const res = await response.json();
+
+        setEmbedConfig({
+          type: "report",
+          id: res.reportId,
+          embedUrl: res.embedUrl,
+          accessToken: res.embedToken,
+          tokenType: models.TokenType.Embed
+        });
+
+      } catch (err) {
+        console.error("Power BI Error", err);
+      }
+    }
+
+    fetchEmbedConfig();
+  }, []);
+
   // Fallback to sample data if API fails or is loading
   const samplePowerBIData = {
     industryAgnostic: {
@@ -83,27 +125,56 @@ const ExecutiveDashboard = () => {
       ]
     }
   };
- 
+
   // Use real data if available, otherwise fallback
   const powerBIData = dashboardData || samplePowerBIData;
- 
+
   const breadcrumbs = [
     { label: "Home", href: "/", icon: Home },
     { label: "Decision Tree", href: "/decision-tree" },
     { label: "Functional Scope", href: "/functional-scope" },
     { label: "Advance Dashboards", href: "/advance-dashboards" }
   ];
- 
+
   const sidebarItems = [
     { name: "Functional Scope", icon: Target, active: false },
     { name: "Non Functional Scope", icon: GitCompare, active: false },
     { name: "Appendix", icon: TrendingUp, active: false }
   ];
- 
+
   const togglePowerBIView = () => {
     setShowPowerBI(!showPowerBI);
   };
- 
+
+  const formatValue = (val) =>
+    val?.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  // ✅ Clean data (remove nulls)
+  const cleanSolutions =
+    dashboardData?.solutions?.filter(item => item && item.sessionId) || [];
+
+  // ✅ Get latest session based on createdDate
+  const latestSolution = cleanSolutions.sort(
+    (a, b) => new Date(b.createdDate || 0) - new Date(a.createdDate || 0)
+  )[0];
+
+  const currentSessionId = latestSolution?.sessionId;
+
+  // ✅ Get platforms for that session
+  const userPlatforms = cleanSolutions
+    .filter(item => item.sessionId === currentSessionId)
+    .map(item => item.platform);
+
+  const userSelections = {
+    functionalArea: formatValue(dashboardData?.criteria?.functionalArea),
+    l1: dashboardData?.criteria?.functional?.levelSelections?.[0]?.l1,
+    l2: dashboardData?.criteria?.functional?.levelSelections?.[0]?.l2?.trim(),
+    platforms: userPlatforms
+  };
+  console.log("Latest Session:", currentSessionId);
+  console.log("Platforms:", userPlatforms);
+  console.log("Criteria:", dashboardData?.criteria);
+
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.dashboardLayout}>
@@ -126,7 +197,7 @@ const ExecutiveDashboard = () => {
             ))}
           </div>
         </div>
- 
+
         <div className={styles.mainContent}>
           {/* Breadcrumb Row */}
           <div className={styles.breadcrumbRow}>
@@ -147,7 +218,7 @@ const ExecutiveDashboard = () => {
               ))}
             </div>
           </div>
- 
+
           <div className={styles.dashboardHeader}>
             <div className={styles.dashboardTitleContainer}>
               <h1 className={styles.dashboardTitle}>Executive Dashboard</h1>
@@ -175,11 +246,11 @@ const ExecutiveDashboard = () => {
               </button>
             </div>
           </div>
- 
+
           {/* <div className={styles.lastUpdated}>
             Last Updated on Mon 14-Apr-2025 , 2:50PM
           </div> */}
- 
+
           {/* Power BI Report Section - Full Screen */}
           {showPowerBI && (
             <div style={{
@@ -200,7 +271,7 @@ const ExecutiveDashboard = () => {
               }}>
                 Power BI Dashboard Report
               </div>
-              <iframe
+              {/* <iframe
                 title="Power BI Report Dashboard"
                 src="https://app.powerbi.com/reportEmbed?reportId=aa37619c-b039-405b-82b5-40f7f86b027b&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
                 style={{
@@ -211,10 +282,40 @@ const ExecutiveDashboard = () => {
                 }}
                 allowFullScreen
                 loading="lazy"
-              />
+              /> */}
+              {embedConfig && (
+                <PowerBIEmbed
+                  embedConfig={embedConfig}
+                  cssClassName={"report-style-class"}
+                  getEmbeddedComponent={(report) => {
+
+                    report.on("loaded", () => {
+                      console.log("Report loaded");
+
+                      const filters = [];
+
+                      if (userSelections.platforms.length > 0) {
+                        filters.push({
+                          $schema: "http://powerbi.com/product/schema#basic",
+                          target: { table: "PlatformEvaluations", column: "PlatformName" },
+                          operator: "In",
+                          values: userSelections.platforms, // ["Manhattan"]
+                          filterType: models.FilterType.Basic
+                        });
+                      }
+
+                      console.log("Final Filters:", filters);
+
+                      report.setFilters(filters)
+                        .then(() => console.log("Filters applied"))
+                        .catch(err => console.error("Filter error", err));
+                    });
+                  }}
+                />
+              )}
             </div>
           )}
- 
+
           {/* Original Dashboard Content - Only show when Power BI is hidden */}
           {!showPowerBI && (
             <div className={styles.powerbiContent}>
@@ -239,7 +340,7 @@ const ExecutiveDashboard = () => {
                     </div>
                   </div>
                 </div>
- 
+
                 <div className={`${styles.card} ${styles.wmsChart}`}>
                   <div className={styles.wmsBars}>
                     {powerBIData.wmsSystems.map((system, index) => (
@@ -259,7 +360,7 @@ const ExecutiveDashboard = () => {
                   </div>
                 </div>
               </div>
- 
+
               {/* Bottom Row - Decision Points and Sankey Chart */}
               <div className={styles.contentRow}>
                 <div className={`${styles.card} ${styles.decisionCard}`}>
@@ -273,7 +374,7 @@ const ExecutiveDashboard = () => {
                       <div className={styles.cardUnderline}></div>
                     </div>
                   </div>
- 
+
                   <div className={styles.decisionContent}>
                     <div className={styles.decisionSection}>
                       <h4 className={styles.decisionSectionTitle}>Functional {powerBIData.decisionPoints.functional}</h4>
@@ -290,7 +391,7 @@ const ExecutiveDashboard = () => {
                         ))}
                       </div>
                     </div>
- 
+
                     <div className={styles.decisionSection}>
                       <h4 className={styles.decisionSectionTitle}>Non-Functional {powerBIData.decisionPoints.nonFunctional}</h4>
                       <div className={styles.criteriaTable}>
@@ -307,10 +408,10 @@ const ExecutiveDashboard = () => {
                       </div>
                     </div>
                   </div>
- 
+
                   <button className={styles.viewWeightagesBtn}>View Weightages</button>
                 </div>
- 
+
                 <div className={`${styles.card} ${styles.sankeyCard}`}>
                   <div className={styles.sankeyPlaceholder}>
                     <div className={styles.sankeyFlow}>
@@ -371,5 +472,5 @@ const ExecutiveDashboard = () => {
     </div>
   );
 };
- 
+
 export default ExecutiveDashboard;

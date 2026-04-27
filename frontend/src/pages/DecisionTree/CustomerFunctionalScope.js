@@ -47,6 +47,10 @@ const CustomerFunctionalScope = () => {
     return l4.length > 0;
   };
 
+  const hasLevel1Selected = () => {
+  return levelSelections.l1 && levelSelections.l1.length > 0;
+};
+
   // Get the maximum level that should be visible based on selections
   const getMaxVisibleLevel = () => {
     for (let level = 1; level <= 5; level++) {
@@ -80,7 +84,7 @@ const CustomerFunctionalScope = () => {
   // Add this new function for handling Save & Proceed
   const handleSaveAndProceed = async () => {
     try {
-      if (!hasValidSelection()) {
+      if (!hasLevel1Selected()) {
         setError('Please select at least one option from Level 5 before proceeding.');
         setTimeout(() => setError(null), 3000);
         return;
@@ -202,9 +206,11 @@ const CustomerFunctionalScope = () => {
     newSelectedPath[levelKey] = currentSelections;
 
     // Clear deeper levels when selections change
+    /*// Not clearing deeper levels to allow multi-select across levels - only clear if user deselects all options at current level
     for (let i = level + 1; i <= 5; i++) {
       delete newSelectedPath[`l${i}`];
     }
+    */
 
     setSelectedPath(newSelectedPath);
 
@@ -217,15 +223,12 @@ const CustomerFunctionalScope = () => {
 
     const itemId = item.id;
     setSelectedItems(prev => {
-      const filteredItems = prev.filter(id => {
-        const levelFromId = parseInt(id.split('-')[0].replace('l', ''));
-        return levelFromId <= level;
-      });
-
       if (itemIndex > -1) {
-        return filteredItems.filter(id => id !== itemId);
+        // remove only this item
+        return prev.filter(id => id !== itemId);
       } else {
-        return [...filteredItems, itemId];
+        // add new item, keep all existing selections
+        return [...prev, itemId];
       }
     });
   };
@@ -603,19 +606,19 @@ const CustomerFunctionalScope = () => {
         </button>
 
         <button
-          className={`proceed-button ${hasValidSelection() ? 'enabled' : 'disabled'}`}
+          className={`proceed-button ${hasLevel1Selected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
-          disabled={loading || !hasValidSelection()}
+          disabled={loading || !hasLevel1Selected()}
           style={{
-            backgroundColor: hasValidSelection() ? '#8b5cf6' : '#e5e7eb',
-            color: hasValidSelection() ? 'white' : '#9ca3af',
-            border: '2px solid ' + (hasValidSelection() ? '#8b5cf6' : '#e5e7eb'),
+            backgroundColor: hasLevel1Selected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasLevel1Selected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasLevel1Selected() ? '#8b5cf6' : '#e5e7eb'),
             padding: '12px 24px',
             borderRadius: '8px',
             fontSize: '16px',
             fontWeight: '600',
-            cursor: hasValidSelection() ? 'pointer' : 'not-allowed',
-            opacity: hasValidSelection() ? 1 : 0.6,
+            cursor: hasLevel1Selected() ? 'pointer' : 'not-allowed',
+            opacity: hasLevel1Selected() ? 1 : 0.6,
             transition: 'all 0.3s ease',
             display: 'flex',
             alignItems: 'center',

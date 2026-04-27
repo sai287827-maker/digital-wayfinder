@@ -34,12 +34,14 @@ const AgnosticFunctionalScope = () => {
   }, []);
 
   // Check if user has selected from all 4 levels
+  /* //Not needed now. 
   const hasAllLevelsSelected = () => {
     return [1, 2, 3, 4].every(level => {
       const levelKey = `l${level}`;
       return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
     });
   };
+  */
 
   const hasLevel1Selected = () => {
     return levelSelections.l1 && levelSelections.l1.length > 0;
@@ -200,10 +202,12 @@ const AgnosticFunctionalScope = () => {
 
     newSelectedPath[levelKey] = currentSelections;
 
-    // Clear deeper levels when selections change
-    for (let i = level + 1; i <= 4; i++) {
-      delete newSelectedPath[`l${i}`];
-    }
+    // // Clear deeper levels when selections change
+    // if (itemIndex > -1) {
+    //   for (let i = level + 1; i <= 4; i++) {
+    //     delete newSelectedPath[`l${i}`];
+    //   }
+    // }
 
     setSelectedPath(newSelectedPath);
 
@@ -217,15 +221,12 @@ const AgnosticFunctionalScope = () => {
 
     const itemId = item.id;
     setSelectedItems(prev => {
-      const filteredItems = prev.filter(id => {
-        const levelFromId = parseInt(id.split('-')[0].replace('l', ''));
-        return levelFromId <= level;
-      });
-
       if (itemIndex > -1) {
-        return filteredItems.filter(id => id !== itemId);
+        // remove only this item
+        return prev.filter(id => id !== itemId);
       } else {
-        return [...filteredItems, itemId];
+        // add new item, keep all existing selections
+        return [...prev, itemId];
       }
     });
   };
@@ -348,7 +349,9 @@ const AgnosticFunctionalScope = () => {
           ) : (
             <div className="items-container">
               {levelItems.map((item, index) => {
-                const isSelected = selectedItems.includes(item.id);
+                const isSelected =
+                  selectedItems.includes(item.id) ||
+                  (levelSelections[`l${level}`] || []).includes(item.name);
                 const itemNumber = getItemNumber(level, item);
                 return (
                   <div
