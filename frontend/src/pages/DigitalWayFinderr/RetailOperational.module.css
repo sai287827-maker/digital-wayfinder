@@ -3,15 +3,16 @@
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
+  gap: 32px;
+  padding: 0 40px 40px 40px;
 }
 
 /* Sidebar styling */
 .sidebar {
-  width: 300px;
+  width: 240px;
   background-color: #ffffff;
-  padding: 24px;
-  border-right: 1px solid #e9ecef;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+  padding: 32px 24px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
   flex-shrink: 0;
 }
 
@@ -57,12 +58,12 @@
 }
 
 .stepCircleActive {
-  background-color: #8b5cf6; /* Purple */
+  background-color: #9C27B0; /* Purple */
   color: white;
 }
 
 .stepCircleCompleted {
-  background-color: #22c55e; /* Keep green for completed */
+  background-color: #4CAF50; /* Green */
   color: white;
 }
 
@@ -74,12 +75,12 @@
 /* Step Text Styles - Updated to Purple */
 .stepTextActive {
   font-weight: 600;
-  color: #8b5cf6; /* Purple */
+  color: #9C27B0; /* Purple */
 }
 
 .stepTextCompleted {
   font-weight: 500;
-  color: #22c55e; /* Keep green for completed */
+  color: #4CAF50; /* Green */
 }
 
 .stepTextInactive {
@@ -89,15 +90,19 @@
 /* Main Content */
 .mainContent {
   flex: 1;
-  padding: 24px;
-  overflow-y: auto;
+  padding: 40px 48px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
 }
 
 /* Breadcrumb - Updated to Purple */
 .breadcrumb {
   font-size: 14px;
   color: #6c757d;
-  margin-bottom: 16px;
+  background: #A100FF08;
+  padding: 20px 40px;
+  margin-bottom: 20px;
 }
 
 .breadcrumbLink {
@@ -142,7 +147,7 @@
 /* Progress Bar Fill - Updated to Purple */
 .progressBarFill {
   height: 100%;
-  background-color: #8b5cf6; /* Purple */
+  background-color: #9C27B0; /* Purple */
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -170,8 +175,8 @@
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: none;
+  box-shadow: none;
 }
 
 .questionText {
@@ -199,7 +204,7 @@
 }
 
 .optionLabel:hover {
-  color: #8b5cf6; /* Purple */
+  color: #9C27B0; /* Purple */
 }
 
 /* Radio Buttons - Updated to Purple */
@@ -207,7 +212,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #8b5cf6; /* Purple */
+  accent-color: #9C27B0; /* Purple */
 }
 
 /* Button Row */
@@ -245,7 +250,7 @@
 /* Save Button (Right Side) - Updated to Purple */
 .saveBtn {
   padding: 12px 24px;
-  background-color: #8b5cf6; /* Purple */
+  background-color: #9C27B0; /* Purple */
   color: white;
   border: none;
   border-radius: 6px;
@@ -256,7 +261,7 @@
 }
 
 .saveBtn:hover:not(:disabled) {
-  background-color: #7c3aed; /* Darker purple on hover */
+  background-color: #7B1FA2; /* Darker purple on hover */
 }
 
 .saveBtn:disabled {

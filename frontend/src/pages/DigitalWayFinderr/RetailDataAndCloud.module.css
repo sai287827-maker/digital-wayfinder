@@ -4,12 +4,15 @@
   background: #f8fafc;
   display: flex;
   align-items: flex-start;
-  padding: 0 0 40px 0;
+  gap: 32px;
+  padding: 0 40px 40px 40px;
 }
 .breadcrumb {
   font-size: 13px;
   color: #6b6b6b;
-  margin-bottom: 18px;
+  background: #A100FF08;
+  padding: 20px 40px;
+  margin-bottom: 20px;
 }
 .breadcrumbLink {
   color: #6b6b6b;
@@ -35,8 +38,8 @@
   border-radius: 12px;
   box-shadow: 0 2px 16px rgba(80,0,120,0.06);
   padding: 32px 24px;
-  margin: 40px 32px 0 40px;
   height: fit-content;
+  flex-shrink: 0;
 }
 .sidebarTitle {
   font-size: 17px;
@@ -60,7 +63,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #22c55e;
+  background: #9C27B0;
   color: #fff;
   display: flex;
   align-items: center;
@@ -81,7 +84,7 @@
   margin-right: 12px;
 }
 .stepTextActive {
-  color: #22c55e;
+  color: #9C27B0;
   font-weight: 600;
 }
 .stepTextInactive {
@@ -94,7 +97,6 @@
   border-radius: 12px;
   box-shadow: 0 2px 16px rgba(80,0,120,0.06);
   padding: 40px 48px;
-  margin: 40px 40px 0 0;
   min-width: 0;
 }
 .title {
@@ -141,7 +143,12 @@
   margin-bottom: 36px;
 }
 .questionBlock {
-  margin-bottom: 26px;
+  margin-bottom: 8px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: none;
+  box-shadow: none;
 }
 .questionText {
   font-size: 16px;
@@ -165,11 +172,7 @@
 .optionLabel:hover {
   color: #9C27B0;
 }
-.optionLabel input:checked + span,
-.optionLabel input:focus + span {
-  color: #9C27B0;
-  font-weight: 600;
-}
+
 .radio {
   accent-color: #9C27B0;
   margin-right: 8px;
@@ -222,74 +225,4 @@
   color: #aaa;
   cursor: not-allowed;
   opacity: 0.6;
-}
-.optionHigh {
-  background: #e6f9ed;
-  color: #15803d;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-weight: 500;
-  border: 1px solid #b6e4c7;
-}
-.optionHigh input[type="radio"]:checked + span,
-.optionHigh input[type="radio"]:focus + span {
-  background: #16a34a;
-}
-.optionMedium {
-  background: #fff7e6;
-  color: #b45309;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-weight: 500;
-  border: 1px solid #ffe0b2;
-}
-.optionMedium input[type="radio"]:checked + span,
-.optionMedium input[type="radio"]:focus + span {
-  background: #ea580c;
-}
-.optionLow {
-  background: #fbeaea;
-  color: #b91c1c;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-weight: 500;
-  border: 1px solid #fbcaca;
-}
-.optionLow input[type="radio"]:checked + span,
-.optionLow input[type="radio"]:focus + span {
-  background: #b91c1c;
-}
-.optionHigh, .optionMedium, .optionLow {
-  transition: box-shadow 0.2s, border 0.2s, background 0.25s, color 0.25s;
-}
-.optionHigh.selected, .optionMedium.selected, .optionLow.selected {
-  box-shadow: 0 2px 8px 0 rgba(80, 160, 80, 0.10);
-  border-width: 2px;
-  border-color: #a020f0;
-  z-index: 1;
-}
-/* Fallback for browsers that support :has() */
-.optionsRow label:has(input[type="radio"]:checked) {
-  box-shadow: 0 2px 8px 0 rgba(80, 160, 80, 0.10);
-  border-width: 2px;
-  border-color: #a020f0;
-  z-index: 1;
-}
-.selected {
-  animation: optionSelectAnim 0.25s cubic-bezier(0.4,0,0.2,1);
-}
-@keyframes optionSelectAnim {
-  0% {
-    box-shadow: 0 0 0 0 rgba(80,160,80,0.00);
-    background-color: #fff;
-    border-color: #e5e7eb;
-  }
-  60% {
-    box-shadow: 0 4px 16px 0 rgba(80,160,80,0.15);
-    background-color: #f3e8ff;
-    border-color: #a020f0;
-  }
-  100% {
-    box-shadow: 0 2px 8px 0 rgba(80,160,80,0.10);
-  }
 }

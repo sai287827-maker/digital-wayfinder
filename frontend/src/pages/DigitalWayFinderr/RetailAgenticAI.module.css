@@ -6,7 +6,11 @@
 
   min-height: 100vh;
 
-  background-color: #f8f9fa;
+  background-color: #f8fafc;
+
+  gap: 32px;
+
+  padding: 0 40px 40px 40px;
 
 }
  
@@ -14,23 +18,15 @@
 
 .sidebar {
 
-  width: 300px;
+  width: 240px;
 
   background-color: #ffffff;
 
-  padding: 24px;
+  padding: 32px 24px;
 
-  border-right: 1px solid #e9ecef;
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
 
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-
-  flex-shrink: 0; /* Prevents sidebar from shrinking */
-
-  position: fixed;
-
-  height: 100vh;
-
-  overflow-y: auto;
+  flex-shrink: 0;
 
 }
  
@@ -40,11 +36,13 @@
 
   flex: 1;
 
-  padding: 24px;
+  padding: 40px 48px;
 
-  margin-left: 300px; /* Same as sidebar width */
+  background: #fff;
 
-  overflow-y: auto;
+  border-radius: 12px;
+
+  box-shadow: 0 2px 16px rgba(80,0,120,0.06);
 
 }
  
@@ -223,9 +221,9 @@
 
   border-radius: 8px;
 
-  border: 1px solid #e9ecef;
+  border: none;
 
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
 
 }
  
@@ -301,7 +299,11 @@
 
   color: #6c757d;
 
-  margin-bottom: 16px;
+  background: #A100FF08;
+
+  padding: 20px 40px;
+
+  margin-bottom: 20px;
 
 }
  
