@@ -78,7 +78,7 @@ const CustomerNonFunctionalScope = () => {
         scope: 'cgs'
       });
       setProceedToDecisionCriteria(true);
-      navigate('/decision-tree/customer-decision-criteria', {
+      navigate('/decision-tree/decision-criteria', {
         state: {
           fromNonFunctionalScope: true,
           selectedData: {
