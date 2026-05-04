@@ -18,11 +18,11 @@ import IBMSterling from "../../assets/ibmsterling.png";
 // import VisibilityProactive from './VisibilityProactive';
  
 function WmsSystem() {
-  const [selectedPlatform, setSelectedPlatform] = useState(null); // Changed to single selection
-  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
- 
+  const [selectedPlatform, setSelectedPlatform] = useState(location.state?.selectedPlatform || null); // Initialize from state
+  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
+  
   // Get the selected data from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   const selectedSystem = location.state?.selectedSystem || null;
@@ -104,7 +104,13 @@ function WmsSystem() {
   };
  
    const handleProceed = () => {
-    navigate('/digital-wayfinder/data-and-cloud');
+    navigate('/digital-wayfinder/data-and-cloud', {
+      state: {
+        selectedArea: selectedFunctionalArea,
+        selectedSystem: selectedSystem,
+        selectedPlatform: selectedPlatform
+      }
+    });
   };
  
   return (

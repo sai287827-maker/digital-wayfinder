@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styles from './TmsDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import TmsOperational from './TmsOperational';
-import TmsSystem from './TmsSystem'; // Add import for TmsSystem
 import { apiGet, apiPost } from '../../api';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
@@ -12,7 +12,9 @@ const steps = [
   { label: 'Agentic  AI', status: 'inactive' }
 ];
  
-const TmsDataAndCloud = ({ onNavigateBack }) => {
+const TmsDataAndCloud = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [answerOptions, setAnswerOptions] = useState([]);
@@ -21,7 +23,6 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showTmsSystem, setShowTmsSystem] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
   // New state for API response data
@@ -231,15 +232,14 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
       }
     }
     
-    // Navigate back to TmsSystem
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to TmsSystem using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to TmsSystem component
-      console.log('Using fallback navigation to TmsSystem');
-      setShowTmsSystem(true);
-    }
+    // Navigate back to TmsSystem using proper router navigation
+    navigate('/digital-wayfinder/tms-system', {
+      state: {
+        selectedArea: location.state?.selectedArea,
+        selectedSystem: location.state?.selectedSystem,
+        selectedPlatform: location.state?.selectedPlatform
+      }
+    });
     
     setNavigatingBack(false);
   };
@@ -306,12 +306,6 @@ const TmsDataAndCloud = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-
-  // Early return for navigation to TmsSystem
-  if (showTmsSystem) {
-    console.log('Navigating to TmsSystem component, showTmsSystem:', showTmsSystem);
-    return <TmsSystem />;
-  }
 
   if (showVisibilityProactive) {
     return <TmsOperational/>;
