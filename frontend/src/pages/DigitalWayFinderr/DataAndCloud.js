@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styles from './DataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import Operational from './Operational';
-import WmsSystem from './WmsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
@@ -12,7 +12,9 @@ const steps = [
   { label: 'Agentic  AI', status: 'inactive' }
 ];
  
-const DataAndCloud = ({ onNavigateBack }) => {
+const DataAndCloud = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
@@ -21,7 +23,6 @@ const DataAndCloud = ({ onNavigateBack }) => {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showWmsSystem, setShowWmsSystem] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   
   // New state for API response data
@@ -222,14 +223,13 @@ const DataAndCloud = ({ onNavigateBack }) => {
     }
     
     // Navigate back to WmsSystem
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to WmsSystem using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to WmsSystem component
-      console.log('Using fallback navigation to WmsSystem');
-      setShowWmsSystem(true);
-    }
+    navigate('/digital-wayfinder/wms-system', {
+      state: {
+        selectedArea: location.state?.selectedArea,
+        selectedSystem: location.state?.selectedSystem,
+        selectedPlatform: location.state?.selectedPlatform
+      }
+    });
     
     setNavigatingBack(false);
   };
@@ -267,12 +267,6 @@ const DataAndCloud = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
-
-  // Early return for navigation to WmsSystem
-  if (showWmsSystem) {
-    console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
-    return <WmsSystem />;
-  }
 
   if (showVisibilityProactive) {
     return <Operational />;

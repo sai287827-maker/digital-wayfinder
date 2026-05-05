@@ -18,10 +18,10 @@ import IBMSterling from "../../assets/ibmsterling.png";
 // import VisibilityProactive from './VisibilityProactive';
  
 function TmsSystem() {
-  const [selectedPlatform, setSelectedPlatform] = useState(null); // Changed to single selection
-  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [selectedPlatform, setSelectedPlatform] = useState(location.state?.selectedPlatform || null); // Initialize from state
+  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
  
   // Get the selected data from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
@@ -104,14 +104,6 @@ function TmsSystem() {
   };
  
 const handleProceed = () => {
-  console.log('handleProceed called from TmsSystem');
-  console.log('Current location:', location.pathname);
-  console.log('Selected platform:', selectedPlatform);
-  console.log('Target route: /digital-wayfinder/tms-data-and-cloud');
-  
-  // Check if we're actually in the right component
-  console.log('Component name: TmsSystem');
-  
   navigate('/digital-wayfinder/tms-data-and-cloud', {
     state: {
       selectedArea: selectedFunctionalArea,
@@ -119,11 +111,6 @@ const handleProceed = () => {
       selectedPlatform: selectedPlatform
     }
   });
-  
-  // Add a small delay to check if navigation happened
-  setTimeout(() => {
-    console.log('After navigation, current location:', window.location.pathname);
-  }, 100);
 };
  
   return (
