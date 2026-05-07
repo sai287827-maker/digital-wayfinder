@@ -5,6 +5,7 @@ import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 import IndustryOperational from './IndustryOperational';
 import IndustryTypePlanParts from './IndustryTypePlanParts'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
@@ -12,17 +13,19 @@ const steps = [
   { label: 'Visibility and Proactive', status: 'inactive' },
   { label: 'Agentic  AI', status: 'inactive' }
 ];
- 
+
 const IndustryDataandCloud = ({ onNavigateBack }) => {
-  const [questions, setQuestions] = useState([]);     
+  const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [showIndustryOperational, setShowIndustryOperational] = useState(false);
-  const [showIndustryTypePlanParts, setShowIndustryTypePlanParts] = useState(false);
+  //const [showIndustryTypePlanParts, setShowIndustryTypePlanParts] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -35,14 +38,14 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
     deriveArea,
     effectiveSubArea
   } = useFunctionalArea();
-  
+
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
-    switch(answerType?.toLowerCase()) {
+    switch (answerType?.toLowerCase()) {
       case 'yes/no':
       case 'yesno':
-        return ['Yes', 'No']; 
+        return ['Yes', 'No'];
       case 'priority':
       case 'high/medium/low':
         return ['High', 'Medium', 'Low'];
@@ -53,23 +56,23 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
 
   useEffect(() => {
     async function fetchQuestions() {
-      
+
       console.log('IndustryDataandCloud rendered with functionalArea:', functionalArea, 'functionalSubArea:', functionalSubArea, 'effectiveSubArea:', effectiveSubArea);
-      
+
       setLoading(true);
       setError(null);
-      
+
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
-        
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
+
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
           // Store full question objects with answerType
           setQuestions(response.questions);
-          
+
           // Initialize answers array
           const initialAnswers = Array(response.questions.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             response.answers.forEach(answerObj => {
@@ -81,13 +84,13 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
               }
             });
           }
-          
+
           setAnswers(initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Push API response into hook state; deriveArea effect will sync functional area
           if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
             setFunctionalSubArea(response.functionalSubArea);
@@ -111,7 +114,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, [effectiveSubArea]);
+  }, [location.state?.selectedSystem]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -120,17 +123,18 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   };
 
   const handlePrevious = async () => {
+    const prev = location.state || {};
     // Check if there are any answers to save before going back
     const hasAnswers = answers.some(answer => answer !== null);
-    
+
     if (hasAnswers) {
       try {
         setNavigatingBack(true);
         setError(null);
-        
+
         // Save current progress before navigating back
         const area = deriveArea();
-        
+
         // Create payload with only answered questions
         const answeredQuestions = questions
           .map((questionObj, index) => ({
@@ -138,7 +142,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -146,38 +150,35 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
-          
+
           console.log('Saving partial Data and Cloud progress before navigation:', payload);
-          
+
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
+
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
         console.log('Continuing with navigation despite save error');
       }
     }
-    
+
     // Navigate back to WmsSystem
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to WmsSystem using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to IndustryTypePlanParts component
-      console.log('Using fallback navigation to IndustryTypePlanParts');
-      setShowIndustryTypePlanParts(true);
-    }
-    
+    navigate('/digital-wayfinder/industry-type-plan-parts', {
+      state: {
+        ...prev   // 🔥 THIS FIXES EVERYTHING
+      }
+    });
+
     setNavigatingBack(false);
   };
 
   const handleSaveAndProceed = async () => {
     try {
       setSaving(true);
-      
+
       // Call API to save answers
       const area = deriveArea();
       const payload = {
@@ -188,16 +189,16 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
       console.log('Answers saved successfully:', response);
-      
+
       // Navigate to next component
       setShowIndustryOperational(true);
-      
+
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -209,16 +210,11 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
 
-  // Early return for navigation to IndustryTypePlanParts
-  if (showIndustryTypePlanParts) {
-    console.log('Navigating to IndustryTypePlanParts component, showIndustryTypePlanParts:', showIndustryTypePlanParts);
-    return <IndustryTypePlanParts />;
-  }
 
   if (showIndustryOperational) {
     return <IndustryOperational />;
   }
- 
+
   return (
     <div className={styles.industryDataCloudWrapper}>
       <div className={styles.industryDataCloudBreadcrumb}>
@@ -246,72 +242,72 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
           </div>
         </div>
         <div className={styles.industryDataCloudMainContent}>
-        <div className={styles.industryDataCloudTitle}>Industry Data and Cloud</div>
-        {loading ? (
-          <div className={styles.industryDataCloudLoading}>Loading questions...</div>
-        ) : error ? (
-          <div className={styles.industryDataCloudError}>{error}</div>
-        ) : (
-          <>
-            <div className={styles.industryDataCloudProgressRow}>
-              <span className={styles.industryDataCloudProgressLabel}>Completed question {completedCount}/{questions.length}</span>
-              <div className={styles.industryDataCloudProgressBarBg}>
-                <div className={styles.industryDataCloudProgressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+          <div className={styles.industryDataCloudTitle}>Industry Data and Cloud</div>
+          {loading ? (
+            <div className={styles.industryDataCloudLoading}>Loading questions...</div>
+          ) : error ? (
+            <div className={styles.industryDataCloudError}>{error}</div>
+          ) : (
+            <>
+              <div className={styles.industryDataCloudProgressRow}>
+                <span className={styles.industryDataCloudProgressLabel}>Completed question {completedCount}/{questions.length}</span>
+                <div className={styles.industryDataCloudProgressBarBg}>
+                  <div className={styles.industryDataCloudProgressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+                </div>
               </div>
-            </div>
-            <div className={styles.industryDataCloudQuestionsList}>
-              {questions.map((questionObj, idx) => {
-                const questionText = questionObj.question || questionObj;
-                const answerType = questionObj.answerType || 'priority';
-                const options = getAnswerOptions(answerType);
-                
-                return (
-                  <div key={idx} className={styles.industryDataCloudQuestionBlock}>
-                    <div className={styles.industryDataCloudQuestionText}>{idx + 1}. {questionText}</div>
-                    <div className={styles.industryDataCloudOptionsRow}>
-                      {options.map(opt => (
-                        <label
-                          key={opt}
-                          className={styles.industryDataCloudOptionLabel}
-                        >
-                          <input
-                            type="radio"
-                            name={`q${idx}`}
-                            value={opt}
-                            checked={answers[idx] === opt}
-                            onChange={() => handleAnswer(idx, opt)}
-                            className={styles.industryDataCloudRadio}
-                          />
-                          <span className={answers[idx] === opt ? styles.industryDataCloudOptionTextSelected : styles.industryDataCloudOptionText}>{opt}</span>
-                        </label>
-                      ))}
+              <div className={styles.industryDataCloudQuestionsList}>
+                {questions.map((questionObj, idx) => {
+                  const questionText = questionObj.question || questionObj;
+                  const answerType = questionObj.answerType || 'priority';
+                  const options = getAnswerOptions(answerType);
+
+                  return (
+                    <div key={idx} className={styles.industryDataCloudQuestionBlock}>
+                      <div className={styles.industryDataCloudQuestionText}>{idx + 1}. {questionText}</div>
+                      <div className={styles.industryDataCloudOptionsRow}>
+                        {options.map(opt => (
+                          <label
+                            key={opt}
+                            className={styles.industryDataCloudOptionLabel}
+                          >
+                            <input
+                              type="radio"
+                              name={`q${idx}`}
+                              value={opt}
+                              checked={answers[idx] === opt}
+                              onChange={() => handleAnswer(idx, opt)}
+                              className={styles.industryDataCloudRadio}
+                            />
+                            <span className={answers[idx] === opt ? styles.industryDataCloudOptionTextSelected : styles.industryDataCloudOptionText}>{opt}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className={styles.industryDataCloudButtonRow}>
-              <button 
-                className={styles.industryDataCloudPrevBtn} 
-                disabled={saving || navigatingBack}
-                onClick={handlePrevious}
-              >
-                {navigatingBack ? 'Saving...' : 'Previous'}
-              </button>
-              <button
-                className={styles.industryDataCloudSaveBtn}
-                disabled={!allQuestionsAnswered || saving || navigatingBack}
-                onClick={handleSaveAndProceed}
-              >
-                {saving ? 'Saving...' : 'Save & Proceed'}
-              </button>
-            </div>
-          </>
-        )}
+                  );
+                })}
+              </div>
+              <div className={styles.industryDataCloudButtonRow}>
+                <button
+                  className={styles.industryDataCloudPrevBtn}
+                  disabled={saving || navigatingBack}
+                  onClick={handlePrevious}
+                >
+                  {navigatingBack ? 'Saving...' : 'Previous'}
+                </button>
+                <button
+                  className={styles.industryDataCloudSaveBtn}
+                  disabled={!allQuestionsAnswered || saving || navigatingBack}
+                  onClick={handleSaveAndProceed}
+                >
+                  {saving ? 'Saving...' : 'Save & Proceed'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 };
- 
+
 export default IndustryDataandCloud;

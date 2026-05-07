@@ -73,6 +73,8 @@ import CustomerNonFunctionalScope from './pages/DecisionTree/CustomerNonFunction
 import CustomerDecisionCriteria from './pages/DecisionTree/CustomerDecisionCriteria';
 import CustomerSolution from './pages/DecisionTree/CustomerSolution';
 import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
+import ProjectInfoDW from './pages/DigitalWayFinderr/WayFinderProjectInfo';
+import ProjectInfoDT from './pages/DecisionTree/ProjectInfo';
  
 // import Login from "./pages/Login";
 // import ProtectedRoute from "./components/ProtectedRoute";
@@ -94,7 +96,7 @@ function App() {
             {/* <Route element={<ProtectedRoute />}> */}
             <Route path="/report" element={<ReportPage />} />
             <Route path="/" element={<HomePage />} />
-          <Route path="/digital-wayfinder" element={<ProjectInfo />} />
+          <Route path="/digital-wayfinder" element={<ProjectInfoDW />} />
           {/* <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} /> */}
           <Route path="/digital-wayfinder/functional-area" element={<FunctionalAreaPage />} />
           <Route path="/digital-wayfinder/industry-type-fullfillment" element={<IndustryTypeFullfillment />} />
@@ -136,8 +138,7 @@ function App() {
           <Route path="/digital-wayfinder/cgs-agentic-ai" element={<CgsAgenticAI />} />
           
 
-
-          <Route path="/decision-tree" element={<ProjectInfo />} />
+          <Route path="/decision-tree" element={<ProjectInfoDT />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
           <Route path="/decision-tree/industry-type-func" element={<IndustryTypeFunc />} />
           <Route path="/decision-tree/industry-type-plannd" element={<IndustryTypePlannD />} />

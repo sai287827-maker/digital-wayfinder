@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './FunctionalAreaPage.css';
 
@@ -15,14 +15,18 @@ function FunctionalAreaPage() {
   //const [isMobile, setIsMobile] = useState(false);
   //const [loading, setLoading] = useState(false);
   //const [error, setError] = useState(null);
-  
+
   const navigate = useNavigate();
   const location = useLocation();
+
+  console.log("📍 PAGE: Functional");
+console.log("📦 STATE:", location.state);
   // Get project data from navigation state
   useEffect(() => {
-    if (location.state) { 
+    if (location.state) {
       setProjectData(location.state.projectData);
       setProjectType(location.state.projectType);
+      setSelectedArea(location.state.selectedArea || null);
     }
   }, [location.state]);
 
@@ -39,17 +43,28 @@ function FunctionalAreaPage() {
   };
 
   const handlePrevious = () => {
-    navigate('/digital-wayfinder/project-info');
+  navigate('/digital-wayfinder', {
+    state: {
+      ...location.state // 🔥 must preserve everything
+    }
+  });
+};
+
+  const handleProceed = () => {
+  const prev = location.state || {};
+
+  const payload = {
+    ...prev, 
+    selectedArea
   };
 
- const handleProceed = () => {
   if (selectedArea === 'supply-chain-planning') {
-    navigate('/digital-wayfinder/industry-type-planning/', {
-      state: { selectedArea }
+    navigate('/digital-wayfinder/industry-type-planning', {
+      state: payload
     });
   } else if (selectedArea === 'supply-chain-fulfillment') {
-    navigate('/digital-wayfinder/industry-type-fullfillment/', {
-      state: { selectedArea }
+    navigate('/digital-wayfinder/industry-type-fullfillment', {
+      state: payload
     });
   }
 };
@@ -75,7 +90,7 @@ function FunctionalAreaPage() {
         <div className="content-left">
           <h1>Select a Functional Area</h1>
           <p className="subtitle">Begin by choosing a key area</p>
-          
+
           {/* Display project information if available */}
           {projectData && (
             <div className="project-summary">
@@ -84,7 +99,7 @@ function FunctionalAreaPage() {
           )}
 
           <div className="area-cards">
-            <div 
+            <div
               className={`area-card ${selectedArea === 'supply-chain-planning' ? 'selected' : ''}`}
               onClick={() => handleAreaSelect('supply-chain-planning')}
             >
@@ -97,20 +112,20 @@ function FunctionalAreaPage() {
                   <p>The process of optimizing the flow of goods and resources to meet demand efficiently.</p>
                 </div>
               </div>
-              <div 
+              <div
                 className="info-icon"
                 onMouseEnter={() => showTooltip('supply-chain-planning')}
                 onMouseLeave={hideTooltip}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 {tooltipVisible === 'supply-chain-planning' && (
                   // <div className="tooltip"> 
-                   <div className="tooltip tooltip-top-right">
-"
+                  <div className="tooltip tooltip-top-right">
+                    "
                     <div className="tooltip-header">Supply Chain Planning</div>
                     <div className="tooltip-content">
                       {tooltipContent['supply-chain-planning']}
@@ -120,7 +135,7 @@ function FunctionalAreaPage() {
               </div>
             </div>
 
-            <div 
+            <div
               className={`area-card ${selectedArea === 'supply-chain-fulfillment' ? 'selected' : ''}`}
               onClick={() => handleAreaSelect('supply-chain-fulfillment')}
             >
@@ -133,19 +148,19 @@ function FunctionalAreaPage() {
                   <p>The process of delivering orders to customers accurately and on time.</p>
                 </div>
               </div>
-              <div 
+              <div
                 className="info-icon"
                 onMouseEnter={() => showTooltip('supply-chain-fulfillment')}
                 onMouseLeave={hideTooltip}
               >
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 {tooltipVisible === 'supply-chain-fulfillment' && (
                   <div className="tooltip">
-                  {/* //  <div className="tooltip tooltip-top-right"> */}
+                    {/* //  <div className="tooltip tooltip-top-right"> */}
                     <div className="tooltip-header">Supply Chain Fulfillment</div>
                     <div className="tooltip-content">
                       {tooltipContent['supply-chain-fulfillment']}
@@ -154,19 +169,19 @@ function FunctionalAreaPage() {
                 )}
               </div>
             </div>
-            
+
             {/* Additional functional areas can be added here */}
           </div>
 
           <div className="progress-footer">
-            <button 
+            <button
               className="previous-button"
               onClick={handlePrevious}
             >
               Previous
             </button>
             <div className="progress-text">Completed step 1 of 4</div>
-            <button 
+            <button
               className="finish-button"
               disabled={!selectedArea}
               onClick={handleProceed}
@@ -178,10 +193,10 @@ function FunctionalAreaPage() {
 
         <div className="content-right">
           <div className="preview-container">
-            <img 
-              src={dashboardImage} 
-              alt="Dashboard Preview" 
-              className="dashboard-preview" 
+            <img
+              src={dashboardImage}
+              alt="Dashboard Preview"
+              className="dashboard-preview"
             />
           </div>
         </div>
