@@ -21,4 +21,6 @@ public interface ProjectTypeRepository extends JpaRepository<ProjectType, Long> 
     
     // Find by specific UserID and SessionID (matches your actual column names)
     Optional<ProjectType> findByUserIDAndSessionID(String userID, String sessionID);
+
+    Optional<ProjectType> findTopBySessionIDOrderByCreatedDateDesc(String sessionID);
 }
