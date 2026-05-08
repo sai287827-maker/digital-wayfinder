@@ -3,11 +3,11 @@ package com.example.DigitalWayfinder.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.Optional;
-import java.util.List;       
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Collections; 
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ import com.example.DigitalWayfinder.entity.FunctionalAreaDT;
 @RequiredArgsConstructor
 @Slf4j
 public class FunctionalScopeService {
-    
+
     private final WmsFunctionalRepository wmsFunctionalRepository;
     private final TmsFunctionalRepository tmsFunctionalRepository;
     private final OmsFunctionalRepository omsFunctionalRepository;
@@ -54,7 +54,7 @@ public class FunctionalScopeService {
         try {
             List<Object[]> functionalScopes = wmsFunctionalRepository.findAllLevelsAsArray();
             log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
+
             return functionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
@@ -69,7 +69,7 @@ public class FunctionalScopeService {
         try {
             List<Object[]> functionalScopes = omsFunctionalRepository.findAllLevelsAsArray();
             log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
+
             return functionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
@@ -84,7 +84,7 @@ public class FunctionalScopeService {
         try {
             List<Object[]> functionalScopes = tmsFunctionalRepository.findAllLevelsAsArray();
             log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
+
             return functionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
@@ -94,35 +94,36 @@ public class FunctionalScopeService {
         }
     }
 
-public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
-    log.info("Fetching all functional scope levels");
-    try {
-        List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
-        log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-        
-        // DEBUG: Log first few records to see the actual data structure
-        if (!functionalScopes.isEmpty()) {
-            for (int i = 0; i < Math.min(5, functionalScopes.size()); i++) {
-                Object[] record = functionalScopes.get(i);
-                log.info("IndAgnoustic Record {}: Length={}, Content={}", i, record.length, Arrays.toString(record));
+    public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
+        log.info("Fetching all functional scope levels");
+        try {
+            List<Object[]> functionalScopes = indagnousticFunctionalRepository.findAllLevelsAsArray();
+            log.info("Successfully fetched {} functional scope records", functionalScopes.size());
+
+            // DEBUG: Log first few records to see the actual data structure
+            if (!functionalScopes.isEmpty()) {
+                for (int i = 0; i < Math.min(5, functionalScopes.size()); i++) {
+                    Object[] record = functionalScopes.get(i);
+                    log.info("IndAgnoustic Record {}: Length={}, Content={}", i, record.length,
+                            Arrays.toString(record));
+                }
             }
+
+            return functionalScopes.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error fetching functional scopes: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to fetch functional scopes", e);
         }
-        
-        return functionalScopes.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    } catch (Exception e) {
-        log.error("Error fetching functional scopes: {}", e.getMessage(), e);
-        throw new RuntimeException("Failed to fetch functional scopes", e);
     }
-}
 
     public List<FunctionalScopeDto> getAllFunctionalScopesRetail() {
         log.info("Fetching all functional scope levels");
         try {
             List<Object[]> functionalScopes = retailFunctionalRepository.findAllLevelsAsArray();
             log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
+
             return functionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
@@ -137,7 +138,7 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
         try {
             List<Object[]> functionalScopes = cgsFunctionalRepository.findAllLevelsAsArray();
             log.info("Successfully fetched {} functional scope records", functionalScopes.size());
-            
+
             return functionalScopes.stream()
                     .map(this::convertToDto)
                     .collect(Collectors.toList());
@@ -149,79 +150,79 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
 
     private FunctionalScopeDto convertToDto(Object[] scopeArray) {
         return new FunctionalScopeDto(
-            scopeArray.length > 0 ? (String) scopeArray[0] : null,
-            scopeArray.length > 1 ? (String) scopeArray[1] : null,
-            scopeArray.length > 2 ? (String) scopeArray[2] : null,
-            scopeArray.length > 3 ? (String) scopeArray[3] : null,
-            scopeArray.length > 4 ? (String) scopeArray[4] : null
-        );
+                scopeArray.length > 0 ? (String) scopeArray[0] : null,
+                scopeArray.length > 1 ? (String) scopeArray[1] : null,
+                scopeArray.length > 2 ? (String) scopeArray[2] : null,
+                scopeArray.length > 3 ? (String) scopeArray[3] : null,
+                scopeArray.length > 4 ? (String) scopeArray[4] : null);
     }
 
     @Transactional
-    public FunctionalScopeResponse saveFunctionalScope(FunctionalScopeRequest request, String userId, String sessionId) {
+    public FunctionalScopeResponse saveFunctionalScope(FunctionalScopeRequest request, String userId,
+            String sessionId) {
         log.info("Saving functional scope for user: {} and session: {}", userId, sessionId);
-        
+
         try {
             // First, delete all existing records for this user/session
-            functionalProcessRepository.deleteByUserIdAndSessionId(userId, sessionId);
-            
+            functionalProcessRepository.deleteAllByUserIdAndSessionId(userId, sessionId);
+
             // Get the functional area info from previous step
             FunctionalAreaDT previousProcess = functionalAreaDTRepository
-                .findByUserIdAndSessionId(userId, sessionId)
-                .orElseThrow(() -> new RuntimeException("Previous functional process not found"));
-            
+                    .findByUserIdAndSessionId(userId, sessionId)
+                    .orElseThrow(() -> new RuntimeException("Previous functional process not found"));
+
             List<UserFunctionalProcess> recordsToSave = new ArrayList<>();
-            
+
             FunctionalScopeRequest.LevelSelections levelSelections = request.getLevelSelections();
-            
+
             if (levelSelections != null) {
                 List<UserFunctionalProcess> records = convertToMultipleRecords(
-                    levelSelections, userId, sessionId, previousProcess);
+                        levelSelections, userId, sessionId, previousProcess);
                 recordsToSave.addAll(records);
             }
-            
+
             // Save all records at once
             List<UserFunctionalProcess> savedRecords = functionalProcessRepository.saveAll(recordsToSave);
-            
+
             log.info("Successfully saved {} functional scope records", savedRecords.size());
             return mapToFunctionalScopeResponse(savedRecords, previousProcess);
-            
+
         } catch (Exception e) {
             log.error("Error saving functional scope", e);
             throw new RuntimeException("Failed to save functional scope: " + e.getMessage());
         }
     }
-    
+
     private List<UserFunctionalProcess> convertToMultipleRecords(
             FunctionalScopeRequest.LevelSelections levelSelections,
             String userId, String sessionId, FunctionalAreaDT previousProcess) {
-        
+
         List<UserFunctionalProcess> records = new ArrayList<>();
         Set<String> processedPaths = new HashSet<>();
-        
+
         // Safely get lists with null checks
         List<String> l1List = levelSelections.getL1() != null ? levelSelections.getL1() : new ArrayList<>();
         List<String> l2List = levelSelections.getL2() != null ? levelSelections.getL2() : new ArrayList<>();
         List<String> l3List = levelSelections.getL3() != null ? levelSelections.getL3() : new ArrayList<>();
         List<String> l4List = levelSelections.getL4() != null ? levelSelections.getL4() : new ArrayList<>();
-        
+
         String functionalArea = determineFunctionalAreaForRepository(previousProcess);
 
-            if ("IND-AGNOUSTIC".equals(functionalArea.toUpperCase())) {
-        debugIndAgnousticRepository();
-    }
-        
-        log.info("Processing selections for functionalArea: {} - L1: {}, L2: {}, L3: {}, L4: {}", 
-                 functionalArea, l1List.size(), l2List.size(), l3List.size(), l4List.size());
-        
+        if ("IND-AGNOUSTIC".equals(functionalArea.toUpperCase())) {
+            debugIndAgnousticRepository();
+        }
+
+        log.info("Processing selections for functionalArea: {} - L1: {}, L2: {}, L3: {}, L4: {}",
+                functionalArea, l1List.size(), l2List.size(), l3List.size(), l4List.size());
+
         // Debug: Log the actual selections
         log.info("L1 selections: {}", l1List);
         log.info("L2 selections: {}", l2List);
         log.info("L3 selections: {}", l3List);
         log.info("L4 selections: {}", l4List);
-        
+
         // Strategy: Process from most specific to least specific
-        
+
         // 1. Process explicitly selected L4s first
         for (String l4 : l4List) {
             log.info("Processing L4: {}", l4);
@@ -244,15 +245,15 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                 log.warn("No complete path found for L4: {}", l4);
             }
         }
-        
+
         // 2. Process L3 selections that don't have corresponding L4 selections
         for (String l3 : l3List) {
             log.info("Processing L3: {}", l3);
-            
+
             // Check if any L4s under this L3 were already selected
             List<String> l4sUnderL3 = findAllL4ByL3Safe(l3, functionalArea);
             boolean hasSelectedL4s = l4sUnderL3.stream().anyMatch(l4List::contains);
-            
+
             if (!hasSelectedL4s) {
                 // Auto-expand all L4s under this L3
                 if (!l4sUnderL3.isEmpty()) {
@@ -262,7 +263,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                         if (pathOpt.isPresent()) {
                             String pathKey = createPathKey(pathOpt.get());
                             if (!processedPaths.contains(pathKey)) {
-                                UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId, previousProcess);
+                                UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId,
+                                        previousProcess);
                                 if (record != null) {
                                     records.add(record);
                                     processedPaths.add(pathKey);
@@ -273,7 +275,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                 } else {
                     // No L4s under this L3, save the L3 itself
                     log.info("No L4s found under L3: {}, saving L3 record", l3);
-                    UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess, functionalArea);
+                    UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess,
+                            functionalArea);
                     if (record != null) {
                         String pathKey = createPathKeyFromRecord(record);
                         if (!processedPaths.contains(pathKey)) {
@@ -284,14 +287,14 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                 }
             }
         }
-        
+
         // 3. Process L2 selections that don't have corresponding L3 selections
         for (String l2 : l2List) {
             log.info("Processing L2: {}", l2);
-            
+
             List<String> l3sUnderL2 = findAllL3ByL2Safe(l2, functionalArea);
             boolean hasSelectedL3s = l3sUnderL2.stream().anyMatch(l3List::contains);
-            
+
             if (!hasSelectedL3s) {
                 if (!l3sUnderL2.isEmpty()) {
                     log.info("Auto-expanding {} L3s under L2: {}", l3sUnderL2.size(), l2);
@@ -303,7 +306,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                                 if (pathOpt.isPresent()) {
                                     String pathKey = createPathKey(pathOpt.get());
                                     if (!processedPaths.contains(pathKey)) {
-                                        UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId, previousProcess);
+                                        UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId,
+                                                sessionId, previousProcess);
                                         if (record != null) {
                                             records.add(record);
                                             processedPaths.add(pathKey);
@@ -312,7 +316,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                                 }
                             }
                         } else {
-                            UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess, functionalArea);
+                            UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess,
+                                    functionalArea);
                             if (record != null) {
                                 String pathKey = createPathKeyFromRecord(record);
                                 if (!processedPaths.contains(pathKey)) {
@@ -324,7 +329,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                     }
                 } else {
                     log.info("No L3s found under L2: {}, saving L2 record", l2);
-                    UserFunctionalProcess record = createRecordForL2(l2, userId, sessionId, previousProcess, functionalArea);
+                    UserFunctionalProcess record = createRecordForL2(l2, userId, sessionId, previousProcess,
+                            functionalArea);
                     if (record != null) {
                         String pathKey = createPathKeyFromRecord(record);
                         if (!processedPaths.contains(pathKey)) {
@@ -335,14 +341,14 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                 }
             }
         }
-        
+
         // 4. Process L1 selections that don't have corresponding L2 selections
         for (String l1 : l1List) {
             log.info("Processing L1: {}", l1);
-            
+
             List<String> l2sUnderL1 = findAllL2ByL1Safe(l1, functionalArea);
             boolean hasSelectedL2s = l2sUnderL1.stream().anyMatch(l2List::contains);
-            
+
             if (!hasSelectedL2s) {
                 if (!l2sUnderL1.isEmpty()) {
                     log.info("Auto-expanding {} L2s under L1: {}", l2sUnderL1.size(), l1);
@@ -358,7 +364,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                                         if (pathOpt.isPresent()) {
                                             String pathKey = createPathKey(pathOpt.get());
                                             if (!processedPaths.contains(pathKey)) {
-                                                UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId, sessionId, previousProcess);
+                                                UserFunctionalProcess record = createRecordSafe(pathOpt.get(), userId,
+                                                        sessionId, previousProcess);
                                                 if (record != null) {
                                                     records.add(record);
                                                     processedPaths.add(pathKey);
@@ -367,7 +374,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                                         }
                                     }
                                 } else {
-                                    UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId, previousProcess, functionalArea);
+                                    UserFunctionalProcess record = createRecordForL3(l3, userId, sessionId,
+                                            previousProcess, functionalArea);
                                     if (record != null) {
                                         String pathKey = createPathKeyFromRecord(record);
                                         if (!processedPaths.contains(pathKey)) {
@@ -378,7 +386,8 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                                 }
                             }
                         } else {
-                            UserFunctionalProcess record = createRecordForL2(l2, userId, sessionId, previousProcess, functionalArea);
+                            UserFunctionalProcess record = createRecordForL2(l2, userId, sessionId, previousProcess,
+                                    functionalArea);
                             if (record != null) {
                                 String pathKey = createPathKeyFromRecord(record);
                                 if (!processedPaths.contains(pathKey)) {
@@ -401,109 +410,113 @@ public List<FunctionalScopeDto> getAllFunctionalScopesIndAgnoustic() {
                 }
             }
         }
-        
+
         log.info("Total records created: {}", records.size());
         return records;
     }
 
     /**
-     * Determines which repository to use based on the combination of functionalArea, 
+     * Determines which repository to use based on the combination of
+     * functionalArea,
      * industryType, and functionalSubArea
      */
-private String determineFunctionalAreaForRepository(FunctionalAreaDT previousProcess) {
-    String functionalArea = previousProcess.getFunctionalArea();
-    String industryType = previousProcess.getIndustryType();
-    String functionalSubArea = previousProcess.getFunctionalSubArea();
-    
-    log.info("Determining repository for - functionalArea: {}, industryType: {}, functionalSubArea: {}", 
-             functionalArea, industryType, functionalSubArea);
-    
-    // Priority 1: Check industryType first (most specific)
-    if (industryType != null) {
-        String industryUpper = industryType.toUpperCase();
-        
-        if (industryUpper.contains("WAREHOUSE-MANAGEMENT") || industryUpper.contains("WAREHOUSE MANAGEMENT")) {
-            log.info("Using WMS repository based on industryType: {}", industryType);
-            return "WMS";
+    private String determineFunctionalAreaForRepository(FunctionalAreaDT previousProcess) {
+        String functionalArea = previousProcess.getFunctionalArea();
+        String industryType = previousProcess.getIndustryType();
+        String functionalSubArea = previousProcess.getFunctionalSubArea();
+
+        log.info("Determining repository for - functionalArea: {}, industryType: {}, functionalSubArea: {}",
+                functionalArea, industryType, functionalSubArea);
+
+        // Priority 1: Check industryType first (most specific)
+        if (industryType != null) {
+            String industryUpper = industryType.toUpperCase();
+
+            if (industryUpper.contains("WAREHOUSE-MANAGEMENT") || industryUpper.contains("WAREHOUSE MANAGEMENT")) {
+                log.info("Using WMS repository based on industryType: {}", industryType);
+                return "WMS";
+            }
+
+            if (industryUpper.contains("TRANSPORTATION-MANAGEMENT")
+                    || industryUpper.contains("TRANSPORTATION MANAGEMENT")) {
+                log.info("Using TMS repository based on industryType: {}", industryType);
+                return "TRANSPORTATION-MANAGEMENT";
+            }
+
+            if (industryUpper.contains("INDUSTRY AGNOSTIC") || industryUpper.contains("AGNOSTIC")) {
+                log.info("Using IND-AGNOUSTIC repository based on industryType: {}", industryType);
+                return "IND-AGNOUSTIC";
+            }
+
+            if (industryUpper.contains("CONSUMER GOODS") || industryUpper.contains("CGS")) {
+                log.info("Using CGS repository based on industryType: {}", industryType);
+                return "CGS";
+            }
+
+            if (industryUpper.contains("RETAIL") && industryUpper.contains("SPECIFIC")) {
+                log.info("Using RETAIL repository based on industryType: {}", industryType);
+                return "RETAIL";
+            }
         }
-        
-        if (industryUpper.contains("TRANSPORTATION-MANAGEMENT") || industryUpper.contains("TRANSPORTATION MANAGEMENT")) {
-            log.info("Using TMS repository based on industryType: {}", industryType);
-            return "TRANSPORTATION-MANAGEMENT";
+
+        // Priority 2: Check functionalSubArea
+        if (functionalSubArea != null) {
+            String subAreaUpper = functionalSubArea.toUpperCase();
+
+            if (subAreaUpper.contains("WAREHOUSE") || subAreaUpper.contains("WMS")) {
+                log.info("Using WMS repository based on functionalSubArea: {}", functionalSubArea);
+                return "WMS";
+            }
+
+            if (subAreaUpper.contains("TRANSPORTATION") || subAreaUpper.contains("TMS")) {
+                log.info("Using TMS repository based on functionalSubArea: {}", functionalSubArea);
+                return "TRANSPORTATION-MANAGEMENT";
+            }
+
+            if (subAreaUpper.contains("ORDER") || subAreaUpper.contains("OMS")) {
+                log.info("Using OMS repository based on functionalSubArea: {}", functionalSubArea);
+                return "OMS";
+            }
+
+            if (subAreaUpper.contains("RETAIL")) {
+                log.info("Using RETAIL repository based on functionalSubArea: {}", functionalSubArea);
+                return "RETAIL";
+            }
+
+            if (subAreaUpper.contains("CGS") || subAreaUpper.contains("CONSUMER")) {
+                log.info("Using CGS repository based on functionalSubArea: {}", functionalSubArea);
+                return "CGS";
+            }
         }
-        
-        if (industryUpper.contains("INDUSTRY AGNOSTIC") || industryUpper.contains("AGNOSTIC")) {
-            log.info("Using IND-AGNOUSTIC repository based on industryType: {}", industryType);
-            return "IND-AGNOUSTIC";
+
+        // Priority 3: Check functionalArea (least specific, only for very clear cases)
+        if (functionalArea != null) {
+            String areaUpper = functionalArea.toUpperCase();
+
+            // Only match very specific functional area names
+            if (areaUpper.equals("WAREHOUSE-MANAGEMENT") || areaUpper.equals("WMS")) {
+                log.info("Using WMS repository based on functionalArea: {}", functionalArea);
+                return "WMS";
+            }
+
+            if (areaUpper.equals("TRANSPORTATION-MANAGEMENT") || areaUpper.equals("TMS")) {
+                log.info("Using TMS repository based on functionalArea: {}", functionalArea);
+                return "TRANSPORTATION-MANAGEMENT";
+            }
+
+            if (areaUpper.equals("ORDER-MANAGEMENT") || areaUpper.equals("OMS")) {
+                log.info("Using OMS repository based on functionalArea: {}", functionalArea);
+                return "OMS";
+            }
         }
-        
-        if (industryUpper.contains("CONSUMER GOODS") || industryUpper.contains("CGS")) {
-            log.info("Using CGS repository based on industryType: {}", industryType);
-            return "CGS";
-        }
-        
-        if (industryUpper.contains("RETAIL") && industryUpper.contains("SPECIFIC")) {
-            log.info("Using RETAIL repository based on industryType: {}", industryType);
-            return "RETAIL";
-        }
+
+        // Default: Fall back to IND-AGNOUSTIC for ambiguous cases
+        log.info(
+                "Using IND-AGNOUSTIC repository as default for: functionalArea={}, industryType={}, functionalSubArea={}",
+                functionalArea, industryType, functionalSubArea);
+        return "IND-AGNOUSTIC";
     }
-    
-    // Priority 2: Check functionalSubArea
-    if (functionalSubArea != null) {
-        String subAreaUpper = functionalSubArea.toUpperCase();
-        
-        if (subAreaUpper.contains("WAREHOUSE") || subAreaUpper.contains("WMS")) {
-            log.info("Using WMS repository based on functionalSubArea: {}", functionalSubArea);
-            return "WMS";
-        }
-        
-        if (subAreaUpper.contains("TRANSPORTATION") || subAreaUpper.contains("TMS")) {
-            log.info("Using TMS repository based on functionalSubArea: {}", functionalSubArea);
-            return "TRANSPORTATION-MANAGEMENT";
-        }
-        
-        if (subAreaUpper.contains("ORDER") || subAreaUpper.contains("OMS")) {
-            log.info("Using OMS repository based on functionalSubArea: {}", functionalSubArea);
-            return "OMS";
-        }
-        
-        if (subAreaUpper.contains("RETAIL")) {
-            log.info("Using RETAIL repository based on functionalSubArea: {}", functionalSubArea);
-            return "RETAIL";
-        }
-        
-        if (subAreaUpper.contains("CGS") || subAreaUpper.contains("CONSUMER")) {
-            log.info("Using CGS repository based on functionalSubArea: {}", functionalSubArea);
-            return "CGS";
-        }
-    }
-    
-    // Priority 3: Check functionalArea (least specific, only for very clear cases)
-    if (functionalArea != null) {
-        String areaUpper = functionalArea.toUpperCase();
-        
-        // Only match very specific functional area names
-        if (areaUpper.equals("WAREHOUSE-MANAGEMENT") || areaUpper.equals("WMS")) {
-            log.info("Using WMS repository based on functionalArea: {}", functionalArea);
-            return "WMS";
-        }
-        
-        if (areaUpper.equals("TRANSPORTATION-MANAGEMENT") || areaUpper.equals("TMS")) {
-            log.info("Using TMS repository based on functionalArea: {}", functionalArea);
-            return "TRANSPORTATION-MANAGEMENT";
-        }
-        
-        if (areaUpper.equals("ORDER-MANAGEMENT") || areaUpper.equals("OMS")) {
-            log.info("Using OMS repository based on functionalArea: {}", functionalArea);
-            return "OMS";
-        }
-    }
-    
-    // Default: Fall back to IND-AGNOUSTIC for ambiguous cases
-    log.info("Using IND-AGNOUSTIC repository as default for: functionalArea={}, industryType={}, functionalSubArea={}", 
-             functionalArea, industryType, functionalSubArea);
-    return "IND-AGNOUSTIC";
-}
+
     // Safe wrapper methods with better error handling and logging
     private List<String> findAllL2ByL1Safe(String l1, String functionalArea) {
         try {
@@ -532,113 +545,130 @@ private String determineFunctionalAreaForRepository(FunctionalAreaDT previousPro
         }
     }
 
-private UserFunctionalProcess createRecordSafe(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
-    try {
-        if (path == null || path.length == 0) {
-            log.warn("Path is null or empty");
+    private String safeToString(Object obj) {
+        if (obj == null)
+            return null;
+
+        if (obj instanceof Object[]) {
+            Object[] arr = (Object[]) obj;
+            return arr.length > 0 ? String.valueOf(arr[0]) : null;
+        }
+
+        return String.valueOf(obj);
+    }
+
+    private UserFunctionalProcess createRecordSafe(Object[] path, String userId, String sessionId,
+            FunctionalAreaDT previousProcess) {
+        try {
+            if (path == null || path.length == 0) {
+                log.warn("Path is null or empty");
+                return null;
+            }
+
+            log.info("Creating record from path: {}", Arrays.toString(path));
+
+            // Handle nested array structure
+            Object[] actualPath = path;
+            if (path.length == 1 && path[0] instanceof Object[]) {
+                actualPath = (Object[]) path[0];
+                log.info("Extracted nested array: {}", Arrays.toString(actualPath));
+            }
+
+            UserFunctionalProcess record = UserFunctionalProcess.builder()
+                    .userId(userId)
+                    .sessionId(sessionId)
+                    .functionalArea(previousProcess.getFunctionalArea())
+                    .industryType(previousProcess.getIndustryType())
+                    .functionalSubArea(previousProcess.getFunctionalSubArea())
+                    .l1(safeToString(actualPath.length > 0 ? actualPath[0] : null))
+                    .l2(safeToString(actualPath.length > 1 ? actualPath[1] : null))
+                    .l3(safeToString(actualPath.length > 2 ? actualPath[2] : null))
+                    .l4(safeToString(actualPath.length > 3 ? actualPath[3] : null))
+                    .l5(safeToString(actualPath.length > 4 ? actualPath[4] : null)) // Add L5 support
+                    .build();
+
+            log.info("Created record: L1={}, L2={}, L3={}, L4={}, L5={}", record.getL1(), record.getL2(),
+                    record.getL3(), record.getL4(), record.getL5());
+            return record;
+
+        } catch (Exception e) {
+            log.error("Error creating record from path: {}", e.getMessage(), e);
             return null;
         }
-        
-        log.info("Creating record from path: {}", Arrays.toString(path));
-        
-        // Handle nested array structure
-        Object[] actualPath = path;
-        if (path.length == 1 && path[0] instanceof Object[]) {
-            actualPath = (Object[]) path[0];
-            log.info("Extracted nested array: {}", Arrays.toString(actualPath));
-        }
-        
-        UserFunctionalProcess record = UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-            .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
-            .l4(actualPath.length > 3 && actualPath[3] != null ? actualPath[3].toString() : null)
-            .l5(actualPath.length > 4 && actualPath[4] != null ? actualPath[4].toString() : null) // Add L5 support
-            .build();
-        
-        log.info("Created record: L1={}, L2={}, L3={}, L4={}, L5={}", record.getL1(), record.getL2(), record.getL3(), record.getL4(), record.getL5());
-        return record;
-        
-    } catch (Exception e) {
-        log.error("Error creating record from path: {}", e.getMessage(), e);
-        return null;
     }
-}
 
-    private UserFunctionalProcess createRecordForL1(String l1, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+    private UserFunctionalProcess createRecordForL1(String l1, String userId, String sessionId,
+            FunctionalAreaDT previousProcess) {
         return UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(l1)
-            .l2(null)
-            .l3(null)
-            .l4(null)
-            .l5(null)
-            .build();
+                .userId(userId)
+                .sessionId(sessionId)
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .l1(l1)
+                .l2(null)
+                .l3(null)
+                .l4(null)
+                .l5(null)
+                .build();
     }
 
-    private UserFunctionalProcess createRecordForL2(String l2, String userId, String sessionId, FunctionalAreaDT previousProcess, String functionalArea) {
+    private UserFunctionalProcess createRecordForL2(String l2, String userId, String sessionId,
+            FunctionalAreaDT previousProcess, String functionalArea) {
         // Try to find the L1 for this L2
         String l1 = findL1ByL2(l2, functionalArea);
-        
+
         return UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(l1)
-            .l2(l2)
-            .l3(null)
-            .l4(null)
-            .l5(null)
-            .build();
+                .userId(userId)
+                .sessionId(sessionId)
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .l1(l1)
+                .l2(l2)
+                .l3(null)
+                .l4(null)
+                .l5(null)
+                .build();
     }
 
-    private UserFunctionalProcess createRecordForL3(String l3, String userId, String sessionId, FunctionalAreaDT previousProcess, String functionalArea) {
+    private UserFunctionalProcess createRecordForL3(String l3, String userId, String sessionId,
+            FunctionalAreaDT previousProcess, String functionalArea) {
         // Try to find the complete path up to L3
         Optional<Object[]> pathOpt = getFirstPathForL3(l3, functionalArea);
-        
+
         String l1 = null;
         String l2 = null;
-        
+
         if (pathOpt.isPresent()) {
             Object[] path = pathOpt.get();
             Object[] actualPath = path.length == 1 && path[0] instanceof Object[] ? (Object[]) path[0] : path;
-            
+
             l1 = actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null;
             l2 = actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null;
         }
-        
+
         return UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(l1)
-            .l2(l2)
-            .l3(l3)
-            .l4(null)
-            .l5(null)
-            .build();
+                .userId(userId)
+                .sessionId(sessionId)
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .l1(l1)
+                .l2(l2)
+                .l3(l3)
+                .l4(null)
+                .l5(null)
+                .build();
     }
 
     private String createPathKeyFromRecord(UserFunctionalProcess record) {
-        return String.format("%s|%s|%s|%s|%s", 
-            record.getL1() != null ? record.getL1() : "null",
-            record.getL2() != null ? record.getL2() : "null",
-            record.getL3() != null ? record.getL3() : "null",
-            record.getL4() != null ? record.getL4() : "null",
-            record.getL5() != null ? record.getL5() : "null");
+        return String.format("%s|%s|%s|%s|%s",
+                record.getL1() != null ? record.getL1() : "null",
+                record.getL2() != null ? record.getL2() : "null",
+                record.getL3() != null ? record.getL3() : "null",
+                record.getL4() != null ? record.getL4() : "null",
+                record.getL5() != null ? record.getL5() : "null");
     }
 
     // Helper method to create a unique key for each path to avoid duplicates
@@ -647,7 +677,7 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
         if (path.length == 1 && path[0] instanceof Object[]) {
             actualPath = (Object[]) path[0];
         }
-        
+
         StringBuilder key = new StringBuilder();
         for (int i = 0; i < actualPath.length; i++) {
             if (actualPath[i] != null) {
@@ -660,45 +690,47 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
     }
 
     // Helper method to create record stopping at L2
-    private UserFunctionalProcess createRecordUpToL2(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+    private UserFunctionalProcess createRecordUpToL2(Object[] path, String userId, String sessionId,
+            FunctionalAreaDT previousProcess) {
         Object[] actualPath = path;
         if (path.length == 1 && path[0] instanceof Object[]) {
             actualPath = (Object[]) path[0];
         }
-        
+
         return UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-            .l3(null)
-            .l4(null)
-            .l5(null)
-            .build();
+                .userId(userId)
+                .sessionId(sessionId)
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+                .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+                .l3(null)
+                .l4(null)
+                .l5(null)
+                .build();
     }
 
     // Helper method to create record stopping at L3
-    private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+    private UserFunctionalProcess createRecordUpToL3(Object[] path, String userId, String sessionId,
+            FunctionalAreaDT previousProcess) {
         Object[] actualPath = path;
         if (path.length == 1 && path[0] instanceof Object[]) {
             actualPath = (Object[]) path[0];
         }
-        
+
         return UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-            .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
-            .l4(null)
-            .l5(null)
-            .build();
+                .userId(userId)
+                .sessionId(sessionId)
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+                .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+                .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
+                .l4(null)
+                .l5(null)
+                .build();
     }
 
     private Optional<Object[]> findCompletePathByL4(String l4, String functionalArea) {
@@ -725,7 +757,7 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
 
     private Optional<Object[]> getFirstPathForL3(String l3, String functionalArea) {
         List<Object[]> paths = null;
-        
+
         switch (functionalArea.toUpperCase()) {
             case "WMS":
             case "SUPPLY-CHAIN-FULFILLMENT":
@@ -751,13 +783,13 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
                 log.warn("Unknown functional area: {}", functionalArea);
                 return Optional.empty();
         }
-        
+
         return paths != null && !paths.isEmpty() ? Optional.of(paths.get(0)) : Optional.empty();
     }
 
     private Optional<Object[]> getFirstPathForL2(String l2, String functionalArea) {
         List<Object[]> paths = null;
-        
+
         switch (functionalArea.toUpperCase()) {
             case "WMS":
             case "SUPPLY-CHAIN-FULFILLMENT":
@@ -783,7 +815,7 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
                 log.warn("Unknown functional area: {}", functionalArea);
                 return Optional.empty();
         }
-        
+
         return paths != null && !paths.isEmpty() ? Optional.of(paths.get(0)) : Optional.empty();
     }
 
@@ -815,7 +847,7 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
         if (l1 == null) {
             return new ArrayList<>();
         }
-        
+
         switch (functionalArea.toUpperCase()) {
             case "WMS":
             case "SUPPLY-CHAIN-FULFILLMENT":
@@ -843,24 +875,24 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
         if (!pathOpt.isPresent()) {
             return new ArrayList<>();
         }
-        
+
         Object[] path = pathOpt.get();
         Object[] actualPath = path;
         if (path.length == 1 && path[0] instanceof Object[]) {
             actualPath = (Object[]) path[0];
         }
-        
+
         if (actualPath.length < 2) {
             return new ArrayList<>();
         }
-        
+
         String l1 = actualPath[0] != null ? actualPath[0].toString() : null;
         String l2 = actualPath[1] != null ? actualPath[1].toString() : null;
-        
+
         if (l1 == null || l2 == null) {
             return new ArrayList<>();
         }
-        
+
         switch (functionalArea.toUpperCase()) {
             case "WMS":
             case "SUPPLY-CHAIN-FULFILLMENT":
@@ -887,20 +919,21 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
         if (!pathOpt.isPresent()) {
             return null;
         }
-        
+
         Object[] path = pathOpt.get();
         Object[] actualPath = path;
         if (path.length == 1 && path[0] instanceof Object[]) {
             actualPath = (Object[]) path[0];
         }
-        
+
         return actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null;
     }
 
-    private UserFunctionalProcess createRecord(Object[] path, String userId, String sessionId, FunctionalAreaDT previousProcess) {
+    private UserFunctionalProcess createRecord(Object[] path, String userId, String sessionId,
+            FunctionalAreaDT previousProcess) {
         log.info("Creating record from path array with length: {}", path.length);
         log.info("Path contents: {}", Arrays.toString(path));
-        
+
         // Handle nested array structure - if path[0] is an Object[], extract it
         Object[] actualPath = path;
         if (path.length == 1 && path[0] instanceof Object[]) {
@@ -908,48 +941,48 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
             log.info("Extracted nested array with length: {}", actualPath.length);
             log.info("Actual path contents: {}", Arrays.toString(actualPath));
         }
-        
+
         return UserFunctionalProcess.builder()
-            .userId(userId)
-            .sessionId(sessionId)
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
-            .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
-            .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
-            .l4(actualPath.length > 3 && actualPath[3] != null ? actualPath[3].toString() : null)
-            .l5(null) // Since you don't have L5
-            .build();
+                .userId(userId)
+                .sessionId(sessionId)
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .l1(actualPath.length > 0 && actualPath[0] != null ? actualPath[0].toString() : null)
+                .l2(actualPath.length > 1 && actualPath[1] != null ? actualPath[1].toString() : null)
+                .l3(actualPath.length > 2 && actualPath[2] != null ? actualPath[2].toString() : null)
+                .l4(actualPath.length > 3 && actualPath[3] != null ? actualPath[3].toString() : null)
+                .l5(null) // Since you don't have L5
+                .build();
     }
-    
+
     private FunctionalScopeResponse mapToFunctionalScopeResponse(
-            List<UserFunctionalProcess> savedRecords, 
+            List<UserFunctionalProcess> savedRecords,
             FunctionalAreaDT previousProcess) {
-        
+
         log.info("Mapping {} saved records to response", savedRecords.size());
-        
+
         List<FunctionalScopeResponse.LevelPath> levelPaths = savedRecords.stream()
-            .map(record -> {
-                log.info("Record: L1={}, L2={}, L3={}, L4={}", 
-                        record.getL1(), record.getL2(), record.getL3(), record.getL4());
-                return FunctionalScopeResponse.LevelPath.builder()
-                    .l1(record.getL1())
-                    .l2(record.getL2())
-                    .l3(record.getL3())
-                    .l4(record.getL4())
-                    .build();
-            })
-            .collect(Collectors.toList());
-        
+                .map(record -> {
+                    log.info("Record: L1={}, L2={}, L3={}, L4={}",
+                            record.getL1(), record.getL2(), record.getL3(), record.getL4());
+                    return FunctionalScopeResponse.LevelPath.builder()
+                            .l1(record.getL1())
+                            .l2(record.getL2())
+                            .l3(record.getL3())
+                            .l4(record.getL4())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
         return FunctionalScopeResponse.builder()
-            .userId(savedRecords.get(0).getUserId())
-            .sessionId(savedRecords.get(0).getSessionId())
-            .functionalArea(previousProcess.getFunctionalArea())
-            .industryType(previousProcess.getIndustryType())
-            .functionalSubArea(previousProcess.getFunctionalSubArea())
-            .levelSelections(levelPaths)
-            .build();
+                .userId(savedRecords.get(0).getUserId())
+                .sessionId(savedRecords.get(0).getSessionId())
+                .functionalArea(previousProcess.getFunctionalArea())
+                .industryType(previousProcess.getIndustryType())
+                .functionalSubArea(previousProcess.getFunctionalSubArea())
+                .levelSelections(levelPaths)
+                .build();
     }
 
     private String listToJsonString(List<String> list) {
@@ -963,13 +996,13 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
             return null;
         }
     }
-    
+
     private List<String> jsonStringToList(String jsonString) {
         if (jsonString == null || jsonString.trim().isEmpty()) {
             return Collections.emptyList();
         }
         try {
-            return objectMapper.readValue(jsonString, 
+            return objectMapper.readValue(jsonString,
                     objectMapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (JsonProcessingException e) {
             log.error("Error converting JSON string to list", e);
@@ -978,30 +1011,31 @@ private UserFunctionalProcess createRecordSafe(Object[] path, String userId, Str
     }
 
     private void debugIndAgnousticRepository() {
-    log.info("=== DEBUG: Testing IndAgnoustic repository methods ===");
-    
-    try {
-        // Test the basic query
-        List<Object[]> allRecords = indagnousticFunctionalRepository.findAllLevelsAsArray();
-        log.info("IndAgnoustic total records: {}", allRecords.size());
-        
-        if (!allRecords.isEmpty()) {
-            Object[] firstRecord = allRecords.get(0);
-            log.info("First record structure: {}", Arrays.toString(firstRecord));
+        log.info("=== DEBUG: Testing IndAgnoustic repository methods ===");
+
+        try {
+            // Test the basic query
+            List<Object[]> allRecords = indagnousticFunctionalRepository.findAllLevelsAsArray();
+            log.info("IndAgnoustic total records: {}", allRecords.size());
+
+            if (!allRecords.isEmpty()) {
+                Object[] firstRecord = allRecords.get(0);
+                log.info("First record structure: {}", Arrays.toString(firstRecord));
+            }
+
+            // Test specific path lookups with your actual selections
+            List<Object[]> pathsForL3 = indagnousticFunctionalRepository.findPathsByL3("Define Segmentation Approach");
+            log.info("Paths found for L3 'Define Segmentation Approach': {}", pathsForL3.size());
+            if (!pathsForL3.isEmpty()) {
+                log.info("First path: {}", Arrays.toString(pathsForL3.get(0)));
+            }
+
+            List<Object[]> pathsForL2 = indagnousticFunctionalRepository
+                    .findPathsByL2("Define Demand Segment & Approach");
+            log.info("Paths found for L2 'Define Demand Segment & Approach': {}", pathsForL2.size());
+
+        } catch (Exception e) {
+            log.error("Error in IndAgnoustic debug: {}", e.getMessage(), e);
         }
-        
-        // Test specific path lookups with your actual selections
-        List<Object[]> pathsForL3 = indagnousticFunctionalRepository.findPathsByL3("Define Segmentation Approach");
-        log.info("Paths found for L3 'Define Segmentation Approach': {}", pathsForL3.size());
-        if (!pathsForL3.isEmpty()) {
-            log.info("First path: {}", Arrays.toString(pathsForL3.get(0)));
-        }
-        
-        List<Object[]> pathsForL2 = indagnousticFunctionalRepository.findPathsByL2("Define Demand Segment & Approach");
-        log.info("Paths found for L2 'Define Demand Segment & Approach': {}", pathsForL2.size());
-        
-    } catch (Exception e) {
-        log.error("Error in IndAgnoustic debug: {}", e.getMessage(), e);
     }
-}
 }

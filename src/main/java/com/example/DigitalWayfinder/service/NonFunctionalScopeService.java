@@ -135,7 +135,7 @@ public class NonFunctionalScopeService {
         
         try {
             // First, delete all existing records for this user/session
-            nonfunctionalProcessRepository.deleteByUserIdAndSessionId(userId, sessionId);
+            nonfunctionalProcessRepository.deleteAllByUserIdAndSessionId(userId, sessionId);
             
             // Get the functional area info from previous step
             FunctionalAreaDT previousProcess = functionalAreaDTRepository

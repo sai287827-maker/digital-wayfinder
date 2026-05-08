@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CustomerSolution.css';
 import { apiGet, apiPost } from '../../api';
- 
+
 const CustomerSolution = () => {
   const navigate = useNavigate();
   const [customerSolutionData, setCustomerSolutionData] = useState([]);
@@ -10,7 +10,8 @@ const CustomerSolution = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
- 
+  const getSolutionKey = (solution) => solution.platformName;
+
   useEffect(() => {
     async function fetchCustomerSolutions() {
       setLoading(true);
@@ -26,7 +27,7 @@ const CustomerSolution = () => {
     }
     fetchCustomerSolutions();
   }, []);
- 
+
   // Filter customer solutions based on search query
   const getFilteredCustomerSolutions = () => {
     if (!searchQuery) return customerSolutionData;
@@ -34,7 +35,7 @@ const CustomerSolution = () => {
       customerSolution.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   };
- 
+
   // Handle customer solution selection
   const handleCustomerSolutionSelect = (customerSolutionId) => {
     setSelectedCustomerSolutions(prev => {
@@ -45,23 +46,52 @@ const CustomerSolution = () => {
       }
     });
   };
- 
+
   // Handle select all
   const handleSelectAllCustomerSolutions = () => {
     const filteredCustomerSolutions = getFilteredCustomerSolutions();
-    const allFilteredIds = filteredCustomerSolutions.map(customerSolution => customerSolution.id);
+    const allFilteredIds = filteredCustomerSolutions.map(getSolutionKey);
     if (selectedCustomerSolutions.length === allFilteredIds.length) {
       setSelectedCustomerSolutions([]);
     } else {
       setSelectedCustomerSolutions(allFilteredIds);
     }
   };
- 
+
   // Handle previous button
   const handlePreviousStep = () => {
     navigate('/decision-tree/decision-criteria');
   };
- 
+
+  // Handle save solutions
+  const handleSaveSolutions = async () => {
+    try {
+      if (selectedCustomerSolutions.length === 0) {
+        setError('Please select at least one customer solution before saving.');
+        setTimeout(() => setError(null), 3000);
+        return;
+      }
+      setLoading(true);
+      const response = await apiPost('api/decision-tree/functional-scope/solution/save', {
+        selectedPlatforms: selectedCustomerSolutions,
+        searchQuery,
+        timestamp: new Date().toISOString()
+      });
+      if (response.message) {
+        setError('Solutions saved successfully.');
+        setTimeout(() => setError(null), 3000);
+      } else {
+        setError(response.selectedPlatforms || 'Failed to save solutions.');
+        setTimeout(() => setError(null), 3000);
+      }
+    } catch (error) {
+      setError('Failed to save solutions. Please try again.');
+      setTimeout(() => setError(null), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle generate dashboard
   const handleGenerateCustomerDashboard = async () => {
     try {
@@ -71,16 +101,11 @@ const CustomerSolution = () => {
         return;
       }
       setLoading(true);
-      await apiPost('api/decision-tree/functional-scope/solution/save', {
-        selectedCustomerSolutions,
-        searchQuery,
-        timestamp: new Date().toISOString()
-      });
       navigate('/decision-tree/dashboard', {
         state: {
           fromCustomerSolution: true,
           selectedData: {
-            selectedCustomerSolutions,
+            selectedPlatforms: selectedCustomerSolutions,
             searchQuery,
             timestamp: new Date().toISOString()
           }
@@ -93,15 +118,12 @@ const CustomerSolution = () => {
       setLoading(false);
     }
   };
- 
+
   // Example: Mapping only platformImageUrl for Warehouse Management System
   const warehouseManagementImages = customerSolutionData
     .filter(item => item.functionalSubArea === "Warehouse Management System")
     .map(item => item.platformImageUrl);
- 
-  console.log(warehouseManagementImages);
-  // Output: Array
- 
+
   return (
     <div className="customer-solution-wrapper">
       {/* Breadcrumb */}
@@ -130,7 +152,7 @@ const CustomerSolution = () => {
             <div className="customer-step-item">
               <div className="customer-step-circle completed">
                 <svg className="customer-step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="customer-step-text completed">Functional Scope</span>
@@ -138,7 +160,7 @@ const CustomerSolution = () => {
             <div className="customer-step-item">
               <div className="customer-step-circle completed">
                 <svg className="customer-step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="customer-step-text completed">Non Functional Scope</span>
@@ -146,7 +168,7 @@ const CustomerSolution = () => {
             <div className="customer-step-item">
               <div className="customer-step-circle completed">
                 <svg className="customer-step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="customer-step-text completed">Decision Criteria</span>
@@ -209,13 +231,16 @@ const CustomerSolution = () => {
                 <div
                   key={customerSolution.id || customerSolution.platformName}
                   className={`customer-solution-row ${selectedCustomerSolutions.includes(customerSolution.id || customerSolution.platformName) ? 'selected' : ''}`}
-                  onClick={() => handleCustomerSolutionSelect(customerSolution.id || customerSolution.platformName)}
+                  onClick={() => handleCustomerSolutionSelect(getSolutionKey(customerSolution))}
                 >
                   <div className="customer-solution-checkbox-container">
                     <input
                       type="checkbox"
-                      checked={selectedCustomerSolutions.includes(customerSolution.id || customerSolution.platformName)}
-                      onChange={() => handleCustomerSolutionSelect(customerSolution.id || customerSolution.platformName)}
+                      checked={selectedCustomerSolutions.includes(getSolutionKey(customerSolution))}
+                      onChange={(e) => {
+                        e.stopPropagation(); // important
+                        handleCustomerSolutionSelect(getSolutionKey(customerSolution));
+                      }}
                       className="customer-solution-checkbox"
                     />
                   </div>
@@ -256,6 +281,13 @@ const CustomerSolution = () => {
             Previous
           </button>
           <button
+            className="customer-save-button"
+            onClick={handleSaveSolutions}
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : 'Save'}
+          </button>
+          <button
             className="customer-generate-button"
             onClick={handleGenerateCustomerDashboard}
             disabled={loading}
@@ -267,5 +299,5 @@ const CustomerSolution = () => {
     </div>
   );
 };
- 
+
 export default CustomerSolution;
