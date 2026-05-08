@@ -173,38 +173,61 @@ const ExecutiveDashboard = () => {
   // ✅ Get platforms for that session
   const userPlatforms = cleanSolutions
     .filter((item) => item.sessionId === currentSessionId)
-    .map((item) => item.platform);
-
+    .map((item) => item.platform);    
+  
   // ✅ Build userSelections with all levels from all levelSelections
-  const levelSelections =
+  const funcLevelSelections =
     dashboardData?.criteria?.functional?.levelSelections || [];
-  const l1Set = new Set();
-  const l2Set = new Set();
-  const l3Set = new Set();
-  const l4Set = new Set();
-  const l5Set = new Set();
+    
+  const funcl1Set = new Set();
+  const funcl2Set = new Set();
+  const funcl3Set = new Set();
+  const funcl4Set = new Set();
+  const funcl5Set = new Set();
 
-  levelSelections.forEach((selection) => {
-    if (selection.l1) l1Set.add(selection.l1);
-    if (selection.l2) l2Set.add(selection.l2?.trim());
-    if (selection.l3) l3Set.add(selection.l3);
-    if (selection.l4) l4Set.add(selection.l4);
-    if (selection.l5) l5Set.add(selection.l5);
+  funcLevelSelections.forEach((selection) => {
+    if (selection.l1) funcl1Set.add(selection.l1?.trim());
+    if (selection.l2) funcl2Set.add(selection.l2?.trim());
+    if (selection.l3) funcl3Set.add(selection.l3?.trim());
+    if (selection.l4) funcl4Set.add(selection.l4?.trim());
+    if (selection.l5) funcl5Set.add(selection.l5?.trim());
   });
+  
+   const nonFuncLevelSelections =
+    dashboardData?.criteria?.nonFunctional?.levelSelections || [];
+    
+  const nonFuncl1Set = new Set();
+  const nonFuncl2Set = new Set();
+  const nonFuncl3Set = new Set();
+  
 
-  const userSelections = {
+  nonFuncLevelSelections.forEach((selection) => {
+    if (selection.l1) nonFuncl1Set.add(selection.l1?.trim());
+    if (selection.l2) nonFuncl2Set.add(selection.l2?.trim());
+    if (selection.l3) nonFuncl3Set.add(selection.l3?.trim());
+  });
+  //const userSelectionData = dashboardData.criteria.sessionId === currentSessionId ? dashboardData.criteria : null;
+  const userSelectionsFunctional = {
     functionalArea: formatValue(dashboardData?.criteria?.functionalArea),
-    l1: Array.from(l1Set),
-    l2: Array.from(l2Set),
-    l3: Array.from(l3Set),
-    l4: Array.from(l4Set),
-    l5: Array.from(l5Set),
+    l1: Array.from(funcl1Set),
+    l2: Array.from(funcl2Set),
+    l3: Array.from(funcl3Set),
+    l4: Array.from(funcl4Set),
+    l5: Array.from(funcl5Set),
+    platforms: userPlatforms,
+  };
+   const userSelectionsNonFunctional = {
+    functionalArea: formatValue(dashboardData?.criteria?.functionalArea),
+    l1: Array.from(nonFuncl1Set),
+    l2: Array.from(nonFuncl2Set),
+    l3: Array.from(nonFuncl3Set),
     platforms: userPlatforms,
   };
   console.log("Latest Session:", currentSessionId);
   console.log("Platforms:", userPlatforms);
   console.log("Criteria:", dashboardData?.criteria);
-  console.log("User Selections:", userSelections);
+  console.log("User Selections Functional:", userSelectionsFunctional);
+  console.log("User Selections Non-Functional:", userSelectionsNonFunctional);
 
   return (
     <div className={styles.dashboardContainer}>
@@ -326,71 +349,138 @@ const ExecutiveDashboard = () => {
                 allowFullScreen
                 loading="lazy"
               /> */}
-              {embedConfig && (
+              
+               {embedConfig && (
                 <PowerBIEmbed
                   embedConfig={embedConfig}
                   cssClassName={styles["report-style-class"]}
                   getEmbeddedComponent={(report) => {
                     report.on("loaded", () => {
                       console.log("Report loaded");
-                      console.log(
-                        "User Selections for Filtering:",
-                        userSelections,
-                      );
-                      console.log(
-                        "L1 selection:",
-                        userSelections.l1,
-                        Array.isArray(userSelections.l1),
-                      );
-                      const filters = [];
+                      
+                      report.getPages().then((pages) => {
+                        // pages[0] = Functional, pages[1] = Non-Functional, pages[2] = Appendix
+                        console.log("report pages", pages);
+                        // Functional Page Filters (L1-L5, Platforms)
+                        const functionalFilters = [];
+                        const functionalTable = "vw_WMS_Functional_Unpivoted"; 
 
-                      if (
-                        Array.isArray(userSelections.l1) &&
-                        userSelections.l1.length > 0
-                      ) {
-                        filters.push({
-                          $schema: "http://powerbi.com/product/schema#basic",
-                          target: {
-                            table: "vw_WMS_Functional_Unpivoted",
-                            column: "L1",
-                          },
-                          operator: "In",
-                          values: userSelections.l1,
-                          filterType: models.FilterType.Basic,
-                        });
-                      }
+                        if (userSelectionsFunctional.l1.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L1" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l1,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l2.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L2" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l2,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l3.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L3" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l3,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l4.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L4" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l4,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l5.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L5" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l5,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.platforms.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "PlatformName" },
+                            operator: "In",
+                            values: userSelectionsFunctional.platforms,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
 
-                      if (
-                        Array.isArray(userSelections.platforms) &&
-                        userSelections.platforms.length > 0
-                      ) {
-                        filters.push({
-                          $schema: "http://powerbi.com/product/schema#basic",
-                          target: {
-                            table: "vw_WMS_Functional_Unpivoted",
-                            column: "PlatformName",
-                          },
-                          operator: "In",
-                          values: userSelections.platforms,
-                          filterType: models.FilterType.Basic,
-                        });
-                      }
+                        if (pages[0]) {
+                          pages[0].setFilters(functionalFilters)
+                            .then(() => console.log("Functional page filters applied"))
+                            .catch((err) => console.error("Error setting functional filters", err));
+                        }
 
-                      console.log("Final Filters:", filters);
+                        // Non-Functional Page Filters (L1-L3, Platforms)
+                        const nonFunctionalFilters = [];
+                        const nonFunctionalTable = "vw_WMS_Non_Functional_Unpivoted"; 
 
-                      report
-                        .setFilters(filters)
-                        .then(() => console.log("Filters applied"))
-                        .catch((err) =>
-                          console.error(
-                            "Error while setting filters on loaded report",
-                            err,
-                          ),
-                        );
+                        if (userSelectionsNonFunctional.l1.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "L1" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.l1,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsNonFunctional.l2.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "L2" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.l2,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsNonFunctional.l3.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "L3" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.l3,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        // Add platforms for the non-functional view
+                        if (userSelectionsNonFunctional.platforms.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "PlatformName" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.platforms,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+
+                        if (pages[1]) {
+                          pages[1].setFilters(nonFunctionalFilters)
+                            .then(() => console.log("Non-functional page filters applied"))
+                            .catch((err) => console.error("Error setting non-functional filters", err));
+                        }
+
+                        // Appendix Page - No filters or specific filters as needed
+                        // pages[2].setFilters([]); // If needed
+                      }).catch((err) => console.error("Error getting pages", err));
                     });
                   }}
                 />
-              )}
+              )}            
             </div>
           )}
 
