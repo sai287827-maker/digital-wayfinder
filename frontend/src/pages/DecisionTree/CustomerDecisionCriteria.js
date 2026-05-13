@@ -116,14 +116,15 @@ const CustomerDecisionCriteria = () => {
                 <span className="customer-dc-item-number">{itemNumber}</span>
                 <span className="customer-dc-item-label">{key}</span>
               </div>
-              <div className="customer-dc-tree-checkbox">
+
+              {/* <div className="customer-dc-tree-checkbox">
                 <input
                   type="checkbox"
                   checked={true}
                   onChange={() => {}}
                   className="customer-dc-scope-checkbox"
                 />
-              </div>
+              </div> */}
             </div>
             
             {hasChildren && (
@@ -144,6 +145,7 @@ const CustomerDecisionCriteria = () => {
                         <span className="customer-dc-item-number">{itemNumber}.{idx + 1}</span>
                         <span className="customer-dc-item-label">{item}</span>
                       </div>
+                      {/*
                       <div className="customer-dc-tree-checkbox">
                         <input
                           type="checkbox"
@@ -152,6 +154,7 @@ const CustomerDecisionCriteria = () => {
                           className="customer-dc-scope-checkbox"
                         />
                       </div>
+                      */ }
                     </div>
                   </div>
                 ))}
@@ -266,12 +269,12 @@ const CustomerDecisionCriteria = () => {
                         <span className="customer-dc-criteria-label">Functional</span>
                       </div>
                       <div className="customer-dc-scope-cell">
-                        <input
+                        {/* <input
                           type="checkbox"
                           checked={criteria.find(c => c.id === 'functional')?.inScope || true}
                           onChange={e => handleInScopeChange('functional', e.target.checked)}
                           className="customer-dc-scope-checkbox"
-                        />
+                        /> */}
                       </div>
                     </div>
                     
@@ -297,12 +300,12 @@ const CustomerDecisionCriteria = () => {
                         <span className="customer-dc-criteria-label">Non Functional</span>
                       </div>
                       <div className="customer-dc-scope-cell">
-                        <input
+                        {/* <input
                           type="checkbox"
                           checked={criteria.find(c => c.id === 'nonFunctional')?.inScope || true}
                           onChange={e => handleInScopeChange('nonFunctional', e.target.checked)}
                           className="customer-dc-scope-checkbox"
-                        />
+                        /> */}
                       </div>
                     </div>
                     

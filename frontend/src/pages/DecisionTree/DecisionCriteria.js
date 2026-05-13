@@ -118,14 +118,15 @@ const DecisionCriteria = () => {
                 <span className="rdc-item-number">{itemNumber}</span>
                 <span className="rdc-item-label">{key}</span>
               </div>
-              <div className="rdc-tree-checkbox">
+             
+              {/* <div className="rdc-tree-checkbox">
                 <input
                   type="checkbox"
                   checked={true}
-                  onChange={() => {}}
+                  disabled
                   className="rdc-scope-checkbox"
                 />
-              </div>
+              </div> */}
             </div>
             
             {hasChildren && (
@@ -146,14 +147,16 @@ const DecisionCriteria = () => {
                         <span className="rdc-item-number">{itemNumber}.{idx + 1}</span>
                         <span className="rdc-item-label">{item}</span>
                       </div>
-                      <div className="rdc-tree-checkbox">
+                      //C
+                      
+                      {/* <div className="rdc-tree-checkbox">
                         <input
                           type="checkbox"
                           checked={true}
-                          onChange={() => {}}
+                          disabled
                           className="rdc-scope-checkbox"
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 ))}
@@ -251,14 +254,15 @@ const DecisionCriteria = () => {
                       </button>
                       <span className="rdc-category-label">Functional</span>
                     </div>
-                    <div className="rdc-category-checkbox">
+                    
+                    {/* <div className="rdc-category-checkbox">
                       <input
                         type="checkbox"
                         checked={criteria.find(c => c.id === 'functional')?.inScope || true}
-                        onChange={e => handleInScopeChange('functional', e.target.checked)}
+                        disabled
                         className="rdc-scope-checkbox main"
                       />
-                    </div>
+                    </div> */}
                   </div>
                   
                   {expanded.functional && mappingData?.functional?.levelSelections && (
@@ -281,14 +285,16 @@ const DecisionCriteria = () => {
                       </button>
                       <span className="rdc-category-label">Non Functional</span>
                     </div>
-                    <div className="rdc-category-checkbox">
+                    
+                    {/* <div className="rdc-category-checkbox">
                       <input
                         type="checkbox"
                         checked={criteria.find(c => c.id === 'nonFunctional')?.inScope || true}
-                        onChange={e => handleInScopeChange('nonFunctional', e.target.checked)}
+                        disabled
                         className="rdc-scope-checkbox main"
                       />
-                    </div>
+                    </div> */}
+                    
                   </div>
                   
                   {expanded.nonFunctional && mappingData?.nonFunctional?.levelSelections && (

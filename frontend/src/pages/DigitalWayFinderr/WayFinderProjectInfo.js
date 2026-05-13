@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './WayFinderProjectInfo.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import dashboardImage from "../../assets/dashboard.png";
-import { apiPost, apiGet } from '../../api';
+import { apiPost } from '../../api';
 
 
 const ProjectInfo = () => {
@@ -24,6 +24,7 @@ const ProjectInfo = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+<<<<<<< HEAD
     if (location.state?.projectData) {
 
       setFormData(location.state.projectData);
@@ -64,6 +65,10 @@ const ProjectInfo = () => {
     };
 
     fetchProjectInfo();
+=======
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setFetching(false); // stop loading immediately
+>>>>>>> ea8c7808e80c8953a7e26f9b64673dba3c754141
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -125,6 +130,10 @@ const ProjectInfo = () => {
   if (fetching) {
     return <div className="project-info-container"><div className="main-content"><p>Loading project information...</p></div></div>;
   }
+<<<<<<< HEAD
+=======
+  console.log("formData", formData);
+>>>>>>> ea8c7808e80c8953a7e26f9b64673dba3c754141
   return (
     <div className="project-info-container">
       {/* Main Content */}

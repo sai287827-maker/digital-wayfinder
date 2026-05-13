@@ -21,24 +21,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ProjectInfoController {
-    
+
     private final ProjectInfoService projectInfoService;
-    
+
     @PostMapping("/save")
     public ResponseEntity<ProjectInfoResponse> saveProjectInfo(
             @Valid @RequestBody ProjectInfoRequest request,
             @ModelAttribute UserSession userSession) {
         try {
-            
-            log.info("Received request to save project info: {} for user: {} in session: {}", 
+
+            log.info("Received request to save project info: {} for user: {} in session: {}",
                     request.getRequestID(), userSession.getUserId(), userSession.getSessionId());
-            
-            ProjectInfoResponse response = projectInfoService.saveOrUpdateProjectInfo(request, userSession.getUserId(), userSession.getSessionId());            
-            
+
+            ProjectInfoResponse response = projectInfoService.saveOrUpdateProjectInfo(request, userSession.getUserId(),
+                    userSession.getSessionId());
+
             if (response.isSuccess()) {
                 // Use OK status for updates, CREATED for new records
                 HttpStatus status = response.isUpdated() ? HttpStatus.OK : HttpStatus.CREATED;
-                return ResponseEntity.status(status).body(response);            } else {
+                return ResponseEntity.status(status).body(response);
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         } catch (Exception e) {
@@ -51,30 +53,50 @@ public class ProjectInfoController {
     @GetMapping("/all")
     public ResponseEntity<List<ProjectType>> getAllProjects() {
         log.info("Received request to get all projects");
-        
+
         List<ProjectType> projects = projectInfoService.getAllProjects();
         log.info("Found {} projects in total", projects.size());
-        
+
         return ResponseEntity.ok(projects);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ProjectInfoResponse> getProjectInfo(
+            @ModelAttribute UserSession userSession) {
+
+        log.info("Fetching project info for user: {} and session: {}",
+                userSession.getUserId(), userSession.getSessionId());
+
+        ProjectInfoResponse response = projectInfoService.getProjectInfoBySession(userSession.getSessionId());
+
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     // @GetMapping("/user-session/{sessionId}")
     // public ResponseEntity<ProjectInfoResponse> getAllProjectInfoBySession(
-    //         @PathVariable String sessionId) {
-    //     try {
-    //         log.info("Received request to get project info for session: {}", sessionId);
-            
-    //         ProjectInfoResponse response = projectInfoService.getProjectInfoBySession(sessionId);
-            
-    //         if (response.isSuccess()) {
-    //             return ResponseEntity.ok(response);
-    //         } else {
-    //             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    //         }
-    //     } catch (Exception e) {
-    //         log.error("Error in getUserSessionProjectInfo endpoint: {}", e.getMessage(), e);
-    //         ProjectInfoResponse errorResponse = ProjectInfoResponse.error("Internal server error: " + e.getMessage());
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    //     }
+    // @PathVariable String sessionId) {
+    // try {
+    // log.info("Received request to get project info for session: {}", sessionId);
+
+    // ProjectInfoResponse response =
+    // projectInfoService.getProjectInfoBySession(sessionId);
+
+    // if (response.isSuccess()) {
+    // return ResponseEntity.ok(response);
+    // } else {
+    // return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    // }
+    // } catch (Exception e) {
+    // log.error("Error in getUserSessionProjectInfo endpoint: {}", e.getMessage(),
+    // e);
+    // ProjectInfoResponse errorResponse = ProjectInfoResponse.error("Internal
+    // server error: " + e.getMessage());
+    // return
+    // ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    // }
     // }
 }
