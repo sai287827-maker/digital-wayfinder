@@ -125,7 +125,7 @@ console.log("📦 STATE:", location.state);
                 {tooltipVisible === 'supply-chain-planning' && (
                   // <div className="tooltip"> 
                   <div className="tooltip tooltip-top-right">
-                    "
+                    
                     <div className="tooltip-header">Supply Chain Planning</div>
                     <div className="tooltip-content">
                       {tooltipContent['supply-chain-planning']}

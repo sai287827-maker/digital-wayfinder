@@ -33,7 +33,7 @@ const ProjectInfo = () => {
     : "Decision Tree";
 
   useEffect(() => {
-     // Scroll to top only once on initial mount
+    // Scroll to top only once on initial mount
     window.scrollTo({ top: 0, behavior: "smooth" });
     /*
     Previously the component fetched project info from the backend on mount
@@ -73,6 +73,13 @@ const ProjectInfo = () => {
          */
   }, []);
 
+  useEffect(() => {
+    if (location.state?.projectData) {
+      setFormData(location.state.projectData);
+      setProjectType(location.state.projectType || "internal");
+    }
+  }, [location.state]);
+
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -109,6 +116,7 @@ const ProjectInfo = () => {
   };
 
   const handleProceed = async () => {
+    const prev = location.state || {};
     const findErrors = validateForm();
 
     if (Object.keys(findErrors).length > 0) {
@@ -151,6 +159,7 @@ const ProjectInfo = () => {
         if (isDecisionTreeRoute) {
           navigate("/decision-tree/functional-area", {
             state: {
+              ...prev,
               projectData: formData,
               projectType: projectType,
             },
@@ -158,6 +167,7 @@ const ProjectInfo = () => {
         } else if (isDigitalWayfinderRoute) {
           navigate("/digital-wayfinder/functional-area", {
             state: {
+              ...prev,
               projectData: formData,
               projectType: projectType,
             },
@@ -184,7 +194,7 @@ const ProjectInfo = () => {
           <span>{breadcrumbText}</span>
         </div>
         {/* Navigation Tabs */}
-         <div className="nav-tabs">
+        <div className="nav-tabs">
           <button className="nav-tab active">Project Information</button>
         </div>
         {/* Content Grid */}
@@ -327,7 +337,7 @@ const ProjectInfo = () => {
             </div>
             {/* Footer */}
             <div className="form-footer">
-              {isDecisionTreeRoute ? <span className="step-indicator">Completed step 0 of 3</span>: <span className="step-indicator">Completed step 0 of 4</span>}
+              {isDecisionTreeRoute ? <span className="step-indicator">Completed step 0 of 3</span> : <span className="step-indicator">Completed step 0 of 4</span>}
               <button
                 className="proceed-button"
                 onClick={handleProceed}
