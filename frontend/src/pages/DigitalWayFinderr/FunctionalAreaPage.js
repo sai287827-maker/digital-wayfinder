@@ -19,8 +19,6 @@ function FunctionalAreaPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log("📍 PAGE: Functional");
-console.log("📦 STATE:", location.state);
   // Get project data from navigation state
   useEffect(() => {
     if (location.state) {

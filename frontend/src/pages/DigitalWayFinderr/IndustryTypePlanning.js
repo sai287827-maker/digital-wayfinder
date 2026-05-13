@@ -17,9 +17,6 @@ function IndustryTypePlanning() {
   const [tooltipVisible, setTooltipVisible] = useState(null);
   
 
-  console.log("📍 PAGE: Industry");
-  console.log("📦 STATE:", location.state);
-
   // Get the selected functional area from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   // const selectedIndustry = location.state?.selectedIndustry || null;

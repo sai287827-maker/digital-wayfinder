@@ -18,57 +18,12 @@ const ProjectInfo = () => {
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
-  console.log("📍 PAGE: ProjectInfo");
-  console.log("📦 STATE:", location.state);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (location.state?.projectData) {
-
-      setFormData(location.state.projectData);
-      setProjectType(location.state.projectType || 'internal');
-      setFetching(false);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    if (location.state?.projectData) return; // 🚫 stop API
-
-    const fetchProjectInfo = async () => {
-      setFetching(true);
-      try {
-        const data = await apiGet('api/decision-tree/project-info/get');
-
-        setFormData({
-          requestId: data.requestID || '',
-          mmsId: data.mmsID || '',
-          clientName: data.clientName || '',
-          description: data.clientDescription || '',
-          projectScope: data.projectScope || ''
-        });
-
-        setProjectType(data.projectType || 'internal');
-      } catch {
-        setFormData({
-          requestId: '',
-          mmsId: '',
-          clientName: '',
-          description: '',
-          projectScope: ''
-        });
-        setProjectType('internal');
-      } finally {
-        setFetching(false);
-      }
-    };
-
-    fetchProjectInfo();
-=======
     window.scrollTo({ top: 0, behavior: "smooth" });
     setFetching(false); // stop loading immediately
->>>>>>> ea8c7808e80c8953a7e26f9b64673dba3c754141
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -130,10 +85,7 @@ const ProjectInfo = () => {
   if (fetching) {
     return <div className="project-info-container"><div className="main-content"><p>Loading project information...</p></div></div>;
   }
-<<<<<<< HEAD
-=======
   console.log("formData", formData);
->>>>>>> ea8c7808e80c8953a7e26f9b64673dba3c754141
   return (
     <div className="project-info-container">
       {/* Main Content */}
