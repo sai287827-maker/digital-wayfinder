@@ -94,7 +94,7 @@ function App() {
             {/* <Route element={<ProtectedRoute />}> */}
             <Route path="/report" element={<ReportPage />} />
             <Route path="/" element={<HomePage />} />
-          <Route path="/digital-wayfinder" element={<ProjectInfo />} />
+         <Route path="/digital-wayfinder" element={<ProjectInfo />} />
           {/* <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} /> */}
           <Route path="/digital-wayfinder/functional-area" element={<FunctionalAreaPage />} />
           <Route path="/digital-wayfinder/industry-type-fullfillment" element={<IndustryTypeFullfillment />} />
@@ -135,7 +135,6 @@ function App() {
           <Route path="/digital-wayfinder/cgs-visibility-proactive" element={<CgsVisibilityProactive />} />
           <Route path="/digital-wayfinder/cgs-agentic-ai" element={<CgsAgenticAI />} />
           
-
 
           <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />

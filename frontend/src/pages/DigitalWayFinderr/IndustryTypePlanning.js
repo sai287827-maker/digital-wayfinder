@@ -9,11 +9,14 @@ import transportationManagementImg from '../../assets/transportation-management.
 import dashboardImage from "../../assets/dashboard.png";
 
 function IndustryTypePlanning() {
-  const [selectedSystem, setSelectedSystem] = useState(null);
-  const [tooltipVisible, setTooltipVisible] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [selectedSystem, setSelectedSystem] = useState(
+    location.state?.selectedSystem || null
+  );
+  const [tooltipVisible, setTooltipVisible] = useState(null);
   
+
   // Get the selected functional area from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   // const selectedIndustry = location.state?.selectedIndustry || null;
@@ -31,72 +34,26 @@ function IndustryTypePlanning() {
   };
 
   const handleProceed = () => {
-    // Navigate to the appropriate system page or final page
-  if (selectedSystem === 'Industry Agnostic') {
-    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
-      state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem
-        //selectedSystem: 'industry-agnostic-system'
-      }
-    });
-  } else if (selectedSystem === 'Retail Industry Specific') {
-    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
-      state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem
-        //selectedSystem: 'retail-industry-specific-system'
-      }
-    });
-  } else if (selectedSystem === 'Consumer Goods Industry Specific') {
-    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
-      state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem
-        //selectedSystem: 'consumer-goods-industry-specific-system'
-      }
-    });
-  }
-};
+    const prev = location.state || {};
 
+    const payload = {
+      ...prev,
+      selectedArea: selectedFunctionalArea,
+      selectedSystem: selectedSystem
+    };
 
-  //   const handleProceed = () =>{
-  //   if (selectedSystem === 'Industry-Agnostic-System') {
-  //   navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
-  //     state: {
-  //       selectedArea: selectedFunctionalArea,
-  //       selectedSystem: selectedSystem
-  //     }
-  //   });
-  // } else if (selectedSystem === 'retail-industry-specific-system') {
-  //   navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
-  //     state: {
-  //       selectedArea: selectedFunctionalArea,
-  //       selectedSystem: selectedSystem
-  //     }
-  //   });
-  // } else if (selectedSystem === 'consumer-goods-industry-specific-system') {
-  //   navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
-  //     state: {
-  //       selectedArea: selectedFunctionalArea,
-  //       selectedSystem: selectedSystem
-  //     }
-  //   });
-  // }} //{
+    navigate('/digital-wayfinder/industry-type-plan-parts', {
+      state: payload
+    });
+  };
 
-  //   if (selectedSystem === 'Industry-AgnosticSystem') {
-  //   // Navigate to the next step or final page
-  //   navigate('/digital-wayfinder/Industry-Type-Plan-Parts', {
-  //     state: {
-  //       selectedArea: selectedFunctionalArea,
-  //       selectedSystem: selectedSystem
-  //     }
-  //   });
-  // }
-  // };
 
   const handlePrevious = () => {
-    navigate('/digital-wayfinder/functional-area');
+    navigate('/digital-wayfinder/functional-area', {
+      state: {
+        ...location.state   // 🔥 preserve everything
+      }
+    });
   };
 
   const tooltipContent = {
@@ -113,14 +70,14 @@ function IndustryTypePlanning() {
       image: warehouseManagementImg
     },
     {
-      id: 'Retail Industry Specific',  
+      id: 'Retail Industry Specific',
       title: 'Retail Industry System',
       description: 'The process of forecasting demand, managing inventory, and ensuring timely product availability to meet customer needs in retail.',
       image: orderManagementImg
     },
     {
       id: 'Consumer Goods Industry Specific',
-      title: 'Consumer Goods Industry System', 
+      title: 'Consumer Goods Industry System',
       description: 'The process of forecasting demand, optimizing inventory and distribution for timely delivery of consumer goods.',
       image: transportationManagementImg
     }
@@ -145,7 +102,7 @@ function IndustryTypePlanning() {
 
           <div className="system-cards">
             {systemData.map((system) => (
-              <div 
+              <div
                 key={system.id}
                 className={`system-card ${selectedSystem === system.id ? 'selected' : ''}`}
                 onClick={() => handleSystemSelect(system.id)}
@@ -159,15 +116,15 @@ function IndustryTypePlanning() {
                     <p>{system.description}</p>
                   </div>
                 </div>
-                <div 
+                <div
                   className="info-icon"
                   onMouseEnter={() => showTooltip(system.id)}
                   onMouseLeave={hideTooltip}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   {tooltipVisible === system.id && (
                     <div className="tooltip">
@@ -183,14 +140,14 @@ function IndustryTypePlanning() {
           </div>
 
           <div className="progress-footer">
-            <button 
+            <button
               className="previous-button"
               onClick={handlePrevious}
             >
               Previous
             </button>
             <div className="progress-text">Completed step 2 of 4</div>
-            <button 
+            <button
               className="finish-button"
               disabled={!selectedSystem}
               onClick={handleProceed}
@@ -202,10 +159,10 @@ function IndustryTypePlanning() {
 
         <div className="content-right">
           <div className="preview-container">
-            <img 
-              src={dashboardImage} 
-              alt="Dashboard Preview" 
-              className="dashboard-preview" 
+            <img
+              src={dashboardImage}
+              alt="Dashboard Preview"
+              className="dashboard-preview"
             />
           </div>
         </div>

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import './WayFinderProjectInfo.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import dashboardImage from "../../assets/dashboard.png";
 import { apiPost } from '../../api';
+
 
 const ProjectInfo = () => {
   const [projectType, setProjectType] = useState('internal');
@@ -16,6 +17,7 @@ const ProjectInfo = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
@@ -63,9 +65,13 @@ const ProjectInfo = () => {
         projectScope: formData.projectScope,
         projectType: projectType
       });
+
+      const prev = location.state || {}; // 🔥 IMPORTANT
+
       navigate('/digital-wayfinder/functional-area', {
         state: {
-          projectData: formData,
+          ...prev,                 // 🔥 PRESERVE EVERYTHING
+          projectData: formData,   // overwrite only what changed
           projectType: projectType
         }
       });

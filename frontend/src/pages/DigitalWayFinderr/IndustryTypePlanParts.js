@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './IndustryTypePlanParts.css';
 
@@ -16,18 +16,17 @@ import Kinaxis from "../../assets/Kinaxis.jpg";
 import relex from "../../assets/relex.png";
 
 function IndustryTypePlanParts() {
-  const [selectedPlatform, setSelectedPlatform] = useState(null);
-  //const [selectAll, setSelectAll] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Get the selected data from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   const selectedSystem = location.state?.selectedSystem || null;
 
+  // Get the selected data from the previous page
+
+
   // Define platform data based on system type
   const getPlatformData = () => {
-    switch(selectedSystem) {
+    switch (selectedSystem) {
       case 'Industry Agnostic':
         return [
           { id: 'sap', name: 'SAP', logo: SAP },
@@ -62,9 +61,31 @@ function IndustryTypePlanParts() {
     }
   };
 
+  const platformData = getPlatformData();
+
+  const [selectedPlatform, setSelectedPlatform] = useState(
+    location.state?.selectedPlatforms?.[0] || null
+  );
+
+  useEffect(() => {
+    if (location.state?.selectedPlatforms?.length > 0) {
+      const selectedName = location.state.selectedPlatforms[0];
+
+      const matchedPlatform = platformData.find(
+        p =>
+          p.name.toLowerCase() === selectedName.toLowerCase() ||
+          p.id.toLowerCase() === selectedName.toLowerCase()
+      );
+
+      setSelectedPlatform(matchedPlatform?.id || null);
+    } else if (location.state?.selectedPlatform) {
+      setSelectedPlatform(location.state.selectedPlatform);
+    }
+  }, []); 
+
   // Get system title and description
   const getSystemInfo = () => {
-    switch(selectedSystem) {
+    switch (selectedSystem) {
       case 'Industry Agnostic':
         return {
           title: 'Select the Industry Platform',
@@ -88,9 +109,9 @@ function IndustryTypePlanParts() {
     }
   };
 
-  const platformData = getPlatformData();
+
   const systemInfo = getSystemInfo();
-  
+
   const handlePlatformSelect = (platformId) => {
     // Set selected platform to the clicked one, or null if clicking the same one
     setSelectedPlatform(selectedPlatform === platformId ? null : platformId);
@@ -125,14 +146,14 @@ function IndustryTypePlanParts() {
   // };
 
   const handlePrevious = () => {
-    // Navigate back to IndustryTypeFullfillment component
+    const prev = location.state || {};
+
     navigate('/digital-wayfinder/industry-type-planning', {
       state: {
-        selectedArea: selectedFunctionalArea
+        ...prev
       }
     });
   };
-
   // const handleFinish = () => {
   //   navigate('/digital-wayfinder/industry-data-and-cloud', {
   //     state: {
@@ -142,35 +163,25 @@ function IndustryTypePlanParts() {
   //     }
   //   });
   // };
-  
+
   const handleFinish = () => {
-    // Navigate to the appropriate system page or final page
-  if (selectedSystem === 'Industry Agnostic') {
-    navigate('/digital-wayfinder/industry-data-and-cloud', {
-      state: {
-        functionalArea: selectedFunctionalArea,
-        functionalSubArea: selectedSystem,
-        selectedPlatform: selectedPlatform
-      }
-    });
-  } else if (selectedSystem === 'Retail Industry Specific') {
-    navigate('/digital-wayfinder/retail-data-and-cloud', {
-      state: {
-        functionalArea: selectedFunctionalArea,
-        functionalSubArea: selectedSystem,
-        selectedPlatform: selectedPlatform
-      }
-    });
-  } else if (selectedSystem === 'Consumer Goods Industry Specific') {
-    navigate('/digital-wayfinder/cgs-data-and-cloud', {
-      state: {
-        functionalArea: selectedFunctionalArea,
-        functionalSubArea: selectedSystem,
-        selectedPlatform: selectedPlatform
-      }
-    });
-  }
-}
+    const prev = location.state || {};
+
+    const payload = {
+      ...prev,
+      selectedArea: selectedFunctionalArea,
+      selectedSystem: selectedSystem,
+      selectedPlatforms: selectedPlatform ? [selectedPlatform] : []
+    };
+
+    if (selectedSystem === 'Industry Agnostic') {
+      navigate('/digital-wayfinder/industry-data-and-cloud', { state: payload });
+    } else if (selectedSystem === 'Retail Industry Specific') {
+      navigate('/digital-wayfinder/retail-data-and-cloud', { state: payload });
+    } else if (selectedSystem === 'Consumer Goods Industry Specific') {
+      navigate('/digital-wayfinder/cgs-data-and-cloud', { state: payload });
+    }
+  };
 
   return (
     <div className="wms-system-page">
@@ -189,7 +200,7 @@ function IndustryTypePlanParts() {
           <h1>{systemInfo.title}</h1>
           <p className="subtitle">{systemInfo.description}</p>
 
-        
+
           <div className="platform-cards">
             {platformData.map((platform) => (
               <div
@@ -197,12 +208,12 @@ function IndustryTypePlanParts() {
                 className={`platform-card ${selectedPlatform === platform.id ? 'selected' : ''}`}
                 onClick={() => handlePlatformSelect(platform.id)}
               >
-                 <div className="card-content">
+                <div className="card-content">
                   <input
                     type="radio"
                     name="platform"
                     checked={selectedPlatform === platform.id}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="platform-checkbox"
                   />
                   <div className="platform-logo">
@@ -214,14 +225,14 @@ function IndustryTypePlanParts() {
           </div>
 
           <div className="progress-footer">
-            <button 
+            <button
               className="previous-button"
               onClick={handlePrevious}
             >
               Previous
             </button>
             <div className="progress-text">Completed step 3 of 4</div>
-            <button 
+            <button
               className="finish-button"
               disabled={!selectedPlatform}
               onClick={handleFinish}
@@ -233,10 +244,10 @@ function IndustryTypePlanParts() {
 
         <div className="content-right">
           <div className="preview-container">
-            <img 
-              src={dashboardImage} 
-              alt="Dashboard Preview" 
-              className="dashboard-preview" 
+            <img
+              src={dashboardImage}
+              alt="Dashboard Preview"
+              className="dashboard-preview"
             />
           </div>
         </div>

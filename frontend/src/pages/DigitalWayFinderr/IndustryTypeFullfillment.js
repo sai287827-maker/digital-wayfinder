@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './IndustryTypeFullfillment.css';
 
@@ -13,10 +13,16 @@ function IndustryTypeFullfillment() {
   const [tooltipVisible, setTooltipVisible] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Get the selected functional area from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   // const selectedIndustry = location.state?.selectedIndustry || null;
+
+  useEffect(() => {
+    if (location.state?.selectedSystem) {
+      setSelectedSystem(location.state.selectedSystem);
+    }
+  }, [location.state]);
 
   const handleSystemSelect = (system) => {
     setSelectedSystem(system);
@@ -30,32 +36,24 @@ function IndustryTypeFullfillment() {
     setTooltipVisible(null);
   };
 
-    const handleProceed = () => {
-  // Navigate to the appropriate system page or final page
-  if (selectedSystem === 'warehouse-management') {
-    navigate('/digital-wayfinder/wms-system', {
-      state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem
-      }
-    });
-  } else if (selectedSystem === 'order-management') {
-    navigate('/digital-wayfinder/oms-system', {
-      state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem
-      }
-    });
-  } else if(selectedSystem === 'transportation-management') {
-    navigate('/digital-wayfinder/tms-system', {
-      state: {
-        selectedArea: selectedFunctionalArea,
-        selectedSystem: selectedSystem
-      }
-    });
-  } 
-};
-    // Navigate to the next step or wms page
+  const handleProceed = () => {
+    const prev = location.state || {};
+
+    const payload = {
+      ...prev, // 🔥 preserve everything
+      selectedArea: selectedFunctionalArea,
+      selectedSystem: selectedSystem
+    };
+
+    if (selectedSystem === 'warehouse-management') {
+      navigate('/digital-wayfinder/wms-system', { state: payload });
+    } else if (selectedSystem === 'order-management') {
+      navigate('/digital-wayfinder/oms-system', { state: payload });
+    } else if (selectedSystem === 'transportation-management') {
+      navigate('/digital-wayfinder/tms-system', { state: payload });
+    }
+  };
+  // Navigate to the next step or wms page
   //   if(selectedSystem ==='warehouse-management'){
   //   navigate('/digital-wayfinder/wms-system', {
   //     state: {
@@ -68,7 +66,7 @@ function IndustryTypeFullfillment() {
   //       state: {
   //         selectedArea: selectedFunctionalArea,
   //         selectedSystem: selectedSystem
-        
+
   //       }
   //     });
   //   }
@@ -76,7 +74,11 @@ function IndustryTypeFullfillment() {
 
 
   const handlePrevious = () => {
-    navigate('/digital-wayfinder/functional-area');
+    navigate('/digital-wayfinder/functional-area', {
+      state: {
+        ...location.state // 🔥 MUST
+      }
+    });
   };
 
   const tooltipContent = {
@@ -94,12 +96,12 @@ function IndustryTypeFullfillment() {
     },
     {
       id: 'transportation-management',
-      title: 'Transportation Management System', 
+      title: 'Transportation Management System',
       description: 'The movement of goods from one location to another within the supply chain',
       image: transportationManagementImg
     },
-      {
-      id: 'order-management',  
+    {
+      id: 'order-management',
       title: 'Order Management System',
       description: 'The process of tracking, processing, and fulfilling customer orders from placement to delivery',
       image: orderManagementImg
@@ -142,7 +144,7 @@ function IndustryTypeFullfillment() {
             {systemData.map((system) => {
               const isOrderManagement = system.id === 'order-management';
               return (
-                <div 
+                <div
                   key={system.id}
                   className={`system-card ${selectedSystem === system.id ? 'selected' : ''} ${isOrderManagement ? 'disabled' : ''}`}
                   onClick={() => !isOrderManagement && handleSystemSelect(system.id)}
@@ -161,15 +163,15 @@ function IndustryTypeFullfillment() {
                       <p>{system.description}</p>
                     </div>
                   </div>
-                  <div 
+                  <div
                     className="info-icon"
                     onMouseEnter={() => showTooltip(system.id)}
                     onMouseLeave={hideTooltip}
                   >
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 16V12" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M12 8H12.01" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     {tooltipVisible === system.id && (
                       <div className="tooltip">
@@ -186,14 +188,14 @@ function IndustryTypeFullfillment() {
           </div>
 
           <div className="progress-footer">
-            <button 
+            <button
               className="previous-button"
               onClick={handlePrevious}
             >
               Previous
             </button>
             <div className="progress-text">Completed step 2 of 4</div>
-            <button 
+            <button
               className="finish-button"
               disabled={!selectedSystem}
               onClick={handleProceed}
@@ -205,10 +207,10 @@ function IndustryTypeFullfillment() {
 
         <div className="content-right">
           <div className="preview-container">
-            <img 
-              src={dashboardImage} 
-              alt="Dashboard Preview" 
-              className="dashboard-preview" 
+            <img
+              src={dashboardImage}
+              alt="Dashboard Preview"
+              className="dashboard-preview"
             />
           </div>
         </div>
