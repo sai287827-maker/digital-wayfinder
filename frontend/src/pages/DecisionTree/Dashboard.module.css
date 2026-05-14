@@ -171,9 +171,11 @@
 /* Main Content Styles */
 .mainContent {
   flex: 1;
-  padding: 16px;
-  overflow-x: auto;
+  padding: 0;
+  overflow: hidden;
   background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
 }
 
 .breadcrumbItem {
@@ -672,11 +674,14 @@
 
 .breadcrumbRow {
   width: 100%;
-  margin-bottom: 12px;
-  margin-top: 0;
+  margin: 0;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   min-height: 32px;
+  flex-shrink: 0;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e5e7eb;
 }
 .breadcrumbs {
   font-size: 14px;
@@ -791,15 +796,17 @@
 
 /* Power BI Full-Width Container */
 .powerBIContainerWrapper {
-  margin: 0 -16px;
-  margin-top: 16px;
-  width: calc(100% + 32px);
+  flex: 1;
+  margin: 0;
+  padding: 16px;
+  width: 100%;
+  overflow: hidden;
 }
 
 .powerBIContainer {
   width: 100%;
-  height: calc(100vh - 200px);
-  margin-bottom: 0;
+  height: 100%;
+  margin: 0;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   overflow: hidden;

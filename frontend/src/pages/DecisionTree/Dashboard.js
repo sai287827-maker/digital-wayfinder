@@ -2,9 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Home,
   ChevronRight,
-  Info,
-  BarChart3,
-  Target,
 } from "lucide-react";
 import styles from "./Dashboard.module.css";
 import DecisionSummaryModal from "./DecisionSummaryModal";
@@ -99,18 +96,11 @@ const ExecutiveDashboard = () => {
     fetchEmbedConfig();
   }, []);
 
-  const powerBIData = dashboardData;
-
   const breadcrumbs = [
-    { label: "Home", href: "/", icon: Home },
-    { label: "Decision Tree", href: "/decision-tree" },
-    { label: "Functional Scope", href: "/functional-scope" },
-    { label: "Advance Dashboards", href: "/advance-dashboards" },
+    { label: "Home", icon: Home },
+    { label: "Decision Tree" },
+    { label: "Dashboard" },
   ];
-
-  const togglePowerBIView = () => {
-    setShowPowerBI(!showPowerBI);
-  };
 
   const formatValue = (val) =>
     val?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -198,12 +188,11 @@ const ExecutiveDashboard = () => {
                     {index === 0 && (
                       <item.icon className={styles.breadcrumbIcon} />
                     )}
-                    <a
-                      href={item.href}
+                    <span
                       className={`${styles.breadcrumbLink} ${index === 0 ? styles.breadcrumbHome : ""}`}
                     >
                       {item.label}
-                    </a>
+                    </span>
                   </div>
                   {index < breadcrumbs.length - 1 && (
                     <ChevronRight className={styles.breadcrumbSeparator} />
@@ -211,30 +200,13 @@ const ExecutiveDashboard = () => {
                 </React.Fragment>
               ))}
             </div>
-          </div>
-
-          <div className={styles.dashboardHeader}>
-            <div className={styles.dashboardTitleContainer}>
-              <h1 className={styles.dashboardTitle}>Executive Dashboard</h1>
-              <button className={styles.infoButton}>
-                <Info className={styles.infoIcon} />
-              </button>
-            </div>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <button
-                className={styles.viewSummaryBtn}
-                onClick={() => setShowModal(true)}
-              >
-                View Summary
-              </button>
-              <button
-                className={styles.viewSummaryBtn}
-                onClick={togglePowerBIView}
-                style={{ backgroundColor: showPowerBI ? "#dc2626" : "#059669" }}
-              >
-                {showPowerBI ? "Hide Power BI Report" : "Show Power BI Report"}
-              </button>
-            </div>
+            <button
+              className={styles.viewSummaryBtn}
+              onClick={() => setShowModal(true)}
+              style={{ marginLeft: "auto" }}
+            >
+              View Summary
+            </button>
           </div>
 
           {/* <div className={styles.lastUpdated}>
@@ -245,19 +217,6 @@ const ExecutiveDashboard = () => {
           {showPowerBI && (
             <div className={styles.powerBIContainerWrapper}>
             <div className={styles.powerBIContainer}>
-              <div
-                style={{
-                  backgroundColor: "#f9fafb",
-                  padding: "12px 16px",
-                  borderBottom: "1px solid #e5e7eb",
-                  fontWeight: "600",
-                  fontSize: "16px",
-                  color: "#374151",
-                }}
-              >
-                Power BI Dashboard Report
-              </div>
-
               {loading || embedLoading ? (
                 <div className={styles.loadingContainer}>
                   <div className={styles.spinner}></div>
@@ -434,6 +393,15 @@ const ExecutiveDashboard = () => {
         <DecisionSummaryModal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
+          mappingData={dashboardData?.criteria ? {
+            userId: dashboardData.criteria.userId,
+            sessionId: dashboardData.criteria.sessionId,
+            functionalArea: dashboardData.criteria.functionalArea,
+            industryType: dashboardData.criteria.industryType,
+            selectedPlatforms: userPlatforms,
+            functional: dashboardData.criteria.functional || { levelSelections: [] },
+            nonFunctional: dashboardData.criteria.nonFunctional || { levelSelections: [] }
+          } : {}}
         />
       </div>
     </div>

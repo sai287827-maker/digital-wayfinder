@@ -186,4 +186,176 @@
   font-weight: 500;
   background: none;
   border: none;
-} 
+}
+
+/* Decision Criteria Content Styles */
+.decisionCriteriaContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mainCategory {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ece6f6;
+  border-radius: 8px;
+  padding: 12px;
+  background: #faf9fb;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.categoryContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: #a020f0;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.expandButton:hover {
+  color: #7e18b0;
+}
+
+.categoryLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+.categoryContentExpanded {
+  margin-top: 12px;
+  padding-left: 8px;
+}
+
+.treeItems {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.treeItem {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0;
+}
+
+.treeItem.level1 {
+  margin-left: 0;
+}
+
+.treeItem.level2 {
+  margin-left: 16px;
+}
+
+.treeItem.level3 {
+  margin-left: 32px;
+}
+
+.treeItem.level4 {
+  margin-left: 48px;
+}
+
+.treeItem.level5 {
+  margin-left: 64px;
+}
+
+.treeItemContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+}
+
+.treeIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.treeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #a020f0;
+}
+
+.treeDot.level1 {
+  background-color: #a020f0;
+}
+
+.treeDot.level2 {
+  background-color: #c04beb;
+}
+
+.treeDot.level3 {
+  background-color: #d971f5;
+}
+
+.treeDot.level4 {
+  background-color: #e5a9fb;
+}
+
+.treeDot.level5 {
+  background-color: #f0d9fd;
+}
+
+.treeText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.itemNumber {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  min-width: 24px;
+  flex-shrink: 0;
+}
+
+.itemLabel {
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+}
+
+.treeChildren {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.noData {
+  padding: 12px;
+  color: #999;
+  font-size: 14px;
+  text-align: center;
+  background: #fff;
+  border-radius: 4px;
+}
