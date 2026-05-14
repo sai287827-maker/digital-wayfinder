@@ -10,6 +10,14 @@ const Solution = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isSaved, setIsSaved] = useState(false);
+  const getSolutionKey = (solution) => {
+  if (solution.platformName) return solution.platformName;
+  if (solution.name) return solution.name;
+  if (solution.id) return String(solution.id);
+
+  console.error("Invalid solution object:", solution); // debug
+  return null;
+};
 
   useEffect(() => {
     async function fetchSolutions() {
@@ -27,10 +35,31 @@ const Solution = () => {
     fetchSolutions();
   }, []);
 
+  useEffect(() => {
+  const saved = sessionStorage.getItem("selectedPlatforms");
+  const decisionCriteria = sessionStorage.getItem("decisionCriteria");
+
+  if (saved && decisionCriteria) {
+    console.log("Restoring from sessionStorage:", JSON.parse(saved));
+    setSelectedSolutions(JSON.parse(saved));
+  } else {
+    console.log("Clearing invalid Solution state");
+    setSelectedSolutions([]);
+    sessionStorage.removeItem("selectedPlatforms");
+  }
+}, []);
+
   // Reset saved state when selections change
   useEffect(() => {
     setIsSaved(false);
   }, [selectedPlatforms]);
+
+  useEffect(() => {
+  if (selectedPlatforms.length > 0) {
+    sessionStorage.setItem("selectedPlatforms", JSON.stringify(selectedPlatforms));
+    console.log("Saving to sessionStorage:", selectedPlatforms);
+  }
+}, [selectedPlatforms]);
  
   // Handle solution selection
   const handleSolutionSelect = (solutionId) => {
@@ -44,14 +73,21 @@ const Solution = () => {
   };
  
   // Handle select all
-  const handleSelectAll = () => {
-    const allIds = solutionData.map(solution => solution.id);
-    if (selectedPlatforms.length === allIds.length) {
-      setSelectedSolutions([]);
-    } else {
-      setSelectedSolutions(allIds);
-    }
-  };
+ const handleSelectAll = () => {
+  const allIds = solutionData
+  .map(getSolutionKey)
+  .filter(Boolean);
+
+  const allSelected = allIds.every(id =>
+    selectedPlatforms.includes(id)
+  );
+
+  if (allSelected) {
+    setSelectedSolutions([]);
+  } else {
+    setSelectedSolutions(allIds);
+  }
+};
  
   // Handle previous button
   const handlePrevious = () => {
@@ -197,15 +233,15 @@ const Solution = () => {
                 <div className="loading-text">Loading...</div>
               ) : solutionData.map((solution) => (
                 <div
-                  key={solution.id || solution.platformName}
-                  className={`solution-row ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
-                  onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
+                  key={getSolutionKey(solution)}
+                  className={`solution-row ${selectedPlatforms.includes(getSolutionKey(solution)) ? 'selected' : ''}`}
+                  onClick={() => handleSolutionSelect(getSolutionKey(solution))}
                 >
                   <div className="solution-checkbox-container">
                     <input
                       type="checkbox"
-                      checked={selectedPlatforms.includes(solution.id || solution.platformName)}
-                      onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
+                      checked={selectedPlatforms.includes(getSolutionKey(solution))}
+                      onChange={() => handleSolutionSelect(getSolutionKey(solution))}
                       className="solution-checkbox"
                     />
                   </div>

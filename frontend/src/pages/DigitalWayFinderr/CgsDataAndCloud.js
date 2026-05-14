@@ -5,6 +5,7 @@ import CgsOperational from './CgsOperational';
 import CgsSystem from './CgsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'active' },
@@ -12,8 +13,10 @@ const steps = [
   { label: 'Visibility and Proactive', status: 'inactive' },
   { label: 'Agentic  AI', status: 'inactive' }
 ];
- 
+
 const CgsDataAndCloud = ({ onNavigateBack }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [answerOptions, setAnswerOptions] = useState([]); // New state for answer options
@@ -24,7 +27,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
   const [showWmsSystem, setShowWmsSystem] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -53,24 +56,24 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
         }
       }
     }
-    
+
     // Check existing answers to determine the pattern
     if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
       const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
-      const hasYesNo = existingAnswers.some(answer => 
+      const hasYesNo = existingAnswers.some(answer =>
         ['yes', 'no'].includes(answer)
       );
-      const hasHighMediumLow = existingAnswers.some(answer => 
+      const hasHighMediumLow = existingAnswers.some(answer =>
         ['high', 'medium', 'low'].includes(answer)
       );
-      
+
       if (hasYesNo) {
         return ['Yes', 'No'];
       } else if (hasHighMediumLow) {
         return ['High', 'Medium', 'Low'];
       }
     }
-    
+
     // Default to High/Medium/Low if no pattern is detected
     return ['High', 'Medium', 'Low'];
   };
@@ -80,8 +83,8 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
-        
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
+
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
           // Extract questions and their answer types from the response
@@ -97,17 +100,17 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
             }
             return ['High', 'Medium', 'Low']; // Default fallback
           });
-          
+
           setQuestions(questionTexts);
           setQuestionAnswerTypes(answerTypes);
-          
+
           // For backward compatibility, set answerOptions to the most common type
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
-          
+
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             response.answers.forEach(answerObj => {
@@ -119,13 +122,13 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
               }
             });
           }
-          
+
           setAnswers(initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Push API response into hook state; deriveArea effect will sync functional area
           if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
             setFunctionalSubArea(response.functionalSubArea);
@@ -148,7 +151,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
     }
     fetchQuestions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [effectiveSubArea]);
+  }, [location.state?.selectedSystem]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -157,17 +160,18 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   };
 
   const handlePrevious = async () => {
+    const prev = location.state || {};
     // Check if there are any answers to save before going back
     const hasAnswers = answers.some(answer => answer !== null);
-    
+
     if (hasAnswers) {
       try {
         setNavigatingBack(true);
         setError(null);
-        
+
         // Save current progress before navigating back
         const area = deriveArea();
-        
+
         // Create payload with only answered questions
         const answeredQuestions = questions
           .map((question, index) => ({
@@ -175,7 +179,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -183,40 +187,37 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
-          
+
           console.log('Saving partial Data and Cloud progress before navigation:', payload);
-          
+
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
+
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
         console.log('Continuing with navigation despite save error');
       }
     }
-    
+
     // Navigate back to WmsSystem
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to WmsSystem using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to WmsSystem component
-      console.log('Using fallback navigation to WmsSystem');
-      setShowWmsSystem(true);
+    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
+    state: {
+      ...prev   // 🔥 THIS FIXES EVERYTHING
     }
-    
+  });
+
     setNavigatingBack(false);
   };
 
   const handleSaveAndProceed = async () => {
     try {
       setSaving(true);
-      
+
       // Call API to save answers
-      const area = deriveArea();
+      const area = location.state?.selectedArea;
       const payload = {
         functionalArea: area,
         functionalSubArea: functionalSubArea,
@@ -225,16 +226,16 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
       console.log('Answers saved successfully:', response);
-      
+
       // Navigate to next component
       setShowVisibilityProactive(true);
-      
+
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -255,7 +256,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   if (showVisibilityProactive) {
     return <CgsOperational />;
   }
- 
+
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -299,7 +300,7 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
               {questions.map((q, idx) => {
                 // Get the specific answer options for this question
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
-                
+
                 return (
                   <div key={idx} className={styles.questionBlock}>
                     <div className={styles.questionText}>{idx + 1}. {q}</div>
@@ -326,8 +327,8 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
               })}
             </div>
             <div className={styles.buttonRow}>
-              <button 
-                className={styles.prevBtn} 
+              <button
+                className={styles.prevBtn}
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
               >
@@ -347,5 +348,5 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
     </div>
   );
 };
- 
+
 export default CgsDataAndCloud;

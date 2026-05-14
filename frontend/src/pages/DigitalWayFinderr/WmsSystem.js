@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './WmsSystem.css';
 // import DataAndCloud from './DataAndCloud';
- 
+
 // Import dashboard image
 import dashboardImage from "../../assets/dashboard.png";
- 
+
 // Import existing logos
 import BlueYonder from "../../assets/Blueyonder.png";
 import Korber from "../../assets/Korber.png";
@@ -16,20 +16,28 @@ import E2Open from "../../assets/e2open.png";
 import FluentCommerce from "../../assets/fluentcommerce.png";
 import IBMSterling from "../../assets/ibmsterling.png";
 // import VisibilityProactive from './VisibilityProactive';
- 
+
 function WmsSystem() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [selectedPlatform, setSelectedPlatform] = useState(location.state?.selectedPlatform || null); // Initialize from state
+  const [selectedPlatform, setSelectedPlatform] = useState(
+    location.state?.selectedPlatforms?.[0] || null
+  );
   const [showDataAndCloud, setShowDataAndCloud] = useState(false);
-  
+
   // Get the selected data from the previous page
   const selectedFunctionalArea = location.state?.selectedArea || null;
   const selectedSystem = location.state?.selectedSystem || null;
- 
+
+  useEffect(() => {
+    if (location.state?.selectedPlatforms?.length > 0) {
+      setSelectedPlatform(location.state.selectedPlatforms[0]);
+    }
+  }, [location.state]);
+
   // Define platform data based on system type
   const getPlatformData = () => {
-    switch(selectedSystem) {
+    switch (selectedSystem) {
       case 'warehouse-management':
         return [
           { id: 'blueyonder', name: 'BlueYonder', logo: BlueYonder },
@@ -59,10 +67,10 @@ function WmsSystem() {
         return [];
     }
   };
- 
+
   // Get system title and description
   const getSystemInfo = () => {
-    switch(selectedSystem) {
+    switch (selectedSystem) {
       case 'warehouse-management':
         return {
           title: 'Select the WMS Platform',
@@ -85,51 +93,55 @@ function WmsSystem() {
         };
     }
   };
- 
+
   const platformData = getPlatformData();
   const systemInfo = getSystemInfo();
- 
+
   const handlePlatformSelect = (platformId) => {
     // Set selected platform to the clicked one, or null if clicking the same one
     setSelectedPlatform(selectedPlatform === platformId ? null : platformId);
   };
- 
+
   const handlePrevious = () => {
-    // Navigate back to IndustryTypeFullfillment component
+    const prev = location.state || {};
+
     navigate('/digital-wayfinder/industry-type-fullfillment', {
       state: {
-        selectedArea: selectedFunctionalArea
+        ...prev
       }
     });
   };
- 
-   const handleProceed = () => {
+
+  const handleProceed = () => {
+    const prev = location.state || {};
+
     navigate('/digital-wayfinder/data-and-cloud', {
       state: {
+        ...prev,
         selectedArea: selectedFunctionalArea,
         selectedSystem: selectedSystem,
-        selectedPlatform: selectedPlatform
+        selectedPlatforms: selectedPlatform ? [selectedPlatform] : []
       }
     });
   };
- 
+
   return (
     <div className="wms-system-page">
       <div className="breadcrumb">
         <Link to="/">Home</Link> &gt; <span>Digital Wayfinder</span>
       </div>
- 
+
       <div className="tabs">
         <div className="tab">Functional Area</div>
         <div className="tab">Sub Functional Area</div>
         <div className="tab active">System</div>
       </div>
- 
+
       <div className="content-area">
         <div className="content-left">
           <h1>{systemInfo.title}</h1>
           <p className="subtitle">{systemInfo.description}</p>
- 
+
           <div className="platform-cards">
             {platformData.map((platform) => (
               <div
@@ -142,7 +154,7 @@ function WmsSystem() {
                     type="radio"
                     name="platform"
                     checked={selectedPlatform === platform.id}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     className="platform-checkbox"
                   />
                   <div className="platform-logo">
@@ -152,7 +164,7 @@ function WmsSystem() {
               </div>
             ))}
           </div>
- 
+
           <div className="progress-footer">
             <button
               className="previous-button"
@@ -170,7 +182,7 @@ function WmsSystem() {
             </button>
           </div>
         </div>
- 
+
         <div className="content-right">
           <div className="preview-container">
             <img
@@ -184,5 +196,5 @@ function WmsSystem() {
     </div>
   );
 }
- 
+
 export default WmsSystem;

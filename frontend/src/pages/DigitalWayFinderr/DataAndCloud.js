@@ -11,7 +11,7 @@ const steps = [
   { label: 'Visibility and Proactive', status: 'inactive' },
   { label: 'Agentic  AI', status: 'inactive' }
 ];
- 
+
 const DataAndCloud = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,7 +24,7 @@ const DataAndCloud = () => {
   const [saving, setSaving] = useState(false);
   const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -46,24 +46,24 @@ const DataAndCloud = () => {
         }
       }
     }
-    
+
     // Check existing answers to determine the pattern
     if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
       const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
-      const hasYesNo = existingAnswers.some(answer => 
+      const hasYesNo = existingAnswers.some(answer =>
         ['yes', 'no'].includes(answer)
       );
-      const hasHighMediumLow = existingAnswers.some(answer => 
+      const hasHighMediumLow = existingAnswers.some(answer =>
         ['high', 'medium', 'low'].includes(answer)
       );
-      
+
       if (hasYesNo) {
         return ['Yes', 'No'];
       } else if (hasHighMediumLow) {
         return ['High', 'Medium', 'Low'];
       }
     }
-    
+
     // Default to High/Medium/Low if no pattern is detected
     return ['High', 'Medium', 'Low'];
   };
@@ -74,7 +74,7 @@ const DataAndCloud = () => {
       setError(null);
       try {
         const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-        
+
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
           // Extract questions and their answer types from the response
@@ -90,17 +90,17 @@ const DataAndCloud = () => {
             }
             return ['High', 'Medium', 'Low']; // Default fallback
           });
-          
+
           setQuestions(questionTexts);
           setQuestionAnswerTypes(answerTypes);
-          
+
           // For backward compatibility, set answerOptions to the most common type
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
-          
+
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             response.answers.forEach(answerObj => {
@@ -112,13 +112,13 @@ const DataAndCloud = () => {
               }
             });
           }
-          
+
           setAnswers(initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Set functional area - if not provided, determine from functionalSubArea
           let area = response.functionalArea || '';
           if (!area && response.functionalSubArea) {
@@ -162,14 +162,15 @@ const DataAndCloud = () => {
   };
 
   const handlePrevious = async () => {
+    const prev = location.state || {};
     // Check if there are any answers to save before going back
     const hasAnswers = answers.some(answer => answer !== null);
-    
+
     if (hasAnswers) {
       try {
         setNavigatingBack(true);
         setError(null);
-        
+
         // Save current progress before navigating back
         let area = functionalArea;
         if (!area && functionalSubArea) {
@@ -191,7 +192,7 @@ const DataAndCloud = () => {
         if (!area) {
           area = 'Supply Chain Fulfillment';
         }
-        
+
         // Create payload with only answered questions
         const answeredQuestions = questions
           .map((question, index) => ({
@@ -199,7 +200,7 @@ const DataAndCloud = () => {
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -207,37 +208,35 @@ const DataAndCloud = () => {
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
-          
+
           console.log('Saving partial Data and Cloud progress before navigation:', payload);
-          
+
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
+
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
         console.log('Continuing with navigation despite save error');
       }
     }
-    
+
     // Navigate back to WmsSystem
     navigate('/digital-wayfinder/wms-system', {
       state: {
-        selectedArea: location.state?.selectedArea,
-        selectedSystem: location.state?.selectedSystem,
-        selectedPlatform: location.state?.selectedPlatform
+        ...prev
       }
     });
-    
+
     setNavigatingBack(false);
   };
 
   const handleSaveAndProceed = async () => {
     try {
       setSaving(true);
-      
+
       // Call API to save answers
       const payload = {
         functionalArea: functionalArea,
@@ -247,16 +246,16 @@ const DataAndCloud = () => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
       console.log('Answers saved successfully:', response);
-      
+
       // Navigate to next component
       setShowVisibilityProactive(true);
-      
+
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -271,7 +270,7 @@ const DataAndCloud = () => {
   if (showVisibilityProactive) {
     return <Operational />;
   }
- 
+
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -315,7 +314,7 @@ const DataAndCloud = () => {
               {questions.map((q, idx) => {
                 // Get the specific answer options for this question
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
-                
+
                 return (
                   <div key={idx} className={styles.questionBlock}>
                     <div className={styles.questionText}>{idx + 1}. {q}</div>
@@ -342,8 +341,8 @@ const DataAndCloud = () => {
               })}
             </div>
             <div className={styles.buttonRow}>
-              <button 
-                className={styles.prevBtn} 
+              <button
+                className={styles.prevBtn}
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
               >
@@ -363,5 +362,5 @@ const DataAndCloud = () => {
     </div>
   );
 };
- 
+
 export default DataAndCloud;

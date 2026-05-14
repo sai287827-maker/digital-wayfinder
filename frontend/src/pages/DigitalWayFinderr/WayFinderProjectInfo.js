@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import './WayFinderProjectInfo.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import dashboardImage from "../../assets/dashboard.png";
-import { apiPost, apiGet } from '../../api';
+import { apiPost } from '../../api';
+
 
 const ProjectInfo = () => {
   const [projectType, setProjectType] = useState('internal');
@@ -16,39 +17,13 @@ const ProjectInfo = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch project info from API on mount
-    const fetchProjectInfo = async () => {
-      setFetching(true);
-      setError(null);
-      try {
-        const data = await apiGet('api/decision-tree/project-info/get');
-        setFormData({
-          requestId: data.requestID || '',
-          mmsId: data.mmsID || '', // <-- Add MMSID field from API
-          clientName: data.clientName || '',
-          description: data.clientDescription || '',
-          projectScope: data.projectScope || ''
-        });
-        setProjectType(data.projectType || 'internal');
-      } catch (err) {
-        // If error, keep fields empty
-        setFormData({
-          requestId: '',
-          mmsId: '', // <-- Reset MMSID field
-          clientName: '',
-          description: '',
-          projectScope: ''
-        });
-        setProjectType('internal');
-      } finally {
-        setFetching(false);
-      }
-    };
-    fetchProjectInfo();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setFetching(false); // stop loading immediately
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -90,9 +65,13 @@ const ProjectInfo = () => {
         projectScope: formData.projectScope,
         projectType: projectType
       });
+
+      const prev = location.state || {}; // 🔥 IMPORTANT
+
       navigate('/digital-wayfinder/functional-area', {
         state: {
-          projectData: formData,
+          ...prev,                 // 🔥 PRESERVE EVERYTHING
+          projectData: formData,   // overwrite only what changed
           projectType: projectType
         }
       });
@@ -106,14 +85,14 @@ const ProjectInfo = () => {
   if (fetching) {
     return <div className="project-info-container"><div className="main-content"><p>Loading project information...</p></div></div>;
   }
-console.log("formData",formData);
+  console.log("formData", formData);
   return (
     <div className="project-info-container">
       {/* Main Content */}
       <div className="main-content">
         {/* Breadcrumb */}
         <div className="breadcrumb">
-           <Link to="/">Home</Link> &gt; 
+          <Link to="/">Home</Link> &gt;
           <span>Digital Wayfinder</span>
         </div>
         {/* Navigation Tabs */}
@@ -227,9 +206,9 @@ console.log("formData",formData);
           {/* Right Side - Dashboard Preview */}
           <div className="dashboard-section">
             <div className="dashboard-preview">
-              <img 
-                src={dashboardImage} 
-                alt="Dashboard Preview" 
+              <img
+                src={dashboardImage}
+                alt="Dashboard Preview"
                 className="dashboard-image"
               />
             </div>

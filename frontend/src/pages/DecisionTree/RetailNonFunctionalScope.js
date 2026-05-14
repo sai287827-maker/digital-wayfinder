@@ -36,13 +36,19 @@ const RetailNonFunctionalScope = () => {
   if (proceedToDecisionCriteria) {
     return <RetailDecisionCriteria />;
   }
-  
+
   // Check if user has selected from all 3 levels
+  /*//Not needed now
   const hasAllLevelsSelected = () => {
     return [1, 2, 3].every(level => {
       const levelKey = `l${level}`;
       return levelSelections[levelKey] && levelSelections[levelKey].length > 0;
     });
+  };
+  */
+
+  const hasLevel1Selected = () => {
+    return levelSelections.l1 && levelSelections.l1.length > 0;
   };
 
   // Handle Previous button click
@@ -54,12 +60,12 @@ const RetailNonFunctionalScope = () => {
   const handleSaveAndProceed = async () => {
     try {
       // Validate that user has made selections
-      if (!hasAllLevelsSelected()) {
-        setError('Please select at least one option from each level before proceeding.');
+      if (!hasLevel1Selected()) {
+        setError('Please select at least one option from Level 1 before proceeding.');
         setTimeout(() => setError(null), 3000);
         return;
       }
- 
+
       setLoading(true);
       // Save non-functional scope
       await apiPost('api/decision-tree/non-functional-scope/save', {
@@ -84,7 +90,7 @@ const RetailNonFunctionalScope = () => {
           }
         }
       });
- 
+
     } catch (error) {
       console.error('Error saving data:', error);
       setError('Failed to save data. Please try again.');
@@ -93,13 +99,13 @@ const RetailNonFunctionalScope = () => {
       setLoading(false);
     }
   };
- 
+
   // Filter data based on search query
   const getFilteredData = () => {
     if (!searchQuery) return nonFunctionalScopeData;
-    
-    return nonFunctionalScopeData.filter(item => 
-      Object.values(item).some(value => 
+
+    return nonFunctionalScopeData.filter(item =>
+      Object.values(item).some(value =>
         value && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
@@ -109,26 +115,26 @@ const RetailNonFunctionalScope = () => {
   const getLevelItems = (level) => {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) return [];
-    
+
     let levelData = filteredData;
-    
+
     // Filter based on selected path up to the previous level
     for (let i = 1; i < level; i++) {
       const levelKey = `l${i}`;
       const selectedForLevel = levelSelections[levelKey];
-      
+
       if (selectedForLevel && selectedForLevel.length > 0) {
-        levelData = levelData.filter(item => 
+        levelData = levelData.filter(item =>
           selectedForLevel.includes(item[levelKey])
         );
       }
     }
-    
+
     // Get unique items for current level
     const levelKey = `l${level}`;
     const uniqueItems = [];
     const seen = new Set();
-    
+
     levelData.forEach((item) => {
       const value = item[levelKey];
       if (value && !seen.has(value)) {
@@ -141,7 +147,7 @@ const RetailNonFunctionalScope = () => {
         });
       }
     });
-    
+
     return uniqueItems;
   };
 
@@ -159,29 +165,31 @@ const RetailNonFunctionalScope = () => {
   const handleItemSelect = (item, level) => {
     const levelKey = `l${level}`;
     const newlevelSelections = { ...levelSelections };
-    
+
     if (!newlevelSelections[levelKey]) {
       newlevelSelections[levelKey] = [];
     }
-    
+
     const currentSelections = [...newlevelSelections[levelKey]];
     const itemIndex = currentSelections.indexOf(item.name);
-    
+
     if (itemIndex > -1) {
       currentSelections.splice(itemIndex, 1);
     } else {
       currentSelections.push(item.name);
     }
-    
+
     newlevelSelections[levelKey] = currentSelections;
-    
+
     // Clear deeper levels when selections change
+    /*// Not needed with new auto-advance logic that supports reverse navigation
     for (let i = level + 1; i <= 3; i++) {
       delete newlevelSelections[`l${i}`];
     }
-    
+    */
+
     setlevelSelections(newlevelSelections);
-    
+
     // Auto-advance logic with reverse support
     if (currentSelections.length > 0 && level < 3) {
       // Move forward to next level when selecting
@@ -190,7 +198,7 @@ const RetailNonFunctionalScope = () => {
       // Move backward when deselecting - find the highest level with selections
       const updatedPath = { ...newlevelSelections };
       updatedPath[levelKey] = currentSelections;
-      
+
       let highestLevel = 1;
       for (let i = 3; i >= 1; i--) {
         const checkLevelKey = `l${i}`;
@@ -199,25 +207,22 @@ const RetailNonFunctionalScope = () => {
           break;
         }
       }
-      
+
       // If we deselected from current level and there are no selections left,
       // move to the highest level with selections, or stay at current level if it's level 1
       if (level > 1 && currentSelections.length === 0) {
         setSelectedLevel(highestLevel === level ? Math.max(1, level - 1) : highestLevel);
       }
     }
-    
+
     const itemId = item.id;
     setSelectedItems(prev => {
-      const filteredItems = prev.filter(id => {
-        const levelFromId = parseInt(id.split('-')[0].replace('l', ''));
-        return levelFromId <= level;
-      });
-      
       if (itemIndex > -1) {
-        return filteredItems.filter(id => id !== itemId);
+        // remove only this item
+        return prev.filter(id => id !== itemId);
       } else {
-        return [...filteredItems, itemId];
+        // add new item, keep all existing selections
+        return [...prev, itemId];
       }
     });
   };
@@ -235,24 +240,24 @@ const RetailNonFunctionalScope = () => {
   const getItemNumber = (level, item) => {
     const levelItems = getLevelItems(level);
     const currentIndex = levelItems.findIndex(levelItem => levelItem.name === item.name);
-    
+
     if (level === 1) {
       return `${currentIndex + 1}.0`;
     }
-    
-    const fullItem = nonFunctionalScopeData.find(dataItem => 
+
+    const fullItem = nonFunctionalScopeData.find(dataItem =>
       dataItem[`l${level}`] === item.name
     );
-    
+
     if (!fullItem) return `${currentIndex + 1}`;
-    
+
     const buildNumber = (targetLevel, targetItem) => {
       const parts = [];
-      
+
       const l1Items = getLevelItems(1);
       const l1Index = l1Items.findIndex(l1Item => l1Item.name === targetItem.l1);
       parts.push(l1Index + 1);
-      
+
       for (let i = 2; i <= targetLevel; i++) {
         let contextData = nonFunctionalScopeData.filter(dataItem => {
           for (let j = 1; j < i; j++) {
@@ -262,11 +267,11 @@ const RetailNonFunctionalScope = () => {
           }
           return true;
         });
-        
+
         const levelKey = `l${i}`;
         const uniqueItems = [];
         const seen = new Set();
-        
+
         contextData.forEach(dataItem => {
           const value = dataItem[levelKey];
           if (value && !seen.has(value)) {
@@ -274,16 +279,16 @@ const RetailNonFunctionalScope = () => {
             uniqueItems.push(value);
           }
         });
-        
+
         const itemIndex = uniqueItems.findIndex(uniqueItem => uniqueItem === targetItem[levelKey]);
         parts.push(itemIndex + 1);
       }
-      
+
       return parts;
     };
-    
+
     const numberParts = buildNumber(level, fullItem);
-    
+
     if (level === 1) {
       return `${numberParts[0]}.0`;
     } else if (level === 2) {
@@ -291,7 +296,7 @@ const RetailNonFunctionalScope = () => {
     } else if (level === 3) {
       return `${numberParts[0]}.${numberParts[1]}.${numberParts[2]}`;
     }
-    
+
     return numberParts.join('.');
   };
 
@@ -477,22 +482,22 @@ const RetailNonFunctionalScope = () => {
             <div className="step-item">
               <div className="step-circle completed">
                 <svg className="step-check" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
               <span className="step-text completed">Functional Scope</span>
             </div>
-            
+
             <div className="step-item">
               <div className="step-circle active">2</div>
               <span className="step-text active">Non Functional</span>
             </div>
-            
+
             <div className="step-item">
               <div className="step-circle inactive">3</div>
               <span className="step-text inactive">Reviews</span>
             </div>
-            
+
             <div className="step-item">
               <div className="step-circle inactive">4</div>
               <span className="step-text inactive">Solution</span>
@@ -547,7 +552,7 @@ const RetailNonFunctionalScope = () => {
                 <span className="level-label">Select Level View</span>
 
                 <div className="level-progress">
-                  <div 
+                  <div
                     className="level-progress-fill"
                     style={{ width: `${(getHighestSelectedLevel()) / 3 * 100}%` }}
                   />
@@ -558,7 +563,7 @@ const RetailNonFunctionalScope = () => {
                     // Check if this level should be enabled
                     const isLevelEnabled = level === 1 || (levelSelections[`l${level - 1}`] && levelSelections[`l${level - 1}`].length > 0);
                     const hasSelections = levelSelections[`l${level}`] && levelSelections[`l${level}`].length > 0;
-                    
+
                     return (
                       <button
                         key={level}
@@ -589,14 +594,14 @@ const RetailNonFunctionalScope = () => {
       </div>
 
       {/* Footer with Previous and Save & Proceed buttons */}
-      <div className="footer-buttons-container" style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+      <div className="footer-buttons-container" style={{
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: '20px',
         padding: '20px',
         backgroundColor: '#f8fafc'
-       }}>
+      }}>
         <button
           className="previous-button"
           onClick={handlePrevious}
@@ -623,35 +628,35 @@ const RetailNonFunctionalScope = () => {
             e.target.style.color = '#8b5cf6';
           }}
         >
-          <svg 
-            width="16" 
-            height="16" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="m15 18-6-6 6-6"/>
+            <path d="m15 18-6-6 6-6" />
           </svg>
           Previous
         </button>
 
         <button
-          className={`proceed-button ${hasAllLevelsSelected() ? 'enabled' : 'disabled'}`}
+          className={`proceed-button ${hasLevel1Selected() ? 'enabled' : 'disabled'}`}
           onClick={handleSaveAndProceed}
-          disabled={loading || !hasAllLevelsSelected()}
+          disabled={loading || !hasLevel1Selected()}
           style={{
-            backgroundColor: hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb',
-            color: hasAllLevelsSelected() ? 'white' : '#9ca3af',
-            border: '2px solid ' + (hasAllLevelsSelected() ? '#8b5cf6' : '#e5e7eb'),
+            backgroundColor: hasLevel1Selected() ? '#8b5cf6' : '#e5e7eb',
+            color: hasLevel1Selected() ? 'white' : '#9ca3af',
+            border: '2px solid ' + (hasLevel1Selected() ? '#8b5cf6' : '#e5e7eb'),
             padding: '12px 24px',
             borderRadius: '8px',
             fontSize: '16px',
             fontWeight: '600',
-            cursor: hasAllLevelsSelected() ? 'pointer' : 'not-allowed',
-            opacity: hasAllLevelsSelected() ? 1 : 0.6,
+            cursor: hasLevel1Selected() ? 'pointer' : 'not-allowed',
+            opacity: hasLevel1Selected() ? 1 : 0.6,
             transition: 'all 0.3s ease',
             display: 'flex',
             alignItems: 'center',
@@ -660,17 +665,17 @@ const RetailNonFunctionalScope = () => {
         >
           {loading ? 'Saving...' : 'Save & Proceed'}
           {!loading && (
-            <svg 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="m9 18 6-6-6-6"/>
+              <path d="m9 18 6-6-6-6" />
             </svg>
           )}
         </button>
