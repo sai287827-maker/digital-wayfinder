@@ -92,13 +92,10 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
               }
             });
           } else {
-            console.log('No existing answers found in response');
             try {
-              console.log('Attempting separate answers fetch...');
               const answersResponse = await apiGet(
                 `api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`
               );
-              console.log('SEPARATE ANSWERS RESPONSE', answersResponse);
               if (
                 answersResponse &&
                 answersResponse.answers &&
@@ -197,17 +194,13 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
 
-          console.log('Saving partial Data and Cloud progress before navigation:', payload);
-
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
-          console.log('Partial progress saved successfully');
         }
 
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
-        console.log('Continuing with navigation despite save error');
       }
     }
 
@@ -236,11 +229,8 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
         }))
       };
 
-      console.log('Sending payload:', payload);
 
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
-
-      console.log('Answers saved successfully:', response);
 
       // Navigate to next component
       navigate('/digital-wayfinder/industry-operational', {

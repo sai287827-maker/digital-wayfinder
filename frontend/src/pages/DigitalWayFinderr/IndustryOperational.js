@@ -34,7 +34,6 @@ const IndustryOperational = ({ onNavigateBack }) => {
     effectiveSubArea
   } = useFunctionalArea();
 
-  console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
@@ -52,15 +51,11 @@ const IndustryOperational = ({ onNavigateBack }) => {
 
   useEffect(() => {
     async function fetchQuestions() {
-      console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
 
       setLoading(true);
       setError(null);
       try {
-        console.log('Fetching Industry Operational questions and existing answers...');
         const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
-
-        console.log('Industry Operational API Response:', response);
 
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -72,7 +67,6 @@ const IndustryOperational = ({ onNavigateBack }) => {
 
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
-            console.log('Loading existing answers:', response.answers);
             response.answers.forEach(answerObj => {
               const questionIndex = response.questions.findIndex(
                 q =>
@@ -83,33 +77,29 @@ const IndustryOperational = ({ onNavigateBack }) => {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
-                console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
+                // console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
               } else {
                 console.warn('Could not find matching question for answer:', answerObj);
               }
             });
           } else {
-            console.log('No existing answers found in response');
 
             // Check if we should try to fetch existing answers separately
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
-              console.log('Attempting to fetch existing answers separately...');
               const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
 
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
-                console.log('Found existing answers in separate call:', answersResponse.answers);
                 answersResponse.answers.forEach(answerObj => {
                   const questionIndex = response.questions.findIndex(q => q.question === answerObj.question);
                   if (questionIndex !== -1) {
                     const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                     initialAnswers[questionIndex] = answerValue;
-                    console.log(`Loaded answer from separate call for question ${questionIndex}: ${answerValue}`);
                   }
                 });
               }
             } catch (separateErr) {
-              console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
+              console.error('Error fetching existing answers separately:', separateErr);
             }
           }
 
@@ -131,7 +121,6 @@ const IndustryOperational = ({ onNavigateBack }) => {
 
         } else {
           // Fallback for old response structure
-          console.log('Using fallback structure for questions');
           const questionObjects = (response.questions || []).map(q => ({
             question: typeof q === 'string' ? q : q.question || '',
             answerType: typeof q === 'object' ? q.answerType || 'priority' : 'priority'
@@ -184,17 +173,14 @@ const IndustryOperational = ({ onNavigateBack }) => {
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
 
-          console.log('Saving partial Industry Operational progress before navigation:', payload);
 
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
-          console.log('Partial progress saved successfully');
         }
 
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
-        console.log('Continuing with navigation despite save error');
       }
     }
 
@@ -233,11 +219,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
         }))
       };
 
-      console.log('Sending payload:', payload);
 
       const response = await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
-
-      console.log('Answers saved successfully:', response);
 
       // Navigate to VisibilityProactive component
       navigate('/digital-wayfinder/industry-visibility-proactive', {
@@ -259,14 +242,6 @@ const IndustryOperational = ({ onNavigateBack }) => {
 
   // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
-
-  // Debug logging for progress bar
-  console.log('Progress Debug:', {
-    completedCount,
-    totalQuestions: questions.length,
-    progressPercentage,
-    answers
-  });
 
 
   return (
