@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './IndustryDataandCloud.module.css';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 // import VisibilityProactive from './VisibilityProactive';
-import IndustryOperational from './IndustryOperational';
-import IndustryTypePlanParts from './IndustryTypePlanParts'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -20,7 +18,6 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showIndustryOperational, setShowIndustryOperational] = useState(false);
   //const [showIndustryTypePlanParts, setShowIndustryTypePlanParts] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
   const navigate = useNavigate();
@@ -56,6 +53,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
 
   useEffect(() => {
     async function fetchQuestions() {
+      console.log("FETCH QUESTIONS RUNNING");
 
       console.log('IndustryDataandCloud rendered with functionalArea:', functionalArea, 'functionalSubArea:', functionalSubArea, 'effectiveSubArea:', effectiveSubArea);
 
@@ -63,7 +61,7 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       setError(null);
 
       try {
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
 
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -75,14 +73,61 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
 
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
+
             response.answers.forEach(answerObj => {
-              const questionIndex = response.questions.findIndex(q => q.question === answerObj.question);
+
+              const questionIndex = response.questions.findIndex(
+                q =>
+                  q.question?.trim().toLowerCase() ===
+                  answerObj.question?.trim().toLowerCase()
+              );
+
               if (questionIndex !== -1) {
-                // Convert lowercase answer to proper case for display
-                const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+
+                const answerValue =
+                  answerObj.answer.charAt(0).toUpperCase() +
+                  answerObj.answer.slice(1);
+
                 initialAnswers[questionIndex] = answerValue;
               }
             });
+          } else {
+            console.log('No existing answers found in response');
+            try {
+              console.log('Attempting separate answers fetch...');
+              const answersResponse = await apiGet(
+                `api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`
+              );
+              console.log('SEPARATE ANSWERS RESPONSE', answersResponse);
+              if (
+                answersResponse &&
+                answersResponse.answers &&
+                Array.isArray(answersResponse.answers)
+              ) {
+                console.log(
+                  'Found answers in separate API:',
+                  answersResponse.answers
+                );
+                answersResponse.answers.forEach(answerObj => {
+                  const questionIndex = response.questions.findIndex(
+                    q =>
+                      q.question?.trim().toLowerCase() ===
+                      answerObj.question?.trim().toLowerCase()
+                  );
+                  if (questionIndex !== -1) {
+                    const answerValue =
+                      answerObj.answer.charAt(0).toUpperCase() +
+                      answerObj.answer.slice(1);
+                    initialAnswers[questionIndex] = answerValue;
+                  }
+                });
+              }
+            } catch (separateErr) {
+              console.log(
+                'Separate answers fetch failed:',
+                separateErr.message
+              );
+            }
           }
 
           setAnswers(initialAnswers);
@@ -114,7 +159,8 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, [location.state?.selectedSystem]);
+  }, [effectiveSubArea, location.key]);
+
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -197,7 +243,11 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
       console.log('Answers saved successfully:', response);
 
       // Navigate to next component
-      setShowIndustryOperational(true);
+      navigate('/digital-wayfinder/industry-operational', {
+        state: {
+          ...location.state
+        }
+      });
 
     } catch (err) {
       console.error('Error saving answers:', err);
@@ -210,10 +260,6 @@ const IndustryDataandCloud = ({ onNavigateBack }) => {
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
 
-
-  if (showIndustryOperational) {
-    return <IndustryOperational />;
-  }
 
   return (
     <div className={styles.industryDataCloudWrapper}>

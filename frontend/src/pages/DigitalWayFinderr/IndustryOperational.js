@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './IndustryOperational.module.css';
-import IndustryVisibilityProactive from './IndustryVisibilityProactive';
-import IndustryDataandCloud from './IndustryDataandCloud';
 import { apiGet, apiPost } from '../../api';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -11,17 +10,17 @@ const steps = [
   { label: 'Visibility and Proactive', status: 'inactive' },
   { label: 'Agentic AI', status: 'inactive' }
 ];
- 
+
 const IndustryOperational = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -34,12 +33,12 @@ const IndustryOperational = ({ onNavigateBack }) => {
     deriveArea,
     effectiveSubArea
   } = useFunctionalArea();
-  
+
   console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
 
   // Helper function to get answer options based on answerType
   const getAnswerOptions = (answerType) => {
-    switch(answerType?.toLowerCase()) {
+    switch (answerType?.toLowerCase()) {
       case 'yes/no':
       case 'yesno':
         return ['Yes', 'No'];
@@ -50,32 +49,36 @@ const IndustryOperational = ({ onNavigateBack }) => {
         return ['High', 'Medium', 'Low']; // Default fallback
     }
   };
- 
+
   useEffect(() => {
-    async function fetchQuestions() {      
+    async function fetchQuestions() {
       console.log('IndustryOperational component mounted with effectiveSubArea:', effectiveSubArea);
-      
+
       setLoading(true);
       setError(null);
       try {
         console.log('Fetching Industry Operational questions and existing answers...');
         const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
-        
+
         console.log('Industry Operational API Response:', response);
-        
+
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
           // Store full question objects with answerType
           setQuestions(response.questions);
-          
+
           // Initialize answers array
           const initialAnswers = Array(response.questions.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             console.log('Loading existing answers:', response.answers);
             response.answers.forEach(answerObj => {
-              const questionIndex = response.questions.findIndex(q => q.question === answerObj.question);
+              const questionIndex = response.questions.findIndex(
+                q =>
+                  q.question?.trim().toLowerCase() ===
+                  answerObj.question?.trim().toLowerCase()
+              );
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
@@ -87,13 +90,13 @@ const IndustryOperational = ({ onNavigateBack }) => {
             });
           } else {
             console.log('No existing answers found in response');
-            
+
             // Check if we should try to fetch existing answers separately
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
-              
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
+
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
                 answersResponse.answers.forEach(answerObj => {
@@ -109,14 +112,14 @@ const IndustryOperational = ({ onNavigateBack }) => {
               console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
             }
           }
-          
+
           setAnswers(initialAnswers);
           console.log('Final answers array:', initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Set functional area - if not provided, determine from functionalSubArea
           // push values into hook state; deriveArea will compute a fallback
           if (response.functionalSubArea && response.functionalSubArea !== functionalSubArea) {
@@ -145,7 +148,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
     }
     fetchQuestions();
   }, [effectiveSubArea]);
- 
+
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
     updated[idx] = value;
@@ -155,16 +158,16 @@ const IndustryOperational = ({ onNavigateBack }) => {
   const handlePrevious = async () => {
     // Check if there are any answers to save before going back
     const hasAnswers = answers.some(answer => answer !== null);
-    
+
     if (hasAnswers) {
       try {
         setNavigatingBack(true);
         setError(null);
-        
+
         // Save current progress before navigating back
         // the hook already keeps functionalArea up to date via deriveArea
         const area = deriveArea();
-        
+
         // Create payload with only answered questions
         const answeredQuestions = questions
           .map((questionObj, index) => ({
@@ -172,7 +175,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -180,49 +183,46 @@ const IndustryOperational = ({ onNavigateBack }) => {
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
-          
+
           console.log('Saving partial Industry Operational progress before navigation:', payload);
-          
+
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
+
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
         console.log('Continuing with navigation despite save error');
       }
     }
-    
+
     // Navigate back to DataAndCloud
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to DataAndCloud using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to DataAndCloud component
-      console.log('Using fallback navigation to DataAndCloud');
-      setShowDataAndCloud(true);
-    }
-    
+    navigate('/digital-wayfinder/industry-data-and-cloud', {
+      state: {
+        ...location.state
+      }
+    });
+
     setNavigatingBack(false);
   };
- 
+
   const handleSaveAndProceed = async () => {
     // Validate that all questions are answered
     if (!allQuestionsAnswered) {
       setError('Please answer all questions before proceeding.');
       return;
     }
- 
+
     try {
       setSaving(true);
       setError(null); // Clear any previous errors
-      
+
       // Ensure functional area is set with fallback
       let area = functionalArea;
-// area is derived by the shared hook (deriveArea) if not explicitly set
-      
+      // area is derived by the shared hook (deriveArea) if not explicitly set
+
       // Call API to save answers
       const payload = {
         functionalArea: area,
@@ -232,16 +232,20 @@ const IndustryOperational = ({ onNavigateBack }) => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
- 
+
       console.log('Answers saved successfully:', response);
-      
+
       // Navigate to VisibilityProactive component
-      setShowVisibilityProactive(true);
-      
+      navigate('/digital-wayfinder/industry-visibility-proactive', {
+        state: {
+          ...location.state
+        }
+      });
+
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -249,13 +253,13 @@ const IndustryOperational = ({ onNavigateBack }) => {
       setSaving(false);
     }
   };
- 
+
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-  
+
   // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
-  
+
   // Debug logging for progress bar
   console.log('Progress Debug:', {
     completedCount,
@@ -263,19 +267,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
     progressPercentage,
     answers
   });
- 
-  // Early return for navigation to VisibilityProactive
-  if (showVisibilityProactive) {
-    console.log('Navigating to VisibilityProactive component');
-    return <IndustryVisibilityProactive />;
-  }
 
-  // Early return for navigation to DataAndCloud (Previous button)
-  if (showDataAndCloud) {
-    console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
-    return <IndustryDataandCloud />;
-  }
- 
+
   return (
     <div className={styles.industryOperationalContainer}>
       {/* Breadcrumb Row with Background */}
@@ -296,24 +289,24 @@ const IndustryOperational = ({ onNavigateBack }) => {
           <div className={styles.industryOperationalSteps}>
             {steps.map((step, idx) => (
               <div key={step.label} className={styles.industryOperationalStepItem}>
-                <div className={step.status === 'completed' ? styles.industryOperationalStepCircleCompleted : 
-                                step.status === 'active' ? styles.industryOperationalStepCircleActive : 
-                                styles.industryOperationalStepCircleInactive}
-                     style={{
-                       backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                                      step.status === 'active' ? '#9C27B0' : '#e0e0e0',
-                       color: step.status === 'inactive' ? '#666' : 'white'
-                     }}>
+                <div className={step.status === 'completed' ? styles.industryOperationalStepCircleCompleted :
+                  step.status === 'active' ? styles.industryOperationalStepCircleActive :
+                    styles.industryOperationalStepCircleInactive}
+                  style={{
+                    backgroundColor: step.status === 'completed' ? '#4CAF50' :
+                      step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                    color: step.status === 'inactive' ? '#666' : 'white'
+                  }}>
                   {step.status === 'completed' ? '✓' : idx + 1}
                 </div>
                 <span className={step.status === 'completed' ? styles.industryOperationalStepTextCompleted :
-                                step.status === 'active' ? styles.industryOperationalStepTextActive : 
-                                styles.industryOperationalStepTextInactive}
-                      style={{
-                        color: step.status === 'completed' ? '#4CAF50' : 
-                               step.status === 'active' ? '#9C27B0' : '#666',
-                        fontWeight: step.status === 'active' ? '600' : '400'
-                      }}>
+                  step.status === 'active' ? styles.industryOperationalStepTextActive :
+                    styles.industryOperationalStepTextInactive}
+                  style={{
+                    color: step.status === 'completed' ? '#4CAF50' :
+                      step.status === 'active' ? '#9C27B0' : '#666',
+                    fontWeight: step.status === 'active' ? '600' : '400'
+                  }}>
                   {step.label}
                 </span>
               </div>
@@ -331,8 +324,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
               <div className={styles.industryOperationalProgressRow}>
                 <span className={styles.industryOperationalProgressLabel}>Completed question {completedCount}/{questions.length}</span>
                 <div className={styles.industryOperationalProgressBarBg}>
-                  <div 
-                    className={styles.industryOperationalProgressBarFill} 
+                  <div
+                    className={styles.industryOperationalProgressBarFill}
                     style={{ width: `${Math.min(Math.max(progressPercentage, 0), 100)}%` }}
                   />
                 </div>
@@ -342,7 +335,7 @@ const IndustryOperational = ({ onNavigateBack }) => {
                   const questionText = questionObj.question || questionObj;
                   const answerType = questionObj.answerType || 'priority';
                   const options = getAnswerOptions(answerType);
-                  
+
                   return (
                     <div key={idx} className={styles.industryOperationalQuestionBlock}>
                       <div className={styles.industryOperationalQuestionText}>{idx + 1}. {questionText}</div>
@@ -369,8 +362,8 @@ const IndustryOperational = ({ onNavigateBack }) => {
                 })}
               </div>
               <div className={styles.industryOperationalButtonRow}>
-                <button 
-                  className={styles.industryOperationalPrevBtn} 
+                <button
+                  className={styles.industryOperationalPrevBtn}
                   disabled={saving || navigatingBack}
                   onClick={handlePrevious}
                 >
@@ -391,5 +384,5 @@ const IndustryOperational = ({ onNavigateBack }) => {
     </div>
   );
 };
- 
+
 export default IndustryOperational;
