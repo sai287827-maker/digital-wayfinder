@@ -73,7 +73,7 @@ import CustomerNonFunctionalScope from './pages/DecisionTree/CustomerNonFunction
 import CustomerDecisionCriteria from './pages/DecisionTree/CustomerDecisionCriteria';
 import CustomerSolution from './pages/DecisionTree/CustomerSolution';
 import CustomerDashboard from './pages/DecisionTree/CustomerDashboard';
- 
+
 // import Login from "./pages/Login";
 // import ProtectedRoute from "./components/ProtectedRoute";
 // import { AuthProvider } from "./contexts/AuthContext";
@@ -86,15 +86,15 @@ function App() {
   return (
     <Router>
       {/* <AuthProvider> */}
-        <div className="App">
-          <Navbar />
-          <Routes>
-            {/* <Route path="/login" element={<Login />} /> */}
-            
-            {/* <Route element={<ProtectedRoute />}> */}
-            <Route path="/report" element={<ReportPage />} />
-            <Route path="/" element={<HomePage />} />
-         <Route path="/digital-wayfinder" element={<ProjectInfo />} />
+      <div className="App">
+        <Navbar />
+        <Routes>
+          {/* <Route path="/login" element={<Login />} /> */}
+
+          {/* <Route element={<ProtectedRoute />}> */}
+          <Route path="/report" element={<ReportPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/digital-wayfinder" element={<ProjectInfo />} />
           {/* <Route path="/digital-wayfinder/project-info" element={<WayFinderProjectInfo />} /> */}
           <Route path="/digital-wayfinder/functional-area" element={<FunctionalAreaPage />} />
           <Route path="/digital-wayfinder/industry-type-fullfillment" element={<IndustryTypeFullfillment />} />
@@ -103,38 +103,38 @@ function App() {
           <Route path="/digital-wayfinder/operational" element={<Operational />} />
           <Route path="/digital-wayfinder/visibility-proactive" element={<VisibilityProactive />} />
           <Route path="/digital-wayfinder/agentic-ai" element={<AgenticAI />} />
-          
+
           <Route path="/digital-wayfinder/tms-system" element={<TmsSystem />} />
           <Route path="/digital-wayfinder/tms-data-and-cloud" element={<TmsDataAndCloud />} />
           <Route path="/digital-wayfinder/tms-operational" element={<TmsOperational />} />
           <Route path="/digital-wayfinder/tms-visibility-proactive" element={<TmsVisibilityProactive />} />
           <Route path="/digital-wayfinder/tms-agentic-ai" element={<TmsAgenticAI />} />
           <Route path="/digital-wayfinder/tms-report" element={<TmsReport />} />
-          
+
           <Route path="/digital-wayfinder/industry-type-planning" element={<IndustryTypePlanning />} />
           <Route path="/digital-wayfinder/industry-type-plan-parts" element={<IndustryTypePlanParts />} />
-  
+
           <Route path="/digital-wayfinder/industry-data-and-cloud" element={<IndustryDataandCloud />} />
           <Route path="/digital-wayfinder/industry-operational" element={<IndustryOperational />} />
           <Route path="/digital-wayfinder/industry-visibility-proactive" element={<IndustryVisibilityProactive />} />
           <Route path="/digital-wayfinder/industry-agentic-ai" element={<IndustryAgenticAI />} />
-          
+
           {/* <Route path="/digital-wayfinder/agentic-ai" element={<IndustryDataandCloud />} /> */}
-          
+
           <Route path="/digital-wayfinder/retail-data-and-cloud" element={<RetailDataAndCloud />} />
           <Route path="/digital-wayfinder/retail-operational" element={<RetailOperational />} />
           <Route path="/digital-wayfinder/retail-visibility-proactive" element={<RetailVisibilityProactive />} />
           <Route path="/digital-wayfinder/retail-agentic-ai" element={<RetailAgenticAI />} />
           <Route path="/digital-wayfinder/retail-system" element={<RetailSystem />} />
           <Route path="/digital-wayfinder/retail-report" element={<RetailReport />} />
-          
+
           <Route path="/digital-wayfinder/cgs-system" element={<CgsSystem />} />
           <Route path="/digital-wayfinder/cgs-report" element={<CgsReport />} />
           <Route path="/digital-wayfinder/cgs-data-and-cloud" element={<CgsDataAndCloud />} />
           <Route path="/digital-wayfinder/cgs-operational" element={<CgsOperational />} />
           <Route path="/digital-wayfinder/cgs-visibility-proactive" element={<CgsVisibilityProactive />} />
           <Route path="/digital-wayfinder/cgs-agentic-ai" element={<CgsAgenticAI />} />
-          
+
 
           <Route path="/decision-tree" element={<ProjectInfo />} />
           <Route path="/decision-tree/functional-area" element={<FuncAreaPage />} />
@@ -142,33 +142,33 @@ function App() {
           <Route path="/decision-tree/industry-type-plannd" element={<IndustryTypePlannD />} />
           <Route path="/decision-tree/functional-scope" element={<FunctionalScope />} />
           <Route path="/decision-tree/non-functional-scope" element={<NonFunctionalScope />} />
-              <Route path="/decision-tree/solution" element={<Solution />} />
-          <Route path="/decision-tree/dashboard" element={<Dashboard/>} />
-          <Route path="/decision-tree/decision-criteria" element={<DecisionCriteria/>} />
+          <Route path="/decision-tree/solution" element={<Solution />} />
+          <Route path="/decision-tree/dashboard" element={<Dashboard />} />
+          <Route path="/decision-tree/decision-criteria" element={<DecisionCriteria />} />
           <Route path="/decision-tree/transportation-functional-scope" element={<TransportationFunctionalScope />} />
           <Route path="/decision-tree/agnostic-functional-scope" element={<AgnosticFunctionalScope />} />
           <Route path="/decision-tree/agnostic-non-functional-scope" element={<AgnosticNonFunctionalScope />} />
-          <Route path="/decision-tree/agnostic-decision-criteria" element={<AgnosticDecisionCriteria/>} />
+          <Route path="/decision-tree/agnostic-decision-criteria" element={<AgnosticDecisionCriteria />} />
           <Route path="/decision-tree/agnostic-solution" element={<AgnosticSolution />} />
-          <Route path="/decision-tree/agnostic-dashboard" element={<AgnosticDashboard/>} />
+          <Route path="/decision-tree/agnostic-dashboard" element={<AgnosticDashboard />} />
           <Route path="/decision-tree/retail-functional-scope" element={<RetailFunctionalScope />} />
           <Route path="/decision-tree/retail-non-functional-scope" element={<RetailNonFunctionalScope />} />
-          <Route path="/decision-tree/retail-decision-criteria" element={<RetailDecisionCriteria/>} />
+          <Route path="/decision-tree/retail-decision-criteria" element={<RetailDecisionCriteria />} />
           <Route path="/decision-tree/retail-solution" element={<RetailSolution />} />
-          <Route path="/decision-tree/retail-dashboard" element={<RetailDashboard/>} />
+          <Route path="/decision-tree/retail-dashboard" element={<RetailDashboard />} />
           <Route path="/decision-tree/customer-functional-scope" element={<CustomerFunctionalScope />} />
           <Route path="/decision-tree/customer-non-functional-scope" element={<CustomerNonFunctionalScope />} />
-          <Route path="/decision-tree/customer-decision-criteria" element={<CustomerDecisionCriteria/>} />
+          <Route path="/decision-tree/customer-decision-criteria" element={<CustomerDecisionCriteria />} />
           <Route path="/decision-tree/customer-solution" element={<CustomerSolution />} />
-          <Route path="/decision-tree/customer-dashboard" element={<CustomerDashboard/>} />
-          
+          <Route path="/decision-tree/customer-dashboard" element={<CustomerDashboard />} />
+
           {/* </Route> */}
-            
-            {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
-            {/* Fallback route */}
-            <Route path="*" element={<h2>404 Not Found</h2>} />
-          </Routes>
-        </div>
+
+          {/* <Route path="/digital-wayfinder/final" element={<FinalPage />} /> */}
+          {/* Fallback route */}
+          <Route path="*" element={<h2>404 Not Found</h2>} />
+        </Routes>
+      </div>
       {/* </AuthProvider> */}
     </Router>
   );
