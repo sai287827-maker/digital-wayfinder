@@ -243,18 +243,8 @@ const ExecutiveDashboard = () => {
 
           {/* Power BI Report Section - Full Screen */}
           {showPowerBI && (
-            <div
-              style={{
-                width: "100%",
-                height: "calc(100vh - 200px)",
-                marginBottom: "0",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
+            <div className={styles.powerBIContainerWrapper}>
+            <div className={styles.powerBIContainer}>
               <div
                 style={{
                   backgroundColor: "#f9fafb",
@@ -412,6 +402,7 @@ const ExecutiveDashboard = () => {
                   Power BI configuration could not be loaded.
                 </div>
               )}
+            </div>
             </div>
           )}
 
