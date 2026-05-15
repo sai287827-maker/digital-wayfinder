@@ -23,11 +23,6 @@ const RetailOperational = ({ onNavigateBack }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log("RetailOperational location.state", location.state);
-console.log("RetailOperational selectedSystem", location.state?.selectedSystem);
-console.log("RetailOperational functionalSubArea hook", functionalSubArea);
-console.log("RetailOperational effectiveSubArea hook", effectiveSubArea);
-
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -81,14 +76,10 @@ console.log("RetailOperational effectiveSubArea hook", effectiveSubArea);
 
   useEffect(() => {
     async function fetchQuestions() {
-      console.log('RetailOperational component mounted with effectiveSubArea:', effectiveSubArea);
       setLoading(true);
       setError(null);
       try {
-        console.log('Fetching Operational questions and existing answers...');
         const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
-
-        console.log('Operational API Response:', response);
 
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
@@ -112,27 +103,71 @@ console.log("RetailOperational effectiveSubArea hook", effectiveSubArea);
           // For backward compatibility, set answerOptions to the most common type
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
-          console.log('Determined answer options:', options);
 
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
 
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
-            console.log('Loading existing answers:', response.answers);
             response.answers.forEach(answerObj => {
               const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
               if (questionIndex !== -1) {
                 // Convert lowercase answer to proper case for display
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
-                console.log(`Loaded answer for question ${questionIndex}: ${answerValue}`);
               } else {
                 console.warn('Could not find matching question for answer:', answerObj);
               }
             });
           } else {
-            console.log('No existing answers found in response');
+            try {
+
+              const answersResponse = await apiGet(
+                `api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`
+              );
+
+              console.log(
+                'Retail separate answers response:',
+                answersResponse
+              );
+
+              if (
+                answersResponse &&
+                answersResponse.answers &&
+                Array.isArray(answersResponse.answers)
+              ) {
+
+                answersResponse.answers.forEach(answerObj => {
+
+                  const questionIndex = questionTexts.findIndex(
+                    q =>
+                      q?.trim().toLowerCase() ===
+                      answerObj.question?.trim().toLowerCase()
+                  );
+
+                  if (questionIndex !== -1) {
+
+                    const answerValue =
+                      answerObj.answer.charAt(0).toUpperCase() +
+                      answerObj.answer.slice(1);
+
+                    initialAnswers[questionIndex] = answerValue;
+
+                    console.log(
+                      `Restored answer for question ${questionIndex}:`,
+                      answerValue
+                    );
+                  }
+                });
+              }
+
+            } catch (separateErr) {
+
+              console.log(
+                'Separate answers fetch failed:',
+                separateErr.message
+              );
+            }
           }
 
           setAnswers(initialAnswers);
@@ -202,24 +237,18 @@ console.log("RetailOperational effectiveSubArea hook", effectiveSubArea);
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
 
-          console.log('Saving partial Operational progress before navigation:', payload);
-
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
-          console.log('Partial progress saved successfully');
         }
       }
 
-      console.log("PREVIOUS selectedSystem", location.state?.selectedSystem);
-console.log("PREVIOUS functionalSubArea hook", functionalSubArea);
-console.log("PREVIOUS effectiveSubArea", effectiveSubArea);
 
       // Navigate back to DataAndCloud
       navigate('/digital-wayfinder/retail-data-and-cloud', {
-      state: {
-        ...location.state
-      }
-    });
+        state: {
+          ...location.state
+        }
+      });
 
     } catch (err) {
       console.error('Error during navigation back:', err);
@@ -251,11 +280,9 @@ console.log("PREVIOUS effectiveSubArea", effectiveSubArea);
         }))
       };
 
-      console.log('RetailOperational component sending payload:', payload);
 
       const response = await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
 
-      console.log('RetailOperational component answers saved successfully:', response);
 
       // Navigate to VisibilityProactive component
       navigate('/digital-wayfinder/retail-visibility-proactive', {
@@ -277,16 +304,6 @@ console.log("PREVIOUS effectiveSubArea", effectiveSubArea);
 
   // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
-
-  // Debug logging for progress bar
-  console.log('Progress Debug:', {
-    completedCount,
-    totalQuestions: questions.length,
-    progressPercentage,
-    answers,
-    answerOptions,
-    questionAnswerTypes
-  });
 
 
   return (
