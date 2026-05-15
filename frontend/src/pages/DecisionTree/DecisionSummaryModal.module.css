@@ -59,30 +59,38 @@
 .tabs {
   display: flex;
   gap: 0;
-  background: #f7f2fd;
+  background: #ffffff;
   padding: 0 32px;
-  border-bottom: 1.5px solid #ece6f6;
+  border-bottom: 2px solid #e5e7eb;
   margin-bottom: 0;
+  align-items: flex-end;
 }
 
 .tab {
-  color: #222;
+  color: #6b7280;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   background: none;
   border: none;
-  padding: 18px 32px 12px 32px;
+  padding: 14px 24px 12px 24px;
   border-bottom: 3px solid transparent;
   cursor: pointer;
-  transition: color 0.2s, border-bottom 0.2s;
+  transition: all 0.3s ease;
   outline: none;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: #9333ea;
+  background: none;
 }
 
 .activeTab {
   color: #a020f0;
-  border-bottom: 3px solid #a020f0;
+  border-bottom-color: #a020f0;
   background: none;
   font-weight: 600;
+  color: #9333ea;
 }
 
 .content {
@@ -92,6 +100,9 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 60vh;
 }
 
 .dropdown {
@@ -195,20 +206,72 @@
   gap: 24px;
 }
 
+.selectionSummary {
+  background: #f9f7fc;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+}
+
+.selectionSummaryRow {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 15px;
+}
+
+.selectionSummaryRow:not(:last-child) {
+  border-bottom: 1px solid #e9d5ff;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+}
+
+.selectionSummaryLabel {
+  font-weight: 600;
+  color: #444;
+  min-width: 160px;
+}
+
+.selectionSummaryValue {
+  color: #222;
+  font-weight: 500;
+  flex: 1;
+}
+
 .mainCategory {
   display: flex;
   flex-direction: column;
-  border: 1px solid #ece6f6;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 12px;
-  background: #faf9fb;
+  overflow: hidden;
+  background: #fff;
+  transition: all 0.2s ease;
+  margin-bottom: 16px;
+}
+
+.mainCategory:last-child {
+  margin-bottom: 24px;
+}
+
+.mainCategory:hover {
+  border-color: #a020f0;
+  box-shadow: 0 2px 8px rgba(160, 32, 240, 0.08);
 }
 
 .categoryHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px;
+  padding: 16px 20px;
+  background: #f9f7fc;
+  border-bottom: 1px solid #e9d5ff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.categoryHeader:hover {
+  background: #f3ecfd;
 }
 
 .categoryContent {
@@ -239,20 +302,21 @@
 }
 
 .categoryLabel {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #222;
 }
 
 .categoryContentExpanded {
-  margin-top: 12px;
-  padding-left: 8px;
+  margin-top: 0;
+  padding: 16px 20px;
+  background: #fff;
 }
 
 .treeItems {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .treeItem {
@@ -341,8 +405,9 @@
 
 .itemLabel {
   font-size: 14px;
-  color: #222;
+  color: #333;
   font-weight: 500;
+  line-height: 1.4;
 }
 
 .treeChildren {
@@ -352,10 +417,11 @@
 }
 
 .noData {
-  padding: 12px;
+  padding: 16px;
   color: #999;
   font-size: 14px;
   text-align: center;
-  background: #fff;
+  background: #fafafa;
   border-radius: 4px;
+  border: 1px dashed #ddd;
 }

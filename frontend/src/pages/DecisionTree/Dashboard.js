@@ -66,15 +66,9 @@ const ExecutiveDashboard = () => {
       setEmbedError(null);
 
       try {
-        const response = await fetch(
-          "http://localhost:8080/api/powerbi/embed-config?reportId=571474de-cb68-4323-a9bb-9fd60b50db96",
+        const res = await apiGet(
+          "api/powerbi/embed-config?reportId=571474de-cb68-4323-a9bb-9fd60b50db96",
         );
-
-        if (!response.ok) {
-          throw new Error(`Embed config request failed with status ${response.status}`);
-        }
-
-        const res = await response.json();
 
         setEmbedConfig({
           type: "report",
@@ -203,9 +197,9 @@ const ExecutiveDashboard = () => {
             <button
               className={styles.viewSummaryBtn}
               onClick={() => setShowModal(true)}
-              style={{ marginLeft: "auto" }}
+              style={{ marginLeft: "auto" }}  
             >
-              View Summary
+              View Selections
             </button>
           </div>
 

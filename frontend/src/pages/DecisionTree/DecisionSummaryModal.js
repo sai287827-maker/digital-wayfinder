@@ -9,6 +9,7 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
     nonFunctional: true
   });
 
+  console.log('Mapping Data in Modal:', mappingData);
   const tabs = ['Decision Criteria' /* , 'General Info', 'Solutions' */];
 
   if (!isOpen) return null;
@@ -107,7 +108,7 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
       <div className={styles['modal-container']}>
         {/* Header */}
         <div className={styles.header}>
-          <span className={styles.headerTitle}>Decision Tree Summary</span>
+          <span className={styles.headerTitle}>Decision Tree Selections</span>
           <button
             onClick={onClose}
             className={styles.closeButton}
@@ -131,7 +132,7 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
         </div>
 
         {/* Content */}
-        <div className={styles.content}>
+        {/* <div className={styles.content}>
           {activeTab === 'General Info' && (
             <div className={styles.infoTable}>
               <div className={styles.infoRow}>
@@ -156,20 +157,20 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
                 <div className={styles.infoValue}>Industry Agnostic</div>
               </div>
             </div>
-          )}
+          )} */}
           {activeTab === 'Decision Criteria' && (
             <div className={styles.decisionCriteriaContent}>
               <div className={styles.selectionSummary}>
                 <div className={styles.selectionSummaryRow}>
-                  <span className={styles.selectionSummaryLabel}>Functional Area</span>
-                  <span className={styles.selectionSummaryValue}>{mappingData.functionalArea || 'N/A'}</span>
+                  <span className={styles.selectionSummaryLabel}>Functional Area: </span>
+                  <span className={styles.selectionSummaryValue}>{(mappingData.functionalArea.replace(/(^\w|-\w)/g, match => match.toUpperCase())) || 'N/A'}</span>
                 </div>
                 <div className={styles.selectionSummaryRow}>
-                  <span className={styles.selectionSummaryLabel}>Industry Type</span>
-                  <span className={styles.selectionSummaryValue}>{mappingData.industryType || 'N/A'}</span>
+                  <span className={styles.selectionSummaryLabel}>Industry Type: </span>
+                  <span className={styles.selectionSummaryValue}>{(mappingData.industryType.replace(/(^\w|-\w)/g, match => match.toUpperCase())) || 'N/A'}</span>
                 </div>
                 <div className={styles.selectionSummaryRow}>
-                  <span className={styles.selectionSummaryLabel}>Selected Platforms</span>
+                  <span className={styles.selectionSummaryLabel}>Selected Platforms: </span>
                   <span className={styles.selectionSummaryValue}>
                     {Array.isArray(mappingData.selectedPlatforms) && mappingData.selectedPlatforms.length > 0
                       ? mappingData.selectedPlatforms.join(', ')
@@ -227,15 +228,14 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
                 )}
               </div>
             </div>
-          )}
-          {activeTab === 'Solutions' && (
+          )} 
+          {/* {activeTab === 'Solutions' && (
             <ol className={styles.solutionsList}>
               <li className={styles.solutionItem}>ORACLE</li>
               <li className={styles.solutionItem}>BlueYonder</li>
               <li className={styles.solutionItem}>O9</li>
             </ol>
-          )}
-        </div>
+          )} */}
       </div>
     </div>
   );
