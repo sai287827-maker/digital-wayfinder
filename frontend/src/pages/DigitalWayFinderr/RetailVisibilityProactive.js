@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styles from './RetailVisibilityProactive.module.css';
-import RetailAgenticAI from './RetailAgenticAI';
-import RetailOperational from './RetailOperational';
 import { apiGet, apiPost } from '../../api';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -20,9 +19,9 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showAgenticAI, setShowAgenticAI] = useState(false);
-  const [showOperational, setShowOperational] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
   
   // State for API response data
   const [userId, setUserId] = useState('');
@@ -83,7 +82,7 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
         setError(null);
         console.log('Fetching VisibilityProactive questions and existing answers...');
 
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-questions?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
 
         console.log('VisibilityProactive API Response:', response);
 
@@ -192,7 +191,7 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
     };
 
     fetchQuestions();
-  }, [effectiveSubArea]);
+  }, [location.state?.selectedSystem]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -223,7 +222,7 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
+            functionalSubArea: location.state?.selectedSystem || '',
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
@@ -243,14 +242,11 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
     }
     
     // Navigate back to Operational
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to Operational using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to Operational component
-      console.log('Using fallback navigation to Operational');
-      setShowOperational(true);
+    navigate('/digital-wayfinder/retail-operational', {
+    state: {
+      ...location.state
     }
+  });
     
     setNavigatingBack(false);
   };
@@ -270,7 +266,7 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
       const area = deriveArea();
       const payload = {
         functionalArea: area,
-        functionalSubArea: functionalSubArea || '',
+        functionalSubArea: location.state?.selectedSystem || '',
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
@@ -285,7 +281,11 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
       console.log('Setting showAgenticAI to true');
       
       // Navigate to Agentic AI component
-      setShowAgenticAI(true);
+      navigate('/digital-wayfinder/retail-agentic-ai', {
+      state: {
+        ...location.state
+      }
+    });
       
     } catch (err) {
       console.error('Error saving answers:', err);
@@ -310,18 +310,6 @@ const RetailVisibilityProactive = ({ onNavigateBack }) => {
     answerOptions,
     questionAnswerTypes
   });
-
-  // Early return for navigation to AgenticAI
-  if (showAgenticAI) {
-    console.log('Navigating to AgenticAI component, showAgenticAI:', showAgenticAI);
-    return <RetailAgenticAI />;
-  }
-
-  // Early return for navigation to Operational (Previous button)
-  if (showOperational) {
-    console.log('Navigating back to Operational component, showOperational:', showOperational);
-    return <RetailOperational />;
-  }
 
   return (
     <div className={styles.container}>

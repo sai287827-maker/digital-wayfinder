@@ -182,7 +182,7 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
+            functionalSubArea: location.state?.selectedSystem || '',
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
@@ -219,7 +219,7 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
       const area = location.state?.selectedArea;
       const payload = {
         functionalArea: area,
-        functionalSubArea: functionalSubArea,
+        functionalSubArea: location.state?.selectedSystem || '',
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
@@ -233,7 +233,11 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
       console.log('Answers saved successfully:', response);
 
       // Navigate to next component
-      setShowRetailOperational(true);
+      navigate('/digital-wayfinder/retail-operational', {
+        state: {
+          ...location.state
+        }
+      });
 
     } catch (err) {
       console.error('Error saving answers:', err);

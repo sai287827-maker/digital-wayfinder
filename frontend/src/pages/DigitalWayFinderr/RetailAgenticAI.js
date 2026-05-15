@@ -3,6 +3,7 @@ import styles from './RetailAgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
 import RetailReport from './RetailReport';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -21,6 +22,8 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
   const [saving, setSaving] = useState(false);
   const [showRetailReport, setShowRetailReport] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
+  const location = useLocation();
+const navigate = useNavigate();
   
   // State for API response data
   const [userId, setUserId] = useState('');
@@ -75,7 +78,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
       setError(null);
       try {
         console.log('Fetching Agentic AI questions...');
-        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
+        const response = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-questions?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
 
         console.log('Agentic AI API Response:', response);
 
@@ -119,7 +122,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
             
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent(effectiveSubArea)}`);
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`);
               
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
@@ -172,7 +175,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
       }
     }
     fetchQuestions();
-  }, [effectiveSubArea]);
+  }, [location.state?.selectedSystem]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -200,7 +203,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
+            functionalSubArea: location.state?.selectedSystem || '',
             answers: answeredQuestions,
             isPartialSave: true
           };
@@ -216,19 +219,11 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
       }
     }
     
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      console.log('Using fallback navigation method');
-      
-      if (window.history && window.history.length > 1) {
-        window.history.back();
-      } else {
-        console.log('Attempting to navigate to previous step...');
-        alert('Previous step navigation would be implemented here based on your routing setup.');
-      }
+   navigate('/digital-wayfinder/retail-visibility-proactive', {
+    state: {
+      ...location.state
     }
+  });
     
     setNavigatingBack(false);
   };
@@ -247,7 +242,7 @@ const RetailAgenticAI = ({ onNavigateBack }) => {
       
       const payload = {
         functionalArea: area,
-        functionalSubArea: functionalSubArea || '',
+        functionalSubArea: location.state?.selectedSystem || '',
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
