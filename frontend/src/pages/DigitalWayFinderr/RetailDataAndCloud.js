@@ -79,7 +79,6 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
 
   useEffect(() => {
     async function fetchQuestions() {
-      console.log("Retail selectedSystem:", location.state?.selectedSystem);
       setLoading(true);
       setError(null);
       try {
@@ -121,6 +120,40 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
                 initialAnswers[questionIndex] = answerValue;
               }
             });
+          } else {
+            try {
+              const answersResponse = await apiGet(
+                `api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`
+              );
+              if (
+                answersResponse &&
+                answersResponse.answers &&
+                Array.isArray(answersResponse.answers)
+              ) {
+                console.log(
+                  'Found answers in separate API:',
+                  answersResponse.answers
+                );
+                answersResponse.answers.forEach(answerObj => {
+                  const questionIndex = response.questions.findIndex(
+                    q =>
+                      q.question?.trim().toLowerCase() ===
+                      answerObj.question?.trim().toLowerCase()
+                  );
+                  if (questionIndex !== -1) {
+                    const answerValue =
+                      answerObj.answer.charAt(0).toUpperCase() +
+                      answerObj.answer.slice(1);
+                    initialAnswers[questionIndex] = answerValue;
+                  }
+                });
+              }
+            } catch (separateErr) {
+              console.log(
+                'Separate answers fetch failed:',
+                separateErr.message
+              );
+            }
           }
 
           setAnswers(initialAnswers);
@@ -182,16 +215,14 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
+            functionalSubArea: location.state?.selectedSystem || '',
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
 
-          console.log('Saving partial Data and Cloud progress before navigation:', payload);
 
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
-          console.log('Partial progress saved successfully');
         }
 
       } catch (err) {
@@ -219,21 +250,23 @@ const RetailDataAndCloud = ({ onNavigateBack }) => {
       const area = location.state?.selectedArea;
       const payload = {
         functionalArea: area,
-        functionalSubArea: functionalSubArea,
+        functionalSubArea: location.state?.selectedSystem || '',
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
 
-      console.log('RetailDataAndCloud component saving answers:', payload);
 
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
-      console.log('Answers saved successfully:', response);
 
       // Navigate to next component
-      setShowRetailOperational(true);
+      navigate('/digital-wayfinder/retail-operational', {
+        state: {
+          ...location.state
+        }
+      });
 
     } catch (err) {
       console.error('Error saving answers:', err);
