@@ -30,7 +30,7 @@ public class ProjectInfoController {
             @Valid @RequestBody ProjectInfoRequest request,
             @ModelAttribute UserSession userSession, HttpSession session) {
         try {
-             session.invalidate();
+             //session.invalidate();
 
             log.info("Received request to save project info: {} for user: {} in session: {}",
                     request.getRequestID(), userSession.getUserId(), userSession.getSessionId());
