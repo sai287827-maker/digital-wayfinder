@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './VisibilityProactive.module.css';
-import AgenticAI from './AgenticAI';
-import Operational from './Operational';
 import { apiGet, apiPost } from '../../api';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -19,10 +18,10 @@ const VisibilityProactive = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showAgenticAI, setShowAgenticAI] = useState(false);
-  const [showOperational, setShowOperational] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // State for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -44,24 +43,24 @@ const VisibilityProactive = ({ onNavigateBack }) => {
         }
       }
     }
-    
+
     // Check existing answers to determine the pattern
     if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
       const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
-      const hasYesNo = existingAnswers.some(answer => 
+      const hasYesNo = existingAnswers.some(answer =>
         ['yes', 'no'].includes(answer)
       );
-      const hasHighMediumLow = existingAnswers.some(answer => 
+      const hasHighMediumLow = existingAnswers.some(answer =>
         ['high', 'medium', 'low'].includes(answer)
       );
-      
+
       if (hasYesNo) {
         return ['Yes', 'No'];
       } else if (hasHighMediumLow) {
         return ['High', 'Medium', 'Low'];
       }
     }
-    
+
     // Default to High/Medium/Low if no pattern is detected
     return ['High', 'Medium', 'Low'];
   };
@@ -93,18 +92,18 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             }
             return ['High', 'Medium', 'Low']; // Default fallback
           });
-          
+
           setQuestions(questionTexts);
           setQuestionAnswerTypes(answerTypes);
-          
+
           // For backward compatibility, set answerOptions to the most common type
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
           console.log('Determined answer options for VisibilityProactive:', options);
-          
+
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             console.log('Loading existing answers:', response.answers);
@@ -121,22 +120,22 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             });
           } else {
             console.log('No existing answers found in response');
-            
+
             // Check if we should try to fetch existing answers separately
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-              
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
+
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
-                
+
                 // Re-determine answer options from separate response if needed
                 if (!response.questions || !response.questions[0]?.answerType) {
                   const separateOptions = determineAnswerOptions(answersResponse);
                   setAnswerOptions(separateOptions);
                   console.log('Updated answer options from separate call:', separateOptions);
                 }
-                
+
                 answersResponse.answers.forEach(answerObj => {
                   const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
                   if (questionIndex !== -1) {
@@ -150,14 +149,14 @@ const VisibilityProactive = ({ onNavigateBack }) => {
               console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
             }
           }
-          
+
           setAnswers(initialAnswers);
           console.log('Final answers array:', initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Set functional area - if not provided, determine from functionalSubArea
           let area = response.functionalArea || '';
           if (!area && response.functionalSubArea) {
@@ -190,7 +189,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
           setAnswerOptions(['High', 'Medium', 'Low']); // Default options
           setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
-        
+
       } catch (err) {
         console.error('Error fetching VisibilityProactive questions:', err);
         setError('Failed to load questions. Please try again.');
@@ -211,12 +210,12 @@ const VisibilityProactive = ({ onNavigateBack }) => {
   const handlePrevious = async () => {
     // Check if there are any answers to save before going back
     const hasAnswers = answers.some(answer => answer !== null);
-    
+
     if (hasAnswers) {
       try {
         setNavigatingBack(true);
         setError(null);
-        
+
         // Save current progress before navigating back
         let area = functionalArea;
         if (!area && functionalSubArea) {
@@ -238,7 +237,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
         if (!area) {
           area = 'Supply Chain Fulfillment';
         }
-        
+
         // Create payload with only answered questions
         const answeredQuestions = questions
           .map((question, index) => ({
@@ -246,7 +245,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -254,31 +253,28 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
-          
+
           console.log('Saving partial VisibilityProactive progress before navigation:', payload);
-          
+
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/visibility-proactive/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
+
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         // Continue with navigation even if save fails
         console.log('Continuing with navigation despite save error');
       }
     }
-    
+
     // Navigate back to Operational
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back to Operational using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      // Fallback: Navigate directly to Operational component
-      console.log('Using fallback navigation to Operational');
-      setShowOperational(true);
-    }
-    
+    navigate('/digital-wayfinder/operational', {
+      state: {
+        ...location.state
+      }
+    });
+
     setNavigatingBack(false);
   };
 
@@ -292,7 +288,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
     try {
       setSaving(true);
       setError(null);
-      
+
       // Ensure functional area is set with fallback
       let area = functionalArea;
       if (!area && functionalSubArea) {
@@ -315,7 +311,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
       if (!area) {
         area = 'Supply Chain Fulfillment';
       }
-      
+
       // Call API to save answers
       const payload = {
         functionalArea: area,
@@ -325,17 +321,21 @@ const VisibilityProactive = ({ onNavigateBack }) => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/visibility-proactive/save-answers', payload);
 
       console.log('Answers saved successfully:', response);
       console.log('Setting showAgenticAI to true');
-      
+
       // Navigate to Agentic AI component
-      setShowAgenticAI(true);
-      
+      navigate('/digital-wayfinder/agentic-ai', {
+      state: {
+        ...location.state
+      }
+    });
+
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -346,10 +346,10 @@ const VisibilityProactive = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-  
+
   // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
-  
+
   // Debug logging for progress bar
   console.log('VisibilityProactive Progress Debug:', {
     completedCount,
@@ -359,18 +359,6 @@ const VisibilityProactive = ({ onNavigateBack }) => {
     answerOptions,
     questionAnswerTypes
   });
-
-  // Early return for navigation to AgenticAI
-  if (showAgenticAI) {
-    console.log('Navigating to AgenticAI component, showAgenticAI:', showAgenticAI);
-    return <AgenticAI />;
-  }
-
-  // Early return for navigation to Operational (Previous button)
-  if (showOperational) {
-    console.log('Navigating back to Operational component, showOperational:', showOperational);
-    return <Operational />;
-  }
 
   return (
     <div className={styles.container}>
@@ -382,24 +370,24 @@ const VisibilityProactive = ({ onNavigateBack }) => {
         <div className={styles.steps}>
           {steps.map((step, idx) => (
             <div key={step.label} className={styles.stepItem}>
-              <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
-                              step.status === 'active' ? styles.stepCircleActive : 
-                              styles.stepCircleInactive}
-                   style={{
-                     backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
-                     color: step.status === 'inactive' ? '#666' : 'white'
-                   }}>
+              <div className={step.status === 'completed' ? styles.stepCircleCompleted :
+                step.status === 'active' ? styles.stepCircleActive :
+                  styles.stepCircleInactive}
+                style={{
+                  backgroundColor: step.status === 'completed' ? '#4CAF50' :
+                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                  color: step.status === 'inactive' ? '#666' : 'white'
+                }}>
                 {step.status === 'completed' ? '✓' : idx + 1}
               </div>
               <span className={step.status === 'completed' ? styles.stepTextCompleted :
-                              step.status === 'active' ? styles.stepTextActive : 
-                              styles.stepTextInactive}
-                    style={{
-                      color: step.status === 'completed' ? '#4CAF50' : 
-                             step.status === 'active' ? '#9C27B0' : '#666',
-                      fontWeight: step.status === 'active' ? '600' : '400'
-                    }}>
+                step.status === 'active' ? styles.stepTextActive :
+                  styles.stepTextInactive}
+                style={{
+                  color: step.status === 'completed' ? '#4CAF50' :
+                    step.status === 'active' ? '#9C27B0' : '#666',
+                  fontWeight: step.status === 'active' ? '600' : '400'
+                }}>
                 {step.label}
               </span>
             </div>
@@ -422,15 +410,15 @@ const VisibilityProactive = ({ onNavigateBack }) => {
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
               <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                <div 
-                  className={styles.progressBarFill} 
-                  style={{ 
+                <div
+                  className={styles.progressBarFill}
+                  style={{
                     width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
                     height: '100%',
                     backgroundColor: '#9C27B0',
                     borderRadius: '4px',
                     transition: 'width 0.3s ease'
-                  }} 
+                  }}
                 />
               </div>
             </div>
@@ -438,7 +426,7 @@ const VisibilityProactive = ({ onNavigateBack }) => {
               {questions.map((q, idx) => {
                 // Get the specific answer options for this question
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
-                
+
                 return (
                   <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
                     <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
@@ -472,8 +460,8 @@ const VisibilityProactive = ({ onNavigateBack }) => {
               })}
             </div>
             <div className={styles.buttonRow}>
-              <button 
-                className={styles.prevBtn} 
+              <button
+                className={styles.prevBtn}
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
                 style={{
