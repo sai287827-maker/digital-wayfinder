@@ -22,7 +22,6 @@ const DataAndCloud = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
 
   // New state for API response data
@@ -111,69 +110,65 @@ const DataAndCloud = () => {
                 initialAnswers[questionIndex] = answerValue;
               }
             });
-          }
-
-          setAnswers(initialAnswers);
-
-          // Set other response data
-          setUserId(response.userId || '');
-          setSessionId(response.sessionId || '');
-
-          // Set functional area - if not provided, determine from functionalSubArea
-          let area = response.functionalArea || '';
-          if (!area && response.functionalSubArea) {
-            // Map functional sub-areas to functional areas
-            const areaMapping = {
-              'Warehouse Management System': 'Supply Chain Fulfillment',
-              'Inventory Management': 'Supply Chain Fulfillment',
-              'Order Management': 'Supply Chain Fulfillment',
-              'Transportation Management': 'Supply Chain Fulfillment',
-              'Customer Relationship Management': 'Customer Experience',
-              'Sales Management': 'Customer Experience',
-              'Marketing Automation': 'Customer Experience',
-              'Financial Management': 'Financial Operations',
-              'Accounting': 'Financial Operations',
-              'Procurement': 'Financial Operations'
-            };
-            area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
-          }
-          setFunctionalArea(area);
-          setFunctionalSubArea(response.functionalSubArea || '');
         } else {
-          // Fallback for old response structure
-          setQuestions(response.questions || []);
-          setAnswers(Array((response.questions || []).length).fill(null));
-          setAnswerOptions(['High', 'Medium', 'Low']); // Default options
-          setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
+
+          console.log('No existing answers found in response');
+
+          try {
+
+            const answersResponse = await apiGet(
+              `api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`
+            );
+
+            if (
+              answersResponse &&
+              answersResponse.answers &&
+              Array.isArray(answersResponse.answers)
+            ) {
+
+              console.log(
+                'Found existing answers in separate API:',
+                answersResponse.answers
+              );
+
+              answersResponse.answers.forEach(answerObj => {
+
+                const questionIndex = questionTexts.findIndex(
+                  q =>
+                    q?.trim().toLowerCase() ===
+                    answerObj.question?.trim().toLowerCase()
+                );
+
+                if (questionIndex !== -1) {
+
+                  const answerValue =
+                    answerObj.answer.charAt(0).toUpperCase() +
+                    answerObj.answer.slice(1);
+
+                  initialAnswers[questionIndex] = answerValue;
+                }
+              });
+            }
+
+          } catch (separateErr) {
+
+            console.log(
+              'Separate answers fetch failed:',
+              separateErr.message
+            );
+          }
         }
-      } catch (err) {
-        setError('Failed to load questions.');
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchQuestions();
-  }, []);
 
-  const handleAnswer = (idx, value) => {
-    const updated = [...answers];
-    updated[idx] = value;
-    setAnswers(updated);
-  };
+        setAnswers(initialAnswers);
 
-  const handlePrevious = async () => {
-    const prev = location.state || {};
-    // Check if there are any answers to save before going back
-    const hasAnswers = answers.some(answer => answer !== null);
+        // Set other response data
+        setUserId(response.userId || '');
+        setSessionId(response.sessionId || '');
 
-    if (hasAnswers) {
-      try {
-        setNavigatingBack(true);
-        setError(null);
-
-        // Save current progress before navigating back
-        let area = functionalArea;
-        if (!area && functionalSubArea) {
+        // Set functional area - if not provided, determine from functionalSubArea
+        let area = response.functionalArea || '';
+        if (!area && response.functionalSubArea) {
+          // Map functional sub-areas to functional areas
           const areaMapping = {
             'Warehouse Management System': 'Supply Chain Fulfillment',
             'Inventory Management': 'Supply Chain Fulfillment',
@@ -186,181 +181,232 @@ const DataAndCloud = () => {
             'Accounting': 'Financial Operations',
             'Procurement': 'Financial Operations'
           };
-          area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
+          area = areaMapping[response.functionalSubArea] || 'Supply Chain Fulfillment';
         }
-        // Default fallback if still empty
-        if (!area) {
-          area = 'Supply Chain Fulfillment';
-        }
-
-        // Create payload with only answered questions
-        const answeredQuestions = questions
-          .map((question, index) => ({
-            question: question,
-            answer: answers[index]?.toLowerCase() || ''
-          }))
-          .filter(item => item.answer !== ''); // Only include answered questions
-
-        if (answeredQuestions.length > 0) {
-          const payload = {
-            functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
-            answers: answeredQuestions,
-            isPartialSave: true // Flag to indicate this is a partial save before navigation
-          };
-
-          console.log('Saving partial Data and Cloud progress before navigation:', payload);
-
-          // Save the partial progress
-          await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
-          console.log('Partial progress saved successfully');
-        }
-
-      } catch (err) {
-        console.error('Error saving progress before navigation:', err);
-        // Continue with navigation even if save fails
-        console.log('Continuing with navigation despite save error');
+        setFunctionalArea(area);
+        setFunctionalSubArea(response.functionalSubArea || '');
+      } else {
+        // Fallback for old response structure
+        setQuestions(response.questions || []);
+        setAnswers(Array((response.questions || []).length).fill(null));
+        setAnswerOptions(['High', 'Medium', 'Low']); // Default options
+        setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
       }
+    } catch (err) {
+      setError('Failed to load questions.');
+    } finally {
+      setLoading(false);
     }
+  }
+    fetchQuestions();
+}, []);
 
-    // Navigate back to WmsSystem
-    navigate('/digital-wayfinder/wms-system', {
-      state: {
-        ...prev
-      }
-    });
+const handleAnswer = (idx, value) => {
+  const updated = [...answers];
+  updated[idx] = value;
+  setAnswers(updated);
+};
 
-    setNavigatingBack(false);
-  };
+const handlePrevious = async () => {
+  const prev = location.state || {};
+  // Check if there are any answers to save before going back
+  const hasAnswers = answers.some(answer => answer !== null);
 
-  const handleSaveAndProceed = async () => {
+  if (hasAnswers) {
     try {
-      setSaving(true);
+      setNavigatingBack(true);
+      setError(null);
 
-      // Call API to save answers
-      const payload = {
-        functionalArea: functionalArea,
-        functionalSubArea: functionalSubArea,
-        answers: questions.map((question, index) => ({
+      // Save current progress before navigating back
+      let area = functionalArea;
+      if (!area && functionalSubArea) {
+        const areaMapping = {
+          'Warehouse Management System': 'Supply Chain Fulfillment',
+          'Inventory Management': 'Supply Chain Fulfillment',
+          'Order Management': 'Supply Chain Fulfillment',
+          'Transportation Management': 'Supply Chain Fulfillment',
+          'Customer Relationship Management': 'Customer Experience',
+          'Sales Management': 'Customer Experience',
+          'Marketing Automation': 'Customer Experience',
+          'Financial Management': 'Financial Operations',
+          'Accounting': 'Financial Operations',
+          'Procurement': 'Financial Operations'
+        };
+        area = areaMapping[functionalSubArea] || 'Supply Chain Fulfillment';
+      }
+      // Default fallback if still empty
+      if (!area) {
+        area = 'Supply Chain Fulfillment';
+      }
+
+      // Create payload with only answered questions
+      const answeredQuestions = questions
+        .map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
         }))
-      };
+        .filter(item => item.answer !== ''); // Only include answered questions
 
-      console.log('Sending payload:', payload);
+      if (answeredQuestions.length > 0) {
+        const payload = {
+          functionalArea: area,
+          functionalSubArea: functionalSubArea || '',
+          answers: answeredQuestions,
+          isPartialSave: true // Flag to indicate this is a partial save before navigation
+        };
 
-      const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
+        console.log('Saving partial Data and Cloud progress before navigation:', payload);
 
-      console.log('Answers saved successfully:', response);
-
-      // Navigate to next component
-      setShowVisibilityProactive(true);
+        // Save the partial progress
+        await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
+        console.log('Partial progress saved successfully');
+      }
 
     } catch (err) {
-      console.error('Error saving answers:', err);
-      setError('Failed to save answers. Please try again.');
-    } finally {
-      setSaving(false);
+      console.error('Error saving progress before navigation:', err);
+      // Continue with navigation even if save fails
+      console.log('Continuing with navigation despite save error');
     }
-  };
-
-  const completedCount = answers.filter(Boolean).length;
-  const allQuestionsAnswered = completedCount === questions.length;
-
-  if (showVisibilityProactive) {
-    return <Operational />;
   }
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <div className={styles.sidebarTitle}>Questionnaire</div>
-        <div className={styles.sidebarDesc}>
-          Structured framework for selecting functional requirements, prioritising them based on different measures for informed decision-making.
-        </div>
-        <div className={styles.steps}>
-          {steps.map((step, idx) => (
-            <div key={step.label} className={styles.stepItem}>
-              <div className={step.status === 'active' ? styles.stepCircleActive : styles.stepCircleInactive}>
-                {idx + 1}
-              </div>
-              <span className={step.status === 'active' ? styles.stepTextActive : styles.stepTextInactive}>
-                {step.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className={styles.mainContent}>
-        <div className={styles.breadcrumb}>
-          <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
-          <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
-          <span className={styles.breadcrumbCurrent}>Questionnaire</span>
-        </div>
-        <div className={styles.title}>Data and Cloud</div>
-        {loading ? (
-          <div className={styles.loading}>Loading questions...</div>
-        ) : error ? (
-          <div className={styles.error}>{error}</div>
-        ) : (
-          <>
-            <div className={styles.progressRow}>
-              <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
-              <div className={styles.progressBarBg}>
-                <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
-              </div>
-            </div>
-            <div className={styles.questionsList}>
-              {questions.map((q, idx) => {
-                // Get the specific answer options for this question
-                const questionOptions = questionAnswerTypes[idx] || answerOptions;
+  // Navigate back to WmsSystem
+  navigate('/digital-wayfinder/wms-system', {
+    state: {
+      ...prev
+    }
+  });
 
-                return (
-                  <div key={idx} className={styles.questionBlock}>
-                    <div className={styles.questionText}>{idx + 1}. {q}</div>
-                    <div className={styles.optionsRow}>
-                      {questionOptions.map(opt => (
-                        <label
-                          key={opt}
-                          className={styles.optionLabel}
-                        >
-                          <input
-                            type="radio"
-                            name={`q${idx}`}
-                            value={opt}
-                            checked={answers[idx] === opt}
-                            onChange={() => handleAnswer(idx, opt)}
-                            className={styles.radio}
-                          />
-                          <span>{opt}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+  setNavigatingBack(false);
+};
+
+const handleSaveAndProceed = async () => {
+  try {
+    setSaving(true);
+
+    // Call API to save answers
+    const payload = {
+      functionalArea: functionalArea,
+      functionalSubArea: functionalSubArea,
+      answers: questions.map((question, index) => ({
+        question: question,
+        answer: answers[index]?.toLowerCase() || ''
+      }))
+    };
+
+    console.log('Sending payload:', payload);
+
+    const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
+
+    console.log('Answers saved successfully:', response);
+
+    // Navigate to next component
+    navigate('/digital-wayfinder/operational', {
+      state: {
+        ...location.state
+      }
+    });
+
+  } catch (err) {
+    console.error('Error saving answers:', err);
+    setError('Failed to save answers. Please try again.');
+  } finally {
+    setSaving(false);
+  }
+};
+
+const completedCount = answers.filter(Boolean).length;
+const allQuestionsAnswered = completedCount === questions.length;
+
+return (
+  <div className={styles.container}>
+    <div className={styles.sidebar}>
+      <div className={styles.sidebarTitle}>Questionnaire</div>
+      <div className={styles.sidebarDesc}>
+        Structured framework for selecting functional requirements, prioritising them based on different measures for informed decision-making.
+      </div>
+      <div className={styles.steps}>
+        {steps.map((step, idx) => (
+          <div key={step.label} className={styles.stepItem}>
+            <div className={step.status === 'active' ? styles.stepCircleActive : styles.stepCircleInactive}>
+              {idx + 1}
             </div>
-            <div className={styles.buttonRow}>
-              <button
-                className={styles.prevBtn}
-                disabled={saving || navigatingBack}
-                onClick={handlePrevious}
-              >
-                {navigatingBack ? 'Saving...' : 'Previous'}
-              </button>
-              <button
-                className={styles.saveBtn}
-                disabled={!allQuestionsAnswered || saving || navigatingBack}
-                onClick={handleSaveAndProceed}
-              >
-                {saving ? 'Saving...' : 'Save & Proceed'}
-              </button>
-            </div>
-          </>
-        )}
+            <span className={step.status === 'active' ? styles.stepTextActive : styles.stepTextInactive}>
+              {step.label}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
-  );
+    <div className={styles.mainContent}>
+      <div className={styles.breadcrumb}>
+        <span className={styles.breadcrumbLink}>Home</span> &gt;{' '}
+        <span className={styles.breadcrumbLink}>Digital Wayfinder</span> &gt;{' '}
+        <span className={styles.breadcrumbCurrent}>Questionnaire</span>
+      </div>
+      <div className={styles.title}>Data and Cloud</div>
+      {loading ? (
+        <div className={styles.loading}>Loading questions...</div>
+      ) : error ? (
+        <div className={styles.error}>{error}</div>
+      ) : (
+        <>
+          <div className={styles.progressRow}>
+            <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
+            <div className={styles.progressBarBg}>
+              <div className={styles.progressBarFill} style={{ width: `${questions.length > 0 ? (completedCount / questions.length) * 100 : 0}%` }} />
+            </div>
+          </div>
+          <div className={styles.questionsList}>
+            {questions.map((q, idx) => {
+              // Get the specific answer options for this question
+              const questionOptions = questionAnswerTypes[idx] || answerOptions;
+
+              return (
+                <div key={idx} className={styles.questionBlock}>
+                  <div className={styles.questionText}>{idx + 1}. {q}</div>
+                  <div className={styles.optionsRow}>
+                    {questionOptions.map(opt => (
+                      <label
+                        key={opt}
+                        className={styles.optionLabel}
+                      >
+                        <input
+                          type="radio"
+                          name={`q${idx}`}
+                          value={opt}
+                          checked={answers[idx] === opt}
+                          onChange={() => handleAnswer(idx, opt)}
+                          className={styles.radio}
+                        />
+                        <span>{opt}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className={styles.buttonRow}>
+            <button
+              className={styles.prevBtn}
+              disabled={saving || navigatingBack}
+              onClick={handlePrevious}
+            >
+              {navigatingBack ? 'Saving...' : 'Previous'}
+            </button>
+            <button
+              className={styles.saveBtn}
+              disabled={!allQuestionsAnswered || saving || navigatingBack}
+              onClick={handleSaveAndProceed}
+            >
+              {saving ? 'Saving...' : 'Save & Proceed'}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+);
 };
 
 export default DataAndCloud;
