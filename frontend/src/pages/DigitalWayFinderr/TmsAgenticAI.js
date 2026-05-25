@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './AgenticAI.module.css';
 import { apiGet, apiPost } from '../../api';
 import TmsReport from './TmsReport';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -20,7 +21,9 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
   const [saving, setSaving] = useState(false);
   const [showWmsReport, setShowWmsReport] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // State for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -40,23 +43,23 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
         }
       }
     }
-    
+
     if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
       const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
-      const hasYesNo = existingAnswers.some(answer => 
+      const hasYesNo = existingAnswers.some(answer =>
         ['yes', 'no'].includes(answer)
       );
-      const hasHighMediumLow = existingAnswers.some(answer => 
+      const hasHighMediumLow = existingAnswers.some(answer =>
         ['high', 'medium', 'low'].includes(answer)
       );
-      
+
       if (hasYesNo) {
         return ['Yes', 'No'];
       } else if (hasHighMediumLow) {
         return ['High', 'Medium', 'Low'];
       }
     }
-    
+
     return ['High', 'Medium', 'Low'];
   };
 
@@ -83,20 +86,24 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
             }
             return ['High', 'Medium', 'Low'];
           });
-          
+
           setQuestions(questionTexts);
           setQuestionAnswerTypes(answerTypes);
-          
+
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
           console.log('Determined answer options for AgenticAI:', options);
-          
+
           const initialAnswers = Array(questionTexts.length).fill(null);
-          
+
           if (response.answers && Array.isArray(response.answers)) {
             console.log('Loading existing AgenticAI answers:', response.answers);
             response.answers.forEach(answerObj => {
-              const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+              const questionIndex = questionTexts.findIndex(
+                q =>
+                  q?.trim().toLowerCase() ===
+                  answerObj.question?.trim().toLowerCase()
+              );
               if (questionIndex !== -1) {
                 const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                 initialAnswers[questionIndex] = answerValue;
@@ -107,22 +114,26 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
             });
           } else {
             console.log('No existing answers found in response');
-            
+
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
-              
+              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/genai/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
+
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
-                
+
                 if (!response.questions || !response.questions[0]?.answerType) {
                   const separateOptions = determineAnswerOptions(answersResponse);
                   setAnswerOptions(separateOptions);
                   console.log('Updated answer options from separate call:', separateOptions);
                 }
-                
+
                 answersResponse.answers.forEach(answerObj => {
-                  const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+                  const questionIndex = questionTexts.findIndex(
+                    q =>
+                      q?.trim().toLowerCase() ===
+                      answerObj.question?.trim().toLowerCase()
+                  );
                   if (questionIndex !== -1) {
                     const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
                     initialAnswers[questionIndex] = answerValue;
@@ -134,13 +145,13 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
               console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
             }
           }
-          
+
           setAnswers(initialAnswers);
           console.log('Final AgenticAI answers array:', initialAnswers);
-          
+
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           let area = response.functionalArea || '';
           if (!area && response.functionalSubArea) {
             const areaMapping = {
@@ -187,12 +198,12 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
 
   const handlePrevious = async () => {
     const hasAnswers = answers.some(answer => answer !== null);
-    
+
     if (hasAnswers) {
       try {
         setNavigatingBack(true);
         setError(null);
-        
+
         let area = functionalArea;
         if (!area && functionalSubArea) {
           const areaMapping = {
@@ -212,14 +223,14 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
         if (!area) {
           area = 'Supply Chain Fulfillment';
         }
-        
+
         const answeredQuestions = questions
           .map((question, index) => ({
             question: question,
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== '');
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -227,32 +238,24 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
             answers: answeredQuestions,
             isPartialSave: true
           };
-          
+
           console.log('Saving partial Agentic AI progress before navigation:', payload);
           await apiPost('api/digital-wayfinder/questionnaire/genai/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
-        
+
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
         console.log('Continuing with navigation despite save error');
       }
     }
-    
-    if (onNavigateBack && typeof onNavigateBack === 'function') {
-      console.log('Navigating back using onNavigateBack callback');
-      onNavigateBack();
-    } else {
-      console.log('Using fallback navigation method');
-      
-      if (window.history && window.history.length > 1) {
-        window.history.back();
-      } else {
-        console.log('Attempting to navigate to previous step...');
-        alert('Previous step navigation would be implemented here based on your routing setup.');
+
+    navigate('/digital-wayfinder/tms-visibility-proactive', {
+      state: {
+        ...location.state
       }
-    }
-    
+    });
+
     setNavigatingBack(false);
   };
 
@@ -265,7 +268,7 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
     try {
       setSaving(true);
       setError(null);
-      
+
       let area = functionalArea;
       if (!area && functionalSubArea) {
         const areaMapping = {
@@ -285,7 +288,7 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
       if (!area) {
         area = 'Supply Chain Fulfillment';
       }
-      
+
       const payload = {
         functionalArea: area,
         functionalSubArea: functionalSubArea || '',
@@ -294,15 +297,15 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending Agentic AI payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/genai/save-answers', payload);
 
       console.log('Agentic AI answers saved successfully:', response);
-      
+
       setShowWmsReport(true);
-      
+
     } catch (err) {
       console.error('Error saving Agentic AI answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -314,7 +317,7 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
-  
+
   console.log('AgenticAI Progress Debug:', {
     completedCount,
     totalQuestions: questions.length,
@@ -345,8 +348,8 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
       <div className={styles.container}>
         <div className={styles.errorContainer}>
           <p className={styles.errorMessage}>{error}</p>
-          <button 
-            className={styles.saveBtn} 
+          <button
+            className={styles.saveBtn}
             onClick={() => window.location.reload()}
           >
             Retry
@@ -368,22 +371,22 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
             <div key={step.label} className={styles.stepItem}>
               <div className={
                 step.status === 'completed' ? styles.stepCircleCompleted :
-                step.status === 'active' ? styles.stepCircleActive :
-                styles.stepCircleInactive
+                  step.status === 'active' ? styles.stepCircleActive :
+                    styles.stepCircleInactive
               } style={{
-                backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                               step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                backgroundColor: step.status === 'completed' ? '#4CAF50' :
+                  step.status === 'active' ? '#9C27B0' : '#e0e0e0',
                 color: step.status === 'inactive' ? '#666' : 'white'
               }}>
                 {step.status === 'completed' ? <span>&#10003;</span> : idx + 1}
               </div>
               <span className={
                 step.status === 'active' ? styles.stepTextActive :
-                step.status === 'completed' ? styles.stepTextCompleted :
-                styles.stepTextInactive
+                  step.status === 'completed' ? styles.stepTextCompleted :
+                    styles.stepTextInactive
               } style={{
-                color: step.status === 'completed' ? '#4CAF50' : 
-                       step.status === 'active' ? '#9C27B0' : '#666',
+                color: step.status === 'completed' ? '#4CAF50' :
+                  step.status === 'active' ? '#9C27B0' : '#666',
                 fontWeight: step.status === 'active' ? '600' : '400'
               }}>
                 {step.label}
@@ -397,22 +400,22 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
         <div className={styles.progressRow}>
           <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
           <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-            <div 
-              className={styles.progressBarFill} 
-              style={{ 
+            <div
+              className={styles.progressBarFill}
+              style={{
                 width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
                 height: '100%',
                 backgroundColor: '#9C27B0',
                 borderRadius: '4px',
                 transition: 'width 0.3s ease'
-              }} 
+              }}
             />
           </div>
         </div>
         <div className={styles.questionsList}>
           {questions.map((q, idx) => {
             const questionOptions = questionAnswerTypes[idx] || answerOptions;
-            
+
             return (
               <div key={idx} style={{ marginBottom: '24px' }}>
                 <div style={{ marginBottom: '12px', fontSize: '16px', color: '#333', fontWeight: 'normal' }}>
@@ -420,9 +423,9 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
                 </div>
                 <div style={{ display: 'flex', gap: '16px', marginLeft: '0px' }}>
                   {questionOptions.map(opt => (
-                    <label key={opt} style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
+                    <label key={opt} style={{
+                      display: 'flex',
+                      alignItems: 'center',
                       cursor: 'pointer',
                       fontSize: '14px'
                     }}>
@@ -446,8 +449,8 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
           })}
         </div>
         <div className={styles.buttonRow} style={{ marginTop: '32px', display: 'flex', gap: '16px' }}>
-          <button 
-            className={styles.prevBtn} 
+          <button
+            className={styles.prevBtn}
             disabled={saving || navigatingBack}
             onClick={handlePrevious}
             style={{
@@ -464,8 +467,8 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
             {navigatingBack ? 'Saving...' : 'Previous'}
           </button>
 
-          <button 
-            className={styles.saveBtn} 
+          <button
+            className={styles.saveBtn}
             disabled={!allQuestionsAnswered || saving || navigatingBack}
             onClick={handleSaveAndProceed}
             style={{
@@ -482,11 +485,11 @@ const TmsAgenticAI = ({ onNavigateBack }) => {
           </button>
         </div>
         {error && (
-          <div style={{ 
-            marginTop: '16px', 
-            padding: '12px', 
-            backgroundColor: '#fff3cd', 
-            border: '1px solid #ffeaa7', 
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            backgroundColor: '#fff3cd',
+            border: '1px solid #ffeaa7',
             borderRadius: '4px',
             color: '#856404',
             fontSize: '14px'
