@@ -67,7 +67,7 @@ const ExecutiveDashboard = () => {
 
       try {
         const res = await apiGet(
-          "api/powerbi/embed-config?reportId=571474de-cb68-4323-a9bb-9fd60b50db96",
+          "api/powerbi/embed-config?reportId=571474de-cb68-4323-a9bb-9fd60b50db96"
         );
 
         setEmbedConfig({

@@ -27,51 +27,26 @@ public class ProjectInfoService {
             log.info("Processing project info for request ID: {} by user: {} in session: {}",
                     request.getRequestID(), userID, sessionID);
 
-            // Check if a record exists for the same user and session
-            Optional<ProjectType> existingProject = projectTypeRepository.findByUserIDAndSessionID(userID, sessionID);
+            ProjectType projectType = new ProjectType(
+                    userID,
+                    request.getProjectType(),
+                    request.getRequestID(),
+                    request.getClientName(),
+                    request.getClientDescription(),
+                    request.getProjectScope(),
+                    sessionID);
 
-            ProjectType projectType;
-            boolean isUpdate = false;
-
-            if (existingProject.isPresent()) {
-                // Update existing record
-                projectType = existingProject.get();
-
-                // Update the existing entity
-                projectType.setProjectType(request.getProjectType());
-                projectType.setRequestID(request.getRequestID());
-                projectType.setClientName(request.getClientName());
-                projectType.setClientDescription(request.getClientDescription());
-                projectType.setProjectScope(request.getProjectScope());
-                // Note: Don't update createdDate, userID, or sessionID
-
-                isUpdate = true;
-                log.info("Updating existing project with ID: {}", projectType.getId());
-
-            } else {
-                // Create new entity
-                projectType = new ProjectType(
-                        userID,
-                        request.getProjectType(),
-                        request.getRequestID(),
-                        request.getClientName(),
-                        request.getClientDescription(),
-                        request.getProjectScope(),
-                        sessionID);
-
-                log.info("Creating new project record");
-            }
+            log.info("Creating new project record");
 
             // Save to database (works for both insert and update)
             ProjectType savedProject = projectTypeRepository.save(projectType);
 
-            String message = isUpdate ? "Project information updated successfully"
-                    : "Project information saved successfully";
+            String message = "Project information saved successfully";
             log.info("{} with ID: {}", message, savedProject.getId());
 
             // Create response
             ProjectInfoResponse response = ProjectInfoResponse.success(message);
-            response.setUpdated(isUpdate); // Add this field to track if it was an update
+            response.setUpdated(false);// Add this field to track if it was an update
             response.setId(savedProject.getId());
             response.setUserID(savedProject.getUserID());
             response.setProjectType(savedProject.getProjectType());
@@ -105,20 +80,19 @@ public class ProjectInfoService {
             if (projectInfoOpt.isPresent()) {
                 ProjectType projectInfo = projectInfoOpt.get();
 
-                ProjectInfoResponse response =
-        ProjectInfoResponse.success("Project info retrieved successfully");
+                ProjectInfoResponse response = ProjectInfoResponse.success("Project info retrieved successfully");
 
-            response.setId(projectInfo.getId());
-            response.setUserID(projectInfo.getUserID());
-            response.setRequestID(projectInfo.getRequestID());
-            response.setClientName(projectInfo.getClientName());
-            response.setClientDescription(projectInfo.getClientDescription());
-            response.setProjectScope(projectInfo.getProjectScope());
-            response.setProjectType(projectInfo.getProjectType());
-            response.setCreatedDate(projectInfo.getCreatedDate());
-            response.setSessionID(projectInfo.getSessionID());
+                response.setId(projectInfo.getId());
+                response.setUserID(projectInfo.getUserID());
+                response.setRequestID(projectInfo.getRequestID());
+                response.setClientName(projectInfo.getClientName());
+                response.setClientDescription(projectInfo.getClientDescription());
+                response.setProjectScope(projectInfo.getProjectScope());
+                response.setProjectType(projectInfo.getProjectType());
+                response.setCreatedDate(projectInfo.getCreatedDate());
+                response.setSessionID(projectInfo.getSessionID());
 
-            return response;
+                return response;
             } else {
                 log.warn("No project found for session: {}", sessionId);
 

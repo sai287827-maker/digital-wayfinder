@@ -12,6 +12,7 @@ import com.example.DigitalWayfinder.dto.ProjectInfoResponse;
 import com.example.DigitalWayfinder.dto.UserSession;
 import com.example.DigitalWayfinder.entity.ProjectType;
 import com.example.DigitalWayfinder.service.ProjectInfoService;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 
@@ -27,8 +28,9 @@ public class ProjectInfoController {
     @PostMapping("/save")
     public ResponseEntity<ProjectInfoResponse> saveProjectInfo(
             @Valid @RequestBody ProjectInfoRequest request,
-            @ModelAttribute UserSession userSession) {
+            @ModelAttribute UserSession userSession, HttpSession session) {
         try {
+             //session.invalidate();
 
             log.info("Received request to save project info: {} for user: {} in session: {}",
                     request.getRequestID(), userSession.getUserId(), userSession.getSessionId());

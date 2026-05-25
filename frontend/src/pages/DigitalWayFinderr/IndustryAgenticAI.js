@@ -3,6 +3,7 @@ import styles from './IndustryAgenticAI.module.css';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 import { apiGet, apiPost } from '../../api';
 import IndustryReport from './IndustryReport';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // --- constants ----------------------------------------------------------------
 const STEP_ITEMS = [
@@ -56,7 +57,9 @@ const determineAnswerOptions = ({ questions = [], answers = [] }) => {
 const makeInitialAnswers = (questions, existing = []) => {
   const result = Array(questions.length).fill(null);
   existing.forEach(ans => {
-    const idx = questions.findIndex(q => q.question === ans.question || q === ans.question);
+    const idx = questions.findIndex(q =>
+      (q.question || q)?.trim().toLowerCase() ===
+      ans.question?.trim().toLowerCase());
     if (idx !== -1) {
       result[idx] = ans.answer ? ans.answer.charAt(0).toUpperCase() + ans.answer.slice(1) : ans.answer;
     }
@@ -76,6 +79,8 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
   const [saving, setSaving] = useState(false);
   const [showIndustryReport, setShowIndustryReport] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
+    const navigate = useNavigate();
+  const location = useLocation();
 
   // response metadata
   const [userId, setUserId] = useState('');
@@ -129,7 +134,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
         if (existingAnswers.length === 0) {
           try {
             const alt = await apiGet(
-              `api/digital-wayfinder/questionnaire/visibility-proactive/get-answers?functionalSubArea=${encodeURIComponent(
+              `api/digital-wayfinder/questionnaire/genai/get-answers?functionalSubArea=${encodeURIComponent(
                 effectiveSubArea
               )}`
             );
@@ -167,7 +172,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
     };
 
     load();
-  }, []);
+  }, [effectiveSubArea, location.key]);
 
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
@@ -206,13 +211,11 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
       }
     }
 
-    if (typeof onNavigateBack === 'function') {
-      onNavigateBack();
-    } else if (window.history && window.history.length > 1) {
-      window.history.back();
-    } else {
-      alert('Previous step navigation would be implemented here based on your routing setup.');
-    }
+    navigate('/digital-wayfinder/industry-visibility-proactive', {
+      state: {
+        ...location.state
+      }
+    });
   };
 
   const handleSaveAndProceed = async () => {
@@ -235,8 +238,7 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-
-  // render shortcuts
+   // render shortcuts
   if (showIndustryReport) return <IndustryReport />;
 
   return (
@@ -262,8 +264,8 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
                     step.status === 'completed'
                       ? styles.industryAgenticStepCircleCompleted
                       : step.status === 'active'
-                      ? styles.industryAgenticStepCircleActive
-                      : styles.industryAgenticStepCircleInactive
+                        ? styles.industryAgenticStepCircleActive
+                        : styles.industryAgenticStepCircleInactive
                   }
                 >
                   {step.status === 'completed' ? <span>&#10003;</span> : idx + 1}
@@ -273,8 +275,8 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
                     step.status === 'active'
                       ? styles.industryAgenticStepTextActive
                       : step.status === 'completed'
-                      ? styles.industryAgenticStepTextCompleted
-                      : styles.industryAgenticStepTextInactive
+                        ? styles.industryAgenticStepTextCompleted
+                        : styles.industryAgenticStepTextInactive
                   }
                 >
                   {step.label}
@@ -345,8 +347,8 @@ const IndustryAgenticAI = ({ onNavigateBack }) => {
                   {saving ? 'Saving...' : 'Generate Report'}
                 </button>
               </div>
-              </>)
-          }   
+            </>)
+          }
         </div>
       </div>
     </div>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from './CgsDataAndCloud.module.css';
 // import VisibilityProactive from './VisibilityProactive';
 import CgsOperational from './CgsOperational';
-import CgsSystem from './CgsSystem'; // Add import for WmsSystem
 import { apiGet, apiPost } from '../../api';
 import { useFunctionalArea } from '../../hooks/useFunctionalArea';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -24,8 +23,6 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showWmsSystem, setShowWmsSystem] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
 
   // New state for API response data
@@ -113,14 +110,61 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
 
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
+
             response.answers.forEach(answerObj => {
-              const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
+              const questionIndex = questionTexts.findIndex(
+                q =>
+                  q?.trim().toLowerCase() ===
+                  answerObj.question?.trim().toLowerCase()
+              );
+
               if (questionIndex !== -1) {
-                // Convert lowercase answer to proper case for display
-                const answerValue = answerObj.answer.charAt(0).toUpperCase() + answerObj.answer.slice(1);
+                const answerValue =
+                  answerObj.answer.charAt(0).toUpperCase() +
+                  answerObj.answer.slice(1);
+
                 initialAnswers[questionIndex] = answerValue;
               }
             });
+
+          } else {
+
+            try {
+
+              const answersResponse = await apiGet(
+                `api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent(location.state?.selectedSystem)}`
+              );
+
+              if (
+                answersResponse &&
+                answersResponse.answers &&
+                Array.isArray(answersResponse.answers)
+              ) {
+
+
+                answersResponse.answers.forEach(answerObj => {
+
+                  const questionIndex = questionTexts.findIndex(
+                    q =>
+                      q?.trim().toLowerCase() ===
+                      answerObj.question?.trim().toLowerCase()
+                  );
+
+                  if (questionIndex !== -1) {
+
+                    const answerValue =
+                      answerObj.answer.charAt(0).toUpperCase() +
+                      answerObj.answer.slice(1);
+
+                    initialAnswers[questionIndex] = answerValue;
+                  }
+                });
+              }
+
+            } catch (separateErr) {
+
+              console.error('Error fetching existing answers:', separateErr);
+            }
           }
 
           setAnswers(initialAnswers);
@@ -183,31 +227,27 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
-            functionalSubArea: functionalSubArea || '',
+            functionalSubArea: location.state?.selectedSystem || '',
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
 
-          console.log('Saving partial Data and Cloud progress before navigation:', payload);
 
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
-          console.log('Partial progress saved successfully');
         }
 
       } catch (err) {
         console.error('Error saving progress before navigation:', err);
-        // Continue with navigation even if save fails
-        console.log('Continuing with navigation despite save error');
       }
     }
 
     // Navigate back to WmsSystem
-    navigate('/digital-wayfinder/industry-Type-Plan-Parts', {
-    state: {
-      ...prev   // 🔥 THIS FIXES EVERYTHING
-    }
-  });
+    navigate('/digital-wayfinder/industry-type-plan-parts', {
+      state: {
+        ...prev   // 🔥 THIS FIXES EVERYTHING
+      }
+    });
 
     setNavigatingBack(false);
   };
@@ -220,22 +260,23 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
       const area = location.state?.selectedArea;
       const payload = {
         functionalArea: area,
-        functionalSubArea: functionalSubArea,
+        functionalSubArea: location.state?.selectedSystem || '',
         answers: questions.map((question, index) => ({
           question: question,
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
 
-      console.log('Sending payload:', payload);
 
       const response = await apiPost('api/digital-wayfinder/questionnaire/data-cloud/save-answers', payload);
 
-      console.log('Answers saved successfully:', response);
 
       // Navigate to next component
-      setShowVisibilityProactive(true);
-
+      navigate('/digital-wayfinder/cgs-operational', {
+        state: {
+          ...location.state
+        }
+      });
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -247,15 +288,6 @@ const CgsDataAndCloud = ({ onNavigateBack }) => {
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length;
 
-  // Early return for navigation to WmsSystem
-  if (showWmsSystem) {
-    console.log('Navigating to WmsSystem component, showWmsSystem:', showWmsSystem);
-    return <CgsSystem />;
-  }
-
-  if (showVisibilityProactive) {
-    return <CgsOperational />;
-  }
 
   return (
     <div className={styles.container}>
