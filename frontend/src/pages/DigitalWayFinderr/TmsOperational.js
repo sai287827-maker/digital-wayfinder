@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Operational.module.css';
-import TmsVisibilityProactive from './TmsVisibilityProactive';
-import TmsDataAndCloud from './TmsDataAndCloud';
 import { apiGet, apiPost } from '../../api';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   { label: 'Data and Cloud', status: 'completed' },
@@ -10,7 +9,7 @@ const steps = [
   { label: 'Visibility and Proactive', status: 'inactive' },
   { label: 'Agentic AI', status: 'inactive' }
 ];
- 
+
 const TmsOperational = ({ onNavigateBack }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
@@ -19,16 +18,16 @@ const TmsOperational = ({ onNavigateBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
-  const [showDataAndCloud, setShowDataAndCloud] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // New state for API response data
   const [userId, setUserId] = useState('');
   const [sessionId, setSessionId] = useState('');
   const [functionalArea, setFunctionalArea] = useState('');
   const [functionalSubArea, setFunctionalSubArea] = useState('');
-  
+
   // State to store Data & Cloud answers for passing back
   const [dataCloudAnswers, setDataCloudAnswers] = useState(null);
 
@@ -47,24 +46,24 @@ const TmsOperational = ({ onNavigateBack }) => {
         }
       }
     }
-    
+
     // Check existing answers to determine the pattern
     if (apiResponse.answers && Array.isArray(apiResponse.answers)) {
       const existingAnswers = apiResponse.answers.map(a => a.answer?.toLowerCase());
-      const hasYesNo = existingAnswers.some(answer => 
+      const hasYesNo = existingAnswers.some(answer =>
         ['yes', 'no'].includes(answer)
       );
-      const hasHighMediumLow = existingAnswers.some(answer => 
+      const hasHighMediumLow = existingAnswers.some(answer =>
         ['high', 'medium', 'low'].includes(answer)
       );
-      
+
       if (hasYesNo) {
         return ['Yes', 'No'];
       } else if (hasHighMediumLow) {
         return ['High', 'Medium', 'Low'];
       }
     }
-    
+
     // Default to High/Medium/Low if no pattern is detected
     return ['High', 'Medium', 'Low'];
   };
@@ -73,9 +72,8 @@ const TmsOperational = ({ onNavigateBack }) => {
   const fetchDataCloudAnswers = async () => {
     try {
       console.log('Fetching Data & Cloud answers...');
-      const response = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
-      console.log('Data & Cloud answers response:', response);
-      
+      const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
+
       if (response && response.answers) {
         setDataCloudAnswers(response);
         return response;
@@ -86,7 +84,7 @@ const TmsOperational = ({ onNavigateBack }) => {
       return null;
     }
   };
- 
+
   useEffect(() => {
     async function fetchQuestions() {
       setLoading(true);
@@ -94,9 +92,9 @@ const TmsOperational = ({ onNavigateBack }) => {
       try {
         console.log('Fetching Operational questions and existing answers...');
         const response = await apiGet(`api/digital-wayfinder/questionnaire/operational-innovations/get-questions?functionalSubArea=${encodeURIComponent('Transportation Management System')}`);
-        
+
         console.log('Operational API Response:', response);
-        
+
         // Map the new response structure
         if (response.questions && Array.isArray(response.questions)) {
           // Extract questions and their answer types from the response
@@ -112,18 +110,18 @@ const TmsOperational = ({ onNavigateBack }) => {
             }
             return ['High', 'Medium', 'Low']; // Default fallback
           });
-          
+
           setQuestions(questionTexts);
           setQuestionAnswerTypes(answerTypes);
-          
+
           // For backward compatibility, set answerOptions to the most common type
           const options = determineAnswerOptions(response);
           setAnswerOptions(options);
           console.log('Determined answer options:', options);
-          
+
           // Initialize answers array
           const initialAnswers = Array(questionTexts.length).fill(null);
-          
+
           // If there are existing answers in the response, load them
           if (response.answers && Array.isArray(response.answers)) {
             console.log('Loading existing answers:', response.answers);
@@ -140,23 +138,25 @@ const TmsOperational = ({ onNavigateBack }) => {
             });
           } else {
             console.log('No existing answers found in response');
-            
+
             // Check if we should try to fetch existing answers separately
             // This is a fallback in case the get-questions endpoint doesn't return answers
             try {
               console.log('Attempting to fetch existing answers separately...');
-              const answersResponse = await apiGet(`api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Warehouse Management System')}`);
-              
+              const answersResponse = await apiGet(
+                `api/digital-wayfinder/questionnaire/operational-innovations/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`
+              );
+
               if (answersResponse && answersResponse.answers && Array.isArray(answersResponse.answers)) {
                 console.log('Found existing answers in separate call:', answersResponse.answers);
-                
+
                 // Re-determine answer options from separate response if needed
                 if (!response.questions || !response.questions[0]?.answerType) {
                   const separateOptions = determineAnswerOptions(answersResponse);
                   setAnswerOptions(separateOptions);
                   console.log('Updated answer options from separate call:', separateOptions);
                 }
-                
+
                 answersResponse.answers.forEach(answerObj => {
                   const questionIndex = questionTexts.findIndex(q => q === answerObj.question);
                   if (questionIndex !== -1) {
@@ -170,14 +170,14 @@ const TmsOperational = ({ onNavigateBack }) => {
               console.log('Separate answers fetch failed (this is expected if endpoint doesn\'t exist):', separateErr.message);
             }
           }
-          
+
           setAnswers(initialAnswers);
           console.log('Final answers array:', initialAnswers);
-          
+
           // Set other response data
           setUserId(response.userId || '');
           setSessionId(response.sessionId || '');
-          
+
           // Set functional area - if not provided, determine from functionalSubArea
           let area = response.functionalArea || '';
           if (!area && response.functionalSubArea) {
@@ -210,10 +210,10 @@ const TmsOperational = ({ onNavigateBack }) => {
           setAnswerOptions(['High', 'Medium', 'Low']); // Default options
           setQuestionAnswerTypes(Array((response.questions || []).length).fill(['High', 'Medium', 'Low']));
         }
-        
+
         // Also fetch Data & Cloud answers on component mount
         await fetchDataCloudAnswers();
-        
+
       } catch (err) {
         console.error('Error fetching Operational questions:', err);
         setError('Failed to load questions.');
@@ -223,7 +223,7 @@ const TmsOperational = ({ onNavigateBack }) => {
     }
     fetchQuestions();
   }, []);
- 
+
   const handleAnswer = (idx, value) => {
     const updated = [...answers];
     updated[idx] = value;
@@ -234,10 +234,10 @@ const TmsOperational = ({ onNavigateBack }) => {
     try {
       setNavigatingBack(true);
       setError(null);
-      
+
       // Check if there are any answers to save before going back
       const hasAnswers = answers.some(answer => answer !== null);
-      
+
       if (hasAnswers) {
         // Save current progress before navigating back
         let area = functionalArea;
@@ -260,7 +260,7 @@ const TmsOperational = ({ onNavigateBack }) => {
         if (!area) {
           area = 'Supply Chain Fulfillment';
         }
-        
+
         // Create payload with only answered questions
         const answeredQuestions = questions
           .map((question, index) => ({
@@ -268,7 +268,7 @@ const TmsOperational = ({ onNavigateBack }) => {
             answer: answers[index]?.toLowerCase() || ''
           }))
           .filter(item => item.answer !== ''); // Only include answered questions
-        
+
         if (answeredQuestions.length > 0) {
           const payload = {
             functionalArea: area,
@@ -276,30 +276,26 @@ const TmsOperational = ({ onNavigateBack }) => {
             answers: answeredQuestions,
             isPartialSave: true // Flag to indicate this is a partial save before navigation
           };
-          
+
           console.log('Saving partial Operational progress before navigation:', payload);
-          
+
           // Save the partial progress
           await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
           console.log('Partial progress saved successfully');
         }
       }
-      
+
       // Fetch the latest Data & Cloud answers before navigating back
       console.log('Fetching latest Data & Cloud answers before navigation...');
       const latestDataCloudAnswers = await fetchDataCloudAnswers();
-      
+
       // Navigate back to DataAndCloud
-      if (onNavigateBack && typeof onNavigateBack === 'function') {
-        console.log('Navigating back to DataAndCloud using onNavigateBack callback');
-        // Pass the Data & Cloud answers to ensure they are retained
-        onNavigateBack(latestDataCloudAnswers);
-      } else {
-        // Fallback: Navigate directly to DataAndCloud component
-        console.log('Using fallback navigation to DataAndCloud');
-        setShowDataAndCloud(true);
-      }
-      
+      navigate('/digital-wayfinder/tms-data-and-cloud', {
+        state: {
+          ...location.state
+        }
+      });
+
     } catch (err) {
       console.error('Error during navigation back:', err);
       setError('Error occurred while navigating back. Please try again.');
@@ -307,18 +303,18 @@ const TmsOperational = ({ onNavigateBack }) => {
       setNavigatingBack(false);
     }
   };
- 
+
   const handleSaveAndProceed = async () => {
     // Validate that all questions are answered
     if (!allQuestionsAnswered) {
       setError('Please answer all questions before proceeding.');
       return;
     }
- 
+
     try {
       setSaving(true);
       setError(null); // Clear any previous errors
-      
+
       // Ensure functional area is set with fallback
       let area = functionalArea;
       if (!area && functionalSubArea) {
@@ -341,7 +337,7 @@ const TmsOperational = ({ onNavigateBack }) => {
       if (!area) {
         area = 'Supply Chain Fulfillment';
       }
-      
+
       // Call API to save answers
       const payload = {
         functionalArea: area,
@@ -351,16 +347,20 @@ const TmsOperational = ({ onNavigateBack }) => {
           answer: answers[index]?.toLowerCase() || ''
         }))
       };
-      
+
       console.log('Sending payload:', payload);
-      
+
       const response = await apiPost('api/digital-wayfinder/questionnaire/operational-innovations/save-answers', payload);
- 
+
       console.log('Answers saved successfully:', response);
-      
+
       // Navigate to VisibilityProactive component
-      setShowVisibilityProactive(true);
-      
+      navigate('/digital-wayfinder/tms-visibility-proactive', {
+        state: {
+          ...location.state
+        }
+      });
+
     } catch (err) {
       console.error('Error saving answers:', err);
       setError('Failed to save answers. Please try again.');
@@ -368,36 +368,14 @@ const TmsOperational = ({ onNavigateBack }) => {
       setSaving(false);
     }
   };
- 
+
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-  
+
   // Calculate progress percentage
   const progressPercentage = questions.length > 0 ? (completedCount / questions.length) * 100 : 0;
-  
-  // Debug logging for progress bar
-  console.log('Progress Debug:', {
-    completedCount,
-    totalQuestions: questions.length,
-    progressPercentage,
-    answers,
-    answerOptions,
-    questionAnswerTypes
-  });
- 
-  // Early return for navigation to VisibilityProactive
-  if (showVisibilityProactive) {
-    console.log('Navigating to VisibilityProactive component');
-    return <TmsVisibilityProactive />;
-  }
 
-  // Early return for navigation to DataAndCloud (Previous button)
-  if (showDataAndCloud) {
-    console.log('Navigating back to DataAndCloud component, showDataAndCloud:', showDataAndCloud);
-    // Pass the retained Data & Cloud answers to the component
-    return <TmsDataAndCloud initialAnswers={dataCloudAnswers} />;
-  }
- 
+
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -408,24 +386,24 @@ const TmsOperational = ({ onNavigateBack }) => {
         <div className={styles.steps}>
           {steps.map((step, idx) => (
             <div key={step.label} className={styles.stepItem}>
-              <div className={step.status === 'completed' ? styles.stepCircleCompleted : 
-                              step.status === 'active' ? styles.stepCircleActive : 
-                              styles.stepCircleInactive}
-                   style={{
-                     backgroundColor: step.status === 'completed' ? '#4CAF50' : 
-                                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
-                     color: step.status === 'inactive' ? '#666' : 'white'
-                   }}>
+              <div className={step.status === 'completed' ? styles.stepCircleCompleted :
+                step.status === 'active' ? styles.stepCircleActive :
+                  styles.stepCircleInactive}
+                style={{
+                  backgroundColor: step.status === 'completed' ? '#4CAF50' :
+                    step.status === 'active' ? '#9C27B0' : '#e0e0e0',
+                  color: step.status === 'inactive' ? '#666' : 'white'
+                }}>
                 {step.status === 'completed' ? '✓' : idx + 1}
               </div>
               <span className={step.status === 'completed' ? styles.stepTextCompleted :
-                              step.status === 'active' ? styles.stepTextActive : 
-                              styles.stepTextInactive}
-                    style={{
-                      color: step.status === 'completed' ? '#4CAF50' : 
-                             step.status === 'active' ? '#9C27B0' : '#666',
-                      fontWeight: step.status === 'active' ? '600' : '400'
-                    }}>
+                step.status === 'active' ? styles.stepTextActive :
+                  styles.stepTextInactive}
+                style={{
+                  color: step.status === 'completed' ? '#4CAF50' :
+                    step.status === 'active' ? '#9C27B0' : '#666',
+                  fontWeight: step.status === 'active' ? '600' : '400'
+                }}>
                 {step.label}
               </span>
             </div>
@@ -448,15 +426,15 @@ const TmsOperational = ({ onNavigateBack }) => {
             <div className={styles.progressRow}>
               <span className={styles.progressLabel}>Completed question {completedCount}/{questions.length}</span>
               <div className={styles.progressBarBg} style={{ width: '100%', maxWidth: '300px', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
-                <div 
-                  className={styles.progressBarFill} 
-                  style={{ 
+                <div
+                  className={styles.progressBarFill}
+                  style={{
                     width: `${Math.min(Math.max(progressPercentage, 0), 100)}%`,
                     height: '100%',
                     backgroundColor: '#9C27B0',
                     borderRadius: '4px',
                     transition: 'width 0.3s ease'
-                  }} 
+                  }}
                 />
               </div>
             </div>
@@ -464,7 +442,7 @@ const TmsOperational = ({ onNavigateBack }) => {
               {questions.map((q, idx) => {
                 // Get the specific answer options for this question
                 const questionOptions = questionAnswerTypes[idx] || answerOptions;
-                
+
                 return (
                   <div key={idx} className={styles.questionBlock} style={{ marginBottom: '20px', padding: '0', backgroundColor: 'transparent', border: 'none', boxShadow: 'none', borderRadius: '0' }}>
                     <div className={styles.questionText} style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '500', color: '#333' }}>{idx + 1}. {q}</div>
@@ -498,8 +476,8 @@ const TmsOperational = ({ onNavigateBack }) => {
               })}
             </div>
             <div className={styles.buttonRow}>
-              <button 
-                className={styles.prevBtn} 
+              <button
+                className={styles.prevBtn}
                 disabled={saving || navigatingBack}
                 onClick={handlePrevious}
                 style={{
@@ -565,5 +543,5 @@ const TmsOperational = ({ onNavigateBack }) => {
     </div>
   );
 };
- 
+
 export default TmsOperational;
