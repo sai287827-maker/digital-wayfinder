@@ -162,6 +162,10 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
           {activeTab === 'Decision Criteria' && (
             <div className={styles.decisionCriteriaContent}>
               <div className={styles.selectionSummary}>
+              <div className={styles.selectionSummaryRow}>
+                  <span className={styles.selectionSummaryLabel}>Project/Client Name: </span>
+                  <span className={styles.selectionSummaryValue}>{(mappingData.clientProjectName) || 'N/A'}</span>
+                </div>
                 <div className={styles.selectionSummaryRow}>
                   <span className={styles.selectionSummaryLabel}>Functional Area: </span>
                   <span className={styles.selectionSummaryValue}>{(mappingData.functionalArea.replace(/(^\w|-\w)/g, match => match.toUpperCase())) || 'N/A'}</span>

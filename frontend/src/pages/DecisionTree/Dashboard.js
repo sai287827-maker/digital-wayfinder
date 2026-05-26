@@ -48,6 +48,8 @@ const ExecutiveDashboard = () => {
 
         setDashboardData({ projectInfo, solutions, criteria });
         setShowPowerBI(true);
+        console.log("Dashboard data fetched successfully:", { projectInfo, solutions, criteria });
+        
       } catch (err) {
         console.error("Critical API failed:", err);
         setError("Failed to fetch dashboard data.");
@@ -390,8 +392,8 @@ const ExecutiveDashboard = () => {
           mappingData={dashboardData?.criteria ? {
             userId: dashboardData.criteria.userId,
             sessionId: dashboardData.criteria.sessionId,
-            //projectName: dashboardData.projectInfo?.projectName || "N/A",
-            //requestId: dashboardData.projectInfo?.requestId || "N/A",
+            clientProjectName: dashboardData.projectInfo?.clientName || "N/A",
+            requestId: dashboardData.projectInfo?.requestID || "N/A",
             functionalArea: dashboardData.criteria.functionalArea,
             industryType: dashboardData.criteria.industryType,
             selectedPlatforms: userPlatforms,
