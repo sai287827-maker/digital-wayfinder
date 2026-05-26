@@ -22,7 +22,6 @@ const TmsDataAndCloud = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [showVisibilityProactive, setShowVisibilityProactive] = useState(false);
   const [navigatingBack, setNavigatingBack] = useState(false);
 
   // New state for API response data
@@ -114,6 +113,49 @@ const TmsDataAndCloud = () => {
             });
           } else {
             console.log('No existing answers found in response');
+            try {
+
+              const answersResponse = await apiGet(
+                `api/digital-wayfinder/questionnaire/data-cloud/get-answers?functionalSubArea=${encodeURIComponent('Transportation Management System')}`
+              );
+
+              if (
+                answersResponse &&
+                answersResponse.answers &&
+                Array.isArray(answersResponse.answers)
+              ) {
+
+                console.log(
+                  'Found existing answers in separate API:',
+                  answersResponse.answers
+                );
+
+                answersResponse.answers.forEach(answerObj => {
+
+                  const questionIndex = questionTexts.findIndex(
+                    q =>
+                      q?.trim().toLowerCase() ===
+                      answerObj.question?.trim().toLowerCase()
+                  );
+
+                  if (questionIndex !== -1) {
+
+                    const answerValue =
+                      answerObj.answer.charAt(0).toUpperCase() +
+                      answerObj.answer.slice(1);
+
+                    initialAnswers[questionIndex] = answerValue;
+                  }
+                });
+              }
+
+            } catch (separateErr) {
+
+              console.log(
+                'Separate answers fetch failed:',
+                separateErr.message
+              );
+            }
           }
 
           setAnswers(initialAnswers);
@@ -297,7 +339,11 @@ const TmsDataAndCloud = () => {
       console.log('TMS Data and Cloud answers saved successfully:', response);
 
       // Navigate to next component
-      setShowVisibilityProactive(true);
+      navigate('/digital-wayfinder/tms-operational', {
+        state: {
+          ...location.state
+        }
+      });
 
     } catch (err) {
       console.error('Error saving TMS Data and Cloud answers:', err);
@@ -309,10 +355,6 @@ const TmsDataAndCloud = () => {
 
   const completedCount = answers.filter(Boolean).length;
   const allQuestionsAnswered = completedCount === questions.length && questions.length > 0;
-
-  if (showVisibilityProactive) {
-    return <TmsOperational />;
-  }
 
   return (
     <div className={styles.container}>
