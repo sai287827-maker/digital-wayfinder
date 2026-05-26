@@ -390,6 +390,8 @@ const ExecutiveDashboard = () => {
           mappingData={dashboardData?.criteria ? {
             userId: dashboardData.criteria.userId,
             sessionId: dashboardData.criteria.sessionId,
+            //projectName: dashboardData.projectInfo?.projectName || "N/A",
+            //requestId: dashboardData.projectInfo?.requestId || "N/A",
             functionalArea: dashboardData.criteria.functionalArea,
             industryType: dashboardData.criteria.industryType,
             selectedPlatforms: userPlatforms,

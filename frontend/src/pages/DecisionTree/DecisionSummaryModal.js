@@ -132,6 +132,7 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
         </div>
 
         {/* Content */}
+        <div className={styles.content}>
         {/* <div className={styles.content}>
           {activeTab === 'General Info' && (
             <div className={styles.infoTable}>
@@ -236,6 +237,7 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
               <li className={styles.solutionItem}>O9</li>
             </ol>
           )} */}
+        </div>
       </div>
     </div>
   );
