@@ -170,9 +170,11 @@
 /* Main Content Styles */
 .mainContent {
   flex: 1;
-  padding: 24px 32px;
-  overflow-x: auto;
+  padding: 0;
+  overflow: hidden;
   background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
 }
 
 .breadcrumbItem {
@@ -709,4 +711,101 @@
   color: #bdbdbd;
   margin: 0 4px;
   vertical-align: middle;
+}
+
+/* Power BI Report Styles */
+.report-style-class {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  display: block !important;
+  overflow: auto !important;
+  background-color: white !important;
+}
+
+.report-style-class iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  display: block !important;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  gap: 12px;
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 32px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #9333ea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMessage {
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  border: 1px solid #fee2e2;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.infoMessage {
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  border: 1px solid #c7d2fe;
+  background-color: #eef2ff;
+  color: #3730a3;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Power BI Full-Width Container */
+.powerBIContainerWrapper {
+  flex: 1;
+  margin: 0;
+  padding: 16px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.powerBIContainer {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }

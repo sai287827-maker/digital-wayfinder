@@ -9,8 +9,12 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
     nonFunctional: true
   });
 
-  console.log('Mapping Data in Modal:', mappingData);
   const tabs = ['Decision Criteria' /* , 'General Info', 'Solutions' */];
+
+  const formatLabel = (value) => {
+    if (!value || typeof value !== 'string') return 'N/A';
+    return value.replace(/-/g, ' ').replace(/(^\w|\-\w)/g, (match) => match.toUpperCase());
+  };
 
   if (!isOpen) return null;
 
@@ -162,17 +166,21 @@ const DecisionSummaryModal = ({ isOpen, onClose, mappingData = {} }) => {
           {activeTab === 'Decision Criteria' && (
             <div className={styles.decisionCriteriaContent}>
               <div className={styles.selectionSummary}>
-              <div className={styles.selectionSummaryRow}>
+                <div className={styles.selectionSummaryRow}>
                   <span className={styles.selectionSummaryLabel}>Project/Client Name: </span>
                   <span className={styles.selectionSummaryValue}>{(mappingData.clientProjectName) || 'N/A'}</span>
                 </div>
                 <div className={styles.selectionSummaryRow}>
+                  <span className={styles.selectionSummaryLabel}>Request ID: </span>
+                  <span className={styles.selectionSummaryValue}>{mappingData.requestId || 'N/A'}</span>
+                </div>
+                <div className={styles.selectionSummaryRow}>
                   <span className={styles.selectionSummaryLabel}>Functional Area: </span>
-                  <span className={styles.selectionSummaryValue}>{(mappingData.functionalArea.replace(/(^\w|-\w)/g, match => match.toUpperCase())) || 'N/A'}</span>
+                  <span className={styles.selectionSummaryValue}>{formatLabel(mappingData.functionalArea)}</span>
                 </div>
                 <div className={styles.selectionSummaryRow}>
                   <span className={styles.selectionSummaryLabel}>Industry Type: </span>
-                  <span className={styles.selectionSummaryValue}>{(mappingData.industryType.replace(/(^\w|-\w)/g, match => match.toUpperCase())) || 'N/A'}</span>
+                  <span className={styles.selectionSummaryValue}>{formatLabel(mappingData.industryType)}</span>
                 </div>
                 <div className={styles.selectionSummaryRow}>
                   <span className={styles.selectionSummaryLabel}>Selected Platforms: </span>

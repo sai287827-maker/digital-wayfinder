@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Home, ChevronRight, Info, BarChart3, GitCompare, Target, TrendingUp} from 'lucide-react';
+import { Home, ChevronRight, Info } from 'lucide-react';
 import styles from './Dashboard.module.css';
 import DecisionSummaryModal from './DecisionSummaryModal';
 import { apiGet } from '../../api';
+import { PowerBIEmbed } from 'powerbi-client-react';
+import { models } from 'powerbi-client';
  
 const RetailDashboard = () => {
-  const [showTooltip, setShowTooltip] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [showPowerBI, setShowPowerBI] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [embedConfig, setEmbedConfig] = useState(null);
+  const [embedLoading, setEmbedLoading] = useState(true);
+  const [embedError, setEmbedError] = useState(null);
  
   useEffect(() => {
     async function fetchDashboardData() {
@@ -23,110 +26,130 @@ const RetailDashboard = () => {
           apiGet('api/decision-tree/functional-scope/decision-criteria/get-details')
         ]);
         setDashboardData({ projectInfo, solutions, criteria });
-        // Auto-show Power BI report when dashboard loads
-        setShowPowerBI(true);
       } catch (err) {
         setError('Failed to fetch dashboard data.');
-        // Even if API fails, show Power BI report
-        setShowPowerBI(true);
       } finally {
         setLoading(false);
       }
     }
     fetchDashboardData();
   }, []);
- 
-  // Fallback to sample data if API fails or is loading
-  const samplePowerBIData = {
-    industryAgnostic: {
-      industry: "XXXXXXX",
-      function: "XXXXXXX"
-    },
-    wmsSystems: [
-      { name: "BY WMS", percentage: 94.2, color: "#9333EA" },
-      { name: "SAP WMS", percentage: 92.1, color: "#1E40AF" },
-      { name: "Manhattan WMS", percentage: 87.7, color: "#059669" },
-      { name: "Oracle WMS", percentage: 78.0, color: "#DC2626" },
-      { name: "Korber WMS", percentage: 71.6, color: "#374151" }
-    ],
-    decisionPoints: {
-      total: 128,
-      functional: 56,
-      nonFunctional: 79,
-      functionalCriteria: [
-        { name: "L0", count: 1 },
-        { name: "L1", count: 1 },
-        { name: "L2", count: 1 },
-        { name: "L3", count: 1 }
-      ],
-      nonFunctionalCriteria: [
-        { name: "Architecture", count: 1 },
-        { name: "Data", count: 1 },
-        { name: "Product Support", count: 1 },
-        { name: "Security", count: 1 }
-      ]
-    },
-    sankeyData: {
-      functional: [
-        { name: "BY WMS", value: 98.7 },
-        { name: "SAP WMS", value: 100.0 },
-        { name: "Manhattan WMS", value: 91.6 },
-        { name: "Oracle WMS", value: 91.2 },
-        { name: "Korber WMS", value: 83.6 }
-      ],
-      architecture: [
-        { name: "BY WMS", value: 96.1 },
-        { name: "SAP WMS", value: 100.0 },
-        { name: "Manhattan WMS", value: 88.9 },
-        { name: "Oracle WMS", value: 74.4 },
-        { name: "Korber WMS", value: 77.8 }
-      ]
+
+  useEffect(() => {
+    async function fetchEmbedConfig() {
+      setEmbedLoading(true);
+      setEmbedError(null);
+
+      try {
+        const res = await apiGet(
+          'api/powerbi/embed-config?reportId=716756e7-24ff-4491-98c2-ceaaec73800d'
+        );
+
+        setEmbedConfig({
+          type: 'report',
+          id: res.reportId,
+          embedUrl: res.embedUrl,
+          accessToken: res.embedToken,
+          tokenType: models.TokenType.Embed,
+        });
+      } catch (err) {
+        console.error('Power BI Error', err);
+        setEmbedError(
+          'Unable to load the Power BI report. Please refresh the page or try again later.',
+        );
+      } finally {
+        setEmbedLoading(false);
+      }
     }
-  };
+
+    fetchEmbedConfig();
+  }, []);
  
-  // Use real data if available, otherwise fallback
-  const powerBIData = dashboardData || samplePowerBIData;
+  const formatValue = (val) =>
+    val?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+  // ✅ Clean data (remove nulls)
+  const cleanSolutions =
+    dashboardData?.solutions?.filter((item) => item && item.sessionId) || [];
+
+  // ✅ Get latest session based on createdDate
+  const latestSolution = cleanSolutions.sort(
+    (a, b) => new Date(b.createdDate || 0) - new Date(a.createdDate || 0),
+  )[0];
+
+  const currentSessionId = latestSolution?.sessionId;
+
+  // ✅ Get platforms for that session
+  const userPlatforms = cleanSolutions
+    .filter((item) => item.sessionId === currentSessionId)
+    .map((item) => item.platform);    
+  
+  // ✅ Build userSelections with all levels from all levelSelections
+  const funcLevelSelections =
+    dashboardData?.criteria?.functional?.levelSelections || [];
+    
+  const funcl1Set = new Set();
+  const funcl2Set = new Set();
+  const funcl3Set = new Set();
+  const funcl4Set = new Set();
+  const funcl5Set = new Set();
+
+  funcLevelSelections.forEach((selection) => {
+    if (selection.l1) funcl1Set.add(selection.l1?.trim());
+    if (selection.l2) funcl2Set.add(selection.l2?.trim());
+    if (selection.l3) funcl3Set.add(selection.l3?.trim());
+    if (selection.l4) funcl4Set.add(selection.l4?.trim());
+    if (selection.l5) funcl5Set.add(selection.l5?.trim());
+  });
+  
+  const nonFuncLevelSelections =
+    dashboardData?.criteria?.nonFunctional?.levelSelections || [];
+    
+  const nonFuncl1Set = new Set();
+  const nonFuncl2Set = new Set();
+  const nonFuncl3Set = new Set();
+  
+
+  nonFuncLevelSelections.forEach((selection) => {
+    if (selection.l1) nonFuncl1Set.add(selection.l1?.trim());
+    if (selection.l2) nonFuncl2Set.add(selection.l2?.trim());
+    if (selection.l3) nonFuncl3Set.add(selection.l3?.trim());
+  });
+
+  const userSelectionsFunctional = {
+    functionalArea: formatValue(dashboardData?.criteria?.functionalArea),
+    l1: Array.from(funcl1Set),
+    l2: Array.from(funcl2Set),
+    l3: Array.from(funcl3Set),
+    l4: Array.from(funcl4Set),
+    l5: Array.from(funcl5Set),
+    platforms: userPlatforms,
+  };
+
+  const userSelectionsNonFunctional = {
+    functionalArea: formatValue(dashboardData?.criteria?.functionalArea),
+    l1: Array.from(nonFuncl1Set),
+    l2: Array.from(nonFuncl2Set),
+    l3: Array.from(nonFuncl3Set),
+    platforms: userPlatforms,
+  };
+
+  console.log('Latest Session:', currentSessionId);
+  console.log('Platforms:', userPlatforms);
+  console.log('Criteria:', dashboardData?.criteria);
+  console.log('User Selections Functional:', userSelectionsFunctional);
+  console.log('User Selections Non-Functional:', userSelectionsNonFunctional);
  
   const breadcrumbs = [
     { label: "Home", href: "/", icon: Home },
     { label: "Decision Tree", href: "/decision-tree" },
     { label: "Functional Scope", href: "/functional-scope" },
-    { label: "Advance Dashboards", href: "/advance-dashboards" }
+    { label: "Retail Dashboard" }
   ];
- 
-  const sidebarItems = [
-    { name: "Functional Scope", icon: Target, active: false },
-    { name: "Non Functional Scope", icon: GitCompare, active: false },
-    { name: "Appendix", icon: TrendingUp, active: false }
-  ];
- 
-  const togglePowerBIView = () => {
-    setShowPowerBI(!showPowerBI);
-  };
  
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.dashboardLayout}>
-        <div className={styles.sidebar}>
-          <div className={styles.sidebarContent}>
-            {sidebarItems.map((item, index) => (
-              <div key={index} className={styles.sidebarItemContainer}>
-                <div className={`${styles.sidebarItem} ${item.active ? styles.sidebarItemActive : ''}`}>
-                  <item.icon className={styles.sidebarIcon} />
-                  <span className={styles.sidebarLabel}>{item.name}</span>
-                </div>
-                {item.active && item.description && showTooltip && (
-                  <div className={styles.tooltip}>
-                    <div className={styles.tooltipTitle}>{item.name}</div>
-                    <div className={styles.tooltipDescription}>{item.description}</div>
-                    <div className={styles.tooltipArrow}></div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
- 
         <div className={styles.mainContent}>
           {/* Breadcrumb Row */}
           <div className={styles.breadcrumbRow}>
@@ -150,12 +173,8 @@ const RetailDashboard = () => {
  
           <div className={styles.dashboardHeader}>
             <div className={styles.dashboardTitleContainer}>
-              <h1 className={styles.dashboardTitle}>Executive Dashboard</h1>
-              <button
-                onMouseEnter={() => setShowTooltip(true)}
-                onMouseLeave={() => setShowTooltip(false)}
-                className={styles.infoButton}
-              >
+              <h1 className={styles.dashboardTitle}>Retail Dashboard</h1>
+              <button className={styles.infoButton}>
                 <Info className={styles.infoIcon} />
               </button>
             </div>
@@ -164,14 +183,7 @@ const RetailDashboard = () => {
                 className={styles.viewSummaryBtn}
                 onClick={() => setShowModal(true)}
               >
-                View Summary
-              </button>
-              <button
-                className={styles.viewSummaryBtn}
-                onClick={togglePowerBIView}
-                style={{ backgroundColor: showPowerBI ? '#dc2626' : '#059669' }}
-              >
-                {showPowerBI ? 'Hide Power BI Report' : 'Show Power BI Report'}
+                View Selections
               </button>
             </div>
           </div>
@@ -181,192 +193,171 @@ const RetailDashboard = () => {
           </div> */}
  
           {/* Power BI Report Section - Full Screen */}
-          {showPowerBI && (
-            <div style={{
-              width: '100%',
-              height: '80vh',
-              marginBottom: '20px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                backgroundColor: '#f9fafb',
-                padding: '12px 16px',
-                borderBottom: '1px solid #e5e7eb',
-                fontWeight: '600',
-                fontSize: '16px',
-                color: '#374151'
-              }}>
-                Power BI Dashboard Report
-              </div>
-              <iframe
-                title="Power BI Report Dashboard"
-                src="https://app.powerbi.com/reportEmbed?reportId=dec17f66-032c-4d4c-8c8e-f7e40d3857f7&autoAuth=true&ctid=e0793d39-0939-496d-b129-198edd916feb"
-                style={{
-                  width: "100%",
-                  height: "calc(100% - 53px)",
-                  border: "none",
-                  display: 'block'
-                }}
-                allowFullScreen
-                loading="lazy"
-              />
+          <div className={styles.powerBIContainerWrapper}>
+            <div className={styles.powerBIContainer}>
+              {loading || embedLoading ? (
+                <div className={styles.loadingContainer}>
+                  <div className={styles.spinner}></div>
+                  <div>Loading Power BI report...</div>
+                </div>
+              ) : error || embedError ? (
+                <div className={styles.errorMessage}>
+                  {error || embedError}
+                </div>
+              ) : embedConfig ? (
+                <PowerBIEmbed
+                  embedConfig={embedConfig}
+                  cssClassName={styles["report-style-class"]}
+                  getEmbeddedComponent={(report) => {
+                    report.on("loaded", () => {
+                      console.log("Report loaded");
+                      
+                      report.getPages().then((pages) => {
+                        // pages[0] = Functional, pages[1] = Non-Functional, pages[2] = Appendix
+                        console.log("report pages", pages);
+                        // Functional Page Filters (L1-L5, Platforms)
+                        const functionalFilters = [];
+                        const functionalTable = "vw_Retail_Functional_Unpivoted"; 
+
+                        if (userSelectionsFunctional.l1.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L1" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l1,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l2.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L2" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l2,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l3.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L3" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l3,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l4.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L4" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l4,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.l5.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "L5" },
+                            operator: "In",
+                            values: userSelectionsFunctional.l5,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsFunctional.platforms.length > 0) {
+                          functionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: functionalTable, column: "PlatformName" },
+                            operator: "In",
+                            values: userSelectionsFunctional.platforms,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+
+                        if (pages[0]) {
+                          pages[0].setFilters(functionalFilters)
+                            .then(() => console.log("Functional page filters applied"))
+                            .catch((err) => console.error("Error setting functional filters", err));
+                        }
+
+                        // Non-Functional Page Filters (L1-L3, Platforms)
+                        const nonFunctionalFilters = [];
+                        const nonFunctionalTable = "vw_Retail_Non_Functional_Unpivoted"; 
+
+                        if (userSelectionsNonFunctional.l1.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "L1" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.l1,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsNonFunctional.l2.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "L2" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.l2,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        if (userSelectionsNonFunctional.l3.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "L3" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.l3,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+                        // Add platforms for the non-functional view
+                        if (userSelectionsNonFunctional.platforms.length > 0) {
+                          nonFunctionalFilters.push({
+                            $schema: "http://powerbi.com/product/schema#basic",
+                            target: { table: nonFunctionalTable, column: "PlatformName" },
+                            operator: "In",
+                            values: userSelectionsNonFunctional.platforms,
+                            filterType: models.FilterType.Basic,
+                          });
+                        }
+
+                        if (pages[1]) {
+                          pages[1].setFilters(nonFunctionalFilters)
+                            .then(() => console.log("Non-functional page filters applied"))
+                            .catch((err) => console.error("Error setting non-functional filters", err));
+                        }
+
+                        // Appendix Page - No filters or specific filters as needed
+                        // pages[2].setFilters([]); // If needed
+                      }).catch((err) => console.error("Error getting pages", err));
+                    });
+                  }}
+                />
+              ) : (
+                <div className={styles.errorMessage}>
+                  Power BI configuration could not be loaded.
+                </div>
+              )}
             </div>
-          )}
- 
-          {/* Original Dashboard Content - Only show when Power BI is hidden */}
-          {!showPowerBI && (
-            <div className={styles.powerbiContent}>
-              {/* Top Row - Industry Agnostic and WMS Chart */}
-              <div className={styles.contentRow}>
-                <div className={`${styles.card} ${styles.industryCard}`}>
-                  <div className={styles.cardHeader}>
-                    <div className={styles.cardIcon}>
-                      <BarChart3 className={styles.icon} />
-                    </div>
-                    <div>
-                      <h3 className={styles.cardTitle}>Industry Agnostic</h3>
-                      <div className={styles.cardUnderline}></div>
-                    </div>
-                  </div>
-                  <div className={styles.cardContent}>
-                    <div className={styles.industryInfo}>
-                      Industry: <span className={styles.industryValue}>{powerBIData.industryAgnostic.industry}</span>
-                    </div>
-                    <div className={styles.industryInfo}>
-                      Function: <span className={styles.industryValue}>{powerBIData.industryAgnostic.function}</span>
-                    </div>
-                  </div>
-                </div>
- 
-                <div className={`${styles.card} ${styles.wmsChart}`}>
-                  <div className={styles.wmsBars}>
-                    {powerBIData.wmsSystems.map((system, index) => (
-                      <div key={index} className={styles.wmsBarContainer}>
-                        <div
-                          className={styles.wmsBar}
-                          style={{
-                            backgroundColor: system.color,
-                            height: `${system.percentage}%`
-                          }}
-                        >
-                          <div className={styles.wmsPercentage}>{system.percentage}%</div>
-                        </div>
-                        <div className={styles.wmsLabel}>{system.name}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
- 
-              {/* Bottom Row - Decision Points and Sankey Chart */}
-              <div className={styles.contentRow}>
-                <div className={`${styles.card} ${styles.decisionCard}`}>
-                  <div className={styles.cardHeader}>
-                    <div className={styles.cardIconPurple}>
-                      <Target className={styles.icon} />
-                    </div>
-                    <div>
-                      <h3 className={styles.cardTitle}>Decision Points</h3>
-                      <h4 className={styles.decisionSubtitle}>Evaluated: {powerBIData.decisionPoints.total}</h4>
-                      <div className={styles.cardUnderline}></div>
-                    </div>
-                  </div>
- 
-                  <div className={styles.decisionContent}>
-                    <div className={styles.decisionSection}>
-                      <h4 className={styles.decisionSectionTitle}>Functional {powerBIData.decisionPoints.functional}</h4>
-                      <div className={styles.criteriaTable}>
-                        <div className={styles.tableHeader}>
-                          <span>Criteria</span>
-                          <span>Count</span>
-                        </div>
-                        {powerBIData.decisionPoints.functionalCriteria.map((item, index) => (
-                          <div key={index} className={styles.tableRow}>
-                            <span>{item.name}</span>
-                            <span>{item.count}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
- 
-                    <div className={styles.decisionSection}>
-                      <h4 className={styles.decisionSectionTitle}>Non-Functional {powerBIData.decisionPoints.nonFunctional}</h4>
-                      <div className={styles.criteriaTable}>
-                        <div className={styles.tableHeader}>
-                          <span>Criteria</span>
-                          <span>Count</span>
-                        </div>
-                        {powerBIData.decisionPoints.nonFunctionalCriteria.map((item, index) => (
-                          <div key={index} className={styles.tableRow}>
-                            <span>{item.name}</span>
-                            <span>{item.count}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
- 
-                  <button className={styles.viewWeightagesBtn}>View Weightages</button>
-                </div>
- 
-                <div className={`${styles.card} ${styles.sankeyCard}`}>
-                  <div className={styles.sankeyPlaceholder}>
-                    <div className={styles.sankeyFlow}>
-                      <div className={styles.flowColumn}>
-                        <div className={styles.flowHeader}>Functional</div>
-                        <div className={styles.flowItems}>
-                          {powerBIData.sankeyData.functional.map((item, index) => (
-                            <div
-                              key={index}
-                              className={styles.flowItem}
-                              style={{ backgroundColor: powerBIData.wmsSystems[index]?.color }}
-                            >
-                              {item.value}%
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div className={styles.flowColumn}>
-                        <div className={styles.flowHeader}>Architecture</div>
-                        <div className={styles.flowItems}>
-                          {powerBIData.sankeyData.architecture.map((item, index) => (
-                            <div
-                              key={index}
-                              className={styles.flowItem}
-                              style={{ backgroundColor: powerBIData.wmsSystems[index]?.color }}
-                            >
-                              {item.value}%
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div className={styles.flowColumn}>
-                        <div className={styles.flowHeader}>Data</div>
-                        <div className={styles.flowItems}>
-                          <div className={styles.flowItem} style={{ backgroundColor: "#9333EA" }}>77.8%</div>
-                          <div className={styles.flowItem} style={{ backgroundColor: "#1E40AF" }}>100.0%</div>
-                          <div className={styles.flowItem} style={{ backgroundColor: "#059669" }}>100.0%</div>
-                          <div className={styles.flowItem} style={{ backgroundColor: "#DC2626" }}>100.0%</div>
-                          <div className={styles.flowItem} style={{ backgroundColor: "#374151" }}>88.8%</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.sankeyLegend}>
-                      <div className={styles.legendItem}><div className={styles.legendColor} style={{ backgroundColor: "#9333EA" }}></div>BY WMS</div>
-                      <div className={styles.legendItem}><div className={styles.legendColor} style={{ backgroundColor: "#374151" }}></div>Korber WMS</div>
-                      <div className={styles.legendItem}><div className={styles.legendColor} style={{ backgroundColor: "#059669" }}></div>Manhattan WMS</div>
-                      <div className={styles.legendItem}><div className={styles.legendColor} style={{ backgroundColor: "#DC2626" }}></div>Oracle WMS</div>
-                      <div className={styles.legendItem}><div className={styles.legendColor} style={{ backgroundColor: "#1E40AF" }}></div>SAP WMS</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-          )}
         </div>
-        <DecisionSummaryModal isOpen={showModal} onClose={() => setShowModal(false)} />
+        <DecisionSummaryModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          mappingData={dashboardData ? {
+            userId:
+              dashboardData.criteria?.userId || dashboardData.projectInfo?.userId || 'N/A',
+            sessionId: currentSessionId || 'N/A',
+            clientProjectName: dashboardData.projectInfo?.clientName || 'N/A',
+            requestId: dashboardData.projectInfo?.requestID || dashboardData.projectInfo?.requestId || 'N/A',
+            functionalArea: formatValue(dashboardData.criteria?.functionalArea) || 'N/A',
+            industryType: formatValue(dashboardData.criteria?.industryType) || 'N/A',
+            selectedPlatforms: userPlatforms,
+            functional: dashboardData.criteria?.functional || { levelSelections: [] },
+            nonFunctional: dashboardData.criteria?.nonFunctional || { levelSelections: [] }
+          } : {}}
+        />
       </div>
     </div>
   );
