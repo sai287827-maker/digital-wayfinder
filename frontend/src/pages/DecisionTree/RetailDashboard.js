@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Home, ChevronRight } from 'lucide-react';
 import styles from './Dashboard.module.css';
 import DecisionSummaryModal from './DecisionSummaryModal';
@@ -14,6 +15,7 @@ const RetailDashboard = () => {
   const [embedConfig, setEmbedConfig] = useState(null);
   const [embedLoading, setEmbedLoading] = useState(true);
   const [embedError, setEmbedError] = useState(null);
+  const location = useLocation();
  
   useEffect(() => {
     async function fetchDashboardData() {
@@ -83,6 +85,13 @@ const RetailDashboard = () => {
   const userPlatforms = cleanSolutions
     .filter((item) => item.sessionId === currentSessionId)
     .map((item) => item.platform);    
+
+  // If we were navigated from RetailSolution, prefer the selected platforms passed in navigation state
+  const navSelected = location?.state?.selectedData?.selectedPlatforms;
+  const finalUserPlatforms = (navSelected && Array.isArray(navSelected) && navSelected.length > 0)
+    ? navSelected
+    : userPlatforms;
+  const finalUserPlatformsNormalized = (finalUserPlatforms || []).map(String).filter(Boolean);
   
   // ✅ Build userSelections with all levels from all levelSelections
   const funcLevelSelections =
@@ -123,7 +132,7 @@ const RetailDashboard = () => {
     l3: Array.from(funcl3Set),
     l4: Array.from(funcl4Set),
     l5: Array.from(funcl5Set),
-    platforms: userPlatforms,
+    platforms: finalUserPlatformsNormalized,
   };
 
   const userSelectionsNonFunctional = {
@@ -131,11 +140,12 @@ const RetailDashboard = () => {
     l1: Array.from(nonFuncl1Set),
     l2: Array.from(nonFuncl2Set),
     l3: Array.from(nonFuncl3Set),
-    platforms: userPlatforms,
+    platforms: finalUserPlatformsNormalized,
   };
 
   console.log('Latest Session:', currentSessionId);
-  console.log('Platforms:', userPlatforms);
+  console.log('Platforms (server):', userPlatforms);
+  console.log('Platforms (final):', finalUserPlatformsNormalized, 'fromNav:', !!navSelected);
   console.log('Criteria:', dashboardData?.criteria);
   console.log('User Selections Functional:', userSelectionsFunctional);
   console.log('User Selections Non-Functional:', userSelectionsNonFunctional);

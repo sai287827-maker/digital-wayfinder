@@ -339,6 +339,15 @@ const RetailSolution = () => {
     fetchRetailSolutions();
   }, []);
 
+  const getSolutionKey = (solution) => {
+    if (!solution) return null;
+    if (solution.platformName) return solution.platformName;
+    if (solution.name) return solution.name;
+    if (solution.id) return String(solution.id);
+    console.error('Invalid solution object:', solution);
+    return null;
+  };
+
   // Filter solutions based on search query
   const getFilteredSolutions = () => {
     if (!searchQuery) return solutionData;
@@ -363,9 +372,9 @@ const RetailSolution = () => {
   // Handle select all
   const handleSelectAll = () => {
     const filteredSolutions = getFilteredSolutions();
-    const allFilteredIds = filteredSolutions.map(solution => solution.id || solution.platformName);
+    const allFilteredIds = filteredSolutions.map(getSolutionKey).filter(Boolean);
     const allSelected = allFilteredIds.every(id => selectedPlatforms.includes(id));
-    
+
     if (allSelected) {
       // Deselect all filtered solutions
       setSelectedSolutions(prev => prev.filter(id => !allFilteredIds.includes(id)));
@@ -389,18 +398,31 @@ const RetailSolution = () => {
         return;
       }
       setLoading(true);
-      await apiPost('api/decision-tree/functional-scope/solution/save', {
-        selectedPlatforms,
+      // Normalize selected platform keys to platform names (backend / PowerBI expect names)
+      const normalizedSelected = selectedPlatforms.map((sel) => {
+        // try to find the solution object matching the selected key
+        const found = solutionData.find(s => String(s.id) === String(sel) || s.platformName === sel || s.name === sel);
+        return (found && (found.platformName || found.name || String(found.id))) || String(sel);
+      }).filter(Boolean);
+
+      const payload = {
+        selectedPlatforms: normalizedSelected,
         searchQuery,
         timestamp: new Date().toISOString()
-      });
+      };
+
+      console.log('RetailSolution: saving payload', payload);
+      const resp = await apiPost('api/decision-tree/functional-scope/solution/save', payload);
+      console.log('RetailSolution: save response', resp);
+
+      // Navigate and pass normalized selections as a fast-path for the dashboard
       navigate('/decision-tree/retail-dashboard', {
         state: {
           fromRetailSolution: true,
           selectedData: {
-            selectedPlatforms,
+            selectedPlatforms: normalizedSelected,
             searchQuery,
-            timestamp: new Date().toISOString()
+            timestamp: payload.timestamp
           }
         }
       });
@@ -415,7 +437,7 @@ const RetailSolution = () => {
   // Check if all filtered solutions are selected
   const filteredSolutions = getFilteredSolutions();
   const allFilteredSelected = filteredSolutions.length > 0 && 
-    filteredSolutions.every(solution => selectedPlatforms.includes(solution.id || solution.platformName));
+    filteredSolutions.every(solution => selectedPlatforms.includes(getSolutionKey(solution)));
 
   return (
     <div className="retail-solution-wrapper">
@@ -529,17 +551,20 @@ const RetailSolution = () => {
                   <div className="retail-loading-spinner"></div>
                   <div className="retail-loading-message">Loading retail solutions...</div>
                 </div>
-              ) : getFilteredSolutions().map((solution, index) => (
+              ) : getFilteredSolutions().map((solution, index) => {
+                const key = getSolutionKey(solution) || index;
+                const solKey = getSolutionKey(solution);
+                return (
                 <div
-                  key={solution.id || solution.platformName || index}
-                  className={`retail-solution-card ${selectedPlatforms.includes(solution.id || solution.platformName) ? 'selected' : ''}`}
-                  onClick={() => handleSolutionSelect(solution.id || solution.platformName)}
+                  key={key}
+                  className={`retail-solution-card ${selectedPlatforms.includes(solKey) ? 'selected' : ''}`}
+                  onClick={() => handleSolutionSelect(solKey)}
                 >
                   <div className="retail-solution-checkbox-wrapper">
                     <input
                       type="checkbox"
-                      checked={selectedPlatforms.includes(solution.id || solution.platformName)}
-                      onChange={() => handleSolutionSelect(solution.id || solution.platformName)}
+                      checked={selectedPlatforms.includes(solKey)}
+                      onChange={() => handleSolutionSelect(solKey)}
                       className="retail-solution-checkbox"
                     />
                   </div>
@@ -558,7 +583,8 @@ const RetailSolution = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* No results message */}
