@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, ChevronRight, Info } from 'lucide-react';
+import { Home, ChevronRight } from 'lucide-react';
 import styles from './Dashboard.module.css';
 import DecisionSummaryModal from './DecisionSummaryModal';
 import { apiGet } from '../../api';
@@ -141,17 +141,15 @@ const RetailDashboard = () => {
   console.log('User Selections Non-Functional:', userSelectionsNonFunctional);
  
   const breadcrumbs = [
-    { label: "Home", href: "/", icon: Home },
-    { label: "Decision Tree", href: "/decision-tree" },
-    { label: "Functional Scope", href: "/functional-scope" },
-    { label: "Retail Dashboard" }
+    { label: "Home", icon: Home },
+    { label: "Decision Tree" },
+    { label: "Dashboard" },
   ];
  
   return (
     <div className={styles.dashboardContainer}>
       <div className={styles.dashboardLayout}>
         <div className={styles.mainContent}>
-          {/* Breadcrumb Row */}
           <div className={styles.breadcrumbRow}>
             <div className={styles.breadcrumbs}>
               {breadcrumbs.map((item, index) => (
@@ -169,16 +167,7 @@ const RetailDashboard = () => {
                 </React.Fragment>
               ))}
             </div>
-          </div>
- 
-          <div className={styles.dashboardHeader}>
-            <div className={styles.dashboardTitleContainer}>
-              <h1 className={styles.dashboardTitle}>Retail Dashboard</h1>
-              <button className={styles.infoButton}>
-                <Info className={styles.infoIcon} />
-              </button>
-            </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className={styles.breadcrumbActions}>
               <button
                 className={styles.viewSummaryBtn}
                 onClick={() => setShowModal(true)}
@@ -187,10 +176,6 @@ const RetailDashboard = () => {
               </button>
             </div>
           </div>
- 
-          {/* <div className={styles.lastUpdated}>
-            Last Updated on Mon 14-Apr-2025 , 2:50PM
-          </div> */}
  
           {/* Power BI Report Section - Full Screen */}
           <div className={styles.powerBIContainerWrapper}>

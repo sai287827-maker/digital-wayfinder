@@ -214,6 +214,21 @@
 }
 
 /* Dashboard Header */
+.breadcrumbRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.breadcrumbActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .dashboardHeader {
   display: flex;
   justify-content: space-between;
@@ -287,6 +302,30 @@
 }
 
 /* Power BI Content */
+.powerBIContainerWrapper {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.powerBIContainer {
+  width: 100%;
+  min-height: calc(100vh - 120px);
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-style-class {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: calc(100vh - 120px) !important;
+  border-radius: 0 !important;
+}
+
 .powerbiContent {
   display: flex;
   flex-direction: column;
